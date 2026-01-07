@@ -1,7 +1,7 @@
-use rustdoc_core::project::RustdocProject;
 use anyhow::{Result, anyhow};
 use fieldwork::Fieldwork;
 use mcplease::session::SessionStore;
+use rustdoc_core::project::RustdocProject;
 use serde::{Deserialize, Serialize};
 use std::rc::Rc;
 use std::{fmt::Debug, fs, path::PathBuf};
