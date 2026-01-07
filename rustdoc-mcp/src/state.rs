@@ -1,4 +1,4 @@
-use crate::rustdoc::RustdocProject;
+use rustdoc_core::project::RustdocProject;
 use anyhow::{Result, anyhow};
 use fieldwork::Fieldwork;
 use mcplease::session::SessionStore;

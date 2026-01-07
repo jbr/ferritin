@@ -1,13 +1,9 @@
-mod doc_ref;
 mod filter;
 mod format_context;
+mod formatting;
 mod indent;
-mod indexer;
-mod iterators;
 mod request;
-mod rustdoc;
 mod state;
-mod string_utils;
 mod tools;
 mod traits;
 mod verbosity;

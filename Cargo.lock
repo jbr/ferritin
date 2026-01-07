@@ -857,31 +857,45 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "357703d41365b4b27c590e3ed91eabb1b663f07c4c084095e60cbed4362dff0d"
 
 [[package]]
-name = "rustdoc-mcp"
+name = "rustdoc-core"
 version = "0.1.4"
 dependencies = [
  "anyhow",
  "bincode",
  "cargo_metadata",
  "cargo_toml",
+ "elsa",
+ "fieldwork",
+ "log",
+ "rustc-hash",
+ "rustdoc-types",
+ "serde",
+ "serde_json",
+ "shellexpand",
+ "strsim",
+ "walkdir",
+]
+
+[[package]]
+name = "rustdoc-mcp"
+version = "0.1.4"
+dependencies = [
+ "anyhow",
  "clap",
  "dirs",
- "elsa",
  "env_logger",
  "fieldwork",
  "insta",
  "log",
  "mcplease",
- "rustc-hash",
+ "rustdoc-core",
  "rustdoc-types",
  "schemars",
  "serde",
  "serde_json",
  "shellexpand",
- "strsim",
  "strum",
  "tempfile",
- "walkdir",
 ]
 
 [[package]]

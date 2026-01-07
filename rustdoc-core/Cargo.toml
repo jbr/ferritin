@@ -1,0 +1,24 @@
+[package]
+name = "rustdoc-core"
+version.workspace = true
+edition.workspace = true
+description = "Core library for rustdoc navigation and search"
+readme.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+bincode.workspace = true
+cargo_metadata.workspace = true
+cargo_toml.workspace = true
+elsa.workspace = true
+fieldwork = "0.4.6"
+log = "0.4.28"
+rustc-hash.workspace = true
+rustdoc-types.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+shellexpand.workspace = true
+strsim.workspace = true
+walkdir.workspace = true

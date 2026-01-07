@@ -1,8 +1,9 @@
 use crate::filter::Filter;
 use crate::format_context::FormatContext;
+use crate::request::Request;
 use crate::state::RustdocTools;
 use crate::traits::WriteFmt;
-use crate::{request::Request, verbosity::Verbosity};
+use crate::verbosity::Verbosity;
 use anyhow::Result;
 use clap::{ArgAction, Args};
 use mcplease::{

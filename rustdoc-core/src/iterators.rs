@@ -3,7 +3,7 @@ use fieldwork::Fieldwork;
 use rustdoc_types::{Id, Item, ItemEnum, Type, Use};
 use std::collections::hash_map::Values;
 
-pub(crate) struct MethodIter<'a> {
+pub struct MethodIter<'a> {
     item: DocRef<'a, Item>,
     impl_block_iter: InherentImplBlockIter<'a>,
     current_item_iter: Option<std::slice::Iter<'a, Id>>,
@@ -21,26 +21,26 @@ impl<'a> MethodIter<'a> {
 }
 
 impl<'a> DocRef<'a, Item> {
-    pub(crate) fn methods(&self) -> MethodIter<'a> {
+    pub fn methods(&self) -> MethodIter<'a> {
         MethodIter::new(*self)
     }
 
-    pub(crate) fn traits(&self) -> TraitIter<'a> {
+    pub fn traits(&self) -> TraitIter<'a> {
         TraitIter::new(*self)
     }
 
-    pub(crate) fn child_items(&self) -> ChildItems<'a> {
+    pub fn child_items(&self) -> ChildItems<'a> {
         ChildItems::new(*self)
     }
 }
 
 impl<'a, T> DocRef<'a, T> {
-    pub(crate) fn id_iter(&self, ids: &'a [Id]) -> IdIter<'a, T> {
+    pub fn id_iter(&self, ids: &'a [Id]) -> IdIter<'a, T> {
         IdIter::new(*self, ids)
     }
 }
 
-pub(crate) struct TraitIter<'a> {
+pub struct TraitIter<'a> {
     item: DocRef<'a, Item>,
     item_iter: Values<'a, Id, Item>,
 }
@@ -93,7 +93,7 @@ impl<'a> Iterator for MethodIter<'a> {
 }
 
 #[derive(Debug, Fieldwork)]
-pub(crate) struct IdIter<'a, T> {
+pub struct IdIter<'a, T> {
     item: DocRef<'a, T>,
     id_iter: std::slice::Iter<'a, Id>,
     glob_iter: Option<Box<IdIter<'a, Item>>>,
@@ -134,9 +134,9 @@ impl<'a, T> Iterator for IdIter<'a, T> {
 
                         let source_item = use_item
                             .id
-                            .and_then(|id| item.crate_docs().get(item.request(), &id))
+                            .and_then(|id| item.crate_docs().get(item.navigator(), &id))
                             .or_else(|| {
-                                item.request().resolve_path(&use_item.source, &mut vec![])
+                                item.navigator().resolve_path(&use_item.source, &mut vec![])
                             })?;
 
                         if use_item.is_glob {
@@ -189,14 +189,14 @@ impl<'a> Iterator for InherentImplBlockIter<'a> {
                 && path.id == self.item.id
                 && impl_block.trait_.is_none()
             {
-                return Some(DocRef::new(self.item.request(), self.item, item));
+                return Some(DocRef::new(self.item.navigator(), self.item, item));
             }
         }
         None
     }
 }
 
-pub(crate) enum ChildItems<'a> {
+pub enum ChildItems<'a> {
     AssociatedMethods(MethodIter<'a>),
     Module(IdIter<'a, Item>),
     Use(Option<DocRef<'a, Use>>, Option<IdIter<'a, Item>>, bool),
@@ -226,7 +226,7 @@ impl<'a> Iterator for ChildItems<'a> {
                         .and_then(|id| use_item.get(&id))
                         .or_else(|| {
                             use_item
-                                .request()
+                                .navigator()
                                 .resolve_path(&use_item.source, &mut vec![])
                         })?
                         .with_name(name);

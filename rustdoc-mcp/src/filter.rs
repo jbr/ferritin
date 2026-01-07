@@ -18,7 +18,7 @@ use strum::VariantArray;
     VariantArray,
 )]
 #[serde(rename_all = "lowercase")]
-pub(crate) enum Filter {
+pub enum Filter {
     Struct,
     Enum,
     Trait,
@@ -33,7 +33,7 @@ pub(crate) enum Filter {
 }
 
 impl Filter {
-    pub(crate) fn matches_kind(&self, kind: ItemKind) -> bool {
+    pub fn matches_kind(&self, kind: ItemKind) -> bool {
         match self {
             Filter::Struct => kind == ItemKind::Struct,
             Filter::Enum => kind == ItemKind::Enum,

@@ -1,9 +1,9 @@
 use std::{fmt::Display, ops::Deref};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) struct CrateName<'a>(
+pub struct CrateName<'a>(
     // private so the only way to construct is through new
-    pub(super) &'a str,
+    pub(crate) &'a str,
 );
 
 impl Display for CrateName<'_> {
@@ -21,7 +21,7 @@ impl<'a> Deref for CrateName<'a> {
 }
 
 impl<'a> CrateName<'a> {
-    pub(crate) fn new(name: &'a str) -> Option<Self> {
+    pub fn new(name: &'a str) -> Option<Self> {
         match name {
             // rustdoc placeholders
             "alloc_crate" => Some("alloc"),

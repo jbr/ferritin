@@ -1,6 +1,5 @@
 use crate::doc_ref::DocRef;
-use crate::indent::Indent;
-use crate::rustdoc::{RustdocData, RustdocProject};
+use crate::project::{RustdocData, RustdocProject};
 use crate::string_utils::case_aware_jaro_winkler;
 use elsa::FrozenMap;
 use fieldwork::Fieldwork;
@@ -10,28 +9,26 @@ use std::fmt::Debug;
 use std::fmt::Formatter;
 use std::rc::Rc;
 
-mod formatting;
-
 /// Represents a single request with its own cache and state
-pub(crate) struct Request {
-    project: Rc<RustdocProject>,
+pub struct Navigator {
+    pub project: Rc<RustdocProject>,
 
     // Request-scoped cache
     crate_cache: FrozenMap<String, Box<RustdocData>>,
 }
 
-impl Debug for Request {
+impl Debug for Navigator {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Request")
+        f.debug_struct("Navigator")
             .field("project", &self.project)
             .field("crate_cache (len)", &self.crate_cache.len())
             .finish()
     }
 }
 
-impl Request {
-    /// Create a new request, automatically determining the primary crate from the path
-    pub(crate) fn new(project: Rc<RustdocProject>) -> Self {
+impl Navigator {
+    /// Create a new navigator for a project
+    pub fn new(project: Rc<RustdocProject>) -> Self {
         Self {
             crate_cache: FrozenMap::new(),
             project,
@@ -39,7 +36,7 @@ impl Request {
     }
 
     /// Resolve path segments within a specific crate
-    pub(crate) fn resolve_path<'a>(
+    pub fn resolve_path<'a>(
         &'a self,
         path: &str,
         suggestions: &mut Vec<Suggestion<'a>>,
@@ -144,7 +141,7 @@ impl Request {
         }
     }
 
-    pub(crate) fn get_item_from_id_path<'a>(
+    pub fn get_item_from_id_path<'a>(
         &'a self,
         crate_name: &str,
         ids: &[u32],
@@ -159,7 +156,7 @@ impl Request {
                 item = use_item
                     .id
                     .and_then(|id| item.get(&id))
-                    .or_else(|| item.request().resolve_path(&use_item.source, &mut vec![]))?;
+                    .or_else(|| item.navigator().resolve_path(&use_item.source, &mut vec![]))?;
                 if !use_item.is_glob {
                     item.set_name(&use_item.name);
                 }
@@ -173,11 +170,11 @@ impl Request {
 }
 
 // Automatic cleanup when request ends
-impl Drop for Request {
+impl Drop for Navigator {
     fn drop(&mut self) {
         // Cache automatically cleared when Request is dropped
         log::trace!(
-            "Request dropped, cleaned up {} crates",
+            "Navigator dropped, cleaned up {} crates",
             self.crate_cache.len(),
         );
     }
@@ -185,7 +182,7 @@ impl Drop for Request {
 
 #[derive(Fieldwork)]
 #[fieldwork(get)]
-pub(crate) struct Suggestion<'a> {
+pub struct Suggestion<'a> {
     path: String,
     item: Option<DocRef<'a, Item>>,
     score: f64,

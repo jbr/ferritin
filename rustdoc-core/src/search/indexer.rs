@@ -12,7 +12,7 @@ use std::time::SystemTime;
 
 use crate::{
     doc_ref::DocRef,
-    request::{Request, Suggestion},
+    navigator::{Navigator, Suggestion},
 };
 
 #[derive(Default, Debug, Clone, Fieldwork)]
@@ -161,7 +161,7 @@ struct SearchableTerms {
 
 /// A search index for a single crate
 #[derive(Debug, Clone, Fieldwork)]
-pub(crate) struct SearchIndex {
+pub struct SearchIndex {
     #[field(get)]
     crate_name: String,
     terms: SearchableTerms,
@@ -190,13 +190,13 @@ impl SearchableTerms {
 }
 
 impl SearchIndex {
-    pub(crate) fn load_or_build<'a>(
-        request: &'a Request,
+    pub fn load_or_build<'a>(
+        navigator: &'a Navigator,
         crate_name: &str,
     ) -> Result<Self, Vec<Suggestion<'a>>> {
         let mut suggestions = vec![];
 
-        let item = request
+        let item = navigator
             .resolve_path(crate_name, &mut suggestions)
             .ok_or(suggestions)?;
 
@@ -272,7 +272,7 @@ impl SearchIndex {
     // }
 
     /// Search for items containing the given term
-    pub(crate) fn search(&self, term: &str) -> Vec<(&[u32], f32)> {
+    pub fn search(&self, term: &str) -> Vec<(&[u32], f32)> {
         self.terms.search(term)
     }
 }

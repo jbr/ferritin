@@ -1,8 +1,8 @@
 use crate::format_context::FormatContext;
 use crate::indent::Indent;
-use crate::indexer::SearchIndex;
 use crate::request::Request;
 use crate::state::RustdocTools;
+use rustdoc_core::search::indexer::SearchIndex;
 use crate::traits::WriteFmt;
 use anyhow::Result;
 use mcplease::traits::{Tool, WithExamples};

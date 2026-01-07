@@ -1,4 +1,4 @@
-use crate::iterators::IdIter;
+use rustdoc_core::iterators::IdIter;
 
 use super::*;
 

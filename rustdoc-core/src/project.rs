@@ -12,13 +12,11 @@ use std::process::Command;
 use std::time::SystemTime;
 use walkdir::WalkDir;
 
-mod crate_name;
-
+use crate::crate_name::CrateName;
 use crate::doc_ref::{self, DocRef};
-use crate::request::Request;
-use crate_name::CrateName;
+use crate::navigator::Navigator;
 
-pub(crate) const RUST_CRATES: [CrateName<'_>; 5] = [
+pub const RUST_CRATES: [CrateName<'_>; 5] = [
     CrateName("std"),
     CrateName("alloc"),
     CrateName("core"),
@@ -29,7 +27,7 @@ pub(crate) const RUST_CRATES: [CrateName<'_>; 5] = [
 /// Manages a Cargo project and its rustdoc JSON files
 #[derive(Fieldwork)]
 #[fieldwork(get)]
-pub(crate) struct RustdocProject {
+pub struct RustdocProject {
     manifest_path: PathBuf,
     target_dir: PathBuf,
     manifest: Manifest,
@@ -100,7 +98,7 @@ fn eq_ignoring_dash_underscore(a: &str, b: &str) -> bool {
 
 impl RustdocProject {
     /// Create a new project from a Cargo.toml path
-    pub(crate) fn load(manifest_path: PathBuf) -> Result<Self> {
+    pub fn load(manifest_path: PathBuf) -> Result<Self> {
         // Look for Cargo.toml in the working directory
         if !manifest_path.exists() {
             return Err(anyhow!(
@@ -178,7 +176,7 @@ impl RustdocProject {
         }
     }
 
-    pub(crate) fn is_workspace_package(&self, crate_name: CrateName<'_>) -> bool {
+    pub fn is_workspace_package(&self, crate_name: CrateName<'_>) -> bool {
         self.workspace_packages
             .iter()
             .any(|c| eq_ignoring_dash_underscore(c, &crate_name))
@@ -330,7 +328,7 @@ impl RustdocProject {
             .filter_map(|x| CrateName::new(x))
     }
 
-    pub(crate) fn project_root(&self) -> &Path {
+    pub fn project_root(&self) -> &Path {
         self.manifest_path.parent().unwrap_or(&self.manifest_path)
     }
 
@@ -345,7 +343,7 @@ impl RustdocProject {
         }
     }
     /// Get crate info, optionally scoped to a specific workspace member
-    pub(crate) fn crate_info<'a>(
+    pub fn crate_info<'a>(
         &'a self,
         member_name: Option<&str>,
     ) -> impl Iterator<Item = &'a CrateInfo> {
@@ -366,7 +364,7 @@ impl RustdocProject {
     }
 
     /// Detect if we're in a subcrate context based on working directory
-    pub(crate) fn detect_subcrate_context(&self) -> Option<&str> {
+    pub fn detect_subcrate_context(&self) -> Option<&str> {
         let root_package = self.metadata.root_package()?;
         let workspace_packages = self.metadata.workspace_packages();
 
@@ -382,7 +380,7 @@ impl RustdocProject {
         }
     }
 
-    pub(crate) fn normalize_crate_name<'a>(&'a self, crate_name: &str) -> Option<CrateName<'a>> {
+    pub fn normalize_crate_name<'a>(&'a self, crate_name: &str) -> Option<CrateName<'a>> {
         match crate_name {
             "crate" => {
                 // In workspace contexts (>1 package), don't allow "crate" alias
@@ -410,7 +408,7 @@ impl RustdocProject {
     }
 
     /// Load rustdoc data for a specific crate
-    pub(crate) fn load_crate(&self, crate_name: CrateName<'_>) -> Option<RustdocData> {
+    pub fn load_crate(&self, crate_name: CrateName<'_>) -> Option<RustdocData> {
         let (json_path, crate_type) = self.resolve_json_path(crate_name)?;
 
         match crate_type {
@@ -520,7 +518,7 @@ impl RustdocProject {
 
 #[derive(Debug, Clone, Fieldwork)]
 #[fieldwork(get, rename_predicates)]
-pub(crate) struct CrateInfo {
+pub struct CrateInfo {
     crate_type: CrateType,
     version: Option<String>,
     description: Option<String>,
@@ -537,13 +535,13 @@ struct RustdocVersion {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) enum CrateType {
+pub enum CrateType {
     Workspace,
     Library,
     Rust,
 }
 impl CrateType {
-    pub(crate) fn is_workspace(&self) -> bool {
+    pub fn is_workspace(&self) -> bool {
         matches!(self, Self::Workspace)
     }
 }
@@ -551,7 +549,7 @@ impl CrateType {
 /// Wrapper around rustdoc JSON data that provides convenient query methods
 #[derive(Clone, Fieldwork)]
 #[fieldwork(get, rename_predicates)]
-pub(crate) struct RustdocData {
+pub struct RustdocData {
     crate_data: Crate,
 
     name: String,
@@ -580,12 +578,12 @@ impl Deref for RustdocData {
 }
 
 impl RustdocData {
-    pub(crate) fn get<'a>(&'a self, request: &'a Request, id: &Id) -> Option<DocRef<'a, Item>> {
+    pub(crate) fn get<'a>(&'a self, navigator: &'a Navigator, id: &Id) -> Option<DocRef<'a, Item>> {
         let item = self.crate_data.index.get(id)?;
-        Some(DocRef::new(request, self, item))
+        Some(DocRef::new(navigator, self, item))
     }
 
-    pub(crate) fn path<'a>(&'a self, id: &Id) -> Option<doc_ref::Path<'a>> {
+    pub fn path<'a>(&'a self, id: &Id) -> Option<doc_ref::Path<'a>> {
         self.paths.get(id).map(|summary| summary.into())
     }
 }

@@ -1,7 +1,7 @@
 use rustdoc_types::ItemKind;
 
 use super::*;
-use crate::rustdoc::RUST_CRATES;
+use rustdoc_core::project::RUST_CRATES;
 use std::cmp::Ordering;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]

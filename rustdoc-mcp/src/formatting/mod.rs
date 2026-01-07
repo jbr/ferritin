@@ -1,7 +1,9 @@
-use super::*;
 use crate::format_context::FormatContext;
+use crate::indent::Indent;
+use crate::request::Request;
 use crate::traits::WriteFmt;
 use crate::verbosity::Verbosity;
+use rustdoc_core::doc_ref::DocRef;
 use rustdoc_types::{
     Abi, Constant, Enum, Function, FunctionPointer, GenericArg, GenericArgs, GenericBound,
     GenericParamDef, GenericParamDefKind, Generics, Id, Item, ItemEnum, Path, Span, Static, Struct,

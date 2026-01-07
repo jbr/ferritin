@@ -1,4 +1,4 @@
-use crate::{request::Request, rustdoc::RustdocData};
+use crate::{navigator::Navigator, project::RustdocData};
 use fieldwork::Fieldwork;
 use rustdoc_types::{Id, Item, ItemEnum, ItemKind, ItemSummary, MacroKind, ProcMacro, Use};
 use std::{
@@ -8,10 +8,10 @@ use std::{
 
 #[derive(Fieldwork)]
 #[fieldwork(get, option_set_some)]
-pub(crate) struct DocRef<'a, T> {
+pub struct DocRef<'a, T> {
     crate_docs: &'a RustdocData,
     item: &'a T,
-    request: &'a Request,
+    navigator: &'a Navigator,
 
     #[field(get = false, with, set)]
     name: Option<&'a str>,
@@ -37,23 +37,23 @@ impl<'a, T> Deref for DocRef<'a, T> {
 }
 
 impl<'a> DocRef<'a, Item> {
-    pub(crate) fn name(&self) -> Option<&'a str> {
+    pub fn name(&self) -> Option<&'a str> {
         self.name.or(self.item.name.as_deref())
     }
 
-    pub(crate) fn build_ref<U>(&self, inner: &'a U) -> DocRef<'a, U> {
-        DocRef::new(self.request, self.crate_docs, inner)
+    pub fn build_ref<U>(&self, inner: &'a U) -> DocRef<'a, U> {
+        DocRef::new(self.navigator, self.crate_docs, inner)
     }
 
-    pub(crate) fn inner(&self) -> &'a ItemEnum {
+    pub fn inner(&self) -> &'a ItemEnum {
         &self.item.inner
     }
 
-    pub(crate) fn path(&self) -> Option<Path<'a>> {
+    pub fn path(&self) -> Option<Path<'a>> {
         self.crate_docs().path(&self.id)
     }
 
-    pub(crate) fn kind(&self) -> ItemKind {
+    pub fn kind(&self) -> ItemKind {
         match self.item.inner {
             ItemEnum::Module(_) => ItemKind::Module,
             ItemEnum::ExternCrate { .. } => ItemKind::ExternCrate,
@@ -110,32 +110,32 @@ impl<'a, T: Debug> Debug for DocRef<'a, T> {
 
 impl<'a, T> DocRef<'a, T> {
     pub(crate) fn new(
-        request: &'a Request,
+        navigator: &'a Navigator,
         crate_docs: impl Into<&'a RustdocData>,
         item: &'a T,
     ) -> Self {
         let crate_docs = crate_docs.into();
         Self {
-            request,
+            navigator,
             crate_docs,
             item,
             name: None,
         }
     }
 
-    pub(crate) fn get(&self, id: &Id) -> Option<DocRef<'a, Item>> {
-        self.crate_docs.get(self.request, id)
+    pub fn get(&self, id: &Id) -> Option<DocRef<'a, Item>> {
+        self.crate_docs.get(self.navigator, id)
     }
 }
 
 impl<'a> DocRef<'a, Use> {
-    pub(crate) fn name(self) -> &'a str {
+    pub fn name(self) -> &'a str {
         self.name.unwrap_or(&self.item.name)
     }
 }
 
 #[derive(Debug)]
-pub(crate) struct Path<'a>(&'a [String]);
+pub struct Path<'a>(&'a [String]);
 
 impl<'a> From<&'a ItemSummary> for Path<'a> {
     fn from(value: &'a ItemSummary) -> Self {
