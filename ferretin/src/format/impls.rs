@@ -22,21 +22,20 @@ impl Request {
     /// Add associated methods for a struct or enum
     pub(super) fn format_associated_methods<'a>(
         &self,
-        item: DocRef<'_, Item>,
-        context: &FormatContext,
+        item: DocRef<'a, Item>,
     ) -> Vec<DocumentNode<'a>> {
         let mut doc_nodes = vec![];
 
         let inherent_methods = item.methods().collect::<Vec<_>>();
         // Show inherent methods first
         if !inherent_methods.is_empty() {
-            doc_nodes.extend(self.format_item_list(inherent_methods, "Associated Types", context));
+            doc_nodes.extend(self.format_item_list(inherent_methods, "Associated Types"));
         }
 
         let trait_impls = item.traits().collect::<Vec<_>>();
         // Show trait implementations
         if !trait_impls.is_empty() {
-            doc_nodes.extend(self.format_trait_implementations(&trait_impls, context));
+            doc_nodes.extend(self.format_trait_implementations(&trait_impls));
         }
 
         doc_nodes
@@ -44,9 +43,8 @@ impl Request {
 
     fn format_item_list<'a>(
         &self,
-        mut items: Vec<DocRef<'_, Item>>,
+        mut items: Vec<DocRef<'a, Item>>,
         title: &'a str,
-        context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         items.sort_by(|a, b| {
             match (&a.span, &b.span) {
@@ -81,7 +79,7 @@ impl Request {
                 let mut item_nodes = vec![];
 
                 // Add visibility
-                match &item.visibility {
+                match &item.item().visibility {
                     Visibility::Public => {
                         item_nodes.push(DocumentNode::Span(Span::keyword("pub")));
                         item_nodes.push(DocumentNode::Span(Span::plain(" ")));
@@ -96,18 +94,18 @@ impl Request {
                     Visibility::Restricted { path, .. } => {
                         item_nodes.push(DocumentNode::Span(Span::keyword("pub")));
                         item_nodes.push(DocumentNode::Span(Span::punctuation("(")));
-                        item_nodes.push(DocumentNode::Span(Span::plain(path.clone())));
+                        item_nodes.push(DocumentNode::Span(Span::plain(path)));
                         item_nodes.push(DocumentNode::Span(Span::punctuation(")")));
                         item_nodes.push(DocumentNode::Span(Span::plain(" ")));
                     }
                     Visibility::Default => {}
                 }
 
-                let name = item.name.as_deref().unwrap_or("<unnamed>");
+                let name = item.name().unwrap_or("<unnamed>");
                 let kind = item.kind();
 
                 // For functions, show the signature inline
-                if let ItemEnum::Function(inner) = &item.inner {
+                if let ItemEnum::Function(inner) = &item.item().inner {
                     let signature_spans: Vec<DocumentNode> = self
                         .format_function_signature(name, inner)
                         .into_iter()
@@ -127,13 +125,14 @@ impl Request {
                         item_nodes.push(DocumentNode::Span(Span::plain(" ")));
                     }
 
-                    item_nodes.push(DocumentNode::Span(Span::plain(name.to_string())));
+                    item_nodes.push(DocumentNode::Span(Span::plain(name)));
                 }
 
                 // Add brief doc preview
-                if let Some(docs) = self.docs_to_show(*item, true, context) {
+                if let Some(docs) = self.docs_to_show(*item, true) {
                     item_nodes.push(DocumentNode::Span(Span::plain("\n")));
-                    item_nodes.push(DocumentNode::Span(Span::plain(Indent::new(&docs, 4).to_string())));
+                    // TODO: Re-add indentation for docs
+                    item_nodes.extend(docs);
                 }
 
                 item_nodes.push(DocumentNode::Span(Span::plain("\n")));
@@ -158,7 +157,6 @@ impl Request {
     fn format_trait_implementations<'a>(
         &self,
         trait_impls: &[DocRef<'_, Item>],
-        context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         let mut crate_local = Vec::new();
         let mut external = Vec::new();
@@ -205,7 +203,7 @@ impl Request {
 
         // Add std traits separately with truncation
         if !std_traits.is_empty() {
-            let displayed_count = if context.verbosity().is_full() {
+            let displayed_count = if self.format_context().verbosity().is_full() {
                 std_traits.len()
             } else {
                 std_traits.len().min(10)
@@ -223,7 +221,10 @@ impl Request {
 
             if displayed_count < std_traits.len() {
                 let hidden_count = std_traits.len() - displayed_count;
-                doc_nodes.push(DocumentNode::Span(Span::plain(format!(" [+{} more]", hidden_count))));
+                doc_nodes.push(DocumentNode::Span(Span::plain(format!(
+                    " [+{} more]",
+                    hidden_count
+                ))));
             }
 
             doc_nodes.push(DocumentNode::Span(Span::plain("\n")));

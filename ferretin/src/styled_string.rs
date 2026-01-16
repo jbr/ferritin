@@ -28,19 +28,45 @@ pub enum DocumentNode<'a> {
     List { items: Vec<ListItem<'a>> },
 
     /// Code block with syntax highlighting
-    CodeBlock { lang: Option<String>, code: String },
+    CodeBlock {
+        lang: Option<Cow<'a, str>>,
+        code: Cow<'a, str>,
+    },
 
     /// Hyperlink
-    Link {
-        url: String,
-        text: Vec<Span<'a>>,
+    Link { url: String, text: Vec<Span<'a>> },
+
+    /// Horizontal rule/divider
+    HorizontalRule,
+
+    /// Block quote
+    BlockQuote { nodes: Vec<DocumentNode<'a>> },
+
+    /// Table
+    Table {
+        header: Option<Vec<TableCell<'a>>>,
+        rows: Vec<Vec<TableCell<'a>>>,
     },
+
+    /// Truncated documentation block
+    /// Renderers decide how to truncate based on the level hint
+    TruncatedBlock {
+        nodes: Vec<DocumentNode<'a>>,
+        level: TruncationLevel,
+    },
+}
+
+/// A single cell in a table
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TableCell<'a> {
+    pub spans: Vec<Span<'a>>,
 }
 
 /// A single item in a list
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ListItem<'a> {
-    pub nodes: Vec<DocumentNode<'a>>,
+    pub label: Option<Vec<Span<'a>>>,
+    pub content: Vec<DocumentNode<'a>>,
 }
 
 /// Heading level for semantic structure
@@ -48,6 +74,17 @@ pub struct ListItem<'a> {
 pub enum HeadingLevel {
     Title,   // Top-level item name: "Item: Vec"
     Section, // Section header: "Fields:", "Methods:"
+}
+
+/// Truncation level hint for renderers
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TruncationLevel {
+    /// Single-line summary (for listings)
+    SingleLine,
+    /// Brief paragraph (for secondary items like methods/fields)
+    Brief,
+    /// Full documentation (for main requested item)
+    Full,
 }
 
 /// A styled text span with semantic meaning
@@ -75,10 +112,13 @@ pub enum SpanStyle {
     Comment,     // // comments in code output
 
     // Code content
-    InlineCode, // Inline code expressions (const values, etc.) - unparsed Rust code
+    InlineRustCode, // Inline code expressions (const values, etc.) - unparsed Rust code
+    InlineCode,     // Generic inline code from markdown backticks
 
-    // Conversion tracking
-    Unconverted, // Legacy string content awaiting conversion to structured spans
+    // Markdown semantic styles
+    Strong,        // **bold** - semantic emphasis
+    Emphasis,      // *italic* - semantic emphasis
+    Strikethrough, // ~~strikethrough~~ - from GFM
 }
 
 impl<'a> Span<'a> {
@@ -154,6 +194,13 @@ impl<'a> Span<'a> {
         }
     }
 
+    pub fn inline_rust_code(text: impl Into<Cow<'a, str>>) -> Self {
+        Self {
+            text: text.into(),
+            style: SpanStyle::InlineRustCode,
+        }
+    }
+
     pub fn inline_code(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
             text: text.into(),
@@ -161,10 +208,24 @@ impl<'a> Span<'a> {
         }
     }
 
-    pub fn unconverted(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn strong(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
             text: text.into(),
-            style: SpanStyle::Unconverted,
+            style: SpanStyle::Strong,
+        }
+    }
+
+    pub fn emphasis(text: impl Into<Cow<'a, str>>) -> Self {
+        Self {
+            text: text.into(),
+            style: SpanStyle::Emphasis,
+        }
+    }
+
+    pub fn strikethrough(text: impl Into<Cow<'a, str>>) -> Self {
+        Self {
+            text: text.into(),
+            style: SpanStyle::Strikethrough,
         }
     }
 }
@@ -230,13 +291,21 @@ impl<'a, 'b> From<&'b Document<'a>> for Document<'a> {
 }
 
 impl<'a> ListItem<'a> {
-    pub fn new(nodes: Vec<DocumentNode<'a>>) -> Self {
-        Self { nodes }
+    pub fn new(content: Vec<DocumentNode<'a>>) -> Self {
+        Self {
+            content,
+            label: None,
+        }
     }
 
     pub fn from_span(span: Span<'a>) -> Self {
+        Self::new(vec![DocumentNode::Span(span)])
+    }
+
+    pub fn labeled(label: Vec<Span<'a>>, content: Vec<DocumentNode<'a>>) -> Self {
         Self {
-            nodes: vec![DocumentNode::Span(span)],
+            label: Some(label),
+            content,
         }
     }
 }
@@ -266,13 +335,51 @@ impl<'a> DocumentNode<'a> {
     }
 
     /// Convenience constructor for a code block
-    pub fn code_block(lang: Option<String>, code: String) -> Self {
-        DocumentNode::CodeBlock { lang, code }
+    pub fn code_block(
+        lang: Option<impl Into<Cow<'a, str>>>,
+        code: impl Into<Cow<'a, str>>,
+    ) -> Self {
+        DocumentNode::CodeBlock {
+            lang: lang.map(Into::into),
+            code: code.into(),
+        }
     }
 
     /// Convenience constructor for a link
     pub fn link(url: String, text: Vec<Span<'a>>) -> Self {
         DocumentNode::Link { url, text }
+    }
+
+    /// Convenience constructor for a horizontal rule
+    pub fn horizontal_rule() -> Self {
+        DocumentNode::HorizontalRule
+    }
+
+    /// Convenience constructor for a block quote
+    pub fn block_quote(nodes: Vec<DocumentNode<'a>>) -> Self {
+        DocumentNode::BlockQuote { nodes }
+    }
+
+    /// Convenience constructor for a table
+    pub fn table(header: Option<Vec<TableCell<'a>>>, rows: Vec<Vec<TableCell<'a>>>) -> Self {
+        DocumentNode::Table { header, rows }
+    }
+
+    /// Convenience constructor for a truncated block
+    pub fn truncated_block(nodes: Vec<DocumentNode<'a>>, level: TruncationLevel) -> Self {
+        DocumentNode::TruncatedBlock { nodes, level }
+    }
+}
+
+impl<'a> TableCell<'a> {
+    /// Create a new table cell from spans
+    pub fn new(spans: Vec<Span<'a>>) -> Self {
+        Self { spans }
+    }
+
+    /// Create a table cell from a single span
+    pub fn from_span(span: Span<'a>) -> Self {
+        Self { spans: vec![span] }
     }
 }
 
@@ -328,8 +435,8 @@ mod tests {
 
         if let DocumentNode::List { items } = list {
             assert_eq!(items.len(), 2);
-            assert_eq!(items[0].nodes.len(), 3);
-            assert_eq!(items[1].nodes.len(), 1);
+            assert_eq!(items[0].content.len(), 3);
+            assert_eq!(items[1].content.len(), 1);
         } else {
             panic!("Expected list node");
         }
@@ -338,8 +445,7 @@ mod tests {
     #[test]
     fn test_heading_levels() {
         let title = DocumentNode::heading(HeadingLevel::Title, vec![Span::plain("Item: Vec")]);
-        let section =
-            DocumentNode::heading(HeadingLevel::Section, vec![Span::plain("Methods:")]);
+        let section = DocumentNode::heading(HeadingLevel::Section, vec![Span::plain("Methods:")]);
 
         assert!(matches!(title, DocumentNode::Heading { .. }));
         assert!(matches!(section, DocumentNode::Heading { .. }));
@@ -350,7 +456,7 @@ mod tests {
         let code = DocumentNode::code_block(Some("rust".to_string()), "fn main() {}".to_string());
 
         if let DocumentNode::CodeBlock { lang, code } = code {
-            assert_eq!(lang, Some("rust".to_string()));
+            assert_eq!(lang, Some("rust".into()));
             assert_eq!(code, "fn main() {}");
         } else {
             panic!("Expected code block");

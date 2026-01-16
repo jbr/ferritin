@@ -9,17 +9,20 @@ impl Request {
         &'a self,
         item: DocRef<'a, Item>,
         function: DocRef<'a, Function>,
-        _context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
-        let name = item.name.as_deref().unwrap_or("<unnamed>");
-        self.format_function_signature(name, &function)
+        let name = item.name().unwrap_or("<unnamed>");
+        self.format_function_signature(name, function.item())
             .into_iter()
             .map(DocumentNode::Span)
             .collect()
     }
 
     /// Format a function signature
-    pub(super) fn format_function_signature<'a>(&self, name: &str, func: &Function) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_function_signature<'a>(
+        &self,
+        name: &'a str,
+        func: &'a Function,
+    ) -> Vec<StyledSpan<'a>> {
         let mut spans = vec![];
 
         // Add function modifiers in the correct order
@@ -122,7 +125,7 @@ impl Request {
         // Add function name and generics
         spans.push(StyledSpan::keyword("fn"));
         spans.push(StyledSpan::plain(" "));
-        spans.push(StyledSpan::plain(name.to_string()));
+        spans.push(StyledSpan::plain(name));
         if !func.generics.params.is_empty() {
             spans.extend(self.format_generics(&func.generics));
         }
@@ -155,7 +158,11 @@ impl Request {
     }
 
     /// Format a function parameter with idiomatic self shorthand
-    pub(super) fn format_parameter<'a>(&self, param_name: &str, param_type: &Type) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_parameter<'a>(
+        &self,
+        param_name: &'a str,
+        param_type: &'a Type,
+    ) -> Vec<StyledSpan<'a>> {
         // Handle self parameters with idiomatic shorthand
         if param_name == "self" {
             match param_type {
@@ -193,7 +200,7 @@ impl Request {
                 } if matches!(type_.as_ref(), Type::Generic(name) if name == "Self") => {
                     vec![
                         StyledSpan::punctuation("&"),
-                        StyledSpan::lifetime(lifetime.clone()),
+                        StyledSpan::lifetime(lifetime),
                         StyledSpan::plain(" "),
                         StyledSpan::plain("self"),
                     ]
@@ -207,7 +214,7 @@ impl Request {
                 } if matches!(type_.as_ref(), Type::Generic(name) if name == "Self") => {
                     vec![
                         StyledSpan::punctuation("&"),
-                        StyledSpan::lifetime(lifetime.clone()),
+                        StyledSpan::lifetime(lifetime),
                         StyledSpan::plain(" "),
                         StyledSpan::keyword("mut"),
                         StyledSpan::plain(" "),
@@ -217,7 +224,7 @@ impl Request {
                 // For any other self type, use the full form
                 _ => {
                     let mut spans = vec![
-                        StyledSpan::plain(param_name.to_string()),
+                        StyledSpan::plain(param_name),
                         StyledSpan::punctuation(":"),
                         StyledSpan::plain(" "),
                     ];
@@ -228,7 +235,7 @@ impl Request {
         } else {
             // For non-self parameters, use the standard format
             let mut spans = vec![
-                StyledSpan::plain(param_name.to_string()),
+                StyledSpan::plain(param_name),
                 StyledSpan::punctuation(":"),
                 StyledSpan::plain(" "),
             ];
@@ -238,7 +245,7 @@ impl Request {
     }
 
     /// Format generics for signatures
-    pub(super) fn format_generics<'a>(&self, generics: &Generics) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_generics<'a>(&self, generics: &'a Generics) -> Vec<StyledSpan<'a>> {
         if generics.params.is_empty() {
             return vec![];
         }
@@ -258,10 +265,13 @@ impl Request {
     }
 
     /// Format a single generic parameter
-    pub(super) fn format_generic_param<'a>(&self, param: &GenericParamDef) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_generic_param<'a>(
+        &self,
+        param: &'a GenericParamDef,
+    ) -> Vec<StyledSpan<'a>> {
         match &param.kind {
             GenericParamDefKind::Lifetime { outlives } => {
-                let mut spans = vec![StyledSpan::lifetime(param.name.clone())];
+                let mut spans = vec![StyledSpan::lifetime(&param.name)];
                 if !outlives.is_empty() {
                     spans.push(StyledSpan::punctuation(":"));
                     spans.push(StyledSpan::plain(" "));
@@ -269,7 +279,7 @@ impl Request {
                         if i > 0 {
                             spans.push(StyledSpan::plain(" + "));
                         }
-                        spans.push(StyledSpan::lifetime(lifetime.clone()));
+                        spans.push(StyledSpan::lifetime(lifetime));
                     }
                 }
                 spans
@@ -277,7 +287,7 @@ impl Request {
             GenericParamDefKind::Type {
                 bounds, default, ..
             } => {
-                let mut spans = vec![StyledSpan::generic(param.name.clone())];
+                let mut spans = vec![StyledSpan::generic(&param.name)];
                 if !bounds.is_empty() {
                     spans.push(StyledSpan::punctuation(":"));
                     spans.push(StyledSpan::plain(" "));
@@ -295,7 +305,7 @@ impl Request {
                 let mut spans = vec![
                     StyledSpan::keyword("const"),
                     StyledSpan::plain(" "),
-                    StyledSpan::plain(param.name.clone()),
+                    StyledSpan::plain(&param.name),
                     StyledSpan::punctuation(":"),
                     StyledSpan::plain(" "),
                 ];
@@ -304,7 +314,7 @@ impl Request {
                     spans.push(StyledSpan::plain(" "));
                     spans.push(StyledSpan::operator("="));
                     spans.push(StyledSpan::plain(" "));
-                    spans.push(StyledSpan::plain(default_val.clone()));
+                    spans.push(StyledSpan::plain(default_val));
                 }
                 spans
             }
@@ -312,7 +322,10 @@ impl Request {
     }
 
     /// Format generic bounds
-    pub(super) fn format_generic_bounds<'a>(&self, bounds: &[GenericBound]) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_generic_bounds<'a>(
+        &self,
+        bounds: &'a [GenericBound],
+    ) -> Vec<StyledSpan<'a>> {
         let mut spans = vec![];
         for (i, bound) in bounds.iter().enumerate() {
             if i > 0 {
@@ -324,7 +337,7 @@ impl Request {
     }
 
     /// Format a single generic bound
-    pub(super) fn format_generic_bound<'a>(&self, bound: &GenericBound) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_generic_bound<'a>(&self, bound: &'a GenericBound) -> Vec<StyledSpan<'a>> {
         match bound {
             GenericBound::TraitBound {
                 trait_,
@@ -359,13 +372,16 @@ impl Request {
                 spans.extend(self.format_path(trait_));
                 spans
             }
-            GenericBound::Outlives(lifetime) => vec![StyledSpan::lifetime(lifetime.clone())],
+            GenericBound::Outlives(lifetime) => vec![StyledSpan::lifetime(lifetime)],
             GenericBound::Use(_) => vec![StyledSpan::plain("use<...>")], // Handle new bound type
         }
     }
 
     /// Format where clause
-    pub(super) fn format_where_clause<'a>(&self, predicates: &[WherePredicate]) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_where_clause<'a>(
+        &self,
+        predicates: &'a [WherePredicate],
+    ) -> Vec<StyledSpan<'a>> {
         if predicates.is_empty() {
             return vec![];
         }
@@ -388,7 +404,10 @@ impl Request {
     }
 
     /// Format a where predicate
-    pub(super) fn format_where_predicate<'a>(&self, predicate: &WherePredicate) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_where_predicate<'a>(
+        &self,
+        predicate: &'a WherePredicate,
+    ) -> Vec<StyledSpan<'a>> {
         match predicate {
             WherePredicate::BoundPredicate {
                 type_,
@@ -396,14 +415,14 @@ impl Request {
                 generic_params,
             } => self.format_bound_predicate(type_, bounds, generic_params),
             WherePredicate::LifetimePredicate { lifetime, outlives } => {
-                let mut spans = vec![StyledSpan::lifetime(lifetime.clone()), StyledSpan::punctuation(":")];
+                let mut spans = vec![StyledSpan::lifetime(lifetime), StyledSpan::punctuation(":")];
                 if !outlives.is_empty() {
                     spans.push(StyledSpan::plain(" "));
                     for (i, lt) in outlives.iter().enumerate() {
                         if i > 0 {
                             spans.push(StyledSpan::plain(" + "));
                         }
-                        spans.push(StyledSpan::lifetime(lt.clone()));
+                        spans.push(StyledSpan::lifetime(lt));
                     }
                 }
                 spans
@@ -422,9 +441,9 @@ impl Request {
 
     fn format_bound_predicate<'a>(
         &self,
-        type_: &Type,
-        bounds: &[GenericBound],
-        generic_params: &[GenericParamDef],
+        type_: &'a Type,
+        bounds: &'a [GenericBound],
+        generic_params: &'a [GenericParamDef],
     ) -> Vec<StyledSpan<'a>> {
         let mut spans = vec![];
 
@@ -450,7 +469,7 @@ impl Request {
     }
 
     /// Format a term (for associated type equality)
-    pub(super) fn format_term<'a>(&self, term: &Term) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_term<'a>(&self, term: &'a Term) -> Vec<StyledSpan<'a>> {
         match term {
             Term::Type(type_) => self.format_type(type_),
             Term::Constant(const_) => vec![StyledSpan::plain(const_.expr.clone())],
@@ -458,12 +477,12 @@ impl Request {
     }
 
     /// Format a path
-    pub(super) fn format_path<'a>(&self, path: &Path) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_path<'a>(&self, path: &'a Path) -> Vec<StyledSpan<'a>> {
         if path.path.is_empty() {
             return vec![];
         }
 
-        let mut spans = vec![StyledSpan::type_name(path.path.clone())];
+        let mut spans = vec![StyledSpan::type_name(&path.path)];
         if let Some(args) = &path.args {
             spans.extend(self.format_generic_args(args));
         }
@@ -471,7 +490,7 @@ impl Request {
     }
 
     /// Format generic arguments
-    pub(super) fn format_generic_args<'a>(&self, args: &GenericArgs) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_generic_args<'a>(&self, args: &'a GenericArgs) -> Vec<StyledSpan<'a>> {
         match args {
             GenericArgs::AngleBracketed { args, constraints } => {
                 self.format_generic_angle_bracket(args, constraints)
@@ -483,7 +502,11 @@ impl Request {
         }
     }
 
-    fn format_generic_parenthesized<'a>(&self, inputs: &[Type], output: &Option<Type>) -> Vec<StyledSpan<'a>> {
+    fn format_generic_parenthesized<'a>(
+        &self,
+        inputs: &'a [Type],
+        output: &'a Option<Type>,
+    ) -> Vec<StyledSpan<'a>> {
         let mut spans = vec![];
 
         spans.push(StyledSpan::punctuation("("));
@@ -508,8 +531,8 @@ impl Request {
 
     fn format_generic_angle_bracket<'a>(
         &self,
-        args: &Vec<GenericArg>,
-        constraints: &[AssocItemConstraint],
+        args: &'a [GenericArg],
+        constraints: &'a [AssocItemConstraint],
     ) -> Vec<StyledSpan<'a>> {
         if args.is_empty() && constraints.is_empty() {
             return vec![];
@@ -526,9 +549,9 @@ impl Request {
             first = false;
 
             match arg {
-                GenericArg::Lifetime(lifetime) => spans.push(StyledSpan::lifetime(lifetime.clone())),
+                GenericArg::Lifetime(lifetime) => spans.push(StyledSpan::lifetime(lifetime)),
                 GenericArg::Type(type_) => spans.extend(self.format_type(type_)),
-                GenericArg::Const(const_) => spans.push(StyledSpan::inline_code(const_.expr.clone())),
+                GenericArg::Const(const_) => spans.push(StyledSpan::inline_code(&const_.expr)),
                 GenericArg::Infer => spans.push(StyledSpan::plain("_")),
             }
         }
@@ -541,7 +564,7 @@ impl Request {
             first = false;
 
             // Format constraints with proper spans
-            spans.push(StyledSpan::plain(constraint.name.clone()));
+            spans.push(StyledSpan::plain(&constraint.name));
             match &constraint.binding {
                 AssocItemConstraintKind::Equality(term) => {
                     spans.push(StyledSpan::plain(" "));
@@ -560,5 +583,4 @@ impl Request {
         spans.push(StyledSpan::punctuation(">"));
         spans
     }
-
 }

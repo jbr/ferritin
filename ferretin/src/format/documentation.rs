@@ -1,5 +1,6 @@
 use super::*;
-use crate::markdown::MarkdownRenderer;
+use crate::styled_string::{DocumentNode, TruncationLevel};
+use crate::{generate_docsrs_url::generate_docsrs_url, markdown::MarkdownRenderer};
 use rustdoc_core::intra_doc_links::{ResolvedLink, resolve_link};
 
 /// Information about documentation text with truncation details
@@ -32,15 +33,17 @@ impl DocInfo {
 }
 
 impl Request {
-    /// Render markdown documentation with syntax highlighting and formatting
-    pub(crate) fn render_docs(&self, item: DocRef<'_, Item>, markdown: &str) -> String {
-        let renderer = MarkdownRenderer::new();
-
+    /// Render markdown documentation to structured DocumentNodes
+    pub(crate) fn render_docs<'a>(
+        &self,
+        item: DocRef<'_, Item>,
+        markdown: &str,
+    ) -> Vec<DocumentNode<'a>> {
         // Create a link resolver that can resolve intra-doc links
         let link_resolver =
             |url: &str| -> Option<String> { self.resolve_intra_doc_link(item, url) };
 
-        renderer.render_with_resolver(markdown, link_resolver)
+        MarkdownRenderer::render_with_resolver(markdown, link_resolver)
     }
 
     /// Resolve an intra-doc link to a docs.rs URL or navigation hint
@@ -51,15 +54,7 @@ impl Request {
         let resolved = resolve_link(self, item, url);
 
         match resolved {
-            ResolvedLink::Item(item) => {
-                // Generate a docs.rs-style URL
-                // TODO: Generate actual docs.rs URLs with proper crate/version/path
-                if let Some(path) = item.path() {
-                    let path_str = path.to_string();
-                    return Some(format!("https://docs.rs/{}", path_str.replace("::", "/")));
-                }
-                None
-            }
+            ResolvedLink::Item(item) => Some(generate_docsrs_url(item)),
             ResolvedLink::Fragment(_) | ResolvedLink::External(_) | ResolvedLink::Unresolved => {
                 // Keep these as-is (return None to use original URL)
                 None
@@ -67,68 +62,31 @@ impl Request {
         }
     }
 
-    /// Get documentation to show for an item, handling verbosity and truncation
+    /// Get documentation to show for an item
     ///
     /// Returns None if no docs should be shown, Some(docs) if docs should be displayed.
-    /// The `is_listing` parameter affects truncation behavior - listing items get more
-    /// aggressive truncation than primary items.
-    pub(crate) fn docs_to_show(
+    /// Docs are wrapped in a TruncatedBlock with appropriate level hint.
+    pub(crate) fn docs_to_show<'a>(
         &self,
         item: DocRef<'_, Item>,
         is_listing: bool,
-        context: &FormatContext,
-    ) -> Option<String> {
+    ) -> Option<Vec<DocumentNode<'a>>> {
         // Extract docs from item
         let docs = item.docs.as_deref()?;
         if docs.is_empty() {
             return None;
         }
 
-        // Apply truncation based on verbosity and context
-        let plain_text = match (context.verbosity(), is_listing) {
-            (Verbosity::Minimal, _) => return None,
-            (_, true) => {
-                // For listings, even in Full mode, just show first non-empty line with indicator
-                let first_line = docs
-                    .lines()
-                    .find(|line| !line.trim().is_empty())
-                    .map(|line| line.trim().to_string())?;
-
-                let total_lines = self.count_lines(docs);
-                if total_lines > 1 {
-                    format!("{} [+{} more lines]", first_line, total_lines - 1)
-                } else {
-                    first_line
-                }
-            }
-            (Verbosity::Full, _) => docs.to_string(),
-            (Verbosity::Brief, _) => {
-                // For primary items, use paragraph-aware truncation
-                let total_lines = self.count_lines(docs);
-                let truncated_text = self.truncate_to_paragraph_or_lines(docs, 16);
-                let displayed_lines = self.count_lines(&truncated_text);
-                let is_truncated = displayed_lines < total_lines;
-
-                let doc_info = DocInfo {
-                    text: truncated_text,
-                    total_lines,
-                    displayed_lines,
-                    is_truncated,
-                };
-
-                if doc_info.is_truncated {
-                    format!(
-                        "{}\n{}",
-                        doc_info.text,
-                        doc_info.elided_indicator().unwrap_or_default()
-                    )
-                } else {
-                    doc_info.text
-                }
-            }
+        // Render docs and wrap in TruncatedBlock
+        // TODO: Pass in additional parameter to distinguish between main item (Full) vs secondary item (Brief)
+        let level = if is_listing {
+            TruncationLevel::SingleLine
+        } else {
+            TruncationLevel::Brief
         };
 
-        Some(self.render_docs(item, &plain_text))
+        let nodes = self.render_docs(item, docs);
+        Some(vec![DocumentNode::truncated_block(nodes, level)])
     }
 
     /// Count the number of lines in a text string

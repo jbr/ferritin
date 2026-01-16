@@ -27,10 +27,10 @@ struct FlatItem<'a> {
 impl Request {
     /// Collect all items in a module hierarchy as flat qualified paths
     fn collect_flat_items<'a>(
+        &self,
         collected: &mut Vec<FlatItem<'a>>,
         path: Option<String>,
         item: DocRef<'a, Item>,
-        context: &FormatContext,
     ) {
         for child in item.child_items() {
             if let Some(item_name) = child.name() {
@@ -44,19 +44,15 @@ impl Request {
                     item: child,
                 });
 
-                if context.is_recursive() {
-                    Self::collect_flat_items(collected, Some(path), child, context);
+                if self.format_context().is_recursive() {
+                    self.collect_flat_items(collected, Some(path), child);
                 }
             }
         }
     }
 
     /// Format collected flat items with grouping by type
-    fn format_grouped_flat_items<'a>(
-        &self,
-        items: &[FlatItem],
-        context: &FormatContext,
-    ) -> Vec<DocumentNode<'a>> {
+    fn format_grouped_flat_items<'a>(&self, items: &[FlatItem<'a>]) -> Vec<DocumentNode<'a>> {
         if items.is_empty() {
             return vec![
                 DocumentNode::Span(Span::plain("\n")),
@@ -82,7 +78,7 @@ impl Request {
 
                 let list_items: Vec<ListItem> = group_items
                     .iter()
-                    .map(|flat_item| self.format_flat_item(flat_item, context))
+                    .map(|flat_item| self.format_flat_item(flat_item))
                     .collect();
 
                 let section = DocumentNode::section(
@@ -98,7 +94,7 @@ impl Request {
 
             let list_items: Vec<ListItem> = group_items
                 .iter()
-                .map(|flat_item| self.format_flat_item(flat_item, context))
+                .map(|flat_item| self.format_flat_item(flat_item))
                 .collect();
 
             let section = DocumentNode::section(
@@ -112,28 +108,23 @@ impl Request {
     }
 
     /// Format a single flat item as a ListItem
-    fn format_flat_item<'a>(&self, flat_item: &FlatItem, context: &FormatContext) -> ListItem<'a> {
-        let mut nodes = vec![DocumentNode::Span(Span::type_name(flat_item.path.clone()))];
+    fn format_flat_item<'a>(&self, flat_item: &FlatItem<'a>) -> ListItem<'a> {
+        let mut nodes = vec![];
 
         // Add brief documentation if available
-        if let Some(docs) = self.docs_to_show(flat_item.item, true, context) {
+        if let Some(docs) = self.docs_to_show(flat_item.item, true) {
             nodes.push(DocumentNode::Span(Span::plain("\n")));
-            nodes.push(DocumentNode::Span(Span::plain(
-                Indent::new(docs.trim_end(), 4).to_string(),
-            )));
+            // TODO: Re-add indentation for docs
+            nodes.extend(docs);
         }
 
-        ListItem::new(nodes)
+        ListItem::labeled(vec![Span::type_name(flat_item.path.clone())], nodes)
     }
 
     /// Format a module
-    pub(super) fn format_module<'a>(
-        &self,
-        item: DocRef<'_, Item>,
-        context: &FormatContext,
-    ) -> Vec<DocumentNode<'a>> {
+    pub(super) fn format_module<'a>(&self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
         let mut collected = Vec::new();
-        Self::collect_flat_items(&mut collected, None, item, context);
-        self.format_grouped_flat_items(&collected, context)
+        self.collect_flat_items(&mut collected, None, item);
+        self.format_grouped_flat_items(&collected)
     }
 }

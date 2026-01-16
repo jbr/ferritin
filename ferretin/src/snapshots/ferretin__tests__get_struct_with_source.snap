@@ -1,0 +1,77 @@
+---
+source: ferretin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::TestStruct\").with_source(),\nOutputMode::TestMode)"
+---
+Item: TestStruct
+Kind: Struct
+Visibility: Public
+Defined at: test_crate::TestStruct
+
+<truncated level="brief">A simple struct for testing basic functionality.
+
+This struct demonstrates basic usage patterns and should show completely since it only has one paragraph of documentation.
+
+It uses <link href="https://docs.rs/alloc/1.94.0-nightly	(0aced202c	2026-01-06)/alloc/vec/struct.Vec.html">Vector</link> for testing intra-doc link resolution with renamed imports. Also tests [HashMap] which is a non-renamed import.
+
+</truncated>
+
+<keyword>struct</keyword> <type-name>TestStruct</type-name> <punctuation>{</punctuation>
+    <keyword>pub</keyword> <field-name>field</field-name><punctuation>:</punctuation> <type-name>String</type-name><punctuation>,</punctuation>
+    <keyword>pub</keyword> <field-name>count</field-name><punctuation>:</punctuation> <type-name>u32</type-name><punctuation>,</punctuation>
+<punctuation>}</punctuation>
+
+<section><section-title>Fields:</section-title><list>
+  <item><field-name>field</field-name><punctuation>:</punctuation> <type-name>String</type-name>
+<truncated level="brief">A public field
+
+</truncated>
+</item>
+  <item><field-name>count</field-name><punctuation>:</punctuation> <type-name>u32</type-name>
+<truncated level="brief">Another public field
+
+</truncated>
+</item>
+</list>
+</section>
+<section><section-title>Associated Types</section-title>
+<list>
+  <item><keyword>pub</keyword> <keyword>const</keyword> ASSOCIATED_CONST
+<truncated level="single-line">This is an associated constant for a struct
+
+</truncated>
+
+</item>
+  <item><keyword>pub</keyword> <keyword>fn</keyword> new<punctuation>(</punctuation>field<punctuation>:</punctuation> <type-name>String</type-name><punctuation>,</punctuation> count<punctuation>:</punctuation> <type-name>u32</type-name><punctuation>)</punctuation> <operator>-></operator> <generic>Self</generic>
+<truncated level="single-line">Create a new TestStruct
+
+</truncated>
+
+</item>
+  <item><keyword>pub</keyword> <keyword>fn</keyword> get_field<punctuation>(</punctuation><punctuation>&</punctuation>self<punctuation>)</punctuation> <operator>-></operator> <operator>&</operator><type-name>str</type-name>
+<truncated level="single-line">Get the field value
+
+</truncated>
+
+</item>
+  <item><keyword>pub</keyword> <keyword>fn</keyword> increment_count<punctuation>(</punctuation><punctuation>&</punctuation><keyword>mut</keyword> self<punctuation>)</punctuation>
+<truncated level="single-line">Update the count
+
+</truncated>
+
+</item>
+</list>
+</section>
+std traits: Any, Borrow, BorrowMut, Clone, CloneToUninit, Debug, Freeze, From, Into, RefUnwindSafe, Send, Sync, TestTrait, ToOwned, TryFrom, TryInto, Unpin, UnwindSafe
+
+Source: /Users/jbr/code/rustdoc-mcp/tests/test-crate/src/lib.rs
+<code-block lang="rust">
+#[derive(Debug, Clone)]
+pub struct TestStruct {
+    /// A public field
+    pub field: String,
+    /// Another public field
+    pub count: u32,
+    /// A private field
+    private_field: bool,
+}
+</code-block>

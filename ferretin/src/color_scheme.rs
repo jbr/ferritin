@@ -119,15 +119,24 @@ impl ColorScheme {
 impl Default for ColorScheme {
     fn default() -> Self {
         // Default to base16-ocean.dark theme (same as markdown renderer)
-        Self::from_theme_name("base16-ocean.dark")
-            .unwrap_or_else(|_| {
-                // Fallback if theme loading fails
-                Self {
-                    colors: std::collections::HashMap::new(),
-                    default_foreground: Color { r: 200, g: 200, b: 200, a: 255 },
-                    default_background: Color { r: 0, g: 0, b: 0, a: 255 },
-                }
-            })
+        Self::from_theme_name("base16-ocean.dark").unwrap_or_else(|_| {
+            // Fallback if theme loading fails
+            Self {
+                colors: std::collections::HashMap::new(),
+                default_foreground: Color {
+                    r: 200,
+                    g: 200,
+                    b: 200,
+                    a: 255,
+                },
+                default_background: Color {
+                    r: 0,
+                    g: 0,
+                    b: 0,
+                    a: 255,
+                },
+            }
+        })
     }
 }
 

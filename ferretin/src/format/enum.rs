@@ -7,10 +7,9 @@ impl Request {
         &'a self,
         item: DocRef<'a, Item>,
         enum_data: DocRef<'a, Enum>,
-        context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         use crate::styled_string::{DocumentNode, ListItem, Span};
-        let enum_name = item.name.as_deref().unwrap_or("<unnamed>").to_string();
+        let enum_name = item.name().unwrap_or("<unnamed>");
 
         // Build signature spans
         let mut code_spans = vec![
@@ -20,11 +19,12 @@ impl Request {
         ];
 
         if !enum_data.generics.params.is_empty() {
-            code_spans.extend(self.format_generics(&enum_data.generics));
+            code_spans.extend(self.format_generics(&enum_data.item().generics));
         }
 
         if !enum_data.generics.where_predicates.is_empty() {
-            code_spans.extend(self.format_where_clause(&enum_data.generics.where_predicates));
+            code_spans
+                .extend(self.format_where_clause(&enum_data.item().generics.where_predicates));
         }
 
         code_spans.push(Span::plain(" "));
@@ -32,9 +32,9 @@ impl Request {
         code_spans.push(Span::plain("\n"));
 
         // Format variants
-        for variant in item.id_iter(&enum_data.variants) {
-            if let ItemEnum::Variant(variant_enum) = &variant.inner {
-                let variant_name = variant.name.as_deref().unwrap_or("<unnamed>").to_string();
+        for variant in item.id_iter(&enum_data.item().variants) {
+            if let ItemEnum::Variant(variant_enum) = &variant.item().inner {
+                let variant_name = variant.name().unwrap_or("<unnamed>");
 
                 match &variant_enum.kind {
                     VariantKind::Plain => {
@@ -51,7 +51,7 @@ impl Request {
                         let mut first = true;
                         for field_id in fields.iter().copied().flatten() {
                             if let Some(field) = enum_data.get(&field_id)
-                                && let ItemEnum::StructField(field_type) = &field.inner
+                                && let ItemEnum::StructField(field_type) = &field.item().inner
                             {
                                 if !first {
                                     code_spans.push(Span::punctuation(","));
@@ -74,8 +74,8 @@ impl Request {
                         code_spans.push(Span::plain("\n"));
 
                         for field in item.id_iter(fields) {
-                            if let ItemEnum::StructField(field_type) = &field.inner {
-                                let field_name = field.name.as_deref().unwrap_or("<unnamed>").to_string();
+                            if let ItemEnum::StructField(field_type) = &field.item().inner {
+                                let field_name = field.name().unwrap_or("<unnamed>");
                                 code_spans.push(Span::plain("        "));
                                 code_spans.push(Span::field_name(field_name));
                                 code_spans.push(Span::punctuation(":"));
@@ -108,18 +108,19 @@ impl Request {
 
         // Build variants section with List (collect documented variants)
         let variant_items: Vec<ListItem> = item
-            .id_iter(&enum_data.variants)
+            .id_iter(&enum_data.item().variants)
             .filter_map(|variant| {
-                if let ItemEnum::Variant(_) = &variant.inner {
-                    if let Some(docs) = self.docs_to_show(variant, false, context) {
-                        let variant_name = variant.name.as_deref().unwrap_or("<unnamed>").to_string();
-                        let item_nodes = vec![
-                            DocumentNode::Span(Span::type_name(variant_name)),
-                            DocumentNode::Span(Span::plain("\n")),
-                            DocumentNode::Span(Span::plain(Indent::new(&docs, 4).to_string())),
-                        ];
-                        return Some(ListItem::new(item_nodes));
-                    }
+                if let ItemEnum::Variant(_) = &variant.inner
+                    && let Some(docs) = self.docs_to_show(variant, false)
+                {
+                    let variant_name = variant.name().unwrap_or("<unnamed>");
+                    let mut item_nodes = vec![
+                        DocumentNode::Span(Span::type_name(variant_name)),
+                        DocumentNode::Span(Span::plain("\n")),
+                    ];
+                    // TODO: Re-add indentation for docs
+                    item_nodes.extend(docs);
+                    return Some(ListItem::new(item_nodes));
                 }
                 None
             })
@@ -133,7 +134,7 @@ impl Request {
             doc_nodes.push(variants_section);
         }
 
-        doc_nodes.extend(self.format_associated_methods(item, context));
+        doc_nodes.extend(self.format_associated_methods(item));
 
         doc_nodes
     }

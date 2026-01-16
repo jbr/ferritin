@@ -2,11 +2,7 @@ use super::*;
 use crate::styled_string::{DocumentNode, Span as StyledSpan};
 
 /// Format source code
-pub(crate) fn format_source_code<'a>(
-    request: &'a Request,
-    span: &Span,
-    _context: &FormatContext,
-) -> Vec<DocumentNode<'a>> {
+pub(crate) fn format_source_code<'a>(request: &'a Request, span: &Span) -> Vec<DocumentNode<'a>> {
     // Resolve the file path - if it's relative, make it relative to the project root
     let file_path = if span.filename.is_absolute() {
         span.filename.clone()
@@ -41,8 +37,11 @@ pub(crate) fn format_source_code<'a>(
     // Build document nodes
     vec![
         DocumentNode::Span(StyledSpan::plain("\n")),
-        DocumentNode::Span(StyledSpan::plain(format!("Source: {}\n", file_path.display()))),
-        DocumentNode::code_block(Some("rust".to_string()), code),
+        DocumentNode::Span(StyledSpan::plain(format!(
+            "Source: {}\n",
+            file_path.display()
+        ))),
+        DocumentNode::code_block(Some("rust"), code),
         DocumentNode::Span(StyledSpan::plain("\n")),
     ]
 }

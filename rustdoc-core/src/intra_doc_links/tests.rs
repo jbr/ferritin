@@ -10,15 +10,16 @@ use std::rc::Rc;
 /// Helper to create a Navigator from the test workspace
 fn test_navigator() -> Navigator {
     let manifest_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../rustdoc-mcp/tests/test-workspace/Cargo.toml");
-    let project = Rc::new(RustdocProject::load(manifest_path).expect("Failed to load test workspace"));
+        .join("../tests/test-workspace/Cargo.toml");
+    let project =
+        Rc::new(RustdocProject::load(manifest_path).expect("Failed to load test workspace"));
     Navigator::new(project)
 }
 
 /// Helper to create a Navigator from test-crate with comprehensive use statements
 fn test_crate_navigator() -> Navigator {
-    let manifest_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../rustdoc-mcp/tests/test-crate/Cargo.toml");
+    let manifest_path =
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../tests/test-crate/Cargo.toml");
     let project = Rc::new(RustdocProject::load(manifest_path).expect("Failed to load test-crate"));
     Navigator::new(project)
 }
@@ -196,7 +197,11 @@ fn test_renamed_import_tree_from_link_module() {
 
     match result {
         ResolvedLink::Item(item) => {
-            assert_eq!(item.name(), Some("BTreeMap"), "Tree should resolve to BTreeMap");
+            assert_eq!(
+                item.name(),
+                Some("BTreeMap"),
+                "Tree should resolve to BTreeMap"
+            );
         }
         other => panic!("Expected Tree to resolve to BTreeMap, got {:?}", other),
     }
@@ -217,7 +222,11 @@ fn test_non_renamed_import_hashmap_from_root() {
 
     match result {
         ResolvedLink::Item(item) => {
-            assert_eq!(item.name(), Some("HashMap"), "HashMap should resolve to HashMap");
+            assert_eq!(
+                item.name(),
+                Some("HashMap"),
+                "HashMap should resolve to HashMap"
+            );
         }
         other => panic!("Expected HashMap to resolve, got {:?}", other),
     }

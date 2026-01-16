@@ -7,7 +7,7 @@ Kind: Module
 Visibility: Public
 Defined at: test_crate
 
-A minimal test crate for rustdoc JSON MCP testing
+A minimal test crate for rustdoc JSON testing
 
 
 Structs:

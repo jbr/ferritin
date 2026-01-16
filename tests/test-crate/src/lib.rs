@@ -1,4 +1,4 @@
-//! A minimal test crate for rustdoc JSON MCP testing
+//! A minimal test crate for rustdoc JSON testing
 
 // Use statements for testing intra-doc link resolution
 use std::collections::HashMap;

@@ -9,7 +9,7 @@ use std::path::PathBuf;
 
 /// Get the path to our test crate (fast to build, minimal dependencies)
 fn get_test_crate_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/test-crate")
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../tests/test-crate")
 }
 
 /// Create a test state with isolated session

@@ -1,5 +1,8 @@
-use crate::styled_string::Document;
-use std::io::{self, IsTerminal};
+use crate::{format_context::FormatContext, request::Request, styled_string::Document};
+use std::{
+    fmt::Write,
+    io::{self, IsTerminal},
+};
 
 mod plain;
 mod test_mode;
@@ -30,11 +33,21 @@ impl OutputMode {
 }
 
 /// Render a document to a string based on the output mode
-pub fn render(document: &Document, mode: OutputMode) -> String {
-    match mode {
-        OutputMode::Tty => tty::render(document),
-        OutputMode::Plain => plain::render(document),
-        OutputMode::TestMode => test_mode::render(document),
+pub fn render(
+    document: &Document,
+    format_context: &FormatContext,
+    output: &mut impl Write,
+) -> std::fmt::Result {
+    match format_context.output_mode() {
+        OutputMode::Tty => tty::render(document, format_context, output),
+        OutputMode::Plain => plain::render(document, output),
+        OutputMode::TestMode => test_mode::render(document, output),
+    }
+}
+
+impl Request {
+    pub fn render(&self, document: &Document, output: &mut impl Write) -> std::fmt::Result {
+        render(document, &self.format_context(), output)
     }
 }
 
@@ -53,10 +66,29 @@ mod tests {
             DocumentNode::Span(Span::type_name("Foo")),
         ]);
 
+        let mut tty_output = String::new();
+        let mut plain_output = String::new();
+        let mut test_output = String::new();
+
         // Test that all modes produce output without panicking
-        let tty_output = render(&doc, OutputMode::Tty);
-        let plain_output = render(&doc, OutputMode::Plain);
-        let test_output = render(&doc, OutputMode::TestMode);
+        render(
+            &doc,
+            &FormatContext::new().with_output_mode(OutputMode::Tty),
+            &mut tty_output,
+        )
+        .unwrap();
+        render(
+            &doc,
+            &FormatContext::new().with_output_mode(OutputMode::Plain),
+            &mut plain_output,
+        )
+        .unwrap();
+        render(
+            &doc,
+            &FormatContext::new().with_output_mode(OutputMode::TestMode),
+            &mut test_output,
+        )
+        .unwrap();
 
         assert!(!tty_output.is_empty());
         assert!(!plain_output.is_empty());

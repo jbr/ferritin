@@ -1,0 +1,43 @@
+---
+source: ferretin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::submodule::TestEnum\"),\nOutputMode::TestMode)"
+---
+Item: TestEnum
+Kind: Enum
+Visibility: Public
+Defined at: test_crate::submodule::TestEnum
+
+<truncated level="brief">An enum for testing
+
+This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link> but without the generic
+
+</truncated>
+
+<keyword>enum</keyword> <type-name>TestEnum</type-name> <punctuation>{</punctuation>
+    <type-name>VariantA</type-name><punctuation>,</punctuation>
+    <type-name>VariantB</type-name><punctuation>(</punctuation><type-name>String</type-name><punctuation>)</punctuation><punctuation>,</punctuation>
+    <type-name>VariantC</type-name> <punctuation>{</punctuation>
+        <field-name>name</field-name><punctuation>:</punctuation> <type-name>String</type-name><punctuation>,</punctuation>
+        <field-name>value</field-name><punctuation>:</punctuation> <type-name>i32</type-name><punctuation>,</punctuation>
+    <punctuation>}</punctuation><punctuation>,</punctuation>
+<punctuation>}</punctuation>
+
+<section><section-title>Variants:</section-title><list>
+  <item><type-name>VariantA</type-name>
+<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+
+</truncated>
+</item>
+  <item><type-name>VariantB</type-name>
+<truncated level="brief">Variant B with data
+
+</truncated>
+</item>
+  <item><type-name>VariantC</type-name>
+<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+
+</truncated>
+</item>
+</list>
+</section>
+std traits: Any, Borrow, BorrowMut, Freeze, From, Into, RefUnwindSafe, Send, Sync, TryFrom, TryInto, Unpin, UnwindSafe

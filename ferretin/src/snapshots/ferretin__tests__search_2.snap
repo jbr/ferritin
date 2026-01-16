@@ -1,0 +1,29 @@
+---
+source: ferretin/src/tests.rs
+expression: "render_for_tests(Commands::search(\"generic struct\"), OutputMode::TestMode)"
+---
+<title>Search results for 'generic struct'</title>
+
+<list>
+  <item><label>core::borrow::Borrow</label> (Trait) - score: 0
+    A trait for borrowing data.</item>
+  <item><label>core::clone::Clone</label> (Trait) - score: 0
+    A common trait that allows explicit creation of a duplicate value.</item>
+  <item><label>std::borrow::Borrow</label> (Trait) - score: 0
+    A trait for borrowing data.</item>
+  <item><label>core::pin</label> (Module) - score: 0
+    Types that pin data to a location in memory.</item>
+  <item><label>std::clone::Clone</label> (Trait) - score: 0
+    A common trait that allows explicit creation of a duplicate value.</item>
+  <item><label>std::pin</label> (Module) - score: 0
+    Types that pin data to a location in memory.</item>
+  <item><label>core::ops::Deref</label> (Trait) - score: 0
+    Used for immutable dereferencing operations, like `*v`.</item>
+  <item><label>core::mem::ManuallyDrop</label> (Struct) - score: 0
+    A wrapper to inhibit the compiler from automatically calling `T`’s
+    destructor. This wrapper is 0-cost.</item>
+  <item><label>std::ops::Deref</label> (Trait) - score: 0
+    Used for immutable dereferencing operations, like `*v`.</item>
+  <item><label>core::marker::Copy</label> (Trait) - score: 0
+    Types whose values can be duplicated simply by copying bits.</item>
+</list>

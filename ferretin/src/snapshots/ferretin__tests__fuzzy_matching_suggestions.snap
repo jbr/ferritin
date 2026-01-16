@@ -1,0 +1,14 @@
+---
+source: ferretin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::TestStruct::incrementCount\"),\nOutputMode::TestMode)"
+---
+Could not find 'crate::TestStruct::incrementCount'
+
+Did you mean:
+<list>
+  <item>crate::TestStruct::ASSOCIATED_CONST</item>
+  <item>crate::TestStruct::new</item>
+  <item>crate::TestStruct::get_field</item>
+  <item>crate::TestStruct::increment_count</item>
+  <item>crate::submodule</item>
+</list>

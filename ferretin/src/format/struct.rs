@@ -6,19 +6,14 @@ impl Request {
         &'a self,
         item: DocRef<'a, Item>,
         r#struct: DocRef<'a, Struct>,
-        context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         let mut doc_nodes = match &r#struct.kind {
-            StructKind::Unit => self.format_unit_struct(r#struct, item, context),
-            StructKind::Tuple(fields) => {
-                self.format_tuple_struct(r#struct, item, fields, context)
-            }
-            StructKind::Plain { fields, .. } => {
-                self.format_plain_struct(r#struct, item, fields, context)
-            }
+            StructKind::Unit => self.format_unit_struct(r#struct, item),
+            StructKind::Tuple(fields) => self.format_tuple_struct(r#struct, item, fields),
+            StructKind::Plain { fields, .. } => self.format_plain_struct(r#struct, item, fields),
         };
 
-        doc_nodes.extend(self.format_associated_methods(item, context));
+        doc_nodes.extend(self.format_associated_methods(item));
 
         doc_nodes
     }
@@ -48,12 +43,11 @@ impl Request {
         struct_data: DocRef<'a, Struct>,
         item: DocRef<'a, Item>,
         fields: &[Id],
-        context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         use crate::styled_string::{DocumentNode, ListItem, Span};
 
         let (visible_fields, hidden_count) = self.categorize_fields(item, fields);
-        let struct_name = item.name.as_deref().unwrap_or("<unnamed>").to_string();
+        let struct_name = item.name().unwrap_or("<unnamed>");
 
         let mut code_spans = vec![
             Span::keyword("struct"),
@@ -62,11 +56,12 @@ impl Request {
         ];
 
         if !struct_data.generics.params.is_empty() {
-            code_spans.extend(self.format_generics(&struct_data.generics));
+            code_spans.extend(self.format_generics(&struct_data.item().generics));
         }
 
         if !struct_data.generics.where_predicates.is_empty() {
-            code_spans.extend(self.format_where_clause(&struct_data.generics.where_predicates));
+            code_spans
+                .extend(self.format_where_clause(&struct_data.item().generics.where_predicates));
         }
 
         code_spans.push(Span::plain(" "));
@@ -74,9 +69,9 @@ impl Request {
         code_spans.push(Span::plain("\n"));
 
         for field in &visible_fields {
-            let field_name = field.name.as_deref().unwrap_or("<unnamed>").to_string();
-            if let ItemEnum::StructField(field_type) = &field.inner {
-                let visibility = match field.visibility {
+            let field_name = field.name().unwrap_or("<unnamed>");
+            if let ItemEnum::StructField(field_type) = &field.item().inner {
+                let visibility = match field.item().visibility {
                     Visibility::Public => "pub ",
                     _ => "",
                 };
@@ -119,23 +114,25 @@ impl Request {
         let field_items: Vec<ListItem> = visible_fields
             .iter()
             .filter_map(|field| {
-                if let ItemEnum::StructField(field_type) = &field.inner
-                    && let Some(name) = field.name.as_deref()
-                    && let Some(docs) = self.docs_to_show(*field, false, context)
+                if let ItemEnum::StructField(field_type) = &field.item().inner
+                    && let Some(name) = field.name()
+                    && let Some(docs) = self.docs_to_show(*field, false)
                 {
                     let mut item_nodes = vec![
-                        DocumentNode::Span(Span::field_name(name.to_string())),
+                        DocumentNode::Span(Span::field_name(name)),
                         DocumentNode::Span(Span::punctuation(":")),
                         DocumentNode::Span(Span::plain(" ")),
                     ];
                     // Convert Vec<Span> to Vec<DocumentNode>
-                    let type_spans: Vec<DocumentNode> = self.format_type(field_type)
+                    let type_spans: Vec<DocumentNode> = self
+                        .format_type(field_type)
                         .into_iter()
                         .map(DocumentNode::Span)
                         .collect();
                     item_nodes.extend(type_spans);
                     item_nodes.push(DocumentNode::Span(Span::plain("\n")));
-                    item_nodes.push(DocumentNode::Span(Span::plain(Indent::new(&docs, 4).to_string())));
+                    // TODO: Re-add indentation for docs
+                    item_nodes.extend(docs);
                     Some(ListItem::new(item_nodes))
                 } else {
                     None
@@ -159,7 +156,6 @@ impl Request {
         struct_data: DocRef<'a, Struct>,
         item: DocRef<'a, Item>,
         fields: &[Option<Id>],
-        context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         use crate::styled_string::{DocumentNode, ListItem, Span};
 
@@ -175,7 +171,7 @@ impl Request {
             }
         }
 
-        let struct_name = item.name.as_deref().unwrap_or("<unnamed>").to_string();
+        let struct_name = item.name().unwrap_or("<unnamed>");
 
         let mut code_spans = vec![
             Span::keyword("struct"),
@@ -184,18 +180,19 @@ impl Request {
         ];
 
         if !struct_data.generics.params.is_empty() {
-            code_spans.extend(self.format_generics(&struct_data.generics));
+            code_spans.extend(self.format_generics(&struct_data.item().generics));
         }
 
         if !struct_data.generics.where_predicates.is_empty() {
-            code_spans.extend(self.format_where_clause(&struct_data.generics.where_predicates));
+            code_spans
+                .extend(self.format_where_clause(&struct_data.item().generics.where_predicates));
         }
 
         code_spans.push(Span::punctuation("("));
         code_spans.push(Span::plain("\n"));
 
         for (i, field) in &visible_fields {
-            if let ItemEnum::StructField(field_type) = &field.inner {
+            if let ItemEnum::StructField(field_type) = &field.item().inner {
                 let visibility = match field.visibility {
                     Visibility::Public => "pub ",
                     _ => "",
@@ -239,19 +236,20 @@ impl Request {
             .iter()
             .filter_map(|(i, field)| {
                 if let ItemEnum::StructField(field_type) = field.inner()
-                    && let Some(docs) = self.docs_to_show(*field, false, context)
+                    && let Some(docs) = self.docs_to_show(*field, false)
                 {
-                    let mut item_nodes = vec![
-                        DocumentNode::Span(Span::plain(format!("Field {}: ", i))),
-                    ];
+                    let mut item_nodes =
+                        vec![DocumentNode::Span(Span::plain(format!("Field {}: ", i)))];
                     // Convert Vec<Span> to Vec<DocumentNode>
-                    let type_spans: Vec<DocumentNode> = self.format_type(field_type)
+                    let type_spans: Vec<DocumentNode> = self
+                        .format_type(field_type)
                         .into_iter()
                         .map(DocumentNode::Span)
                         .collect();
                     item_nodes.extend(type_spans);
                     item_nodes.push(DocumentNode::Span(Span::plain("\n")));
-                    item_nodes.push(DocumentNode::Span(Span::plain(Indent::new(&docs, 4).to_string())));
+                    // TODO: Re-add indentation for docs
+                    item_nodes.extend(docs);
                     Some(ListItem::new(item_nodes))
                 } else {
                     None
@@ -274,11 +272,10 @@ impl Request {
         &'a self,
         struct_data: DocRef<'a, Struct>,
         item: DocRef<'a, Item>,
-        _context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         use crate::styled_string::{DocumentNode, Span};
 
-        let struct_name = item.name.as_deref().unwrap_or("<unnamed>").to_string();
+        let struct_name = item.name().unwrap_or("<unnamed>");
 
         let mut code_spans = vec![
             Span::keyword("struct"),
@@ -287,11 +284,12 @@ impl Request {
         ];
 
         if !struct_data.generics.params.is_empty() {
-            code_spans.extend(self.format_generics(&struct_data.generics));
+            code_spans.extend(self.format_generics(&struct_data.item().generics));
         }
 
         if !struct_data.generics.where_predicates.is_empty() {
-            code_spans.extend(self.format_where_clause(&struct_data.generics.where_predicates));
+            code_spans
+                .extend(self.format_where_clause(&struct_data.item().generics.where_predicates));
         }
 
         code_spans.push(Span::punctuation(";"));

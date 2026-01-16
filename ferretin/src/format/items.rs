@@ -7,7 +7,6 @@ impl Request {
         &'a self,
         item: DocRef<'a, Item>,
         type_alias: DocRef<'a, TypeAlias>,
-        _context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         let name = item.name().unwrap_or("<unnamed>");
 
@@ -23,9 +22,9 @@ impl Request {
 
         // Add type spans
         doc_nodes.extend(
-            self.format_type(&type_alias.type_)
+            self.format_type(&type_alias.item().type_)
                 .into_iter()
-                .map(DocumentNode::Span)
+                .map(DocumentNode::Span),
         );
 
         doc_nodes.push(DocumentNode::Span(Span::punctuation(";")));
@@ -39,7 +38,6 @@ impl Request {
         &'a self,
         _item: DocRef<'a, Item>,
         _union: DocRef<'a, Union>,
-        _context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         // TODO: Implement union formatting
         vec![
@@ -53,9 +51,8 @@ impl Request {
     pub(crate) fn format_constant<'a>(
         &'a self,
         item: DocRef<'a, Item>,
-        type_: &Type,
+        type_: &'a Type,
         const_: &'a Constant,
-        _context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         let name = item.name().unwrap_or("<unnamed>");
 
@@ -69,11 +66,7 @@ impl Request {
         ];
 
         // Add type spans
-        doc_nodes.extend(
-            self.format_type(type_)
-                .into_iter()
-                .map(DocumentNode::Span)
-        );
+        doc_nodes.extend(self.format_type(type_).into_iter().map(DocumentNode::Span));
 
         if let Some(value) = &const_.value {
             doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
@@ -93,7 +86,6 @@ impl Request {
         &'a self,
         item: DocRef<'a, Item>,
         static_item: &'a Static,
-        _context: &FormatContext,
     ) -> Vec<DocumentNode<'a>> {
         let name = item.name().unwrap_or("<unnamed>");
 
@@ -110,7 +102,7 @@ impl Request {
         doc_nodes.extend(
             self.format_type(&static_item.type_)
                 .into_iter()
-                .map(DocumentNode::Span)
+                .map(DocumentNode::Span),
         );
 
         doc_nodes.push(DocumentNode::Span(Span::plain(" ")));

@@ -3,7 +3,7 @@ use crate::styled_string::Span;
 
 impl Request {
     /// Enhanced type formatting for signatures
-    pub(crate) fn format_type<'a>(&self, type_: &Type) -> Vec<Span<'a>> {
+    pub(crate) fn format_type<'a>(&self, type_: &'a Type) -> Vec<Span<'a>> {
         match type_ {
             Type::ResolvedPath(path) => self.format_path(path),
             Type::DynTrait(dyn_trait) => {
@@ -16,14 +16,14 @@ impl Request {
                 }
                 spans
             }
-            Type::Generic(name) => vec![Span::generic(name.to_string())],
-            Type::Primitive(prim) => vec![Span::type_name(prim.to_string())],
+            Type::Generic(name) => vec![Span::generic(name)],
+            Type::Primitive(prim) => vec![Span::type_name(prim)],
             Type::Array { type_, len } => {
                 let mut spans = vec![Span::punctuation("[")];
                 spans.extend(self.format_type(type_));
                 spans.push(Span::punctuation(";"));
                 spans.push(Span::plain(" "));
-                spans.push(Span::plain(len.clone()));
+                spans.push(Span::plain(len));
                 spans.push(Span::punctuation("]"));
                 spans
             }
@@ -41,7 +41,7 @@ impl Request {
             } => {
                 let mut spans = vec![Span::operator("&")];
                 if let Some(lt) = lifetime {
-                    spans.push(Span::lifetime(lt.to_string()));
+                    spans.push(Span::lifetime(lt));
                     spans.push(Span::plain(" "));
                 }
                 if *is_mutable {
@@ -63,10 +63,7 @@ impl Request {
             Type::FunctionPointer(fp) => self.format_function_pointer(fp),
             Type::Tuple(types) => self.format_tuple(types),
             Type::ImplTrait(bounds) => {
-                let mut spans = vec![
-                    Span::keyword("impl"),
-                    Span::plain(" "),
-                ];
+                let mut spans = vec![Span::keyword("impl"), Span::plain(" ")];
                 spans.extend(self.format_generic_bounds(bounds));
                 spans
             }
@@ -81,7 +78,7 @@ impl Request {
         }
     }
 
-    pub(crate) fn format_tuple<'a>(&self, types: &[Type]) -> Vec<Span<'a>> {
+    pub(crate) fn format_tuple<'a>(&self, types: &'a [Type]) -> Vec<Span<'a>> {
         let mut spans = vec![Span::punctuation("(")];
 
         for (i, type_) in types.iter().enumerate() {
@@ -96,7 +93,7 @@ impl Request {
         spans
     }
 
-    pub(crate) fn format_function_pointer<'a>(&self, fp: &FunctionPointer) -> Vec<Span<'a>> {
+    pub(crate) fn format_function_pointer<'a>(&self, fp: &'a FunctionPointer) -> Vec<Span<'a>> {
         let mut spans = vec![];
 
         if !fp.generic_params.is_empty() {
@@ -136,10 +133,10 @@ impl Request {
 
     pub(crate) fn format_qualified_path<'a>(
         &self,
-        name: &String,
-        args: Option<&GenericArgs>,
-        self_type: &Type,
-        trait_: &Option<Path>,
+        name: &'a str,
+        args: Option<&'a GenericArgs>,
+        self_type: &'a Type,
+        trait_: &'a Option<Path>,
     ) -> Vec<Span<'a>> {
         let mut spans = vec![];
 
@@ -151,7 +148,7 @@ impl Request {
                     // If trait path is empty, just use Self::name
                     spans.push(Span::generic("Self"));
                     spans.push(Span::punctuation("::"));
-                    spans.push(Span::type_name(name.clone()));
+                    spans.push(Span::type_name(name));
                     if let Some(args) = args {
                         spans.extend(self.format_generic_args(args));
                     }
@@ -166,7 +163,7 @@ impl Request {
                     spans.extend(trait_spans);
                     spans.push(Span::punctuation(">"));
                     spans.push(Span::punctuation("::"));
-                    spans.push(Span::type_name(name.clone()));
+                    spans.push(Span::type_name(name));
                     if let Some(args) = args {
                         spans.extend(self.format_generic_args(args));
                     }
@@ -176,7 +173,7 @@ impl Request {
                 // No trait specified, use Self::name
                 spans.push(Span::generic("Self"));
                 spans.push(Span::punctuation("::"));
-                spans.push(Span::plain(name.clone()));
+                spans.push(Span::plain(name));
                 if let Some(args) = args {
                     spans.extend(self.format_generic_args(args));
                 }
@@ -195,7 +192,7 @@ impl Request {
         }
         spans.push(Span::punctuation(">"));
         spans.push(Span::punctuation("::"));
-        spans.push(Span::plain(name.clone()));
+        spans.push(Span::plain(name));
         if let Some(args) = args {
             spans.extend(self.format_generic_args(args));
         }
