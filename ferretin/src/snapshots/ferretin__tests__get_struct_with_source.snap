@@ -7,11 +7,11 @@ Kind: Struct
 Visibility: Public
 Defined at: test_crate::TestStruct
 
-<truncated level="brief">A simple struct for testing basic functionality.
+<truncated level="full">A simple struct for testing basic functionality.
 
 This struct demonstrates basic usage patterns and should show completely since it only has one paragraph of documentation.
 
-It uses <link href="https://docs.rs/alloc/1.94.0-nightly	(0aced202c	2026-01-06)/alloc/vec/struct.Vec.html">Vector</link> for testing intra-doc link resolution with renamed imports. Also tests [HashMap] which is a non-renamed import.
+It uses <link href="https://docs.rs/alloc/1.94.0-nightly	(22c74ba91	2026-01-15)/alloc/vec/struct.Vec.html">Vector</link> for testing intra-doc link resolution with renamed imports. Also tests [HashMap] which is a non-renamed import.
 
 </truncated>
 

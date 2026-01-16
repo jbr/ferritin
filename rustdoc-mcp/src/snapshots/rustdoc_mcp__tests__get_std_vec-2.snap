@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result_std_collections_hashmap
 ---
 Item: HashMap
@@ -21,7 +21,7 @@ low such as during system boot may be of a lower quality.
 
 
 ```rust
-struct HashMap<K, V, S = crate::hash::RandomState> {
+struct HashMap<K, V, S = crate::hash::RandomState, A: Allocator = crate::alloc::Global> {
 }
 ```
 
@@ -34,11 +34,23 @@ Associated Types:
 • pub fn with_capacity(capacity: usize) -> HashMap<K, V, RandomState>
     Creates an empty `HashMap` with at least the specified capacity. [+11 more lines]
 
+• pub fn new_in(alloc: A) -> Self
+    Creates an empty `HashMap` using the given allocator. [+10 more lines]
+
+• pub fn with_capacity_in(capacity: usize, alloc: A) -> Self
+    Creates an empty `HashMap` with at least the specified capacity using [+12 more lines]
+
 • pub const fn with_hasher(hash_builder: S) -> HashMap<K, V, S>
     Creates an empty `HashMap` which will use the given hash builder to hash [+22 more lines]
 
 • pub fn with_capacity_and_hasher(capacity: usize, hasher: S) -> HashMap<K, V, S>
     Creates an empty `HashMap` with at least the specified capacity, using [+24 more lines]
+
+• pub fn with_hasher_in(hash_builder: S, alloc: A) -> Self
+    Creates an empty `HashMap` which will use the given hash builder and [+11 more lines]
+
+• pub fn with_capacity_and_hasher_in(capacity: usize, hash_builder: S, alloc: A) -> Self
+    Creates an empty `HashMap` with at least the specified capacity, using [+13 more lines]
 
 • pub fn capacity(&self) -> usize
     Returns the number of elements the map can hold without reallocating. [+11 more lines]
@@ -46,7 +58,7 @@ Associated Types:
 • pub fn keys(&self) -> Keys<'_, K, V>
     An iterator visiting all keys in arbitrary order. [+22 more lines]
 
-• pub fn into_keys(self) -> IntoKeys<K, V>
+• pub fn into_keys(self) -> IntoKeys<K, V, A>
     Creates a consuming iterator visiting all the keys in arbitrary order. [+25 more lines]
 
 • pub fn values(&self) -> Values<'_, K, V>
@@ -55,7 +67,7 @@ Associated Types:
 • pub fn values_mut(&mut self) -> ValuesMut<'_, K, V>
     An iterator visiting all values mutably in arbitrary order. [+26 more lines]
 
-• pub fn into_values(self) -> IntoValues<K, V>
+• pub fn into_values(self) -> IntoValues<K, V, A>
     Creates a consuming iterator visiting all the values in arbitrary order. [+25 more lines]
 
 • pub fn iter(&self) -> Iter<'_, K, V>
@@ -70,10 +82,10 @@ Associated Types:
 • pub fn is_empty(&self) -> bool
     Returns `true` if the map contains no elements. [+11 more lines]
 
-• pub fn drain(&mut self) -> Drain<'_, K, V>
+• pub fn drain(&mut self) -> Drain<'_, K, V, A>
     Clears the map, returning all key-value pairs as an iterator. Keeps the [+22 more lines]
 
-• pub fn extract_if<F>(&mut self, pred: F) -> ExtractIf<'_, K, V, F>
+• pub fn extract_if<F>(&mut self, pred: F) -> ExtractIf<'_, K, V, F, A>
 where
     F: FnMut(&K, &mut V) -> bool
     Creates an iterator which uses a closure to determine if an element (key-value pair) should be removed. [+32 more lines]
@@ -101,7 +113,7 @@ where
 • pub fn shrink_to(&mut self, min_capacity: usize)
     Shrinks the capacity of the map with a lower limit. It will drop [+19 more lines]
 
-• pub fn entry(&mut self, key: K) -> Entry<'_, K, V>
+• pub fn entry(&mut self, key: K) -> Entry<'_, K, V, A>
     Gets the given key's corresponding entry in the map for in-place manipulation. [+17 more lines]
 
 • pub fn get<Q>(&self, k: &Q) -> Option<&V>
@@ -143,7 +155,7 @@ where
 • pub fn insert(&mut self, k: K, v: V) -> Option<V>
     Inserts a key-value pair into the map. [+23 more lines]
 
-• pub fn try_insert(&mut self, key: K, value: V) -> Result<&mut V, OccupiedError<'_, K, V>>
+• pub fn try_insert(&mut self, key: K, value: V) -> Result<&mut V, OccupiedError<'_, K, V, A>>
     Tries to insert a key-value pair into the map, and returns [+22 more lines]
 
 • pub fn remove<Q>(&mut self, k: &Q) -> Option<V>
@@ -159,4 +171,4 @@ where
     Removes a key from the map, returning the stored key and value if the [+18 more lines]
 
 
-std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Default, Eq, Extend<(&'a K, &'a V)>, Extend<(K, V)> [+16 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Default, Eq, Extend<(&'a K, &'a V)>, Extend<(K, V)> [+17 more]

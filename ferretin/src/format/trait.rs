@@ -41,7 +41,7 @@ impl Request {
         // Add trait members
         for trait_item in item.id_iter(&trait_data.item().items) {
             // Add documentation
-            if let Some(docs) = self.docs_to_show(trait_item, false) {
+            if let Some(docs) = self.docs_to_show(trait_item, TruncationLevel::Brief) {
                 nodes.push(DocumentNode::Span(Span::plain("    ")));
                 nodes.extend(docs);
                 nodes.push(DocumentNode::Span(Span::plain("\n")));

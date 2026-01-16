@@ -7,7 +7,7 @@ Kind: Module
 Visibility: Public
 Defined at: test_crate
 
-<truncated level="brief">A minimal test crate for rustdoc JSON testing
+<truncated level="full">A minimal test crate for rustdoc JSON testing
 
 </truncated>
 
@@ -243,7 +243,7 @@ Note that this method has no effect on <elided chars="109"/></truncated>
 <truncated level="single-line">Interns the <inline-code>Vec<T></inline-code>, making the underlying memory read-only. This method should <elided chars="178"/></truncated>
 </item>
   <item><label><type-name>Vec::dedup</type-name></label>
-<truncated level="single-line">Removes consecutive repeated elements in the vector according to the <link href="https://docs.rs/core/1.94.0-nightly	(0aced202c	2026-01-06)/core/cmp/trait.PartialEq.html">PartialEq</link> <elided chars="165"/></truncated>
+<truncated level="single-line">Removes consecutive repeated elements in the vector according to the <link href="https://docs.rs/core/1.94.0-nightly	(22c74ba91	2026-01-15)/core/cmp/trait.PartialEq.html">PartialEq</link> <elided chars="165"/></truncated>
 </item>
   <item><label><type-name>Vec::dedup_by</type-name></label>
 <truncated level="single-line">Removes all but the first of consecutive elements in the vector satisfying a <elided chars="491"/></truncated>
@@ -507,7 +507,7 @@ The value may be any borrowed form <elided chars="246"/></truncated>
 <truncated level="single-line">Inserts a value computed from <inline-code>f</inline-code> into the set if the given <inline-code>value</inline-code> is not present, <elided chars="434"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::HashSet::hasher</type-name></label>
-<truncated level="single-line">Returns a reference to the set's <link href="https://docs.rs/core/1.94.0-nightly	(0aced202c	2026-01-06)/core/hash/trait.BuildHasher.html">BuildHasher</link>.
+<truncated level="single-line">Returns a reference to the set's <link href="https://docs.rs/core/1.94.0-nightly	(22c74ba91	2026-01-15)/core/hash/trait.BuildHasher.html">BuildHasher</link>.
 
 <title>Examples</title>
  <elided chars="162"/></truncated>
@@ -549,6 +549,11 @@ Returns whether the value was newly inserted. That is: <elided chars="397"/></tr
 
 The hash set is initially created with a capacity of <elided chars="139"/></truncated>
 </item>
+  <item><label><type-name>link_resolution_tests::HashSet::new_in</type-name></label>
+<truncated level="single-line">Creates an empty <inline-code>HashSet</inline-code> in the provided allocator.
+
+The hash set is initially <elided chars="87"/></truncated>
+</item>
   <item><label><type-name>link_resolution_tests::HashSet::remove</type-name></label>
 <truncated level="single-line">Removes a value from the set. Returns whether the value was present in the set. <elided chars="290"/></truncated>
 </item>
@@ -589,10 +594,21 @@ The hash set <elided chars="310"/></truncated>
   <item><label><type-name>link_resolution_tests::HashSet::with_capacity_and_hasher</type-name></label>
 <truncated level="single-line">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity, using <inline-code>hasher</inline-code> to <elided chars="751"/></truncated>
 </item>
+  <item><label><type-name>link_resolution_tests::HashSet::with_capacity_and_hasher_in</type-name></label>
+<truncated level="single-line">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity, using <inline-code>hasher</inline-code> to <elided chars="614"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::with_capacity_in</type-name></label>
+<truncated level="single-line">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity.
+
+The hash set <elided chars="310"/></truncated>
+</item>
   <item><label><type-name>link_resolution_tests::HashSet::with_hasher</type-name></label>
 <truncated level="single-line">Creates a new empty hash set which will use the given hasher to hash keys.
 
 The <elided chars="575"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::with_hasher_in</type-name></label>
+<truncated level="single-line">Creates a new empty hash set which will use the given hasher to hash keys and <elided chars="480"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::LinkTestStruct::get_data</type-name></label>
 <truncated level="single-line">Another method
@@ -725,10 +741,10 @@ If the map did not have this key <elided chars="491"/></truncated>
  <elided chars="99"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::Tree::lower_bound</type-name></label>
-<truncated level="single-line">Returns a <link href="https://docs.rs/alloc/1.94.0-nightly	(0aced202c	2026-01-06)/alloc/collections/btree/map/struct.Cursor.html">Cursor</link> pointing at the gap before the smallest key greater than the <elided chars="962"/></truncated>
+<truncated level="single-line">Returns a <link href="https://docs.rs/alloc/1.94.0-nightly	(22c74ba91	2026-01-15)/alloc/collections/btree/map/struct.Cursor.html">Cursor</link> pointing at the gap before the smallest key greater than the <elided chars="962"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::Tree::lower_bound_mut</type-name></label>
-<truncated level="single-line">Returns a <link href="https://docs.rs/alloc/1.94.0-nightly	(0aced202c	2026-01-06)/alloc/collections/btree/map/struct.CursorMut.html">CursorMut</link> pointing at the gap before the smallest key greater than <elided chars="1013"/></truncated>
+<truncated level="single-line">Returns a <link href="https://docs.rs/alloc/1.94.0-nightly	(22c74ba91	2026-01-15)/alloc/collections/btree/map/struct.CursorMut.html">CursorMut</link> pointing at the gap before the smallest key greater than <elided chars="1013"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::Tree::new</type-name></label>
 <truncated level="single-line">Makes a new, empty <inline-code>BTreeMap</inline-code>.
@@ -774,10 +790,10 @@ In other words, remove <elided chars="368"/></truncated>
 <truncated level="single-line">Tries to insert a key-value pair into the map, and returns a mutable reference <elided chars="457"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::Tree::upper_bound</type-name></label>
-<truncated level="single-line">Returns a <link href="https://docs.rs/alloc/1.94.0-nightly	(0aced202c	2026-01-06)/alloc/collections/btree/map/struct.Cursor.html">Cursor</link> pointing at the gap after the greatest key smaller than the <elided chars="958"/></truncated>
+<truncated level="single-line">Returns a <link href="https://docs.rs/alloc/1.94.0-nightly	(22c74ba91	2026-01-15)/alloc/collections/btree/map/struct.Cursor.html">Cursor</link> pointing at the gap after the greatest key smaller than the <elided chars="958"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::Tree::upper_bound_mut</type-name></label>
-<truncated level="single-line">Returns a <link href="https://docs.rs/alloc/1.94.0-nightly	(0aced202c	2026-01-06)/alloc/collections/btree/map/struct.CursorMut.html">CursorMut</link> pointing at the gap after the greatest key smaller than the <elided chars="1009"/></truncated>
+<truncated level="single-line">Returns a <link href="https://docs.rs/alloc/1.94.0-nightly	(22c74ba91	2026-01-15)/alloc/collections/btree/map/struct.CursorMut.html">CursorMut</link> pointing at the gap after the greatest key smaller than the <elided chars="1009"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::Tree::values</type-name></label>
 <truncated level="single-line">Gets an iterator over the values of the map, in order by key.
@@ -866,7 +882,7 @@ This is <elided chars="959"/></truncated>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf8</type-name></label>
 <truncated level="single-line">Converts a vector of bytes to a <inline-code>String</inline-code>.
 
-A string (<link href="https://docs.rs/alloc/1.94.0-nightly	(0aced202c	2026-01-06)/alloc/string/struct.String.html">String</link>) is made of bytes (<link href="https://docs.rs/core/1.94.0-nightly	(0aced202c	2026-01-06)/core/">u8</link>) <elided chars="1328"/></truncated>
+A string (<link href="https://docs.rs/alloc/1.94.0-nightly	(22c74ba91	2026-01-15)/alloc/string/struct.String.html">String</link>) is made of bytes (<link href="https://docs.rs/core/1.94.0-nightly	(22c74ba91	2026-01-15)/core/">u8</link>) <elided chars="1328"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf8_lossy</type-name></label>
 <truncated level="single-line">Converts a slice of bytes to a string, including invalid characters.
@@ -874,7 +890,7 @@ A string (<link href="https://docs.rs/alloc/1.94.0-nightly	(0aced202c	2026-01-06
 Strings <elided chars="1250"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf8_lossy_owned</type-name></label>
-<truncated level="single-line">Converts a <link href="https://docs.rs/alloc/1.94.0-nightly	(0aced202c	2026-01-06)/alloc/vec/struct.Vec.html">Vec</link> to a <inline-code>String</inline-code>, substituting invalid UTF-8 sequences with <elided chars="630"/></truncated>
+<truncated level="single-line">Converts a <link href="https://docs.rs/alloc/1.94.0-nightly	(22c74ba91	2026-01-15)/alloc/vec/struct.Vec.html">Vec</link> to a <inline-code>String</inline-code>, substituting invalid UTF-8 sequences with <elided chars="630"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf8_unchecked</type-name></label>
 <truncated level="single-line">Converts a vector of bytes to a <inline-code>String</inline-code> without checking that the string <elided chars="540"/></truncated>
@@ -919,7 +935,7 @@ Retur <elided chars="673"/></truncated>
 <truncated level="single-line">Consumes and leaks the <inline-code>String</inline-code>, returning a mutable reference to the contents, <inline-code>&'</inline-code> <elided chars="681"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::len</type-name></label>
-<truncated level="single-line">Returns the length of this <inline-code>String</inline-code>, in bytes, not <link href="https://docs.rs/core/1.94.0-nightly	(0aced202c	2026-01-06)/core/index.html">char</link>s or graphemes. In other <elided chars="238"/></truncated>
+<truncated level="single-line">Returns the length of this <inline-code>String</inline-code>, in bytes, not <link href="https://docs.rs/core/1.94.0-nightly	(22c74ba91	2026-01-15)/core/index.html">char</link>s or graphemes. In other <elided chars="238"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::new</type-name></label>
 <truncated level="single-line">Creates a new empty <inline-code>String</inline-code>.
@@ -932,7 +948,7 @@ Given that the <inline-code>String</inline-code> is empty, this will not <elided
 Returns [None <elided chars="195"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::push</type-name></label>
-<truncated level="single-line">Appends the given <link href="https://docs.rs/core/1.94.0-nightly	(0aced202c	2026-01-06)/core/index.html">char</link> to the end of this <inline-code>String</inline-code>.
+<truncated level="single-line">Appends the given <link href="https://docs.rs/core/1.94.0-nightly	(22c74ba91	2026-01-15)/core/index.html">char</link> to the end of this <inline-code>String</inline-code>.
 
 <title>Panics</title>
 Panics if the new <elided chars="137"/></truncated>
@@ -944,7 +960,7 @@ Panics if the new <elided chars="137"/></truncated>
 Panics if the <elided chars="125"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::remove</type-name></label>
-<truncated level="single-line">Removes a <link href="https://docs.rs/core/1.94.0-nightly	(0aced202c	2026-01-06)/core/index.html">char</link> from this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code> and returns it.
+<truncated level="single-line">Removes a <link href="https://docs.rs/core/1.94.0-nightly	(22c74ba91	2026-01-15)/core/index.html">char</link> from this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code> and returns it.
 
 Copies <elided chars="361"/></truncated>
 </item>

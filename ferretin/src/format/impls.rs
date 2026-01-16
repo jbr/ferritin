@@ -129,7 +129,7 @@ impl Request {
                 }
 
                 // Add brief doc preview
-                if let Some(docs) = self.docs_to_show(*item, true) {
+                if let Some(docs) = self.docs_to_show(*item, TruncationLevel::SingleLine) {
                     item_nodes.push(DocumentNode::Span(Span::plain("\n")));
                     // TODO: Re-add indentation for docs
                     item_nodes.extend(docs);

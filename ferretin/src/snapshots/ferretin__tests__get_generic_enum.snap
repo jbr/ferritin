@@ -7,7 +7,7 @@ Kind: Enum
 Visibility: Public
 Defined at: test_crate::GenericEnum
 
-<truncated level="brief">A generic enum for testing
+<truncated level="full">A generic enum for testing
 
 See also <link href="https://docs.rs/test-crate/0.1.0/test-crate/submodule/enum.TestEnum.html">crate::TestEnum</link>
 

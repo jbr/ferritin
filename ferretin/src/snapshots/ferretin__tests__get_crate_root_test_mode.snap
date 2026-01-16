@@ -7,7 +7,7 @@ Kind: Module
 Visibility: Public
 Defined at: test_crate
 
-<truncated level="brief">A minimal test crate for rustdoc JSON testing
+<truncated level="full">A minimal test crate for rustdoc JSON testing
 
 </truncated>
 

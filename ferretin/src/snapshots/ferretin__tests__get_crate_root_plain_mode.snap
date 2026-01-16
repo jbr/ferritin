@@ -8,7 +8,7 @@ Visibility: Public
 Defined at: test_crate
 
 A minimal test crate for rustdoc JSON testing
-[+1 more paragraphs]
+
 
 Modules
   • link_resolution_tests

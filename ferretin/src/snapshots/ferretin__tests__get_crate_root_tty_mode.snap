@@ -7,7 +7,9 @@ expression: "render_for_tests(Commands::get(\"crate\"), OutputMode::Tty)"
 [39m[38;2;192;197;206mVisibility: Public
 [39m[38;2;192;197;206mDefined at: test_crate
 [39m[38;2;192;197;206m
-[39m[38;2;192;197;206mA minimal test crate for rustdoc JSON testing[39m[38;2;192;197;206m[39m
+[39m[38;2;192;197;206mA minimal test crate for rustdoc JSON testing[39m[38;2;192;197;206m
+
+[39m
 [38;2;192;197;206m
 [39m[1m[38;2;192;197;206mModules[39m[0m
   • [1m[38;2;192;197;206mlink_resolution_tests[39m[0m[38;2;192;197;206m

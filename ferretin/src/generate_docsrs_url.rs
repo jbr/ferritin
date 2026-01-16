@@ -1,4 +1,4 @@
-use rustdoc_core::{project::CrateType, DocRef};
+use rustdoc_core::{DocRef, project::CrateType};
 use rustdoc_types::{Item, ItemEnum};
 
 pub(crate) fn generate_docsrs_url(item: DocRef<'_, Item>) -> String {
@@ -38,9 +38,9 @@ fn generate_url_for_item_with_path(
     let kind = item.kind();
 
     let base = if is_std {
-        format!("https://doc.rust-lang.org/stable/{}", crate_name)
+        format!("http://docs.rust-lang.org/nightly/{crate_name}")
     } else {
-        format!("https://docs.rs/{}/{}", crate_name, version)
+        format!("https://docs.rs/{crate_name}/{version}",)
     };
 
     match kind {
@@ -115,7 +115,9 @@ fn generate_url_for_item_with_path(
             };
             format!("{}/{}/union.{}.html", base, path_prefix, item_name)
         }
-        rustdoc_types::ItemKind::Macro | rustdoc_types::ItemKind::ProcAttribute | rustdoc_types::ItemKind::ProcDerive => {
+        rustdoc_types::ItemKind::Macro
+        | rustdoc_types::ItemKind::ProcAttribute
+        | rustdoc_types::ItemKind::ProcDerive => {
             let path_prefix = if module_path.is_empty() {
                 crate_name.to_string()
             } else {
@@ -211,7 +213,7 @@ fn generate_url_for_associated_item(
 
     // Fallback - couldn't determine parent
     if is_std {
-        format!("https://doc.rust-lang.org/stable/{}/", crate_name)
+        format!("https://doc.rust-lang.org/nightly/{}/", crate_name)
     } else {
         format!("https://docs.rs/{}/{}/{}/", crate_name, version, crate_name)
     }

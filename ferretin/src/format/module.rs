@@ -112,9 +112,8 @@ impl Request {
         let mut nodes = vec![];
 
         // Add brief documentation if available
-        if let Some(docs) = self.docs_to_show(flat_item.item, true) {
+        if let Some(docs) = self.docs_to_show(flat_item.item, TruncationLevel::SingleLine) {
             nodes.push(DocumentNode::Span(Span::plain("\n")));
-            // TODO: Re-add indentation for docs
             nodes.extend(docs);
         }
 

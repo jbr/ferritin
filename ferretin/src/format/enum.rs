@@ -111,14 +111,13 @@ impl Request {
             .id_iter(&enum_data.item().variants)
             .filter_map(|variant| {
                 if let ItemEnum::Variant(_) = &variant.inner
-                    && let Some(docs) = self.docs_to_show(variant, false)
+                    && let Some(docs) = self.docs_to_show(variant, TruncationLevel::Brief)
                 {
                     let variant_name = variant.name().unwrap_or("<unnamed>");
                     let mut item_nodes = vec![
                         DocumentNode::Span(Span::type_name(variant_name)),
                         DocumentNode::Span(Span::plain("\n")),
                     ];
-                    // TODO: Re-add indentation for docs
                     item_nodes.extend(docs);
                     return Some(ListItem::new(item_nodes));
                 }

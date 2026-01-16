@@ -141,6 +141,7 @@ link_resolution_tests::HashSet::is_superset // Returns `true` if the set is a su
 link_resolution_tests::HashSet::iter // An iterator visiting all elements in arbitrary order. [+20 more lines]
 link_resolution_tests::HashSet::len // Returns the number of elements in the set. [+11 more lines]
 link_resolution_tests::HashSet::new // Creates an empty `HashSet`. [+10 more lines]
+link_resolution_tests::HashSet::new_in // Creates an empty `HashSet` in the provided allocator. [+3 more lines]
 link_resolution_tests::HashSet::remove // Removes a value from the set. Returns whether the value was [+17 more lines]
 link_resolution_tests::HashSet::replace // Adds a value to the set, replacing the existing value, if any, that is equal to the given [+14 more lines]
 link_resolution_tests::HashSet::reserve // Reserves capacity for at least `additional` more elements to be inserted [+17 more lines]
@@ -153,7 +154,10 @@ link_resolution_tests::HashSet::try_reserve // Tries to reserve capacity for at 
 link_resolution_tests::HashSet::union // Visits the values representing the union, [+17 more lines]
 link_resolution_tests::HashSet::with_capacity // Creates an empty `HashSet` with at least the specified capacity. [+12 more lines]
 link_resolution_tests::HashSet::with_capacity_and_hasher // Creates an empty `HashSet` with at least the specified capacity, using [+24 more lines]
+link_resolution_tests::HashSet::with_capacity_and_hasher_in // Creates an empty `HashSet` with at least the specified capacity, using [+13 more lines]
+link_resolution_tests::HashSet::with_capacity_in // Creates an empty `HashSet` with at least the specified capacity. [+12 more lines]
 link_resolution_tests::HashSet::with_hasher // Creates a new empty hash set which will use the given hasher to hash [+22 more lines]
+link_resolution_tests::HashSet::with_hasher_in // Creates a new empty hash set which will use the given hasher to hash [+11 more lines]
 link_resolution_tests::LinkTestStruct::get_data // Another method
 link_resolution_tests::LinkTestStruct::new // Method for testing Self resolution
 link_resolution_tests::RenamedTestStruct::get_field // Get the field value

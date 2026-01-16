@@ -69,7 +69,7 @@ impl Request {
     pub(crate) fn docs_to_show<'a>(
         &self,
         item: DocRef<'_, Item>,
-        is_listing: bool,
+        truncation_level: TruncationLevel,
     ) -> Option<Vec<DocumentNode<'a>>> {
         // Extract docs from item
         let docs = item.docs.as_deref()?;
@@ -77,16 +77,8 @@ impl Request {
             return None;
         }
 
-        // Render docs and wrap in TruncatedBlock
-        // TODO: Pass in additional parameter to distinguish between main item (Full) vs secondary item (Brief)
-        let level = if is_listing {
-            TruncationLevel::SingleLine
-        } else {
-            TruncationLevel::Brief
-        };
-
         let nodes = self.render_docs(item, docs);
-        Some(vec![DocumentNode::truncated_block(nodes, level)])
+        Some(vec![DocumentNode::truncated_block(nodes, truncation_level)])
     }
 
     /// Count the number of lines in a text string

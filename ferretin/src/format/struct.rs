@@ -116,7 +116,7 @@ impl Request {
             .filter_map(|field| {
                 if let ItemEnum::StructField(field_type) = &field.item().inner
                     && let Some(name) = field.name()
-                    && let Some(docs) = self.docs_to_show(*field, false)
+                    && let Some(docs) = self.docs_to_show(*field, TruncationLevel::Brief)
                 {
                     let mut item_nodes = vec![
                         DocumentNode::Span(Span::field_name(name)),
@@ -236,11 +236,10 @@ impl Request {
             .iter()
             .filter_map(|(i, field)| {
                 if let ItemEnum::StructField(field_type) = field.inner()
-                    && let Some(docs) = self.docs_to_show(*field, false)
+                    && let Some(docs) = self.docs_to_show(*field, TruncationLevel::Brief)
                 {
                     let mut item_nodes =
                         vec![DocumentNode::Span(Span::plain(format!("Field {}: ", i)))];
-                    // Convert Vec<Span> to Vec<DocumentNode>
                     let type_spans: Vec<DocumentNode> = self
                         .format_type(field_type)
                         .into_iter()
@@ -248,7 +247,6 @@ impl Request {
                         .collect();
                     item_nodes.extend(type_spans);
                     item_nodes.push(DocumentNode::Span(Span::plain("\n")));
-                    // TODO: Re-add indentation for docs
                     item_nodes.extend(docs);
                     Some(ListItem::new(item_nodes))
                 } else {

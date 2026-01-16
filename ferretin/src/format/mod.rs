@@ -1,5 +1,5 @@
 use crate::request::Request;
-use crate::styled_string::{DocumentNode, Span as StyledSpan};
+use crate::styled_string::{DocumentNode, Span as StyledSpan, TruncationLevel};
 use rustdoc_core::doc_ref::DocRef;
 use rustdoc_types::{
     Abi, Constant, Enum, Function, FunctionPointer, GenericArg, GenericArgs, GenericBound,
@@ -45,7 +45,7 @@ impl Request {
         }
 
         // Add documentation if available
-        if let Some(docs) = self.docs_to_show(item, false) {
+        if let Some(docs) = self.docs_to_show(item, TruncationLevel::Full) {
             doc_nodes.push(DocumentNode::Span(StyledSpan::plain("\n")));
             doc_nodes.extend(docs);
             doc_nodes.push(DocumentNode::Span(StyledSpan::plain("\n")));
