@@ -1,0 +1,24 @@
+---
+source: rustdoc-mcp/src/workspace_tests.rs
+expression: result
+---
+• crate-a (workspace-local)
+    First crate in test workspace
+• crate-b (workspace-local)
+    Second crate in test workspace
+• anyhow 1.0.99
+    Flexible concrete Error type built on std::error::Error
+• env_logger 0.10.2 (dev-dep)
+    A logging implementation for `log` which is configured via an environment variable. 
+• log 0.4.28
+    A lightweight logging facade for Rust 
+• std 1.94.0-nightly
+    The Rust Standard Library
+• alloc 1.94.0-nightly
+    The Rust core allocation and collections library
+• core 1.94.0-nightly
+    The Rust Core Library
+• proc_macro 1.94.0-nightly
+    A support library for macro authors when defining new macros
+• test 1.94.0-nightly
+    Support code for rustc's built in unit-test and micro-benchmarking framework
