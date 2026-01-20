@@ -1,5 +1,5 @@
 ---
-source: src/workspace_tests.rs
+source: rustdoc-mcp/src/workspace_tests.rs
 expression: result
 ---
 Item: serde
@@ -23,3 +23,10 @@ Deserialize // A **data structure** that can be deserialized from any data forma
 Deserializer // A **data format** that can deserialize any data structure supported by [+107 more lines]
 Serialize // A **data structure** that can be serialized into any data format supported [+24 more lines]
 Serializer // A **data format** that can serialize any data structure supported by Serde. [+76 more lines]
+
+Macros:
+forward_to_deserialize_any // Helper macro when implementing the `Deserializer` part of a new data format [+104 more lines]
+
+ProcDerive:
+Deserialize
+Serialize

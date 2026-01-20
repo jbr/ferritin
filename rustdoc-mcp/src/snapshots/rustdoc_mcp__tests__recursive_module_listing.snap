@@ -7,32 +7,44 @@ Kind: Module
 Visibility: Public
 Defined at: test_crate
 
-A minimal test crate for rustdoc JSON MCP testing
+A minimal test crate for rustdoc JSON testing
 
 
 Modules:
+link_resolution_tests // Module for testing intra-doc link resolution
+link_resolution_tests::nested // Nested module for testing scoped resolution
+link_resolution_tests::nested::deeply_nested // Another nested module
 reexport_mod
 submodule // A module with items
 
 Structs:
 GenericStruct // A generic struct for testing multi-paragraph documentation. [+14 more lines]
 SubStruct // A struct in a submodule
-TestStruct // A simple struct for testing basic functionality. [+3 more lines]
+TestStruct // A simple struct for testing basic functionality. [+6 more lines]
 TupleStruct // A tuple struct for testing
 UnitStruct // A unit struct for testing
 Vec // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+257 more lines]
+link_resolution_tests::HashSet // A [hash set] implemented as a `HashMap` where the value is `()`. [+108 more lines]
+link_resolution_tests::LinkTestStruct // Struct in link test module
+link_resolution_tests::RenamedTestStruct // A simple struct for testing basic functionality. [+6 more lines]
+link_resolution_tests::SubStruct // A struct in a submodule
+link_resolution_tests::Tree // An ordered map based on a [B-Tree]. [+144 more lines]
+link_resolution_tests::nested::NestedStruct // Struct in nested module
+link_resolution_tests::nested::Str // A UTF-8–encoded, growable string. [+279 more lines]
+link_resolution_tests::nested::deeply_nested::DeepStruct // Struct in deeply nested module
 reexport_mod::SubStruct // A struct in a submodule
 submodule::SubStruct // A struct in a submodule
 
 Enums:
-GenericEnum // A generic enum for testing
-TestEnum // An enum for testing
-reexport_mod::TestEnum // An enum for testing
-submodule::TestEnum // An enum for testing
+GenericEnum // A generic enum for testing [+2 more lines]
+TestEnum // An enum for testing [+2 more lines]
+reexport_mod::TestEnum // An enum for testing [+2 more lines]
+submodule::TestEnum // An enum for testing [+2 more lines]
 
 Traits:
 ComplexTrait // A more complex trait demonstrating various features
 TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
+link_resolution_tests::nested::TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 
 Functions:
 SubStruct::double // Double the value
@@ -109,6 +121,137 @@ Vec::with_capacity // Constructs a new, empty `Vec<T>` with at least the specifi
 Vec::with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+54 more lines]
 async_function // An async function
 generic_function // A generic function
+link_resolution_tests::HashSet::capacity // Returns the number of elements the set can hold without reallocating. [+8 more lines]
+link_resolution_tests::HashSet::clear // Clears the set, removing all values. [+11 more lines]
+link_resolution_tests::HashSet::contains // Returns `true` if the set contains a value. [+14 more lines]
+link_resolution_tests::HashSet::difference // Visits the values representing the difference, [+22 more lines]
+link_resolution_tests::HashSet::drain // Clears the set, returning all elements as an iterator. Keeps the [+21 more lines]
+link_resolution_tests::HashSet::entry // Gets the given value's corresponding entry in the set for in-place manipulation. [+34 more lines]
+link_resolution_tests::HashSet::extract_if // Creates an iterator which uses a closure to determine if an element should be removed. [+29 more lines]
+link_resolution_tests::HashSet::get // Returns a reference to the value in the set, if any, that is equal to the given value. [+14 more lines]
+link_resolution_tests::HashSet::get_or_insert // Inserts the given `value` into the set if it is not present, then [+15 more lines]
+link_resolution_tests::HashSet::get_or_insert_with // Inserts a value computed from `f` into the set if the given `value` is [+19 more lines]
+link_resolution_tests::HashSet::hasher // Returns a reference to the set's [`BuildHasher`]. [+11 more lines]
+link_resolution_tests::HashSet::insert // Adds a value to the set. [+19 more lines]
+link_resolution_tests::HashSet::intersection // Visits the values representing the intersection, [+23 more lines]
+link_resolution_tests::HashSet::is_disjoint // Returns `true` if `self` has no elements in common with `other`. [+16 more lines]
+link_resolution_tests::HashSet::is_empty // Returns `true` if the set contains no elements. [+11 more lines]
+link_resolution_tests::HashSet::is_subset // Returns `true` if the set is a subset of another, [+16 more lines]
+link_resolution_tests::HashSet::is_superset // Returns `true` if the set is a superset of another, [+19 more lines]
+link_resolution_tests::HashSet::iter // An iterator visiting all elements in arbitrary order. [+20 more lines]
+link_resolution_tests::HashSet::len // Returns the number of elements in the set. [+11 more lines]
+link_resolution_tests::HashSet::new // Creates an empty `HashSet`. [+10 more lines]
+link_resolution_tests::HashSet::new_in // Creates an empty `HashSet` in the provided allocator. [+3 more lines]
+link_resolution_tests::HashSet::remove // Removes a value from the set. Returns whether the value was [+17 more lines]
+link_resolution_tests::HashSet::replace // Adds a value to the set, replacing the existing value, if any, that is equal to the given [+14 more lines]
+link_resolution_tests::HashSet::reserve // Reserves capacity for at least `additional` more elements to be inserted [+17 more lines]
+link_resolution_tests::HashSet::retain // Retains only the elements specified by the predicate. [+18 more lines]
+link_resolution_tests::HashSet::shrink_to // Shrinks the capacity of the set with a lower limit. It will drop [+18 more lines]
+link_resolution_tests::HashSet::shrink_to_fit // Shrinks the capacity of the set as much as possible. It will drop [+15 more lines]
+link_resolution_tests::HashSet::symmetric_difference // Visits the values representing the symmetric difference, [+20 more lines]
+link_resolution_tests::HashSet::take // Removes and returns the value in the set, if any, that is equal to the given one. [+14 more lines]
+link_resolution_tests::HashSet::try_reserve // Tries to reserve capacity for at least `additional` more elements to be inserted [+18 more lines]
+link_resolution_tests::HashSet::union // Visits the values representing the union, [+17 more lines]
+link_resolution_tests::HashSet::with_capacity // Creates an empty `HashSet` with at least the specified capacity. [+12 more lines]
+link_resolution_tests::HashSet::with_capacity_and_hasher // Creates an empty `HashSet` with at least the specified capacity, using [+24 more lines]
+link_resolution_tests::HashSet::with_capacity_and_hasher_in // Creates an empty `HashSet` with at least the specified capacity, using [+13 more lines]
+link_resolution_tests::HashSet::with_capacity_in // Creates an empty `HashSet` with at least the specified capacity. [+12 more lines]
+link_resolution_tests::HashSet::with_hasher // Creates a new empty hash set which will use the given hasher to hash [+22 more lines]
+link_resolution_tests::HashSet::with_hasher_in // Creates a new empty hash set which will use the given hasher to hash [+11 more lines]
+link_resolution_tests::LinkTestStruct::get_data // Another method
+link_resolution_tests::LinkTestStruct::new // Method for testing Self resolution
+link_resolution_tests::RenamedTestStruct::get_field // Get the field value
+link_resolution_tests::RenamedTestStruct::increment_count // Update the count
+link_resolution_tests::RenamedTestStruct::new // Create a new TestStruct
+link_resolution_tests::SubStruct::double // Double the value
+link_resolution_tests::SubStruct::get_value // Get the value
+link_resolution_tests::SubStruct::new // Create a new SubStruct
+link_resolution_tests::Tree::append // Moves all elements from `other` into `self`, leaving `other` empty. [+34 more lines]
+link_resolution_tests::Tree::clear // Clears the map, removing all elements. [+11 more lines]
+link_resolution_tests::Tree::contains_key // Returns `true` if the map contains a value for the specified key. [+14 more lines]
+link_resolution_tests::Tree::entry // Gets the given key's corresponding entry in the map for in-place manipulation. [+17 more lines]
+link_resolution_tests::Tree::extract_if // Creates an iterator that visits elements (key-value pairs) in the specified range in [+36 more lines]
+link_resolution_tests::Tree::first_entry // Returns the first entry in the map for in-place manipulation. [+18 more lines]
+link_resolution_tests::Tree::first_key_value // Returns the first key-value pair in the map. [+13 more lines]
+link_resolution_tests::Tree::get // Returns a reference to the value corresponding to the key. [+14 more lines]
+link_resolution_tests::Tree::get_key_value // Returns the key-value pair corresponding to the supplied key. This is [+52 more lines]
+link_resolution_tests::Tree::get_mut // Returns a mutable reference to the value corresponding to the key. [+16 more lines]
+link_resolution_tests::Tree::insert // Inserts a key-value pair into the map. [+23 more lines]
+link_resolution_tests::Tree::into_keys // Creates a consuming iterator visiting all the keys, in sorted order. [+15 more lines]
+link_resolution_tests::Tree::into_values // Creates a consuming iterator visiting all the values, in order by key. [+15 more lines]
+link_resolution_tests::Tree::is_empty // Returns `true` if the map contains no elements. [+11 more lines]
+link_resolution_tests::Tree::iter // Gets an iterator over the entries of the map, sorted by key. [+18 more lines]
+link_resolution_tests::Tree::iter_mut // Gets a mutable iterator over the entries of the map, sorted by key. [+19 more lines]
+link_resolution_tests::Tree::keys // Gets an iterator over the keys of the map, in sorted order. [+13 more lines]
+link_resolution_tests::Tree::last_entry // Returns the last entry in the map for in-place manipulation. [+18 more lines]
+link_resolution_tests::Tree::last_key_value // Returns the last key-value pair in the map. [+12 more lines]
+link_resolution_tests::Tree::len // Returns the number of elements in the map. [+11 more lines]
+link_resolution_tests::Tree::lower_bound // Returns a [`Cursor`] pointing at the gap before the smallest key [+38 more lines]
+link_resolution_tests::Tree::lower_bound_mut // Returns a [`CursorMut`] pointing at the gap before the smallest key [+38 more lines]
+link_resolution_tests::Tree::new // Makes a new, empty `BTreeMap`. [+13 more lines]
+link_resolution_tests::Tree::new_in // Makes a new empty BTreeMap with a reasonable choice for B. [+14 more lines]
+link_resolution_tests::Tree::pop_first // Removes and returns the first element in the map. [+17 more lines]
+link_resolution_tests::Tree::pop_last // Removes and returns the last element in the map. [+17 more lines]
+link_resolution_tests::Tree::range // Constructs a double-ended iterator over a sub-range of elements in the map. [+26 more lines]
+link_resolution_tests::Tree::range_mut // Constructs a mutable double-ended iterator over a sub-range of elements in the map. [+25 more lines]
+link_resolution_tests::Tree::remove // Removes a key from the map, returning the value at the key if the key [+15 more lines]
+link_resolution_tests::Tree::remove_entry // Removes a key from the map, returning the stored key and value if the key [+15 more lines]
+link_resolution_tests::Tree::retain // Retains only the elements specified by the predicate. [+14 more lines]
+link_resolution_tests::Tree::split_off // Splits the collection into two at the given key. Returns everything after the given key, [+27 more lines]
+link_resolution_tests::Tree::try_insert // Tries to insert a key-value pair into the map, and returns [+20 more lines]
+link_resolution_tests::Tree::upper_bound // Returns a [`Cursor`] pointing at the gap after the greatest key [+38 more lines]
+link_resolution_tests::Tree::upper_bound_mut // Returns a [`CursorMut`] pointing at the gap after the greatest key [+38 more lines]
+link_resolution_tests::Tree::values // Gets an iterator over the values of the map, in order by key. [+13 more lines]
+link_resolution_tests::Tree::values_mut // Gets a mutable iterator over the values of the map, in order by key. [+18 more lines]
+link_resolution_tests::nested::NestedStruct::new // Create new NestedStruct
+link_resolution_tests::nested::Str::as_bytes // Returns a byte slice of this `String`'s contents. [+12 more lines]
+link_resolution_tests::nested::Str::as_mut_str // Converts a `String` into a mutable string slice. [+11 more lines]
+link_resolution_tests::nested::Str::as_mut_vec // Returns a mutable reference to the contents of this `String`. [+22 more lines]
+link_resolution_tests::nested::Str::as_str // Extracts a string slice containing the entire `String`. [+8 more lines]
+link_resolution_tests::nested::Str::capacity // Returns this `String`'s capacity, in bytes. [+8 more lines]
+link_resolution_tests::nested::Str::clear // Truncates this `String`, removing all contents. [+15 more lines]
+link_resolution_tests::nested::Str::drain // Removes the specified range from the string in bulk, returning all [+32 more lines]
+link_resolution_tests::nested::Str::extend_from_within // Copies elements from `src` range to the end of the string. [+21 more lines]
+link_resolution_tests::nested::Str::from_raw_parts // Creates a new `String` from a pointer, a length and a capacity. [+35 more lines]
+link_resolution_tests::nested::Str::from_utf16 // Decode a native endian UTF-16–encoded vector `v` into a `String`, [+16 more lines]
+link_resolution_tests::nested::Str::from_utf16_lossy // Decode a native endian UTF-16–encoded slice `v` into a `String`, [+21 more lines]
+link_resolution_tests::nested::Str::from_utf16be // Decode a UTF-16BE–encoded vector `v` into a `String`, [+19 more lines]
+link_resolution_tests::nested::Str::from_utf16be_lossy // Decode a UTF-16BE–encoded slice `v` into a `String`, replacing [+24 more lines]
+link_resolution_tests::nested::Str::from_utf16le // Decode a UTF-16LE–encoded vector `v` into a `String`, [+19 more lines]
+link_resolution_tests::nested::Str::from_utf16le_lossy // Decode a UTF-16LE–encoded slice `v` into a `String`, replacing [+24 more lines]
+link_resolution_tests::nested::Str::from_utf8 // Converts a vector of bytes to a `String`. [+55 more lines]
+link_resolution_tests::nested::Str::from_utf8_lossy // Converts a slice of bytes to a string, including invalid characters. [+48 more lines]
+link_resolution_tests::nested::Str::from_utf8_lossy_owned // Converts a [`Vec<u8>`] to a `String`, substituting invalid UTF-8 [+33 more lines]
+link_resolution_tests::nested::Str::from_utf8_unchecked // Converts a vector of bytes to a `String` without checking that the [+25 more lines]
+link_resolution_tests::nested::Str::insert // Inserts a character into this `String` at byte position `idx`. [+23 more lines]
+link_resolution_tests::nested::Str::insert_str // Inserts a string slice into this `String` at byte position `idx`. [+21 more lines]
+link_resolution_tests::nested::Str::into_boxed_str // Converts this `String` into a <code>[Box]<[str]></code>. [+14 more lines]
+link_resolution_tests::nested::Str::into_bytes // Converts a `String` into a byte vector. [+11 more lines]
+link_resolution_tests::nested::Str::into_chars // Converts a `String` into an iterator over the [`char`]s of the string. [+47 more lines]
+link_resolution_tests::nested::Str::into_raw_parts // Decomposes a `String` into its raw components: `(pointer, length, capacity)`. [+24 more lines]
+link_resolution_tests::nested::Str::is_empty // Returns `true` if this `String` has a length of zero, and `false` otherwise. [+10 more lines]
+link_resolution_tests::nested::Str::leak // Consumes and leaks the `String`, returning a mutable reference to the contents, [+23 more lines]
+link_resolution_tests::nested::Str::len // Returns the length of this `String`, in bytes, not [`char`]s or [+13 more lines]
+link_resolution_tests::nested::Str::new // Creates a new empty `String`. [+15 more lines]
+link_resolution_tests::nested::Str::pop // Removes the last character from the string buffer and returns it. [+14 more lines]
+link_resolution_tests::nested::Str::push // Appends the given [`char`] to the end of this `String`. [+16 more lines]
+link_resolution_tests::nested::Str::push_str // Appends a given string slice onto the end of this `String`. [+14 more lines]
+link_resolution_tests::nested::Str::remove // Removes a [`char`] from this `String` at byte position `idx` and returns it. [+19 more lines]
+link_resolution_tests::nested::Str::remove_matches // Remove all matches of pattern `pat` in the `String`. [+19 more lines]
+link_resolution_tests::nested::Str::replace_first // Replaces the leftmost occurrence of a pattern with another string, in-place. [+20 more lines]
+link_resolution_tests::nested::Str::replace_last // Replaces the rightmost occurrence of a pattern with another string, in-place. [+14 more lines]
+link_resolution_tests::nested::Str::replace_range // Removes the specified range in the string, [+18 more lines]
+link_resolution_tests::nested::Str::reserve // Reserves capacity for at least `additional` bytes more than the [+39 more lines]
+link_resolution_tests::nested::Str::reserve_exact // Reserves the minimum capacity for at least `additional` bytes more than [+42 more lines]
+link_resolution_tests::nested::Str::retain // Retains only the characters specified by the predicate. [+25 more lines]
+link_resolution_tests::nested::Str::shrink_to // Shrinks the capacity of this `String` with a lower bound. [+19 more lines]
+link_resolution_tests::nested::Str::shrink_to_fit // Shrinks the capacity of this `String` to match its length. [+12 more lines]
+link_resolution_tests::nested::Str::split_off // Splits the string into two at the given byte index. [+22 more lines]
+link_resolution_tests::nested::Str::truncate // Shortens this `String` to the specified length. [+20 more lines]
+link_resolution_tests::nested::Str::try_reserve // Tries to reserve capacity for at least `additional` bytes more than the [+29 more lines]
+link_resolution_tests::nested::Str::try_reserve_exact // Tries to reserve the minimum capacity for at least `additional` bytes [+35 more lines]
+link_resolution_tests::nested::Str::try_with_capacity // Creates a new empty `String` with at least the specified capacity. [+5 more lines]
+link_resolution_tests::nested::Str::with_capacity // Creates a new empty `String` with at least the specified capacity. [+38 more lines]
 reexport_mod::SubStruct::double // Double the value
 reexport_mod::SubStruct::get_value // Get the value
 reexport_mod::SubStruct::new // Create a new SubStruct
@@ -130,24 +273,25 @@ Variants:
 GenericEnum::Mixed // Variant with mixed generics
 GenericEnum::Simple // Simple variant
 GenericEnum::WithData // Variant with generic data
-TestEnum::VariantA // Variant A
+TestEnum::VariantA // Variant A (see also [`crate::GenericEnum`])
 TestEnum::VariantB // Variant B with data
-TestEnum::VariantC // Variant C with struct data
-VariantA // Variant A
+TestEnum::VariantC // Variant C with struct data (`name` and `value`)
+VariantA // Variant A (see also [`crate::GenericEnum`])
 VariantB // Variant B with data
-VariantC // Variant C with struct data
-reexport_mod::TestEnum::VariantA // Variant A
+VariantC // Variant C with struct data (`name` and `value`)
+reexport_mod::TestEnum::VariantA // Variant A (see also [`crate::GenericEnum`])
 reexport_mod::TestEnum::VariantB // Variant B with data
-reexport_mod::TestEnum::VariantC // Variant C with struct data
-reexport_mod::VariantA // Variant A
+reexport_mod::TestEnum::VariantC // Variant C with struct data (`name` and `value`)
+reexport_mod::VariantA // Variant A (see also [`crate::GenericEnum`])
 reexport_mod::VariantB // Variant B with data
-reexport_mod::VariantC // Variant C with struct data
-submodule::TestEnum::VariantA // Variant A
+reexport_mod::VariantC // Variant C with struct data (`name` and `value`)
+submodule::TestEnum::VariantA // Variant A (see also [`crate::GenericEnum`])
 submodule::TestEnum::VariantB // Variant B with data
-submodule::TestEnum::VariantC // Variant C with struct data
-submodule::VariantA // Variant A
+submodule::TestEnum::VariantC // Variant C with struct data (`name` and `value`)
+submodule::VariantA // Variant A (see also [`crate::GenericEnum`])
 submodule::VariantB // Variant B with data
-submodule::VariantC // Variant C with struct data
+submodule::VariantC // Variant C with struct data (`name` and `value`)
 
 AssocConst:
 TestStruct::ASSOCIATED_CONST // This is an associated constant for a struct
+link_resolution_tests::RenamedTestStruct::ASSOCIATED_CONST // This is an associated constant for a struct

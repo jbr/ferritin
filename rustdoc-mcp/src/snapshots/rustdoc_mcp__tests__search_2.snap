@@ -1,8 +1,8 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Search results for 'generic struct' in crate 'test-crate':
 
-• test-crate::GenericStruct (Struct) - score: 23
+• test-crate::GenericStruct (Struct) - score: 16
     A generic struct for testing multi-paragraph documentation. [+14 more lines]

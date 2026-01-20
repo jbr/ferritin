@@ -1,0 +1,31 @@
+[package]
+name = "ferretin"
+version.workspace = true
+edition.workspace = true
+description = "Human-friendly CLI for browsing Rust documentation"
+readme.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "ferretin"
+path = "src/main.rs"
+
+[dependencies]
+ferretin-common = { path = "../ferretin-common" }
+
+anyhow.workspace = true
+clap = { version = "4.5.54", features = ["derive", "cargo", "env"] }
+fieldwork = "0.4.6"
+log = "0.4.29"
+env_logger = "0.11.8"
+owo-colors = { version = "4.2.3", features = ["supports-colors"] }
+pulldown-cmark = "0.13"
+regex = "1.12"
+rustdoc-types.workspace = true
+syntect = "5.3"
+terminal_size = "0.4"
+unicode-width = "0.2.2"
+
+[dev-dependencies]
+insta = "1.46.1"

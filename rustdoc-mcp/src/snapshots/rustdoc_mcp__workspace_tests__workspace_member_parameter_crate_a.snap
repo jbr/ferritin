@@ -6,6 +6,7 @@ expression: result
     First crate in test workspace
 • crate-b (workspace-local)
     Second crate in test workspace
+• link-test (workspace-local)
 • regex 1.11.2
     An implementation of regular expressions for Rust. This implementation uses finite automata and guarantees linear time matching on all inputs. 
 • serde 1.0.219

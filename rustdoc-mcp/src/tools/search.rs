@@ -2,7 +2,7 @@ use crate::format_context::FormatContext;
 use crate::indent::Indent;
 use crate::request::Request;
 use crate::state::RustdocTools;
-use rustdoc_core::search::indexer::SearchIndex;
+use ferretin_common::search::indexer::SearchIndex;
 use crate::traits::WriteFmt;
 use anyhow::Result;
 use mcplease::traits::{Tool, WithExamples};
@@ -50,9 +50,9 @@ impl WithExamples for Search {
 
 impl Tool<RustdocTools> for Search {
     fn execute(self, state: &mut RustdocTools) -> Result<String> {
-        let project = state.project_context(None)?;
+        let manifest_path = state.resolve_path("Cargo.toml", None)?;
 
-        let request = Request::new(project);
+        let request = Request::new(manifest_path);
         let index = match SearchIndex::load_or_build(&request, &self.crate_name) {
             Ok(index) => index,
             Err(mut suggestions) => {

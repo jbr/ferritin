@@ -7,7 +7,7 @@ use std::path::PathBuf;
 
 /// Get the path to our test workspace
 fn get_test_workspace_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/test-workspace")
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../tests/test-workspace")
 }
 
 /// Create a test state with workspace context

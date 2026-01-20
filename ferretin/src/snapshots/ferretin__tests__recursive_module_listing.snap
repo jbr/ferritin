@@ -1,0 +1,2939 @@
+---
+source: ferretin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate\").recursive(), OutputMode::TestMode)"
+---
+Item: test_crate
+Kind: Module
+Visibility: Public
+Defined at: test_crate
+
+<truncated level="full">A minimal test crate for rustdoc JSON testing
+
+</truncated>
+
+<section><section-title>Modules</section-title><list>
+  <item><label><type-name>link_resolution_tests</type-name></label>
+<truncated level="brief">Module for testing intra-doc link resolution
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested</type-name></label>
+<truncated level="brief">Nested module for testing scoped resolution
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::deeply_nested</type-name></label>
+<truncated level="brief">Another nested module
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod</type-name></label></item>
+  <item><label><type-name>submodule</type-name></label>
+<truncated level="brief">A module with items
+
+</truncated>
+</item>
+</list>
+</section><section><section-title>Structs</section-title><list>
+  <item><label><type-name>GenericStruct</type-name></label>
+<truncated level="brief">A generic struct for testing multi-paragraph documentation.
+
+This struct demonstrates how generics work with complex type bounds and provides a comprehensive example of the generic system in Rust.
+
+<section-heading>Usage Examples</section-heading>
+You can create instances with different type parameters:
+
+<section-heading><inline-code>GenericStruct<i32></inline-code> for integer data<inline-code>GenericStruct<String, CustomDisplay></inline-code> for custom typesImplementation Notes</section-heading>
+The struct uses trait bounds to ensure type safety and provides default type parameters for common use cases.
+
+</truncated>
+</item>
+  <item><label><type-name>SubStruct</type-name></label>
+<truncated level="brief">A struct in a submodule
+
+</truncated>
+</item>
+  <item><label><type-name>TestStruct</type-name></label>
+<truncated level="brief">A simple struct for testing basic functionality.
+
+This struct demonstrates basic usage patterns and should show completely since it only has one paragraph of documentation.
+
+It uses <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html">Vector</link> for testing intra-doc link resolution with renamed imports. Also tests [HashMap] which is a non-renamed import.
+
+</truncated>
+</item>
+  <item><label><type-name>TupleStruct</type-name></label>
+<truncated level="brief">A tuple struct for testing
+
+</truncated>
+</item>
+  <item><label><type-name>UnitStruct</type-name></label>
+<truncated level="brief">A unit struct for testing
+
+</truncated>
+</item>
+  <item><label><type-name>Vec</type-name></label>
+<truncated level="brief">A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.
+
+<title>Examples</title>
+<code-block>
+let mut vec = Vec::new();
+vec.push(1);
+vec.push(2);
+
+assert_eq!(vec.len(), 2);
+assert_eq!(vec[0], 1);
+
+assert_eq!(vec.pop(), Some(2));
+assert_eq!(vec.len(), 1);
+
+vec[0] = 7;
+assert_eq!(vec[0], 7);
+
+vec.extend([1, 2, 3]);
+
+for x in &vec {
+    println!("{x}");
+}
+assert_eq!(vec, [7, 1, 2, 3]);
+</code-block>
+The <link href="http://docs.rust-lang.org/nightly/alloc/macro.vec.html">vec!</link> macro is provided for convenient initialization:
+
+ <elided chars="8222"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet</type-name></label>
+<truncated level="brief">A <link href="http://docs.rust-lang.org/nightly/std/index.html">hash set</link> implemented as a <inline-code>HashMap</inline-code> where the value is <inline-code>()</inline-code>.
+
+As with the <link href="http://docs.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html">HashMap</link> type, a <inline-code>HashSet</inline-code> requires that the elements implement the <link href="http://docs.rust-lang.org/nightly/core/cmp/trait.Eq.html">Eq</link> and <link href="http://docs.rust-lang.org/nightly/core/hash/trait.Hash.html">Hash</link> traits. This can frequently be achieved by using <inline-code>#[derive(PartialEq, Eq, Hash)]</inline-code>. If you implement these yourself, it is important that the following property holds:
+
+<code-block lang="text">
+k1 == k2 -> hash(k1) == hash(k2)
+</code-block>
+In other words, if two keys are equal, their hashes must be equal. Violating this property is a logic error.
+
+It is also a logic error for a key to be <elided chars="2812"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::LinkTestStruct</type-name></label>
+<truncated level="brief">Struct in link test module
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::RenamedTestStruct</type-name></label>
+<truncated level="brief">A simple struct for testing basic functionality.
+
+This struct demonstrates basic usage patterns and should show completely since it only has one paragraph of documentation.
+
+It uses <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html">Vector</link> for testing intra-doc link resolution with renamed imports. Also tests [HashMap] which is a non-renamed import.
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::SubStruct</type-name></label>
+<truncated level="brief">A struct in a submodule
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree</type-name></label>
+<truncated level="brief">An ordered map based on a <link href="https://en.wikipedia.org/wiki/B-tree">B-Tree</link>.
+
+Given a key type with a <link href="https://en.wikipedia.org/wiki/Total_order">total order</link>, an ordered map stores its entries in key order. That means that keys must be of a type that implements the <link href="http://docs.rust-lang.org/nightly/core/cmp/trait.Ord.html">Ord</link> trait, such that two keys can always be compared to determine their <link href="http://docs.rust-lang.org/nightly/core/cmp/enum.Ordering.html">Ordering</link>. Examples of keys with a total order are strings with lexicographical order, and numbers with their natural order.
+
+Iterators obtained from functions such as <link href="http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter">BTreeMap::iter</link>, <link href="http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_iter">BTreeMap::into_iter</link>, <link href="http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values">BTreeMap::values</link>, or <link href="http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.keys">BTreeMap::keys</link> produce <elided chars="5321"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::NestedStruct</type-name></label>
+<truncated level="brief">Struct in nested module
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str</type-name></label>
+<truncated level="brief">A UTF-8–encoded, growable string.
+
+<inline-code>String</inline-code> is the most common string type. It has ownership over the contents of the string, stored in a heap-allocated buffer (see <link href="#representation">Representation</link>). It is closely related to its borrowed counterpart, the primitive <link href="http://docs.rust-lang.org/nightly/alloc/index.html">str</link>.
+
+<title>Examples</title>
+You can create a <inline-code>String</inline-code> from <link href="http://docs.rust-lang.org/nightly/alloc/index.html">a literal string</link> with <link href="From::from">String::from</link>:
+
+<code-block>
+let hello = String::from("Hello, world!");
+</code-block>
+You can append a <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> to a <inline-code>String</inline-code> with the <link href="String::push">push</link> method, and append a <link href="http://docs.rust-lang.org/nightly/alloc/index.html">&str</link> with the <link href="String::push_str">push_str</link> method:
+
+ <elided chars="6485"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::deeply_nested::DeepStruct</type-name></label>
+<truncated level="brief">Struct in deeply nested module
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::SubStruct</type-name></label>
+<truncated level="brief">A struct in a submodule
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::SubStruct</type-name></label>
+<truncated level="brief">A struct in a submodule
+
+</truncated>
+</item>
+</list>
+</section><section><section-title>Enums</section-title><list>
+  <item><label><type-name>GenericEnum</type-name></label>
+<truncated level="brief">A generic enum for testing
+
+See also <link href="https://docs.rs/test-crate/0.1.0/test-crate/submodule/enum.TestEnum.html">crate::TestEnum</link>
+
+</truncated>
+</item>
+  <item><label><type-name>TestEnum</type-name></label>
+<truncated level="brief">An enum for testing
+
+This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link> but without the generic
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::TestEnum</type-name></label>
+<truncated level="brief">An enum for testing
+
+This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link> but without the generic
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::TestEnum</type-name></label>
+<truncated level="brief">An enum for testing
+
+This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link> but without the generic
+
+</truncated>
+</item>
+</list>
+</section><section><section-title>Traits</section-title><list>
+  <item><label><type-name>ComplexTrait</type-name></label>
+<truncated level="brief">A more complex trait demonstrating various features
+
+</truncated>
+</item>
+  <item><label><type-name>TestTrait</type-name></label>
+<truncated level="brief">A trait for testing extremely long documentation that exceeds line limits.
+
+This trait provides a comprehensive interface for data processing operations. It demonstrates various method signatures including mutable references, error handling, and different return types. The trait is designed to be flexible and extensible for different use cases in data processing pipelines. Each method serves a specific purpose in the data transformation workflow. The implementation should handle edge cases <elided chars="845"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::TestTrait</type-name></label>
+<truncated level="brief">A trait for testing extremely long documentation that exceeds line limits.
+
+This trait provides a comprehensive interface for data processing operations. It demonstrates various method signatures including mutable references, error handling, and different return types. The trait is designed to be flexible and extensible for different use cases in data processing pipelines. Each method serves a specific purpose in the data transformation workflow. The implementation should handle edge cases <elided chars="845"/></truncated>
+</item>
+</list>
+</section><section><section-title>Functions</section-title><list>
+  <item><label><type-name>SubStruct::double</type-name></label>
+<truncated level="brief">Double the value
+
+</truncated>
+</item>
+  <item><label><type-name>SubStruct::get_value</type-name></label>
+<truncated level="brief">Get the value
+
+</truncated>
+</item>
+  <item><label><type-name>SubStruct::new</type-name></label>
+<truncated level="brief">Create a new SubStruct
+
+</truncated>
+</item>
+  <item><label><type-name>TestStruct::get_field</type-name></label>
+<truncated level="brief">Get the field value
+
+</truncated>
+</item>
+  <item><label><type-name>TestStruct::increment_count</type-name></label>
+<truncated level="brief">Update the count
+
+</truncated>
+</item>
+  <item><label><type-name>TestStruct::new</type-name></label>
+<truncated level="brief">Create a new TestStruct
+
+</truncated>
+</item>
+  <item><label><type-name>Vec::allocator</type-name></label>
+<truncated level="brief">Returns a reference to the underlying allocator.
+
+</truncated>
+</item>
+  <item><label><type-name>Vec::append</type-name></label>
+<truncated level="brief">Moves all the elements of <inline-code>other</inline-code> into <inline-code>self</inline-code>, leaving <inline-code>other</inline-code> empty.
+
+<title>Panics</title>
+Panics if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![1, 2, 3];
+let mut vec2 = vec![4, 5, 6];
+vec.append(&mut vec2);
+assert_eq!(vec, [1, 2, 3, 4, 5, 6]);
+assert_eq!(vec2, []);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::as_mut_ptr</type-name></label>
+<truncated level="brief">Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer valid for zero sized reads if the vector didn't allocate.
+
+The caller must ensure that the vector outlives the pointer this function returns, or else it will end up dangling. Modifying the vector may cause its buffer to be reallocated, which would also make any pointers to it invalid.
+
+This method guarantees that for the purpose of the aliasing model, this method does not materialize a reference to the underlying <elided chars="1756"/></truncated>
+</item>
+  <item><label><type-name>Vec::as_mut_slice</type-name></label>
+<truncated level="brief">Extracts a mutable slice of the entire vector.
+
+Equivalent to <inline-code>&mut s[..]</inline-code>.
+
+<title>Examples</title>
+<code-block>
+use std::io::{self, Read};
+let mut buffer = vec![0; 3];
+io::repeat(0b101).read_exact(buffer.as_mut_slice()).unwrap();
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::as_non_null</type-name></label>
+<truncated level="brief">Returns a <inline-code>NonNull</inline-code> pointer to the vector's buffer, or a dangling <inline-code>NonNull</inline-code> pointer valid for zero sized reads if the vector didn't allocate.
+
+The caller must ensure that the vector outlives the pointer this function returns, or else it will end up dangling. Modifying the vector may cause its buffer to be reallocated, which would also make any pointers to it invalid.
+
+This method guarantees that for the purpose of the aliasing model, this method does not materialize a reference to the underlying <elided chars="1066"/></truncated>
+</item>
+  <item><label><type-name>Vec::as_ptr</type-name></label>
+<truncated level="brief">Returns a raw pointer to the vector's buffer, or a dangling raw pointer valid for zero sized reads if the vector didn't allocate.
+
+The caller must ensure that the vector outlives the pointer this function returns, or else it will end up dangling. Modifying the vector may cause its buffer to be reallocated, which would also make any pointers to it invalid.
+
+The caller must also ensure that the memory the pointer (non-transitively) points to is never written to (except inside an <inline-code>UnsafeCell</inline-code>) using <elided chars="1171"/></truncated>
+</item>
+  <item><label><type-name>Vec::as_slice</type-name></label>
+<truncated level="brief">Extracts a slice containing the entire vector.
+
+Equivalent to <inline-code>&s[..]</inline-code>.
+
+<title>Examples</title>
+<code-block>
+use std::io::{self, Write};
+let buffer = vec![1, 2, 3, 5, 8];
+io::sink().write(buffer.as_slice()).unwrap();
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::capacity</type-name></label>
+<truncated level="brief">Returns the total number of elements the vector can hold without reallocating.
+
+<title>Examples</title>
+<code-block>
+let mut vec: Vec<i32> = Vec::with_capacity(10);
+vec.push(42);
+assert!(vec.capacity() >= 10);
+</code-block>
+A vector with zero-sized elements will always have a capacity of usize::MAX:
+
+<code-block>
+#[derive(Clone)]
+struct ZeroSized;
+
+fn main() {
+    assert_eq!(std::mem::size_of::<ZeroSized>(), 0);
+    let v = vec![ZeroSized; 0];
+    assert_eq!(v.capacity(), usize::MAX);
+}
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::clear</type-name></label>
+<truncated level="brief">Clears the vector, removing all values.
+
+Note that this method has no effect on the allocated capacity of the vector.
+
+<title>Examples</title>
+<code-block>
+let mut v = vec![1, 2, 3];
+
+v.clear();
+
+assert!(v.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::const_make_global</type-name></label>
+<truncated level="brief">Interns the <inline-code>Vec<T></inline-code>, making the underlying memory read-only. This method should be called during compile time. (This is a no-op if called during runtime)
+
+This method must be called if the memory used by <inline-code>Vec</inline-code> needs to appear in the final values of constants.
+
+</truncated>
+</item>
+  <item><label><type-name>Vec::dedup</type-name></label>
+<truncated level="brief">Removes consecutive repeated elements in the vector according to the <link href="http://docs.rust-lang.org/nightly/core/cmp/trait.PartialEq.html">PartialEq</link> trait implementation.
+
+If the vector is sorted, this removes all duplicates.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![1, 2, 2, 3, 2];
+
+vec.dedup();
+
+assert_eq!(vec, [1, 2, 3, 2]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::dedup_by</type-name></label>
+<truncated level="brief">Removes all but the first of consecutive elements in the vector satisfying a given equality relation.
+
+The <inline-code>same_bucket</inline-code> function is passed references to two elements from the vector and must determine if the elements compare equal. The elements are passed in opposite order from their order in the slice, so if <inline-code>same_bucket(a, b)</inline-code> returns <inline-code>true</inline-code>, <inline-code>a</inline-code> is removed.
+
+If the vector is sorted, this removes all duplicates.
+
+<title>Examples</title>
+ <elided chars="71"/></truncated>
+</item>
+  <item><label><type-name>Vec::dedup_by_key</type-name></label>
+<truncated level="brief">Removes all but the first of consecutive elements in the vector that resolve to the same key.
+
+If the vector is sorted, this removes all duplicates.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![10, 20, 21, 30, 20];
+
+vec.dedup_by_key(|i| *i / 10);
+
+assert_eq!(vec, [10, 20, 30, 20]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::drain</type-name></label>
+<truncated level="brief">Removes the subslice indicated by the given range from the vector, returning a double-ended iterator over the removed subslice.
+
+If the iterator is dropped before being fully consumed, it drops the remaining removed elements.
+
+The returned iterator keeps a mutable borrow on the vector to optimize its implementation.
+
+<title>Panics</title>
+Panics if the range has <inline-code>start_bound > end_bound</inline-code>, or, if the range is bounded on either end and past the length of the vector.
+
+<title>Leaking</title>
+If the returned iterator goes out of <elided chars="364"/></truncated>
+</item>
+  <item><label><type-name>Vec::extend_from_slice</type-name></label>
+<truncated level="brief">Clones and appends all elements in a slice to the <inline-code>Vec</inline-code>.
+
+Iterates over the slice <inline-code>other</inline-code>, clones each element, and then appends it to this <inline-code>Vec</inline-code>. The <inline-code>other</inline-code> slice is traversed in-order.
+
+Note that this function is the same as <link href="Vec::extend">extend</link>, except that it also works with slice elements that are Clone but not Copy. If Rust gets specialization this function may be deprecated.
+
+<title>Panics</title>
+Panics if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+ <elided chars="21"/></truncated>
+</item>
+  <item><label><type-name>Vec::extend_from_within</type-name></label>
+<truncated level="brief">Given a range <inline-code>src</inline-code>, clones a slice of elements in that range and appends it to the end.
+
+<inline-code>src</inline-code> must be a range that can form a valid subslice of the <inline-code>Vec</inline-code>.
+
+<title>Panics</title>
+Panics if starting index is greater than the end index, if the index is greater than the length of the vector, or if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+ <elided chars="282"/></truncated>
+</item>
+  <item><label><type-name>Vec::extract_if</type-name></label>
+<truncated level="brief">Creates an iterator which uses a closure to determine if an element in the range should be removed.
+
+If the closure returns <inline-code>true</inline-code>, the element is removed from the vector and yielded. If the closure returns <inline-code>false</inline-code>, or panics, the element remains in the vector and will not be yielded.
+
+Only elements that fall in the provided range are considered for extraction, but any elements after the range will still have to be moved if any element has been extracted.
+
+If the returned <inline-code>ExtractIf</inline-code> is not <elided chars="1472"/></truncated>
+</item>
+  <item><label><type-name>Vec::from_fn</type-name></label>
+<truncated level="brief">Creates a <inline-code>Vec<T></inline-code> where each element is produced by calling <inline-code>f</inline-code> with that element's index while walking forward through the <inline-code>Vec<T></inline-code>.
+
+This is essentially the same as writing
+
+<code-block lang="text">
+vec![f(0), f(1), f(2), …, f(length - 2), f(length - 1)]
+</code-block>
+and is similar to <inline-code>(0..i).map(f)</inline-code>, just for <inline-code>Vec<T></inline-code>s not iterators.
+
+If <inline-code>length == 0</inline-code>, this produces an empty <inline-code>Vec<T></inline-code> without ever calling <inline-code>f</inline-code>.
+
+<title>Example</title>
+ <elided chars="577"/></truncated>
+</item>
+  <item><label><type-name>Vec::from_parts</type-name></label>
+<truncated level="brief">Creates a <inline-code>Vec<T></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, and a capacity.
+
+<title>Safety</title>
+This is highly unsafe, due to the number of invariants that aren't checked:
+
+<inline-code>ptr</inline-code> must have been allocated using the global allocator, such as via the <link href="http://docs.rust-lang.org/nightly/alloc/alloc/fn.alloc.html">alloc::alloc</link> function.<inline-code>T</inline-code> needs to have the same alignment as what <inline-code>ptr</inline-code> was allocated with. (<inline-code>T</inline-code> having a less strict alignment is not sufficient, the alignment really needs to be equal to satisfy the <link href="crate::alloc::GlobalAlloc::dealloc">dealloc</link> requirement that memory must be allocated and deallocated with <elided chars="2481"/></truncated>
+</item>
+  <item><label><type-name>Vec::from_parts_in</type-name></label>
+<truncated level="brief">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator.
+
+<title>Safety</title>
+This is highly unsafe, due to the number of invariants that aren't checked:
+
+<inline-code>ptr</inline-code> must be <link href="http://docs.rust-lang.org/nightly/core/alloc/trait.Allocator.html"><emphasis>currently allocated</emphasis></link> via the given allocator <inline-code>alloc</inline-code>.<inline-code>T</inline-code> needs to have the same alignment as what <inline-code>ptr</inline-code> was allocated with. (<inline-code>T</inline-code> having a less strict alignment is not sufficient, the alignment really needs to be equal to satisfy the <link href="crate::alloc::GlobalAlloc::dealloc">dealloc</link> requirement that memory must be allocated and deallocated with the same <elided chars="2462"/></truncated>
+</item>
+  <item><label><type-name>Vec::from_raw_parts</type-name></label>
+<truncated level="brief">Creates a <inline-code>Vec<T></inline-code> directly from a pointer, a length, and a capacity.
+
+<title>Safety</title>
+This is highly unsafe, due to the number of invariants that aren't checked:
+
+If <inline-code>T</inline-code> is not a zero-sized type and the capacity is nonzero, <inline-code>ptr</inline-code> must have been allocated using the global allocator, such as via the <link href="http://docs.rust-lang.org/nightly/alloc/alloc/fn.alloc.html">alloc::alloc</link> function. If <inline-code>T</inline-code> is a zero-sized type or the capacity is zero, <inline-code>ptr</inline-code> need only be non-null and aligned.<inline-code>T</inline-code> needs to have the same alignment as what <inline-code>ptr</inline-code> was allocated with, if the pointer is required to be <elided chars="2663"/></truncated>
+</item>
+  <item><label><type-name>Vec::from_raw_parts_in</type-name></label>
+<truncated level="brief">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator.
+
+<title>Safety</title>
+This is highly unsafe, due to the number of invariants that aren't checked:
+
+<inline-code>ptr</inline-code> must be <link href="http://docs.rust-lang.org/nightly/core/alloc/trait.Allocator.html"><emphasis>currently allocated</emphasis></link> via the given allocator <inline-code>alloc</inline-code>.<inline-code>T</inline-code> needs to have the same alignment as what <inline-code>ptr</inline-code> was allocated with. (<inline-code>T</inline-code> having a less strict alignment is not sufficient, the alignment really needs to be equal to satisfy the <link href="crate::alloc::GlobalAlloc::dealloc">dealloc</link> requirement that memory must be allocated and deallocated with the same layout.)The <elided chars="2460"/></truncated>
+</item>
+  <item><label><type-name>Vec::insert</type-name></label>
+<truncated level="brief">Inserts an element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the right.
+
+<title>Panics</title>
+Panics if <inline-code>index > len</inline-code>.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec!['a', 'b', 'c'];
+vec.insert(1, 'd');
+assert_eq!(vec, ['a', 'd', 'b', 'c']);
+vec.insert(4, 'e');
+assert_eq!(vec, ['a', 'd', 'b', 'c', 'e']);
+</code-block>
+<title>Time complexity</title>
+Takes <emphasis>O</emphasis>(<link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.len">Vec::len</link>) time. All items after the insertion index must be shifted to the right. In the worst case, all elements are shifted when the insertion index is 0.
+
+</truncated>
+</item>
+  <item><label><type-name>Vec::insert_mut</type-name></label>
+<truncated level="brief">Inserts an element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the right, and returning a reference to the new element.
+
+<title>Panics</title>
+Panics if <inline-code>index > len</inline-code>.
+
+<title>Examples</title>
+<code-block>
+#![feature(push_mut)]
+let mut vec = vec![1, 3, 5, 9];
+let x = vec.insert_mut(3, 6);
+*x += 1;
+assert_eq!(vec, [1, 3, 5, 7, 9]);
+</code-block>
+<title>Time complexity</title>
+Takes <emphasis>O</emphasis>(<link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.len">Vec::len</link>) time. All items after the insertion index must be shifted to the right. In the worst case, all elements are shifted when the insertion index is 0.
+
+</truncated>
+</item>
+  <item><label><type-name>Vec::into_boxed_slice</type-name></label>
+<truncated level="brief">Converts the vector into <link href="Box">Box<[T]></link>.
+
+Before doing the conversion, this method discards excess capacity like <link href="Vec::shrink_to_fit">shrink_to_fit</link>.
+
+<title>Examples</title>
+<code-block>
+let v = vec![1, 2, 3];
+
+let slice = v.into_boxed_slice();
+</code-block>
+Any excess capacity is removed:
+
+<code-block>
+let mut vec = Vec::with_capacity(10);
+vec.extend([1, 2, 3]);
+
+assert!(vec.capacity() >= 10);
+let slice = vec.into_boxed_slice();
+assert_eq!(slice.into_vec().capacity(), 3);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::into_chunks</type-name></label>
+<truncated level="brief">Groups every <inline-code>N</inline-code> elements in the <inline-code>Vec<T></inline-code> into chunks to produce a <inline-code>Vec<[T; N]></inline-code>, dropping elements in the remainder. <inline-code>N</inline-code> must be greater than zero.
+
+If the capacity is not a multiple of the chunk size, the buffer will shrink down to the nearest multiple with a reallocation or deallocation.
+
+This function can be used to reverse <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened">Vec::into_flattened</link>.
+
+<title>Examples</title>
+ <elided chars="235"/></truncated>
+</item>
+  <item><label><type-name>Vec::into_flattened</type-name></label>
+<truncated level="brief">Takes a <inline-code>Vec<[T; N]></inline-code> and flattens it into a <inline-code>Vec<T></inline-code>.
+
+<title>Panics</title>
+Panics if the length of the resulting vector would overflow a <inline-code>usize</inline-code>.
+
+This is only possible when flattening a vector of arrays of zero-sized types, and thus tends to be irrelevant in practice. If <inline-code>size_of::<T>() > 0</inline-code>, this will never panic.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+assert_eq!(vec.pop(), Some([7, 8, 9]));
+
+let mut flattened = vec.into_flattened();
+assert_eq!(flattened.pop(), Some(6));
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::into_parts</type-name></label>
+<truncated level="brief">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity)</inline-code>.
+
+Returns the <inline-code>NonNull</inline-code> pointer to the underlying data, the length of the vector (in elements), and the allocated capacity of the data (in elements). These are the same arguments in the same order as the arguments to <link href="Vec::from_parts">from_parts</link>.
+
+After calling this function, the caller is responsible for the memory previously managed by the <inline-code>Vec</inline-code>. The only way to do this is to convert the <inline-code>NonNull</inline-code> pointer, length, and capacity back into <elided chars="448"/></truncated>
+</item>
+  <item><label><type-name>Vec::into_parts_with_alloc</type-name></label>
+<truncated level="brief">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity, allocator)</inline-code>.
+
+Returns the <inline-code>NonNull</inline-code> pointer to the underlying data, the length of the vector (in elements), the allocated capacity of the data (in elements), and the allocator. These are the same arguments in the same order as the arguments to <link href="Vec::from_parts_in">from_parts_in</link>.
+
+After calling this function, the caller is responsible for the memory previously managed by the <inline-code>Vec</inline-code>. The only way to do this is to convert the <inline-code>NonNull</inline-code> pointer, <elided chars="599"/></truncated>
+</item>
+  <item><label><type-name>Vec::into_raw_parts</type-name></label>
+<truncated level="brief">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(pointer, length, capacity)</inline-code>.
+
+Returns the raw pointer to the underlying data, the length of the vector (in elements), and the allocated capacity of the data (in elements). These are the same arguments in the same order as the arguments to <link href="Vec::from_raw_parts">from_raw_parts</link>.
+
+After calling this function, the caller is responsible for the memory previously managed by the <inline-code>Vec</inline-code>. Most often, one does this by converting the raw pointer, length, and capacity back into a <inline-code>Vec</inline-code> <elided chars="596"/></truncated>
+</item>
+  <item><label><type-name>Vec::into_raw_parts_with_alloc</type-name></label>
+<truncated level="brief">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(pointer, length, capacity, allocator)</inline-code>.
+
+Returns the raw pointer to the underlying data, the length of the vector (in elements), the allocated capacity of the data (in elements), and the allocator. These are the same arguments in the same order as the arguments to <link href="Vec::from_raw_parts_in">from_raw_parts_in</link>.
+
+After calling this function, the caller is responsible for the memory previously managed by the <inline-code>Vec</inline-code>. The only way to do this is to convert the raw pointer, length, and <elided chars="579"/></truncated>
+</item>
+  <item><label><type-name>Vec::is_empty</type-name></label>
+<truncated level="brief">Returns <inline-code>true</inline-code> if the vector contains no elements.
+
+<title>Examples</title>
+<code-block>
+let mut v = Vec::new();
+assert!(v.is_empty());
+
+v.push(1);
+assert!(!v.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::leak</type-name></label>
+<truncated level="brief">Consumes and leaks the <inline-code>Vec</inline-code>, returning a mutable reference to the contents, <inline-code>&'a mut [T]</inline-code>.
+
+Note that the type <inline-code>T</inline-code> must outlive the chosen lifetime <inline-code>'a</inline-code>. If the type has only static references, or none at all, then this may be chosen to be <inline-code>'static</inline-code>.
+
+As of Rust 1.57, this method does not reallocate or shrink the <inline-code>Vec</inline-code>, so the leaked allocation may include unused capacity that is not part of the returned slice.
+
+This function is mainly useful for data that lives for the remainder of the program's life. <elided chars="206"/></truncated>
+</item>
+  <item><label><type-name>Vec::len</type-name></label>
+<truncated level="brief">Returns the number of elements in the vector, also referred to as its 'length'.
+
+<title>Examples</title>
+<code-block>
+let a = vec![1, 2, 3];
+assert_eq!(a.len(), 3);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::new</type-name></label>
+<truncated level="brief">Constructs a new, empty <inline-code>Vec<T></inline-code>.
+
+The vector will not allocate until elements are pushed onto it.
+
+<title>Examples</title>
+<code-block>
+let mut vec: Vec<i32> = Vec::new();
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::new_in</type-name></label>
+<truncated level="brief">Constructs a new, empty <inline-code>Vec<T, A></inline-code>.
+
+The vector will not allocate until elements are pushed onto it.
+
+<title>Examples</title>
+<code-block>
+#![feature(allocator_api)]
+
+use std::alloc::System;
+
+let mut vec: Vec<i32, _> = Vec::new_in(System);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::peek_mut</type-name></label>
+<truncated level="brief">Returns a mutable reference to the last item in the vector, or <inline-code>None</inline-code> if it is empty.
+
+<title>Examples</title>
+Basic usage:
+
+<code-block>
+#![feature(vec_peek_mut)]
+let mut vec = Vec::new();
+assert!(vec.peek_mut().is_none());
+
+vec.push(1);
+vec.push(5);
+vec.push(2);
+assert_eq!(vec.last(), Some(&2));
+if let Some(mut val) = vec.peek_mut() {
+    *val = 0;
+}
+assert_eq!(vec.last(), Some(&0));
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::pop</type-name></label>
+<truncated level="brief">Removes the last element from a vector and returns it, or [None] if it is empty.
+
+If you'd like to pop the first element, consider using <link href="http://docs.rust-lang.org/nightly/alloc/collections/vec_deque/struct.VecDeque.html#method.pop_front">VecDeque::pop_front</link> instead.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![1, 2, 3];
+assert_eq!(vec.pop(), Some(3));
+assert_eq!(vec, [1, 2]);
+</code-block>
+<title>Time complexity</title>
+Takes <emphasis>O</emphasis>(1) time.
+
+</truncated>
+</item>
+  <item><label><type-name>Vec::pop_if</type-name></label>
+<truncated level="brief">Removes and returns the last element from a vector if the predicate returns <inline-code>true</inline-code>, or [None] if the predicate returns false or the vector is empty (the predicate will not be called in that case).
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![1, 2, 3, 4];
+let pred = |x: &mut i32| *x % 2 == 0;
+
+assert_eq!(vec.pop_if(pred), Some(4));
+assert_eq!(vec, [1, 2, 3]);
+assert_eq!(vec.pop_if(pred), None);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::push</type-name></label>
+<truncated level="brief">Appends an element to the back of a collection.
+
+<title>Panics</title>
+Panics if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![1, 2];
+vec.push(3);
+assert_eq!(vec, [1, 2, 3]);
+</code-block>
+<title>Time complexity</title>
+Takes amortized <emphasis>O</emphasis>(1) time. If the vector's length would exceed its capacity after the push, <emphasis>O</emphasis>(<emphasis>capacity</emphasis>) time is taken to copy the vector's elements to a larger allocation. This expensive operation is offset by the <emphasis>capacity</emphasis> <emphasis>O</emphasis>(1) insertions it allows.
+
+</truncated>
+</item>
+  <item><label><type-name>Vec::push_mut</type-name></label>
+<truncated level="brief">Appends an element to the back of a collection, returning a reference to it.
+
+<title>Panics</title>
+Panics if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+<code-block>
+#![feature(push_mut)]
+
+
+let mut vec = vec![1, 2];
+let last = vec.push_mut(3);
+assert_eq!(*last, 3);
+assert_eq!(vec, [1, 2, 3]);
+
+let last = vec.push_mut(3);
+*last += 1;
+assert_eq!(vec, [1, 2, 3, 4]);
+</code-block>
+<title>Time complexity</title>
+Takes amortized <emphasis>O</emphasis>(1) time. If the vector's length would exceed its capacity after the push, <emphasis>O</emphasis>(<emphasis>capacity</emphasis>) time is taken to copy the vector's <elided chars="111"/></truncated>
+</item>
+  <item><label><type-name>Vec::push_within_capacity</type-name></label>
+<truncated level="brief">Appends an element and returns a reference to it if there is sufficient spare capacity, otherwise an error is returned with the element.
+
+Unlike <link href="Vec::push">push</link> this method will not reallocate when there's insufficient capacity. The caller should use <link href="Vec::reserve">reserve</link> or <link href="Vec::try_reserve">try_reserve</link> to ensure that there is enough capacity.
+
+<title>Examples</title>
+A manual, panic-free alternative to [FromIterator]:
+
+ <elided chars="464"/></truncated>
+</item>
+  <item><label><type-name>Vec::recycle</type-name></label>
+<truncated level="brief">This clears out this <inline-code>Vec</inline-code> and recycles the allocation into a new <inline-code>Vec</inline-code>. The item type of the resulting <inline-code>Vec</inline-code> needs to have the same size and alignment as the item type of the original <inline-code>Vec</inline-code>.
+
+<title>Examples</title>
+<code-block>
+#![feature(vec_recycle, transmutability)]
+let a: Vec<u8> = vec![0; 100];
+let capacity = a.capacity();
+let addr = a.as_ptr().addr();
+let b: Vec<i8> = a.recycle();
+assert_eq!(b.len(), 0);
+assert_eq!(b.capacity(), capacity);
+assert_eq!(b.as_ptr().addr(), addr);
+</code-block>
+The <inline-code>Recyclable</inline-code> bound prevents this method from <elided chars="798"/></truncated>
+</item>
+  <item><label><type-name>Vec::remove</type-name></label>
+<truncated level="brief">Removes and returns the element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the left.
+
+Note: Because this shifts over the remaining elements, it has a worst-case performance of <emphasis>O</emphasis>(<emphasis>n</emphasis>). If you don't need the order of elements to be preserved, use <link href="Vec::swap_remove">swap_remove</link> instead. If you'd like to remove elements from the beginning of the <inline-code>Vec</inline-code>, consider using <link href="http://docs.rust-lang.org/nightly/alloc/collections/vec_deque/struct.VecDeque.html#method.pop_front">VecDeque::pop_front</link> instead.
+
+<title>Panics</title>
+Panics if <inline-code>index</inline-code> is out of bounds.
+
+<title>Examples</title>
+ <elided chars="39"/></truncated>
+</item>
+  <item><label><type-name>Vec::reserve</type-name></label>
+<truncated level="brief">Reserves capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the given <inline-code>Vec<T></inline-code>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling <inline-code>reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if capacity is already sufficient.
+
+<title>Panics</title>
+Panics if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![1];
+vec.reserve(10);
+assert!(vec.capacity() >= 11);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::reserve_exact</type-name></label>
+<truncated level="brief">Reserves the minimum capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the given <inline-code>Vec<T></inline-code>. Unlike <link href="Vec::reserve">reserve</link>, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling <inline-code>reserve_exact</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if the capacity is already sufficient.
+
+Note that the allocator may give the collection more space than it requests. Therefore, capacity can not be relied upon to be precisely minimal. <elided chars="195"/></truncated>
+</item>
+  <item><label><type-name>Vec::resize</type-name></label>
+<truncated level="brief">Resizes the <inline-code>Vec</inline-code> in-place so that <inline-code>len</inline-code> is equal to <inline-code>new_len</inline-code>.
+
+If <inline-code>new_len</inline-code> is greater than <inline-code>len</inline-code>, the <inline-code>Vec</inline-code> is extended by the difference, with each additional slot filled with <inline-code>value</inline-code>. If <inline-code>new_len</inline-code> is less than <inline-code>len</inline-code>, the <inline-code>Vec</inline-code> is simply truncated.
+
+This method requires <inline-code>T</inline-code> to implement <link href="http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html">Clone</link>, in order to be able to clone the passed value. If you need more flexibility (or want to rely on <link href="http://docs.rust-lang.org/nightly/core/default/trait.Default.html">Default</link> instead of <link href="http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html">Clone</link>), use <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize_with">Vec::resize_with</link>. If you only need to resize to a smaller size, use <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.truncate">Vec::truncate</link>.
+
+<title>Panics</title>
+Panics <elided chars="244"/></truncated>
+</item>
+  <item><label><type-name>Vec::resize_with</type-name></label>
+<truncated level="brief">Resizes the <inline-code>Vec</inline-code> in-place so that <inline-code>len</inline-code> is equal to <inline-code>new_len</inline-code>.
+
+If <inline-code>new_len</inline-code> is greater than <inline-code>len</inline-code>, the <inline-code>Vec</inline-code> is extended by the difference, with each additional slot filled with the result of calling the closure <inline-code>f</inline-code>. The return values from <inline-code>f</inline-code> will end up in the <inline-code>Vec</inline-code> in the order they have been generated.
+
+If <inline-code>new_len</inline-code> is less than <inline-code>len</inline-code>, the <inline-code>Vec</inline-code> is simply truncated.
+
+This method uses a closure to create new values on every push. If you'd rather <link href="http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html">Clone</link> a given value, use <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize">Vec::resize</link>. If you want to use the <link href="http://docs.rust-lang.org/nightly/core/default/trait.Default.html">Default</link> <elided chars="359"/></truncated>
+</item>
+  <item><label><type-name>Vec::retain</type-name></label>
+<truncated level="brief">Retains only the elements specified by the predicate.
+
+In other words, remove all elements <inline-code>e</inline-code> for which <inline-code>f(&e)</inline-code> returns <inline-code>false</inline-code>. This method operates in place, visiting each element exactly once in the original order, and preserves the order of the retained elements.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![1, 2, 3, 4];
+vec.retain(|&x| x % 2 == 0);
+assert_eq!(vec, [2, 4]);
+</code-block>
+Because the elements are visited exactly once in the original order, external state may be used to decide which elements to keep.
+
+ <elided chars="162"/></truncated>
+</item>
+  <item><label><type-name>Vec::retain_mut</type-name></label>
+<truncated level="brief">Retains only the elements specified by the predicate, passing a mutable reference to it.
+
+In other words, remove all elements <inline-code>e</inline-code> such that <inline-code>f(&mut e)</inline-code> returns <inline-code>false</inline-code>. This method operates in place, visiting each element exactly once in the original order, and preserves the order of the retained elements.
+
+<title>Examples</title>
+<code-block>
+let mut vec = vec![1, 2, 3, 4];
+vec.retain_mut(|x| if *x <= 3 {
+    *x += 1;
+    true
+} else {
+    false
+});
+assert_eq!(vec, [2, 3, 4]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::set_len</type-name></label>
+<truncated level="brief">Forces the length of the vector to <inline-code>new_len</inline-code>.
+
+This is a low-level operation that maintains none of the normal invariants of the type. Normally changing the length of a vector is done using one of the safe operations instead, such as <link href="Vec::truncate">truncate</link>, <link href="Vec::resize">resize</link>, <link href="Extend::extend">extend</link>, or <link href="Vec::clear">clear</link>.
+
+<title>Safety</title>
+<inline-code>new_len</inline-code> must be less than or equal to <link href="Vec::capacity">capacity()</link><title>.The elements at <inline-code>old_len..new_len</inline-code> must be initialized.Examples</title>
+See <link href="Vec::spare_capacity_mut">spare_capacity_mut()</link> for an example with safe initialization of capacity elements and use of this method.
+
+<inline-code>set_</inline-code> <elided chars="1787"/></truncated>
+</item>
+  <item><label><type-name>Vec::shrink_to</type-name></label>
+<truncated level="brief">Shrinks the capacity of the vector with a lower bound.
+
+The capacity will remain at least as large as both the length and the supplied value.
+
+If the current capacity is less than the lower limit, this is a no-op.
+
+<title>Examples</title>
+<code-block>
+let mut vec = Vec::with_capacity(10);
+vec.extend([1, 2, 3]);
+assert!(vec.capacity() >= 10);
+vec.shrink_to(4);
+assert!(vec.capacity() >= 4);
+vec.shrink_to(0);
+assert!(vec.capacity() >= 3);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::shrink_to_fit</type-name></label>
+<truncated level="brief">Shrinks the capacity of the vector as much as possible.
+
+The behavior of this method depends on the allocator, which may either shrink the vector in-place or reallocate. The resulting vector might still have some excess capacity, just as is the case for <link href="Vec::with_capacity">with_capacity</link>. See [Allocator::shrink] for more details.
+
+<title>Examples</title>
+<code-block>
+let mut vec = Vec::with_capacity(10);
+vec.extend([1, 2, 3]);
+assert!(vec.capacity() >= 10);
+vec.shrink_to_fit();
+assert!(vec.capacity() >= 3);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::spare_capacity_mut</type-name></label>
+<truncated level="brief">Returns the remaining spare capacity of the vector as a slice of <inline-code>MaybeUninit<T></inline-code>.
+
+The returned slice can be used to fill the vector with data (e.g. by reading from a file) before marking the data as initialized using the <link href="Vec::set_len">set_len</link> method.
+
+<title>Examples</title>
+ <elided chars="83"/></truncated>
+</item>
+  <item><label><type-name>Vec::splice</type-name></label>
+<truncated level="brief">Creates a splicing iterator that replaces the specified range in the vector with the given <inline-code>replace_with</inline-code> iterator and yields the removed items. <inline-code>replace_with</inline-code> does not need to be the same length as <inline-code>range</inline-code>.
+
+<inline-code>range</inline-code> is removed even if the <inline-code>Splice</inline-code> iterator is not consumed before it is dropped.
+
+It is unspecified how many elements are removed from the vector if the <inline-code>Splice</inline-code> value is leaked.
+
+The input iterator <inline-code>replace_with</inline-code> is only consumed when the <inline-code>Splice</inline-code> value is dropped.
+
+This is optimal if:
+
+The tail <elided chars="731"/></truncated>
+</item>
+  <item><label><type-name>Vec::split_at_spare_mut</type-name></label>
+<truncated level="brief">Returns vector content as a slice of <inline-code>T</inline-code>, along with the remaining spare capacity of the vector as a slice of <inline-code>MaybeUninit<T></inline-code>.
+
+The returned spare capacity slice can be used to fill the vector with data (e.g. by reading from a file) before marking the data as initialized using the <link href="Vec::set_len">set_len</link> method.
+
+Note that this is a low-level API, which should be used with care for optimization purposes. If you need to append data to a <inline-code>Vec</inline-code> you can use <link href="Vec::push">push</link>, <link href="Vec::extend">extend</link>, <link href="Vec::extend_from_slice">extend_from_slice</link>, <link href="Vec::extend_from_within">extend_from_within</link>, <link href="Vec::insert">insert</link>,  <elided chars="585"/></truncated>
+</item>
+  <item><label><type-name>Vec::split_off</type-name></label>
+<truncated level="brief">Splits the collection into two at the given index.
+
+Returns a newly allocated vector containing the elements in the range <inline-code>[at, len)</inline-code>. After the call, the original vector will be left containing the elements <inline-code>[0, at)</inline-code> with its previous capacity unchanged.
+
+If you want to take ownership of the entire contents and capacity of the vector, see <link href="http://docs.rust-lang.org/nightly/core/mem/fn.take.html">mem::take</link> or <link href="http://docs.rust-lang.org/nightly/core/mem/fn.replace.html">mem::replace</link>.If you don't need the returned vector at all, see <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.truncate">Vec::truncate</link>.If you want to take ownership of an arbitrary subslice, or you don't nec <elided chars="221"/></truncated>
+</item>
+  <item><label><type-name>Vec::swap_remove</type-name></label>
+<truncated level="brief">Removes an element from the vector and returns it.
+
+The removed element is replaced by the last element of the vector.
+
+This does not preserve ordering of the remaining elements, but is <emphasis>O</emphasis>(1). If you need to preserve the element order, use <link href="Vec::remove">remove</link> instead.
+
+<title>Panics</title>
+Panics if <inline-code>index</inline-code> is out of bounds.
+
+<title>Examples</title>
+<code-block>
+let mut v = vec!["foo", "bar", "baz", "qux"];
+
+assert_eq!(v.swap_remove(1), "bar");
+assert_eq!(v, ["foo", "qux", "baz"]);
+
+assert_eq!(v.swap_remove(0), "foo");
+assert_eq!(v, ["baz", "qux"]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::truncate</type-name></label>
+<truncated level="brief">Shortens the vector, keeping the first <inline-code>len</inline-code> elements and dropping the rest.
+
+If <inline-code>len</inline-code> is greater or equal to the vector's current length, this has no effect.
+
+The <link href="Vec::drain">drain</link> method can emulate <inline-code>truncate</inline-code>, but causes the excess elements to be returned instead of dropped.
+
+Note that this method has no effect on the allocated capacity of the vector.
+
+<title>Examples</title>
+Truncating a five element vector to two elements:
+
+<code-block>
+let mut vec = vec![1, 2, 3, 4, 5];
+vec.truncate(2);
+assert_eq!(vec, [1, 2]);
+</code-block>
+No truncation occurs <elided chars="259"/></truncated>
+</item>
+  <item><label><type-name>Vec::try_remove</type-name></label>
+<truncated level="brief">Remove and return the element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the left, or [None] if it does not exist.
+
+Note: Because this shifts over the remaining elements, it has a worst-case performance of <emphasis>O</emphasis>(<emphasis>n</emphasis>). If you'd like to remove elements from the beginning of the <inline-code>Vec</inline-code>, consider using <link href="http://docs.rust-lang.org/nightly/alloc/collections/vec_deque/struct.VecDeque.html#method.pop_front">VecDeque::pop_front</link> instead.
+
+<title>Examples</title>
+<code-block>
+#![feature(vec_try_remove)]
+let mut v = vec![1, 2, 3];
+assert_eq!(v.try_remove(0), Some(1));
+assert_eq!(v.try_remove(2), None);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>Vec::try_reserve</type-name></label>
+<truncated level="brief">Tries to reserve capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the given <inline-code>Vec<T></inline-code>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling <inline-code>try_reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if capacity is already sufficient. This method preserves the contents even if an error occurs.
+
+<title>Errors</title>
+If the capacity overflows, or the allocator reports a failure, then an error is <elided chars="423"/></truncated>
+</item>
+  <item><label><type-name>Vec::try_reserve_exact</type-name></label>
+<truncated level="brief">Tries to reserve the minimum capacity for at least <inline-code>additional</inline-code> elements to be inserted in the given <inline-code>Vec<T></inline-code>. Unlike <link href="Vec::try_reserve">try_reserve</link>, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling <inline-code>try_reserve_exact</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if the capacity is already sufficient.
+
+Note that the allocator may give the collection more space than it requests. Therefore, capacity can not be <elided chars="607"/></truncated>
+</item>
+  <item><label><type-name>Vec::try_with_capacity</type-name></label>
+<truncated level="brief">Constructs a new, empty <inline-code>Vec<T></inline-code> with at least the specified capacity.
+
+The vector will be able to hold at least <inline-code>capacity</inline-code> elements without reallocating. This method is allowed to allocate for more elements than <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the vector will not allocate.
+
+<title>Errors</title>
+Returns an error if the capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>, or if the allocator reports allocation failure.
+
+</truncated>
+</item>
+  <item><label><type-name>Vec::try_with_capacity_in</type-name></label>
+<truncated level="brief">Constructs a new, empty <inline-code>Vec<T, A></inline-code> with at least the specified capacity with the provided allocator.
+
+The vector will be able to hold at least <inline-code>capacity</inline-code> elements without reallocating. This method is allowed to allocate for more elements than <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the vector will not allocate.
+
+<title>Errors</title>
+Returns an error if the capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>, or if the allocator reports allocation failure.
+
+</truncated>
+</item>
+  <item><label><type-name>Vec::with_capacity</type-name></label>
+<truncated level="brief">Constructs a new, empty <inline-code>Vec<T></inline-code> with at least the specified capacity.
+
+The vector will be able to hold at least <inline-code>capacity</inline-code> elements without reallocating. This method is allowed to allocate for more elements than <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the vector will not allocate.
+
+It is important to note that although the returned vector has the minimum <emphasis>capacity</emphasis> specified, the vector will have a zero <emphasis>length</emphasis>. For an explanation of the difference between length and capacity, see <link href="#capacity-and-reallocation"><emphasis>Capacity and reallocation</emphasis></link>.
+
+I <elided chars="913"/></truncated>
+</item>
+  <item><label><type-name>Vec::with_capacity_in</type-name></label>
+<truncated level="brief">Constructs a new, empty <inline-code>Vec<T, A></inline-code> with at least the specified capacity with the provided allocator.
+
+The vector will be able to hold at least <inline-code>capacity</inline-code> elements without reallocating. This method is allowed to allocate for more elements than <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the vector will not allocate.
+
+It is important to note that although the returned vector has the minimum <emphasis>capacity</emphasis> specified, the vector will have a zero <emphasis>length</emphasis>. For an explanation of the difference between length and capacity, <elided chars="1030"/></truncated>
+</item>
+  <item><label><type-name>async_function</type-name></label>
+<truncated level="brief">An async function
+
+</truncated>
+</item>
+  <item><label><type-name>generic_function</type-name></label>
+<truncated level="brief">A generic function
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::capacity</type-name></label>
+<truncated level="brief">Returns the number of elements the set can hold without reallocating.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+let set: HashSet<i32> = HashSet::with_capacity(100);
+assert!(set.capacity() >= 100);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::clear</type-name></label>
+<truncated level="brief">Clears the set, removing all values.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut v = HashSet::new();
+v.insert(1);
+v.clear();
+assert!(v.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::contains</type-name></label>
+<truncated level="brief">Returns <inline-code>true</inline-code> if the set contains a value.
+
+The value may be any borrowed form of the set's value type, but <link href="http://docs.rust-lang.org/nightly/core/hash/trait.Hash.html">Hash</link> and <link href="http://docs.rust-lang.org/nightly/core/cmp/trait.Eq.html">Eq</link> on the borrowed form <emphasis>must</emphasis> match those for the value type.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let set = HashSet::from([1, 2, 3]);
+assert_eq!(set.contains(&1), true);
+assert_eq!(set.contains(&4), false);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::difference</type-name></label>
+<truncated level="brief">Visits the values representing the difference, i.e., the values that are in <inline-code>self</inline-code> but not in <inline-code>other</inline-code>.
+
+<title>Examples</title>
+ <elided chars="62"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::drain</type-name></label>
+<truncated level="brief">Clears the set, returning all elements as an iterator. Keeps the allocated memory for reuse.
+
+If the returned iterator is dropped before being fully consumed, it drops the remaining elements. The returned iterator keeps a mutable borrow on the set to optimize its implementation.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut set = HashSet::from([1, 2, 3]);
+assert!(!set.is_empty());
+
+// print 1, 2, 3 in an arbitrary order
+for i in set.drain() {
+    println!("{i}");
+}
+
+assert!(set.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::entry</type-name></label>
+<truncated level="brief">Gets the given value's corresponding entry in the set for in-place manipulation.
+
+<title>Examples</title>
+ <elided chars="538"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::extract_if</type-name></label>
+<truncated level="brief">Creates an iterator which uses a closure to determine if an element should be removed.
+
+If the closure returns <inline-code>true</inline-code>, the element is removed from the set and yielded. If the closure returns <inline-code>false</inline-code>, or panics, the element remains in the set and will not be yielded.
+
+If the returned <inline-code>ExtractIf</inline-code> is not exhausted, e.g. because it is dropped without iterating or the iteration short-circuits, then the remaining elements will be retained. Use <link href="HashSet::retain">retain</link> with a negated predicate if you do not need the returned <elided chars="450"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::get</type-name></label>
+<truncated level="brief">Returns a reference to the value in the set, if any, that is equal to the given value.
+
+The value may be any borrowed form of the set's value type, but <link href="http://docs.rust-lang.org/nightly/core/hash/trait.Hash.html">Hash</link> and <link href="http://docs.rust-lang.org/nightly/core/cmp/trait.Eq.html">Eq</link> on the borrowed form <emphasis>must</emphasis> match those for the value type.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let set = HashSet::from([1, 2, 3]);
+assert_eq!(set.get(&2), Some(&2));
+assert_eq!(set.get(&4), None);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::get_or_insert</type-name></label>
+<truncated level="brief">Inserts the given <inline-code>value</inline-code> into the set if it is not present, then returns a reference to the value in the set.
+
+<title>Examples</title>
+<code-block>
+#![feature(hash_set_entry)]
+
+use std::collections::HashSet;
+
+let mut set = HashSet::from([1, 2, 3]);
+assert_eq!(set.len(), 3);
+assert_eq!(set.get_or_insert(2), &2);
+assert_eq!(set.get_or_insert(100), &100);
+assert_eq!(set.len(), 4); // 100 was inserted
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::get_or_insert_with</type-name></label>
+<truncated level="brief">Inserts a value computed from <inline-code>f</inline-code> into the set if the given <inline-code>value</inline-code> is not present, then returns a reference to the value in the set.
+
+<title>Examples</title>
+ <elided chars="14"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::hasher</type-name></label>
+<truncated level="brief">Returns a reference to the set's <link href="http://docs.rust-lang.org/nightly/core/hash/trait.BuildHasher.html">BuildHasher</link>.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+use std::hash::RandomState;
+
+let hasher = RandomState::new();
+let set: HashSet<i32> = HashSet::with_hasher(hasher);
+let hasher: &RandomState = set.hasher();
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::insert</type-name></label>
+<truncated level="brief">Adds a value to the set.
+
+Returns whether the value was newly inserted. That is:
+
+<title>If the set did not previously contain this value, <inline-code>true</inline-code> is returned.If the set already contained this value, <inline-code>false</inline-code> is returned, and the set is not modified: original value is not replaced, and the value passed as argument is dropped.Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut set = HashSet::new();
+
+assert_eq!(set.insert(2), true);
+assert_eq!(set.insert(2), false);
+assert_eq!(set.len(), 1);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::intersection</type-name></label>
+<truncated level="brief">Visits the values representing the intersection, i.e., the values that are both in <inline-code>self</inline-code> and <inline-code>other</inline-code>.
+
+When an equal element is present in <inline-code>self</inline-code> and <inline-code>other</inline-code> then the resulting <inline-code>Intersection</inline-code> may yield references to one or the other. This can be relevant if <inline-code>T</inline-code> contains fields which are not compared by its <inline-code>Eq</inline-code> implementation, and may hold different value between the two equal copies of <inline-code>T</inline-code> in the two sets.
+
+<title>Examples</title>
+ <elided chars="207"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::is_disjoint</type-name></label>
+<truncated level="brief">Returns <inline-code>true</inline-code> if <inline-code>self</inline-code> has no elements in common with <inline-code>other</inline-code>. This is equivalent to checking for an empty intersection.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let a = HashSet::from([1, 2, 3]);
+let mut b = HashSet::new();
+
+assert_eq!(a.is_disjoint(&b), true);
+b.insert(4);
+assert_eq!(a.is_disjoint(&b), true);
+b.insert(1);
+assert_eq!(a.is_disjoint(&b), false);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::is_empty</type-name></label>
+<truncated level="brief">Returns <inline-code>true</inline-code> if the set contains no elements.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut v = HashSet::new();
+assert!(v.is_empty());
+v.insert(1);
+assert!(!v.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::is_subset</type-name></label>
+<truncated level="brief">Returns <inline-code>true</inline-code> if the set is a subset of another, i.e., <inline-code>other</inline-code> contains at least all the values in <inline-code>self</inline-code>.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let sup = HashSet::from([1, 2, 3]);
+let mut set = HashSet::new();
+
+assert_eq!(set.is_subset(&sup), true);
+set.insert(2);
+assert_eq!(set.is_subset(&sup), true);
+set.insert(4);
+assert_eq!(set.is_subset(&sup), false);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::is_superset</type-name></label>
+<truncated level="brief">Returns <inline-code>true</inline-code> if the set is a superset of another, i.e., <inline-code>self</inline-code> contains at least all the values in <inline-code>other</inline-code>.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let sub = HashSet::from([1, 2]);
+let mut set = HashSet::new();
+
+assert_eq!(set.is_superset(&sub), false);
+
+set.insert(0);
+set.insert(1);
+assert_eq!(set.is_superset(&sub), false);
+
+set.insert(2);
+assert_eq!(set.is_superset(&sub), true);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::iter</type-name></label>
+<truncated level="brief">An iterator visiting all elements in arbitrary order. The iterator element type is <inline-code>&'a T</inline-code>.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+let mut set = HashSet::new();
+set.insert("a");
+set.insert("b");
+
+// Will print in an arbitrary order.
+for x in set.iter() {
+    println!("{x}");
+}
+</code-block>
+<title>Performance</title>
+In the current implementation, iterating over set takes O(capacity) time instead of O(len) because it internally visits empty buckets too.
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::len</type-name></label>
+<truncated level="brief">Returns the number of elements in the set.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut v = HashSet::new();
+assert_eq!(v.len(), 0);
+v.insert(1);
+assert_eq!(v.len(), 1);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::new</type-name></label>
+<truncated level="brief">Creates an empty <inline-code>HashSet</inline-code>.
+
+The hash set is initially created with a capacity of 0, so it will not allocate until it is first inserted into.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+let set: HashSet<i32> = HashSet::new();
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::new_in</type-name></label>
+<truncated level="brief">Creates an empty <inline-code>HashSet</inline-code> in the provided allocator.
+
+The hash set is initially created with a capacity of 0, so it will not allocate until it is first inserted into.
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::remove</type-name></label>
+<truncated level="brief">Removes a value from the set. Returns whether the value was present in the set.
+
+The value may be any borrowed form of the set's value type, but <link href="http://docs.rust-lang.org/nightly/core/hash/trait.Hash.html">Hash</link> and <link href="http://docs.rust-lang.org/nightly/core/cmp/trait.Eq.html">Eq</link> on the borrowed form <emphasis>must</emphasis> match those for the value type.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut set = HashSet::new();
+
+set.insert(2);
+assert_eq!(set.remove(&2), true);
+assert_eq!(set.remove(&2), false);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::replace</type-name></label>
+<truncated level="brief">Adds a value to the set, replacing the existing value, if any, that is equal to the given one. Returns the replaced value.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut set = HashSet::new();
+set.insert(Vec::<i32>::new());
+
+assert_eq!(set.get(&[][..]).unwrap().capacity(), 0);
+set.replace(Vec::with_capacity(10));
+assert_eq!(set.get(&[][..]).unwrap().capacity(), 10);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::reserve</type-name></label>
+<truncated level="brief">Reserves capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the <inline-code>HashSet</inline-code>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling <inline-code>reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if capacity is already sufficient.
+
+<title>Panics</title>
+Panics if the new allocation size overflows <inline-code>usize</inline-code>.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+let mut set: HashSet<i32> = HashSet::new();
+set.reserve(10);
+assert!(set.capacity() >= 10);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::retain</type-name></label>
+<truncated level="brief">Retains only the elements specified by the predicate.
+
+In other words, remove all elements <inline-code>e</inline-code> for which <inline-code>f(&e)</inline-code> returns <inline-code>false</inline-code>. The elements are visited in unsorted (and unspecified) order.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut set = HashSet::from([1, 2, 3, 4, 5, 6]);
+set.retain(|&k| k % 2 == 0);
+assert_eq!(set, HashSet::from([2, 4, 6]));
+</code-block>
+<title>Performance</title>
+In the current implementation, this operation takes O(capacity) time instead of O(len) because it internally visits empty buckets too.
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::shrink_to</type-name></label>
+<truncated level="brief">Shrinks the capacity of the set with a lower limit. It will drop down no lower than the supplied limit while maintaining the internal rules and possibly leaving some space in accordance with the resize policy.
+
+If the current capacity is less than the lower limit, this is a no-op.
+
+<title>Examples</title>
+ <elided chars="25"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::shrink_to_fit</type-name></label>
+<truncated level="brief">Shrinks the capacity of the set as much as possible. It will drop down as much as possible while maintaining the internal rules and possibly leaving some space in accordance with the resize policy.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut set = HashSet::with_capacity(100);
+set.insert(1);
+set.insert(2);
+assert!(set.capacity() >= 100);
+set.shrink_to_fit();
+assert!(set.capacity() >= 2);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::symmetric_difference</type-name></label>
+<truncated level="brief">Visits the values representing the symmetric difference, i.e., the values that are in <inline-code>self</inline-code> or in <inline-code>other</inline-code> but not in both.
+
+<title>Examples</title>
+ <elided chars="22"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::take</type-name></label>
+<truncated level="brief">Removes and returns the value in the set, if any, that is equal to the given one.
+
+The value may be any borrowed form of the set's value type, but <link href="http://docs.rust-lang.org/nightly/core/hash/trait.Hash.html">Hash</link> and <link href="http://docs.rust-lang.org/nightly/core/cmp/trait.Eq.html">Eq</link> on the borrowed form <emphasis>must</emphasis> match those for the value type.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+
+let mut set = HashSet::from([1, 2, 3]);
+assert_eq!(set.take(&2), Some(2));
+assert_eq!(set.take(&2), None);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::try_reserve</type-name></label>
+<truncated level="brief">Tries to reserve capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the <inline-code>HashSet</inline-code>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling <inline-code>try_reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if capacity is already sufficient.
+
+<title>Errors</title>
+If the capacity overflows, or the allocator reports a failure, then an error is returned.
+
+<title>Examples</title>
+ <elided chars="108"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::union</type-name></label>
+<truncated level="brief">Visits the values representing the union, i.e., all the values in <inline-code>self</inline-code> or <inline-code>other</inline-code>, without duplicates.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+let a = HashSet::from([1, 2, 3]);
+let b = HashSet::from([4, 2, 3, 4]);
+
+// Print 1, 2, 3, 4 in arbitrary order.
+for x in a.union(&b) {
+    println!("{x}");
+}
+
+let union: HashSet<_> = a.union(&b).collect();
+assert_eq!(union, [1, 2, 3, 4].iter().collect());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::with_capacity</type-name></label>
+<truncated level="brief">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity.
+
+The hash set will be able to hold at least <inline-code>capacity</inline-code> elements without reallocating. This method is allowed to allocate for more elements than <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the hash set will not allocate.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+let set: HashSet<i32> = HashSet::with_capacity(10);
+assert!(set.capacity() >= 10);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::with_capacity_and_hasher</type-name></label>
+<truncated level="brief">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity, using <inline-code>hasher</inline-code> to hash the keys.
+
+The hash set will be able to hold at least <inline-code>capacity</inline-code> elements without reallocating. This method is allowed to allocate for more elements than <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the hash set will not allocate.
+
+Warning: <inline-code>hasher</inline-code> is normally randomly generated, and is designed to allow <inline-code>HashSet</inline-code>s to be resistant to attacks that cause many collisions and very poor performance. Setting it manually using this <elided chars="331"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::with_capacity_and_hasher_in</type-name></label>
+<truncated level="brief">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity, using <inline-code>hasher</inline-code> to hash the keys and <inline-code>alloc</inline-code> to allocate memory.
+
+The hash set will be able to hold at least <inline-code>capacity</inline-code> elements without reallocating. This method is allowed to allocate for more elements than <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the hash set will not allocate.
+
+Warning: <inline-code>hasher</inline-code> is normally randomly generated, and is designed to allow <inline-code>HashSet</inline-code>s to be resistant to attacks that cause many collisions and very poor performance. Setting <elided chars="194"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::with_capacity_in</type-name></label>
+<truncated level="brief">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity.
+
+The hash set will be able to hold at least <inline-code>capacity</inline-code> elements without reallocating. This method is allowed to allocate for more elements than <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the hash set will not allocate.
+
+<title>Examples</title>
+<code-block>
+use std::collections::HashSet;
+let set: HashSet<i32> = HashSet::with_capacity(10);
+assert!(set.capacity() >= 10);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::with_hasher</type-name></label>
+<truncated level="brief">Creates a new empty hash set which will use the given hasher to hash keys.
+
+The hash set is also created with the default initial capacity.
+
+Warning: <inline-code>hasher</inline-code> is normally randomly generated, and is designed to allow <inline-code>HashSet</inline-code>s to be resistant to attacks that cause many collisions and very poor performance. Setting it manually using this function can expose a DoS attack vector.
+
+The <inline-code>hash_builder</inline-code> passed should implement the <link href="http://docs.rust-lang.org/nightly/core/hash/trait.BuildHasher.html">BuildHasher</link> trait for the <inline-code>HashSet</inline-code> to be useful, see its documentation for <elided chars="155"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::HashSet::with_hasher_in</type-name></label>
+<truncated level="brief">Creates a new empty hash set which will use the given hasher to hash keys and will allocate memory using the provided allocator.
+
+The hash set is also created with the default initial capacity.
+
+Warning: <inline-code>hasher</inline-code> is normally randomly generated, and is designed to allow <inline-code>HashSet</inline-code>s to be resistant to attacks that cause many collisions and very poor performance. Setting it manually using this function can expose a DoS attack vector.
+
+The <inline-code>hash_builder</inline-code> passed should implement the <link href="http://docs.rust-lang.org/nightly/core/hash/trait.BuildHasher.html">BuildHasher</link> trait for th <elided chars="60"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::LinkTestStruct::get_data</type-name></label>
+<truncated level="brief">Another method
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::LinkTestStruct::new</type-name></label>
+<truncated level="brief">Method for testing Self resolution
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::RenamedTestStruct::get_field</type-name></label>
+<truncated level="brief">Get the field value
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::RenamedTestStruct::increment_count</type-name></label>
+<truncated level="brief">Update the count
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::RenamedTestStruct::new</type-name></label>
+<truncated level="brief">Create a new TestStruct
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::SubStruct::double</type-name></label>
+<truncated level="brief">Double the value
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::SubStruct::get_value</type-name></label>
+<truncated level="brief">Get the value
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::SubStruct::new</type-name></label>
+<truncated level="brief">Create a new SubStruct
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::append</type-name></label>
+<truncated level="brief">Moves all elements from <inline-code>other</inline-code> into <inline-code>self</inline-code>, leaving <inline-code>other</inline-code> empty.
+
+If a key from <inline-code>other</inline-code> is already present in <inline-code>self</inline-code>, the respective value from <inline-code>self</inline-code> will be overwritten with the respective value from <inline-code>other</inline-code>. Similar to <link href="BTreeMap::insert">insert</link>, though, the key is not overwritten, which matters for types that can be <inline-code>==</inline-code> without being identical.
+
+<title>Examples</title>
+ <elided chars="323"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::clear</type-name></label>
+<truncated level="brief">Clears the map, removing all elements.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut a = BTreeMap::new();
+a.insert(1, "a");
+a.clear();
+assert!(a.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::contains_key</type-name></label>
+<truncated level="brief">Returns <inline-code>true</inline-code> if the map contains a value for the specified key.
+
+The key may be any borrowed form of the map's key type, but the ordering on the borrowed form <emphasis>must</emphasis> match the ordering on the key type.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "a");
+assert_eq!(map.contains_key(&1), true);
+assert_eq!(map.contains_key(&2), false);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::entry</type-name></label>
+<truncated level="brief">Gets the given key's corresponding entry in the map for in-place manipulation.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut count: BTreeMap<&str, usize> = BTreeMap::new();
+
+// count the number of occurrences of letters in the vec
+for x in ["a", "b", "a", "c", "a", "b"] {
+    count.entry(x).and_modify(|curr| *curr += 1).or_insert(1);
+}
+
+assert_eq!(count["a"], 3);
+assert_eq!(count["b"], 2);
+assert_eq!(count["c"], 1);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::extract_if</type-name></label>
+<truncated level="brief">Creates an iterator that visits elements (key-value pairs) in the specified range in ascending key order and uses a closure to determine if an element should be removed.
+
+If the closure returns <inline-code>true</inline-code>, the element is removed from the map and yielded. If the closure returns <inline-code>false</inline-code>, or panics, the element remains in the map and will not be yielded.
+
+The iterator also lets you mutate the value of each element in the closure, regardless of whether you choose to keep or remove it.
+
+If the returned <inline-code>Extra</inline-code> <elided chars="1076"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::first_entry</type-name></label>
+<truncated level="brief">Returns the first entry in the map for in-place manipulation. The key of this entry is the minimum key in the map.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "a");
+map.insert(2, "b");
+if let Some(mut entry) = map.first_entry() {
+    if *entry.key() > 0 {
+        entry.insert("first");
+    }
+}
+assert_eq!(*map.get(&1).unwrap(), "first");
+assert_eq!(*map.get(&2).unwrap(), "b");
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::first_key_value</type-name></label>
+<truncated level="brief">Returns the first key-value pair in the map. The key in this pair is the minimum key in the map.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+assert_eq!(map.first_key_value(), None);
+map.insert(1, "b");
+map.insert(2, "a");
+assert_eq!(map.first_key_value(), Some((&1, &"b")));
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::get</type-name></label>
+<truncated level="brief">Returns a reference to the value corresponding to the key.
+
+The key may be any borrowed form of the map's key type, but the ordering on the borrowed form <emphasis>must</emphasis> match the ordering on the key type.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "a");
+assert_eq!(map.get(&1), Some(&"a"));
+assert_eq!(map.get(&2), None);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::get_key_value</type-name></label>
+<truncated level="brief">Returns the key-value pair corresponding to the supplied key. This is potentially useful:
+
+for key types where non-identical keys can be considered equal;for getting the <inline-code>&K</inline-code> stored key value from a borrowed <inline-code>&Q</inline-code> lookup key; orfor getting a reference to a key with the same lifetime as the collection.The supplied key may be any borrowed form of the map's key type, but the ordering on the borrowed form <emphasis>must</emphasis> match the ordering on the key type.
+
+<title>Examples</title>
+ <elided chars="856"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::get_mut</type-name></label>
+<truncated level="brief">Returns a mutable reference to the value corresponding to the key.
+
+The key may be any borrowed form of the map's key type, but the ordering on the borrowed form <emphasis>must</emphasis> match the ordering on the key type.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "a");
+if let Some(x) = map.get_mut(&1) {
+    *x = "b";
+}
+assert_eq!(map[&1], "b");
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::insert</type-name></label>
+<truncated level="brief">Inserts a key-value pair into the map.
+
+If the map did not have this key present, <inline-code>None</inline-code> is returned.
+
+If the map did have this key present, the value is updated, and the old value is returned. The key is not updated, though; this matters for types that can be <inline-code>==</inline-code> without being identical. See the <link href="index.html#insert-and-complex-keys">module-level documentation</link> for more.
+
+<title>Examples</title>
+ <elided chars="71"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::into_keys</type-name></label>
+<truncated level="brief">Creates a consuming iterator visiting all the keys, in sorted order. The map cannot be used after calling this. The iterator element type is <inline-code>K</inline-code>.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut a = BTreeMap::new();
+a.insert(2, "b");
+a.insert(1, "a");
+
+let keys: Vec<i32> = a.into_keys().collect();
+assert_eq!(keys, [1, 2]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::into_values</type-name></label>
+<truncated level="brief">Creates a consuming iterator visiting all the values, in order by key. The map cannot be used after calling this. The iterator element type is <inline-code>V</inline-code>.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut a = BTreeMap::new();
+a.insert(1, "hello");
+a.insert(2, "goodbye");
+
+let values: Vec<&str> = a.into_values().collect();
+assert_eq!(values, ["hello", "goodbye"]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::is_empty</type-name></label>
+<truncated level="brief">Returns <inline-code>true</inline-code> if the map contains no elements.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut a = BTreeMap::new();
+assert!(a.is_empty());
+a.insert(1, "a");
+assert!(!a.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::iter</type-name></label>
+<truncated level="brief">Gets an iterator over the entries of the map, sorted by key.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(3, "c");
+map.insert(2, "b");
+map.insert(1, "a");
+
+for (key, value) in map.iter() {
+    println!("{key}: {value}");
+}
+
+let (first_key, first_value) = map.iter().next().unwrap();
+assert_eq!((*first_key, *first_value), (1, "a"));
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::iter_mut</type-name></label>
+<truncated level="brief">Gets a mutable iterator over the entries of the map, sorted by key.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::from([
+   ("a", 1),
+   ("b", 2),
+   ("c", 3),
+]);
+
+// add 10 to the value if the key isn't "a"
+for (key, value) in map.iter_mut() {
+    if key != &"a" {
+        *value += 10;
+    }
+}
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::keys</type-name></label>
+<truncated level="brief">Gets an iterator over the keys of the map, in sorted order.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut a = BTreeMap::new();
+a.insert(2, "b");
+a.insert(1, "a");
+
+let keys: Vec<_> = a.keys().cloned().collect();
+assert_eq!(keys, [1, 2]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::last_entry</type-name></label>
+<truncated level="brief">Returns the last entry in the map for in-place manipulation. The key of this entry is the maximum key in the map.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "a");
+map.insert(2, "b");
+if let Some(mut entry) = map.last_entry() {
+    if *entry.key() > 0 {
+        entry.insert("last");
+    }
+}
+assert_eq!(*map.get(&1).unwrap(), "a");
+assert_eq!(*map.get(&2).unwrap(), "last");
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::last_key_value</type-name></label>
+<truncated level="brief">Returns the last key-value pair in the map. The key in this pair is the maximum key in the map.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "b");
+map.insert(2, "a");
+assert_eq!(map.last_key_value(), Some((&2, &"a")));
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::len</type-name></label>
+<truncated level="brief">Returns the number of elements in the map.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut a = BTreeMap::new();
+assert_eq!(a.len(), 0);
+a.insert(1, "a");
+assert_eq!(a.len(), 1);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::lower_bound</type-name></label>
+<truncated level="brief">Returns a <link href="http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html">Cursor</link> pointing at the gap before the smallest key greater than the given bound.
+
+Passing <inline-code>Bound::Included(x)</inline-code> will return a cursor pointing to the gap before the smallest key greater than or equal to <inline-code>x</inline-code>.
+
+Passing <inline-code>Bound::Excluded(x)</inline-code> will return a cursor pointing to the gap before the smallest key greater than <inline-code>x</inline-code>.
+
+Passing <inline-code>Bound::Unbounded</inline-code> will return a cursor pointing to the gap before the smallest key in the map.
+
+<title>Examples</title>
+ <elided chars="542"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::lower_bound_mut</type-name></label>
+<truncated level="brief">Returns a <link href="http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html">CursorMut</link> pointing at the gap before the smallest key greater than the given bound.
+
+Passing <inline-code>Bound::Included(x)</inline-code> will return a cursor pointing to the gap before the smallest key greater than or equal to <inline-code>x</inline-code>.
+
+Passing <inline-code>Bound::Excluded(x)</inline-code> will return a cursor pointing to the gap before the smallest key greater than <inline-code>x</inline-code>.
+
+Passing <inline-code>Bound::Unbounded</inline-code> will return a cursor pointing to the gap before the smallest key in the map.
+
+<title>Examples</title>
+ <elided chars="593"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::new</type-name></label>
+<truncated level="brief">Makes a new, empty <inline-code>BTreeMap</inline-code>.
+
+Does not allocate anything on its own.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+
+// entries can now be inserted into the empty map
+map.insert(1, "a");
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::new_in</type-name></label>
+<truncated level="brief">Makes a new empty BTreeMap with a reasonable choice for B.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+use std::alloc::Global;
+
+let mut map = BTreeMap::new_in(Global);
+
+// entries can now be inserted into the empty map
+map.insert(1, "a");
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::pop_first</type-name></label>
+<truncated level="brief">Removes and returns the first element in the map. The key of this element is the minimum key that was in the map.
+
+<title>Examples</title>
+Draining elements in ascending order, while keeping a usable map each iteration.
+
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "a");
+map.insert(2, "b");
+while let Some((key, _val)) = map.pop_first() {
+    assert!(map.iter().all(|(k, _v)| *k > key));
+}
+assert!(map.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::pop_last</type-name></label>
+<truncated level="brief">Removes and returns the last element in the map. The key of this element is the maximum key that was in the map.
+
+<title>Examples</title>
+Draining elements in descending order, while keeping a usable map each iteration.
+
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "a");
+map.insert(2, "b");
+while let Some((key, _val)) = map.pop_last() {
+    assert!(map.iter().all(|(k, _v)| *k < key));
+}
+assert!(map.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::range</type-name></label>
+<truncated level="brief">Constructs a double-ended iterator over a sub-range of elements in the map. The simplest way is to use the range syntax <inline-code>min..max</inline-code>, thus <inline-code>range(min..max)</inline-code> will yield elements from min (inclusive) to max (exclusive). The range may also be entered as <inline-code>(Bound<T>, Bound<T>)</inline-code>, so for example <inline-code>range((Excluded(4), Included(10)))</inline-code> will yield a left-exclusive, right-inclusive range from 4 to 10.
+
+<title>Panics</title>
+Panics if range <inline-code>start > end</inline-code>. Panics if range <inline-code>start == end</inline-code> and both bounds are <inline-code>Excluded</inline-code>.
+
+<title>Examples</title>
+ <elided chars="291"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::range_mut</type-name></label>
+<truncated level="brief">Constructs a mutable double-ended iterator over a sub-range of elements in the map. The simplest way is to use the range syntax <inline-code>min..max</inline-code>, thus <inline-code>range(min..max)</inline-code> will yield elements from min (inclusive) to max (exclusive). The range may also be entered as <inline-code>(Bound<T>, Bound<T>)</inline-code>, so for example <inline-code>range((Excluded(4), Included(10)))</inline-code> will yield a left-exclusive, right-inclusive range from 4 to 10.
+
+<title>Panics</title>
+Panics if range <inline-code>start > end</inline-code>. Panics if range <inline-code>start == end</inline-code> and both bounds are <inline-code>Excluded</inline-code>.
+
+<title>Examples</title>
+ <elided chars="272"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::remove</type-name></label>
+<truncated level="brief">Removes a key from the map, returning the value at the key if the key was previously in the map.
+
+The key may be any borrowed form of the map's key type, but the ordering on the borrowed form <emphasis>must</emphasis> match the ordering on the key type.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "a");
+assert_eq!(map.remove(&1), Some("a"));
+assert_eq!(map.remove(&1), None);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::remove_entry</type-name></label>
+<truncated level="brief">Removes a key from the map, returning the stored key and value if the key was previously in the map.
+
+The key may be any borrowed form of the map's key type, but the ordering on the borrowed form <emphasis>must</emphasis> match the ordering on the key type.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map = BTreeMap::new();
+map.insert(1, "a");
+assert_eq!(map.remove_entry(&1), Some((1, "a")));
+assert_eq!(map.remove_entry(&1), None);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::retain</type-name></label>
+<truncated level="brief">Retains only the elements specified by the predicate.
+
+In other words, remove all pairs <inline-code>(k, v)</inline-code> for which <inline-code>f(&k, &mut v)</inline-code> returns <inline-code>false</inline-code>. The elements are visited in ascending key order.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut map: BTreeMap<i32, i32> = (0..8).map(|x| (x, x*10)).collect();
+// Keep only the elements with even-numbered keys.
+map.retain(|&k, _| k % 2 == 0);
+assert!(map.into_iter().eq(vec![(0, 0), (2, 20), (4, 40), (6, 60)]));
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::split_off</type-name></label>
+<truncated level="brief">Splits the collection into two at the given key. Returns everything after the given key, including the key. If the key is not present, the split will occur at the nearest greater key, or return an empty map if no such key exists.
+
+<title>Examples</title>
+ <elided chars="91"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::try_insert</type-name></label>
+<truncated level="brief">Tries to insert a key-value pair into the map, and returns a mutable reference to the value in the entry.
+
+If the map already had this key present, nothing is updated, and an error containing the occupied entry and the value is returned.
+
+<title>Examples</title>
+ <elided chars="37"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::upper_bound</type-name></label>
+<truncated level="brief">Returns a <link href="http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html">Cursor</link> pointing at the gap after the greatest key smaller than the given bound.
+
+Passing <inline-code>Bound::Included(x)</inline-code> will return a cursor pointing to the gap after the greatest key smaller than or equal to <inline-code>x</inline-code>.
+
+Passing <inline-code>Bound::Excluded(x)</inline-code> will return a cursor pointing to the gap after the greatest key smaller than <inline-code>x</inline-code>.
+
+Passing <inline-code>Bound::Unbounded</inline-code> will return a cursor pointing to the gap after the greatest key in the map.
+
+<title>Examples</title>
+ <elided chars="538"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::upper_bound_mut</type-name></label>
+<truncated level="brief">Returns a <link href="http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html">CursorMut</link> pointing at the gap after the greatest key smaller than the given bound.
+
+Passing <inline-code>Bound::Included(x)</inline-code> will return a cursor pointing to the gap after the greatest key smaller than or equal to <inline-code>x</inline-code>.
+
+Passing <inline-code>Bound::Excluded(x)</inline-code> will return a cursor pointing to the gap after the greatest key smaller than <inline-code>x</inline-code>.
+
+Passing <inline-code>Bound::Unbounded</inline-code> will return a cursor pointing to the gap after the greatest key in the map.
+
+<title>Examples</title>
+ <elided chars="589"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::values</type-name></label>
+<truncated level="brief">Gets an iterator over the values of the map, in order by key.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut a = BTreeMap::new();
+a.insert(1, "hello");
+a.insert(2, "goodbye");
+
+let values: Vec<&str> = a.values().cloned().collect();
+assert_eq!(values, ["hello", "goodbye"]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::Tree::values_mut</type-name></label>
+<truncated level="brief">Gets a mutable iterator over the values of the map, in order by key.
+
+<title>Examples</title>
+<code-block>
+use std::collections::BTreeMap;
+
+let mut a = BTreeMap::new();
+a.insert(1, String::from("hello"));
+a.insert(2, String::from("goodbye"));
+
+for value in a.values_mut() {
+    value.push_str("!");
+}
+
+let values: Vec<String> = a.values().cloned().collect();
+assert_eq!(values, [String::from("hello!"),
+                    String::from("goodbye!")]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::NestedStruct::new</type-name></label>
+<truncated level="brief">Create new NestedStruct
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::as_bytes</type-name></label>
+<truncated level="brief">Returns a byte slice of this <inline-code>String</inline-code>'s contents.
+
+The inverse of this method is <link href="String::from_utf8">from_utf8</link>.
+
+<title>Examples</title>
+<code-block>
+let s = String::from("hello");
+
+assert_eq!(&[104, 101, 108, 108, 111], s.as_bytes());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::as_mut_str</type-name></label>
+<truncated level="brief">Converts a <inline-code>String</inline-code> into a mutable string slice.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("foobar");
+let s_mut_str = s.as_mut_str();
+
+s_mut_str.make_ascii_uppercase();
+
+assert_eq!("FOOBAR", s_mut_str);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::as_mut_vec</type-name></label>
+<truncated level="brief">Returns a mutable reference to the contents of this <inline-code>String</inline-code>.
+
+<title>Safety</title>
+This function is unsafe because the returned <inline-code>&mut Vec</inline-code> allows writing bytes which are not valid UTF-8. If this constraint is violated, using the original <inline-code>String</inline-code> after dropping the <inline-code>&mut Vec</inline-code> may violate memory safety, as the rest of the standard library assumes that <inline-code>String</inline-code>s are valid UTF-8.
+
+<title>Examples</title>
+ <elided chars="43"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::as_str</type-name></label>
+<truncated level="brief">Extracts a string slice containing the entire <inline-code>String</inline-code>.
+
+<title>Examples</title>
+<code-block>
+let s = String::from("foo");
+
+assert_eq!("foo", s.as_str());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::capacity</type-name></label>
+<truncated level="brief">Returns this <inline-code>String</inline-code>'s capacity, in bytes.
+
+<title>Examples</title>
+<code-block>
+let s = String::with_capacity(10);
+
+assert!(s.capacity() >= 10);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::clear</type-name></label>
+<truncated level="brief">Truncates this <inline-code>String</inline-code>, removing all contents.
+
+While this means the <inline-code>String</inline-code> will have a length of zero, it does not touch its capacity.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("foo");
+
+s.clear();
+
+assert!(s.is_empty());
+assert_eq!(0, s.len());
+assert_eq!(3, s.capacity());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::drain</type-name></label>
+<truncated level="brief">Removes the specified range from the string in bulk, returning all removed characters as an iterator.
+
+The returned iterator keeps a mutable borrow on the string to optimize its implementation.
+
+<title>Panics</title>
+Panics if the range has <inline-code>start_bound > end_bound</inline-code>, or, if the range is bounded on either end and does not lie on a <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> boundary.
+
+<title>Leaking</title>
+If the returned iterator goes out of scope without being dropped (due to <link href="http://docs.rust-lang.org/nightly/core/mem/fn.forget.html">core::mem::forget</link>, for example), the string may still contain a copy of any drained <elided chars="451"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::extend_from_within</type-name></label>
+<truncated level="brief">Copies elements from <inline-code>src</inline-code> range to the end of the string.
+
+<title>Panics</title>
+Panics if the range has <inline-code>start_bound > end_bound</inline-code>, if the range is bounded on either end and does not lie on a <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> boundary, or if the new capacity exceeds <inline-code>isize::MAX</inline-code> bytes.
+
+<title>Examples</title>
+<code-block>
+let mut string = String::from("abcde");
+
+string.extend_from_within(2..);
+assert_eq!(string, "abcdecde");
+
+string.extend_from_within(..2);
+assert_eq!(string, "abcdecdeab");
+
+string.extend_from_within(4..8);
+assert_eq!(string, "abcdecdeabecde");
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_raw_parts</type-name></label>
+<truncated level="brief">Creates a new <inline-code>String</inline-code> from a pointer, a length and a capacity.
+
+<title>Safety</title>
+This is highly unsafe, due to the number of invariants that aren't checked:
+
+all safety requirements for <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_raw_parts">Vec::::from_raw_parts</link>.all safety requirements for <link href="http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_unchecked">String::from_utf8_unchecked</link>.Violating these may cause problems like corrupting the allocator's internal data structures. For example, it is normally <strong>not</strong> safe to build a <inline-code>String</inline-code> from a pointer to a C <inline-code>char</inline-code> array containing UTF-8 <emphasis>unless</emphasis> you are certain that array was originally <elided chars="539"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf16</type-name></label>
+<truncated level="brief">Decode a native endian UTF-16–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning [Err] if <inline-code>v</inline-code> contains any invalid data.
+
+<title>Examples</title>
+<code-block>
+// 𝄞music
+let v = &[0xD834, 0xDD1E, 0x006d, 0x0075,
+          0x0073, 0x0069, 0x0063];
+assert_eq!(String::from("𝄞music"),
+           String::from_utf16(v).unwrap());
+
+// 𝄞mu<invalid>ic
+let v = &[0xD834, 0xDD1E, 0x006d, 0x0075,
+          0xD800, 0x0069, 0x0063];
+assert!(String::from_utf16(v).is_err());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf16_lossy</type-name></label>
+<truncated level="brief">Decode a native endian UTF-16–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with <link href="http://docs.rust-lang.org/nightly/core/char/constant.REPLACEMENT_CHARACTER.html">the replacement character (<inline-code>U+FFFD</inline-code>)</link>.
+
+Unlike <link href="String::from_utf8_lossy">from_utf8_lossy</link> which returns a <link href="http://docs.rust-lang.org/nightly/alloc/borrow/enum.Cow.html">Cow<'a, str></link>, <inline-code>from_utf16_lossy</inline-code> returns a <inline-code>String</inline-code> since the UTF-16 to UTF-8 conversion requires a memory allocation.
+
+<title>Examples</title>
+ <elided chars="20"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf16be</type-name></label>
+<truncated level="brief">Decode a UTF-16BE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning [Err] if <inline-code>v</inline-code> contains any invalid data.
+
+<title>Examples</title>
+Basic usage:
+
+ <elided chars="29"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf16be_lossy</type-name></label>
+<truncated level="brief">Decode a UTF-16BE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with <link href="http://docs.rust-lang.org/nightly/core/char/constant.REPLACEMENT_CHARACTER.html">the replacement character (<inline-code>U+FFFD</inline-code>)</link>.
+
+Unlike <link href="String::from_utf8_lossy">from_utf8_lossy</link> which returns a <link href="http://docs.rust-lang.org/nightly/alloc/borrow/enum.Cow.html">Cow<'a, str></link>, <inline-code>from_utf16le_lossy</inline-code> returns a <inline-code>String</inline-code> since the UTF-16 to UTF-8 conversion requires a memory allocation.
+
+<title>Examples</title>
+Basic usage:
+
+ <elided chars="97"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf16le</type-name></label>
+<truncated level="brief">Decode a UTF-16LE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning [Err] if <inline-code>v</inline-code> contains any invalid data.
+
+<title>Examples</title>
+Basic usage:
+
+ <elided chars="29"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf16le_lossy</type-name></label>
+<truncated level="brief">Decode a UTF-16LE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with <link href="http://docs.rust-lang.org/nightly/core/char/constant.REPLACEMENT_CHARACTER.html">the replacement character (<inline-code>U+FFFD</inline-code>)</link>.
+
+Unlike <link href="String::from_utf8_lossy">from_utf8_lossy</link> which returns a <link href="http://docs.rust-lang.org/nightly/alloc/borrow/enum.Cow.html">Cow<'a, str></link>, <inline-code>from_utf16le_lossy</inline-code> returns a <inline-code>String</inline-code> since the UTF-16 to UTF-8 conversion requires a memory allocation.
+
+<title>Examples</title>
+Basic usage:
+
+ <elided chars="97"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf8</type-name></label>
+<truncated level="brief">Converts a vector of bytes to a <inline-code>String</inline-code>.
+
+A string (<link href="http://docs.rust-lang.org/nightly/alloc/string/struct.String.html">String</link>) is made of bytes (<link href="https://doc.rust-lang.org/nightly/core/">u8</link>), and a vector of bytes (<link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html">Vec</link>) is made of bytes, so this function converts between the two. Not all byte slices are valid <inline-code>String</inline-code>s, however: <inline-code>String</inline-code> requires that it is valid UTF-8. <inline-code>from_utf8()</inline-code> checks to ensure that the bytes are valid UTF-8, and then does the conversion.
+
+If you are sure that the byte slice is valid UTF-8, and you don't want to incur the overhead of the validity check, there is an unsafe version of <elided chars="908"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf8_lossy</type-name></label>
+<truncated level="brief">Converts a slice of bytes to a string, including invalid characters.
+
+Strings are made of bytes (<link href="https://doc.rust-lang.org/nightly/core/">u8</link>), and a slice of bytes ([&<link href="https://doc.rust-lang.org/nightly/core/">u8</link>]<link href="http://docs.rust-lang.org/nightly/alloc/index.html">byteslice</link>) is made of bytes, so this function converts between the two. Not all byte slices are valid strings, however: strings are required to be valid UTF-8. During this conversion, <inline-code>from_utf8_lossy()</inline-code> will replace any invalid UTF-8 sequences with <link href="http://docs.rust-lang.org/nightly/core/char/constant.REPLACEMENT_CHARACTER.html">U+FFFD REPLACEMENT CHARACTER</link>, which looks like this: �
+
+If you are sure that the byte slice is valid UTF-8, and you <elided chars="830"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf8_lossy_owned</type-name></label>
+<truncated level="brief">Converts a <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html">Vec</link> to a <inline-code>String</inline-code>, substituting invalid UTF-8 sequences with replacement characters.
+
+See <link href="String::from_utf8_lossy">from_utf8_lossy</link> for more details.
+
+Note that this function does not guarantee reuse of the original <inline-code>Vec</inline-code> allocation.
+
+<title>Examples</title>
+Basic usage:
+
+<code-block>
+#![feature(string_from_utf8_lossy_owned)]
+// some bytes, in a vector
+let sparkle_heart = vec![240, 159, 146, 150];
+
+let sparkle_heart = String::from_utf8_lossy_owned(sparkle_heart);
+
+assert_eq!(String::from("💖"), sparkle_heart);
+</code-block>
+Incorrect bytes:
+
+ <elided chars="210"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::from_utf8_unchecked</type-name></label>
+<truncated level="brief">Converts a vector of bytes to a <inline-code>String</inline-code> without checking that the string contains valid UTF-8.
+
+See the safe version, <link href="String::from_utf8">from_utf8</link>, for more details.
+
+<title>Safety</title>
+This function is unsafe because it does not check that the bytes passed to it are valid UTF-8. If this constraint is violated, it may cause memory unsafety issues with future users of the <inline-code>String</inline-code>, as the rest of the standard library assumes that <inline-code>String</inline-code>s are valid UTF-8.
+
+<title>Examples</title>
+ <elided chars="120"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::insert</type-name></label>
+<truncated level="brief">Inserts a character into this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code>.
+
+Reallocates if <inline-code>self.capacity()</inline-code> is insufficient, which may involve copying all <inline-code>self.capacity()</inline-code> bytes. Makes space for the insertion by copying all bytes of <inline-code>&self[idx..]</inline-code> to new positions.
+
+Note that calling this in a loop can result in quadratic behavior.
+
+<title>Panics</title>
+Panics if <inline-code>idx</inline-code> is larger than the <inline-code>String</inline-code>'s length, or if it does not lie on a <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> boundary.
+
+<title>Examples</title>
+ <elided chars="37"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::insert_str</type-name></label>
+<truncated level="brief">Inserts a string slice into this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code>.
+
+Reallocates if <inline-code>self.capacity()</inline-code> is insufficient, which may involve copying all <inline-code>self.capacity()</inline-code> bytes. Makes space for the insertion by copying all bytes of <inline-code>&self[idx..]</inline-code> to new positions.
+
+Note that calling this in a loop can result in quadratic behavior.
+
+<title>Panics</title>
+Panics if <inline-code>idx</inline-code> is larger than the <inline-code>String</inline-code>'s length, or if it does not lie on a <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> boundary.
+
+<title>Examples</title>
+ <elided chars="8"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::into_boxed_str</type-name></label>
+<truncated level="brief">Converts this <inline-code>String</inline-code> into a [Box]<<link href="http://docs.rust-lang.org/nightly/alloc/index.html">str</link>>.
+
+Before doing the conversion, this method discards excess capacity like <link href="String::shrink_to_fit">shrink_to_fit</link>. Note that this call may reallocate and copy the bytes of the string.
+
+<title>Examples</title>
+<code-block>
+let s = String::from("hello");
+
+let b = s.into_boxed_str();
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::into_bytes</type-name></label>
+<truncated level="brief">Converts a <inline-code>String</inline-code> into a byte vector.
+
+This consumes the <inline-code>String</inline-code>, so we do not need to copy its contents.
+
+<title>Examples</title>
+<code-block>
+let s = String::from("hello");
+let bytes = s.into_bytes();
+
+assert_eq!(&[104, 101, 108, 108, 111][..], &bytes[..]);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::into_chars</type-name></label>
+<truncated level="brief">Converts a <inline-code>String</inline-code> into an iterator over the <link href="prim@char">char</link>s of the string.
+
+As a string consists of valid UTF-8, we can iterate through a string by <link href="prim@char">char</link>. This method returns such an iterator.
+
+It's important to remember that <link href="prim@char">char</link> represents a Unicode Scalar Value, and might not match your idea of what a 'character' is. Iteration over grapheme clusters may be what you actually want. That functionality is not provided by Rust's standard library, check crates.io instead.
+
+<title>Examples</title>
+Basic usage:
+
+ <elided chars="669"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::into_raw_parts</type-name></label>
+<truncated level="brief">Decomposes a <inline-code>String</inline-code> into its raw components: <inline-code>(pointer, length, capacity)</inline-code>.
+
+Returns the raw pointer to the underlying data, the length of the string (in bytes), and the allocated capacity of the data (in bytes). These are the same arguments in the same order as the arguments to <link href="String::from_raw_parts">from_raw_parts</link>.
+
+After calling this function, the caller is responsible for the memory previously managed by the <inline-code>String</inline-code>. The only way to do this is to convert the raw pointer, length, and capacity back into a <inline-code>String</inline-code> with <elided chars="253"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::is_empty</type-name></label>
+<truncated level="brief">Returns <inline-code>true</inline-code> if this <inline-code>String</inline-code> has a length of zero, and <inline-code>false</inline-code> otherwise.
+
+<title>Examples</title>
+<code-block>
+let mut v = String::new();
+assert!(v.is_empty());
+
+v.push('a');
+assert!(!v.is_empty());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::leak</type-name></label>
+<truncated level="brief">Consumes and leaks the <inline-code>String</inline-code>, returning a mutable reference to the contents, <inline-code>&'a mut str</inline-code>.
+
+The caller has free choice over the returned lifetime, including <inline-code>'static</inline-code>. Indeed, this function is ideally used for data that lives for the remainder of the program's life, as dropping the returned reference will cause a memory leak.
+
+It does not reallocate or shrink the <inline-code>String</inline-code>, so the leaked allocation may include unused capacity that is not part of the returned slice. If you want to discard excess <elided chars="261"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::len</type-name></label>
+<truncated level="brief">Returns the length of this <inline-code>String</inline-code>, in bytes, not <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link>s or graphemes. In other words, it might not be what a human considers the length of the string.
+
+<title>Examples</title>
+<code-block>
+let a = String::from("foo");
+assert_eq!(a.len(), 3);
+
+let fancy_f = String::from("ƒoo");
+assert_eq!(fancy_f.len(), 4);
+assert_eq!(fancy_f.chars().count(), 3);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::new</type-name></label>
+<truncated level="brief">Creates a new empty <inline-code>String</inline-code>.
+
+Given that the <inline-code>String</inline-code> is empty, this will not allocate any initial buffer. While that means that this initial operation is very inexpensive, it may cause excessive allocation later when you add data. If you have an idea of how much data the <inline-code>String</inline-code> will hold, consider the <link href="String::with_capacity">with_capacity</link> method to prevent excessive re-allocation.
+
+<title>Examples</title>
+<code-block>
+let s = String::new();
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::pop</type-name></label>
+<truncated level="brief">Removes the last character from the string buffer and returns it.
+
+Returns [None] if this <inline-code>String</inline-code> is empty.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("abč");
+
+assert_eq!(s.pop(), Some('č'));
+assert_eq!(s.pop(), Some('b'));
+assert_eq!(s.pop(), Some('a'));
+
+assert_eq!(s.pop(), None);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::push</type-name></label>
+<truncated level="brief">Appends the given <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> to the end of this <inline-code>String</inline-code>.
+
+<title>Panics</title>
+Panics if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("abc");
+
+s.push('1');
+s.push('2');
+s.push('3');
+
+assert_eq!("abc123", s);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::push_str</type-name></label>
+<truncated level="brief">Appends a given string slice onto the end of this <inline-code>String</inline-code>.
+
+<title>Panics</title>
+Panics if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("foo");
+
+s.push_str("bar");
+
+assert_eq!("foobar", s);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::remove</type-name></label>
+<truncated level="brief">Removes a <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> from this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code> and returns it.
+
+Copies all bytes after the removed char to new positions.
+
+Note that calling this in a loop can result in quadratic behavior.
+
+<title>Panics</title>
+Panics if <inline-code>idx</inline-code> is larger than or equal to the <inline-code>String</inline-code>'s length, or if it does not lie on a <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> boundary.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("abç");
+
+assert_eq!(s.remove(0), 'a');
+assert_eq!(s.remove(1), 'ç');
+assert_eq!(s.remove(0), 'b');
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::remove_matches</type-name></label>
+<truncated level="brief">Remove all matches of pattern <inline-code>pat</inline-code> in the <inline-code>String</inline-code>.
+
+<title>Examples</title>
+<code-block>
+#![feature(string_remove_matches)]
+let mut s = String::from("Trees are not green, the sky is not blue.");
+s.remove_matches("not ");
+assert_eq!("Trees are green, the sky is blue.", s);
+</code-block>
+Matches will be detected and removed iteratively, so in cases where patterns overlap, only the first pattern will be removed:
+
+<code-block>
+#![feature(string_remove_matches)]
+let mut s = String::from("banana");
+s.remove_matches("ana");
+assert_eq!("bna", s);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::replace_first</type-name></label>
+<truncated level="brief">Replaces the leftmost occurrence of a pattern with another string, in-place.
+
+This method can be preferred over <link href="../../std/primitive.str.html#method.replacen">string = string.replacen(..., 1);</link>, as it can use the <inline-code>String</inline-code>'s existing capacity to prevent a reallocation if sufficient space is available.
+
+<title>Examples</title>
+Basic usage:
+
+<code-block>
+#![feature(string_replace_in_place)]
+
+let mut s = String::from("Test Results: ❌❌❌");
+
+// Replace the leftmost ❌ with a ✅
+s.replace_first('❌', "✅");
+assert_eq!(s, "Test Results: ✅❌❌");
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::replace_last</type-name></label>
+<truncated level="brief">Replaces the rightmost occurrence of a pattern with another string, in-place.
+
+<title>Examples</title>
+Basic usage:
+
+<code-block>
+#![feature(string_replace_in_place)]
+
+let mut s = String::from("Test Results: ❌❌❌");
+
+// Replace the rightmost ❌ with a ✅
+s.replace_last('❌', "✅");
+assert_eq!(s, "Test Results: ❌❌✅");
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::replace_range</type-name></label>
+<truncated level="brief">Removes the specified range in the string, and replaces it with the given string. The given string doesn't need to be the same length as the range.
+
+<title>Panics</title>
+Panics if the range has <inline-code>start_bound > end_bound</inline-code>, or, if the range is bounded on either end and does not lie on a <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> boundary.
+
+<title>Examples</title>
+ <elided chars="56"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::reserve</type-name></label>
+<truncated level="brief">Reserves capacity for at least <inline-code>additional</inline-code> bytes more than the current length. The allocator may reserve more space to speculatively avoid frequent allocations. After calling <inline-code>reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if capacity is already sufficient.
+
+<title>Panics</title>
+Panics if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+Basic usage:
+
+<code-block>
+let mut s = String::new();
+
+s.reserve(10);
+
+assert!(s.capacity() >= 10);
+</code-block>
+This might not actually increase the capacity: <elided chars="358"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::reserve_exact</type-name></label>
+<truncated level="brief">Reserves the minimum capacity for at least <inline-code>additional</inline-code> bytes more than the current length. Unlike <link href="String::reserve">reserve</link>, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling <inline-code>reserve_exact</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if the capacity is already sufficient.
+
+<title>Panics</title>
+Panics if the new capacity exceeds <inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>.
+
+<title>Examples</title>
+Basic usage:
+
+ <elided chars="412"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::retain</type-name></label>
+<truncated level="brief">Retains only the characters specified by the predicate.
+
+In other words, remove all characters <inline-code>c</inline-code> such that <inline-code>f(c)</inline-code> returns <inline-code>false</inline-code>. This method operates in place, visiting each character exactly once in the original order, and preserves the order of the retained characters.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("f_o_ob_ar");
+
+s.retain(|c| c != '_');
+
+assert_eq!(s, "foobar");
+</code-block>
+Because the elements are visited exactly once in the original order, external state may be used to decide which elements to keep.
+
+ <elided chars="165"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::shrink_to</type-name></label>
+<truncated level="brief">Shrinks the capacity of this <inline-code>String</inline-code> with a lower bound.
+
+The capacity will remain at least as large as both the length and the supplied value.
+
+If the current capacity is less than the lower limit, this is a no-op.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("foo");
+
+s.reserve(100);
+assert!(s.capacity() >= 100);
+
+s.shrink_to(10);
+assert!(s.capacity() >= 10);
+s.shrink_to(0);
+assert!(s.capacity() >= 3);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::shrink_to_fit</type-name></label>
+<truncated level="brief">Shrinks the capacity of this <inline-code>String</inline-code> to match its length.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("foo");
+
+s.reserve(100);
+assert!(s.capacity() >= 100);
+
+s.shrink_to_fit();
+assert_eq!(3, s.capacity());
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::split_off</type-name></label>
+<truncated level="brief">Splits the string into two at the given byte index.
+
+Returns a newly allocated <inline-code>String</inline-code>. <inline-code>self</inline-code> contains bytes <inline-code>[0, at)</inline-code>, and the returned <inline-code>String</inline-code> contains bytes <inline-code>[at, len)</inline-code>. <inline-code>at</inline-code> must be on the boundary of a UTF-8 code point.
+
+Note that the capacity of <inline-code>self</inline-code> does not change.
+
+<title>Panics</title>
+Panics if <inline-code>at</inline-code> is not on a <inline-code>UTF-8</inline-code> code point boundary, or if it is beyond the last code point of the string.
+
+<title>Examples</title>
+ <elided chars="24"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::truncate</type-name></label>
+<truncated level="brief">Shortens this <inline-code>String</inline-code> to the specified length.
+
+If <inline-code>new_len</inline-code> is greater than or equal to the string's current length, this has no effect.
+
+Note that this method has no effect on the allocated capacity of the string
+
+<title>Panics</title>
+Panics if <inline-code>new_len</inline-code> does not lie on a <link href="http://docs.rust-lang.org/nightly/core/index.html">char</link> boundary.
+
+<title>Examples</title>
+<code-block>
+let mut s = String::from("hello");
+
+s.truncate(2);
+
+assert_eq!("he", s);
+</code-block>
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::try_reserve</type-name></label>
+<truncated level="brief">Tries to reserve capacity for at least <inline-code>additional</inline-code> bytes more than the current length. The allocator may reserve more space to speculatively avoid frequent allocations. After calling <inline-code>try_reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if capacity is already sufficient. This method preserves the contents even if an error occurs.
+
+<title>Errors</title>
+If the capacity overflows, or the allocator reports a failure, then an error is returned.
+
+<title>Examples</title>
+ <elided chars="340"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::try_reserve_exact</type-name></label>
+<truncated level="brief">Tries to reserve the minimum capacity for at least <inline-code>additional</inline-code> bytes more than the current length. Unlike <link href="String::try_reserve">try_reserve</link>, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling <inline-code>try_reserve_exact</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if the capacity is already sufficient.
+
+Note that the allocator may give the collection more space than it requests. Therefore, capacity can not be relied upon <elided chars="532"/></truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::try_with_capacity</type-name></label>
+<truncated level="brief">Creates a new empty <inline-code>String</inline-code> with at least the specified capacity.
+
+<title>Errors</title>
+Returns [Err] if the capacity exceeds <inline-code>isize::MAX</inline-code> bytes, or if the memory allocator reports failure.
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::nested::Str::with_capacity</type-name></label>
+<truncated level="brief">Creates a new empty <inline-code>String</inline-code> with at least the specified capacity.
+
+<inline-code>String</inline-code>s have an internal buffer to hold their data. The capacity is the length of that buffer, and can be queried with the <link href="String::capacity">capacity</link> method. This method creates an empty <inline-code>String</inline-code>, but one with an initial buffer that can hold at least <inline-code>capacity</inline-code> bytes. This is useful when you may be appending a bunch of data to the <inline-code>String</inline-code>, reducing the number of reallocations it needs to do.
+
+If the given capacity is <inline-code>0</inline-code>, no allocation will occur, and <elided chars="438"/></truncated>
+</item>
+  <item><label><type-name>reexport_mod::SubStruct::double</type-name></label>
+<truncated level="brief">Double the value
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::SubStruct::get_value</type-name></label>
+<truncated level="brief">Get the value
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::SubStruct::new</type-name></label>
+<truncated level="brief">Create a new SubStruct
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::sub_function</type-name></label>
+<truncated level="brief">A function in a submodule
+
+</truncated>
+</item>
+  <item><label><type-name>sub_function</type-name></label>
+<truncated level="brief">A function in a submodule
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::SubStruct::double</type-name></label>
+<truncated level="brief">Double the value
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::SubStruct::get_value</type-name></label>
+<truncated level="brief">Get the value
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::SubStruct::new</type-name></label>
+<truncated level="brief">Create a new SubStruct
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::sub_function</type-name></label>
+<truncated level="brief">A function in a submodule
+
+</truncated>
+</item>
+  <item><label><type-name>test_function</type-name></label>
+<truncated level="brief">A public function
+
+</truncated>
+</item>
+</list>
+</section><section><section-title>Constants</section-title><list>
+  <item><label><type-name>TEST_CONSTANT</type-name></label>
+<truncated level="brief">A const for testing
+
+</truncated>
+</item>
+</list>
+</section><section><section-title>Statics</section-title><list>
+  <item><label><type-name>TEST_STATIC</type-name></label>
+<truncated level="brief">A static for testing
+
+</truncated>
+</item>
+</list>
+</section><section><section-title>Variants</section-title><list>
+  <item><label><type-name>GenericEnum::Mixed</type-name></label>
+<truncated level="brief">Variant with mixed generics
+
+</truncated>
+</item>
+  <item><label><type-name>GenericEnum::Simple</type-name></label>
+<truncated level="brief">Simple variant
+
+</truncated>
+</item>
+  <item><label><type-name>GenericEnum::WithData</type-name></label>
+<truncated level="brief">Variant with generic data
+
+</truncated>
+</item>
+  <item><label><type-name>TestEnum::VariantA</type-name></label>
+<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+
+</truncated>
+</item>
+  <item><label><type-name>TestEnum::VariantB</type-name></label>
+<truncated level="brief">Variant B with data
+
+</truncated>
+</item>
+  <item><label><type-name>TestEnum::VariantC</type-name></label>
+<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+
+</truncated>
+</item>
+  <item><label><type-name>VariantA</type-name></label>
+<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+
+</truncated>
+</item>
+  <item><label><type-name>VariantB</type-name></label>
+<truncated level="brief">Variant B with data
+
+</truncated>
+</item>
+  <item><label><type-name>VariantC</type-name></label>
+<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::TestEnum::VariantA</type-name></label>
+<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::TestEnum::VariantB</type-name></label>
+<truncated level="brief">Variant B with data
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::TestEnum::VariantC</type-name></label>
+<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::VariantA</type-name></label>
+<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::VariantB</type-name></label>
+<truncated level="brief">Variant B with data
+
+</truncated>
+</item>
+  <item><label><type-name>reexport_mod::VariantC</type-name></label>
+<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::TestEnum::VariantA</type-name></label>
+<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::TestEnum::VariantB</type-name></label>
+<truncated level="brief">Variant B with data
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::TestEnum::VariantC</type-name></label>
+<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::VariantA</type-name></label>
+<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::VariantB</type-name></label>
+<truncated level="brief">Variant B with data
+
+</truncated>
+</item>
+  <item><label><type-name>submodule::VariantC</type-name></label>
+<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+
+</truncated>
+</item>
+</list>
+</section><section><section-title>AssocConst</section-title><list>
+  <item><label><type-name>TestStruct::ASSOCIATED_CONST</type-name></label>
+<truncated level="brief">This is an associated constant for a struct
+
+</truncated>
+</item>
+  <item><label><type-name>link_resolution_tests::RenamedTestStruct::ASSOCIATED_CONST</type-name></label>
+<truncated level="brief">This is an associated constant for a struct
+
+</truncated>
+</item>
+</list>
+</section>

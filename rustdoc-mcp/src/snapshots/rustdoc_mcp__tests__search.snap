@@ -1,8 +1,8 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Search results for 'trigger line-based truncation' in crate 'test-crate':
 
-• test-crate::TestTrait (Trait) - score: 85
+• test-crate::TestTrait (Trait) - score: 65
     A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]

@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Item: TestEnum
@@ -9,14 +9,16 @@ Defined at: test_crate::submodule::TestEnum
 
 An enum for testing
 
+This is like [`crate::GenericEnum`] but without the generic
+
 
 ```rust
 enum TestEnum {
-    /// Variant A
+    /// Variant A (see also [`crate::GenericEnum`])
     VariantA,
     /// Variant B with data
     VariantB(String),
-    /// Variant C with struct data
+    /// Variant C with struct data (`name` and `value`)
     VariantC {
         name: String,
         value: i32,

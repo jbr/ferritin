@@ -1,4 +1,4 @@
-use rustdoc_core::iterators::IdIter;
+use ferretin_common::iterators::IdIter;
 
 use super::*;
 

@@ -1,0 +1,104 @@
+---
+source: ferretin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate\"), OutputMode::Plain)"
+---
+Item: test_crate
+Kind: Module
+Visibility: Public
+Defined at: test_crate
+
+A minimal test crate for rustdoc JSON testing
+
+
+Modules
+  • link_resolution_tests
+Module for testing intra-doc link resolution
+[+1 more paragraphs]
+
+  • reexport_mod
+  • submodule
+A module with items
+[+1 more paragraphs]
+
+Structs
+  • GenericStruct
+A generic struct for testing multi-paragraph documentation.
+[+4 more paragraphs]
+
+  • SubStruct
+A struct in a submodule
+[+1 more paragraphs]
+
+  • TestStruct
+A simple struct for testing basic functionality.
+[+3 more paragraphs]
+
+  • TupleStruct
+A tuple struct for testing
+[+1 more paragraphs]
+
+  • UnitStruct
+A unit struct for testing
+[+1 more paragraphs]
+
+  • Vec
+A contiguous growable array type, written as Vec<T>, short for 'vector'.
+[+28 more paragraphs]
+
+Enums
+  • GenericEnum
+A generic enum for testing
+[+2 more paragraphs]
+
+  • TestEnum
+An enum for testing
+[+2 more paragraphs]
+
+Traits
+  • ComplexTrait
+A more complex trait demonstrating various features
+[+1 more paragraphs]
+
+  • TestTrait
+A trait for testing extremely long documentation that exceeds line limits.
+[+3 more paragraphs]
+
+Functions
+  • async_function
+An async function
+[+1 more paragraphs]
+
+  • generic_function
+A generic function
+[+1 more paragraphs]
+
+  • sub_function
+A function in a submodule
+[+1 more paragraphs]
+
+  • test_function
+A public function
+[+1 more paragraphs]
+
+Constants
+  • TEST_CONSTANT
+A const for testing
+[+1 more paragraphs]
+
+Statics
+  • TEST_STATIC
+A static for testing
+[+1 more paragraphs]
+
+Variants
+  • VariantA
+Variant A (see also crate::GenericEnum)
+[+1 more paragraphs]
+
+  • VariantB
+Variant B with data
+[+1 more paragraphs]
+
+  • VariantC
+Variant C with struct data (name and value)
+[+1 more paragraphs]

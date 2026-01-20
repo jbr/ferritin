@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["rustdoc-core", "rustdoc-mcp"]
+members = ["ferretin-common", "rustdoc-mcp", "ferretin"]
 exclude = [
     "rustdoc-mcp/tests/test-crate",
     "rustdoc-mcp/tests/test-workspace",

@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Item: TestStruct
@@ -11,6 +11,7 @@ A simple struct for testing basic functionality.
 
 This struct demonstrates basic usage patterns and should show completely
 since it only has one paragraph of documentation.
+[+3 lines elided]
 
 
 ```rust

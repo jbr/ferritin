@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Item: submodule
@@ -14,12 +14,12 @@ Structs:
 SubStruct // A struct in a submodule
 
 Enums:
-TestEnum // An enum for testing
+TestEnum // An enum for testing [+2 more lines]
 
 Functions:
 sub_function // A function in a submodule
 
 Variants:
-VariantA // Variant A
+VariantA // Variant A (see also [`crate::GenericEnum`])
 VariantB // Variant B with data
-VariantC // Variant C with struct data
+VariantC // Variant C with struct data (`name` and `value`)

@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 `crate::DoesNotExist` not found. Did you mean one of these?
@@ -8,4 +8,4 @@ expression: result
 • `crate::GenericStruct` (Struct)
 • `crate::TEST_CONSTANT` (Constant)
 • `crate::ComplexTrait` (Trait)
-• `crate::UnitStruct` (Struct)
+• `crate::link_resolution_tests` (Module)

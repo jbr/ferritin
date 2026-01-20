@@ -6,6 +6,7 @@ expression: result
     First crate in test workspace
 • crate-b (workspace-local)
     Second crate in test workspace
+• link-test (workspace-local)
 • anyhow 1.0.99 (crate-b)
     Flexible concrete Error type built on std::error::Error
 • env_logger 0.10.2 (dev-dep) (crate-b dev)

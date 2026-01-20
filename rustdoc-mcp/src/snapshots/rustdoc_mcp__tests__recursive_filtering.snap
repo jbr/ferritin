@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Item: test_crate
@@ -7,13 +7,13 @@ Kind: Module
 Visibility: Public
 Defined at: test_crate
 
-A minimal test crate for rustdoc JSON MCP testing
+A minimal test crate for rustdoc JSON testing
 
 
 Structs:
 GenericStruct // A generic struct for testing multi-paragraph documentation. [+14 more lines]
 SubStruct // A struct in a submodule
-TestStruct // A simple struct for testing basic functionality. [+3 more lines]
+TestStruct // A simple struct for testing basic functionality. [+6 more lines]
 TupleStruct // A tuple struct for testing
 UnitStruct // A unit struct for testing
 Vec // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+257 more lines]

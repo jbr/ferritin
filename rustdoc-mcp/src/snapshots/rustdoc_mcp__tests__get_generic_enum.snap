@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Item: GenericEnum
@@ -8,6 +8,8 @@ Visibility: Public
 Defined at: test_crate::GenericEnum
 
 A generic enum for testing
+
+See also [`crate::TestEnum`]
 
 
 ```rust

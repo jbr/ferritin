@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Item: test_crate
@@ -8,6 +8,7 @@ Visibility: Public
 Defined at: test_crate
 
 Modules:
+link_resolution_tests
 reexport_mod
 submodule
 
