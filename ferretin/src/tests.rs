@@ -20,7 +20,7 @@ fn create_test_state(output_mode: OutputMode) -> Request {
 
 fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
     let request = create_test_state(output_mode);
-    let (document, _) = command.execute(&request);
+    let (document, _, _) = command.execute(&request);
     let mut output = String::new();
     render(&document, &request.format_context(), &mut output).unwrap();
     output

@@ -37,7 +37,7 @@ impl MarkdownRenderer {
         let mut in_list = false;
         let mut list_items: Vec<crate::styled_string::ListItem<'a>> = Vec::new();
         let mut in_item = false;
-        let mut item_spans: Vec<Span<'a>> = Vec::new();
+        let mut item_nodes: Vec<DocumentNode<'a>> = Vec::new();
 
         for event in parser {
             match event {
@@ -85,7 +85,7 @@ impl MarkdownRenderer {
                     }
                     Tag::Item => {
                         in_item = true;
-                        item_spans.clear();
+                        item_nodes.clear();
                     }
                     Tag::Paragraph | Tag::BlockQuote(_) => {
                         // These will be handled in TagEnd
@@ -140,17 +140,23 @@ impl MarkdownRenderer {
                     }
                     TagEnd::Link => {
                         if let Some((url, item)) = current_link_url.take() {
-                            // Flush current_spans to preserve order
-                            for span in current_spans.drain(..) {
-                                nodes.push(DocumentNode::Span(span));
-                            }
-
                             let link_text = std::mem::take(&mut link_spans);
-                            nodes.push(DocumentNode::Link {
+                            let link_node = DocumentNode::Link {
                                 url,
                                 text: link_text,
                                 item,
-                            });
+                            };
+
+                            if in_item {
+                                // Add link to the current item's content
+                                item_nodes.push(link_node);
+                            } else {
+                                // Flush current_spans to preserve order
+                                for span in current_spans.drain(..) {
+                                    nodes.push(DocumentNode::Span(span));
+                                }
+                                nodes.push(link_node);
+                            }
                         }
                     }
                     TagEnd::BlockQuote(_) => {
@@ -174,15 +180,9 @@ impl MarkdownRenderer {
                     }
                     TagEnd::Item => {
                         if in_item {
-                            // Create list item from collected spans
-                            let spans = std::mem::take(&mut item_spans);
-                            list_items.push(crate::styled_string::ListItem::new(vec![
-                                DocumentNode::Span(Span {
-                                    text: spans.iter().map(|s| s.text.as_ref()).collect::<Vec<_>>().join("").into(),
-                                    style: SpanStyle::Plain,
-                                    action: None,
-                                })
-                            ]));
+                            // Create list item from collected nodes
+                            let nodes = std::mem::take(&mut item_nodes);
+                            list_items.push(crate::styled_string::ListItem::new(nodes));
                             in_item = false;
                         }
                     }
@@ -211,7 +211,7 @@ impl MarkdownRenderer {
                         if current_link_url.is_some() {
                             link_spans.push(span);
                         } else if in_item {
-                            item_spans.push(span);
+                            item_nodes.push(DocumentNode::Span(span));
                         } else {
                             current_spans.push(span);
                         }
@@ -222,7 +222,7 @@ impl MarkdownRenderer {
                     if current_link_url.is_some() {
                         link_spans.push(span);
                     } else if in_item {
-                        item_spans.push(span);
+                        item_nodes.push(DocumentNode::Span(span));
                     } else {
                         current_spans.push(span);
                     }
@@ -232,7 +232,7 @@ impl MarkdownRenderer {
                     if current_link_url.is_some() {
                         link_spans.push(span);
                     } else if in_item {
-                        item_spans.push(span);
+                        item_nodes.push(DocumentNode::Span(span));
                     } else {
                         current_spans.push(span);
                     }
@@ -242,7 +242,7 @@ impl MarkdownRenderer {
                     if current_link_url.is_some() {
                         link_spans.push(span);
                     } else if in_item {
-                        item_spans.push(span);
+                        item_nodes.push(DocumentNode::Span(span));
                     } else {
                         current_spans.push(span);
                     }
@@ -329,6 +329,34 @@ mod tests {
         // Check second is Section level
         if let DocumentNode::Heading { level, .. } = &headings[1] {
             assert!(matches!(level, HeadingLevel::Section));
+        }
+    }
+
+    #[test]
+    fn test_links_in_list_items() {
+        let input = "- Item with [link](https://example.com) inline\n- Another [link](https://other.com) here";
+        let nodes = MarkdownRenderer::render_with_resolver(input, |_| None);
+
+        // Should have exactly one list
+        let lists: Vec<_> = nodes
+            .iter()
+            .filter(|n| matches!(n, DocumentNode::List { .. }))
+            .collect();
+        assert_eq!(lists.len(), 1, "Expected exactly 1 list node");
+
+        // Check that the list has 2 items with links properly nested
+        if let DocumentNode::List { items } = lists[0] {
+            assert_eq!(items.len(), 2, "Expected 2 list items");
+
+            // First item should contain a link
+            let first_has_link = items[0].content.iter().any(|n| matches!(n, DocumentNode::Link { .. }));
+            assert!(first_has_link, "First list item should contain a link");
+
+            // Second item should contain a link
+            let second_has_link = items[1].content.iter().any(|n| matches!(n, DocumentNode::Link { .. }));
+            assert!(second_has_link, "Second list item should contain a link");
+        } else {
+            panic!("Expected a List node");
         }
     }
 }

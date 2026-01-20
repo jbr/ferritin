@@ -5,7 +5,7 @@ expression: "render_for_tests(Commands::get(\"crate\"), OutputMode::TestMode)"
 Item: test_crate
 Kind: Module
 Visibility: Public
-Defined at: test_crate
+Defined at: <type-name>test_crate</type-name>
 
 <truncated level="full">A minimal test crate for rustdoc JSON testing
 
@@ -13,162 +13,126 @@ Defined at: test_crate
 
 <section><section-title>Modules</section-title><list>
   <item><label><type-name>link_resolution_tests</type-name></label>
-<truncated level="brief">Module for testing intra-doc link resolution
+<truncated level="single-line">Module for testing intra-doc link resolution
 
 </truncated>
 </item>
   <item><label><type-name>reexport_mod</type-name></label></item>
   <item><label><type-name>submodule</type-name></label>
-<truncated level="brief">A module with items
+<truncated level="single-line">A module with items
 
 </truncated>
 </item>
 </list>
 </section><section><section-title>Structs</section-title><list>
   <item><label><type-name>GenericStruct</type-name></label>
-<truncated level="brief">A generic struct for testing multi-paragraph documentation.
+<truncated level="single-line">A generic struct for testing multi-paragraph documentation.
 
-This struct demonstrates how generics work with complex type bounds and provides a comprehensive example of the generic system in Rust.
-
-<section-heading>Usage Examples</section-heading>
-You can create instances with different type parameters:
-
-<section-heading><inline-code>GenericStruct<i32></inline-code> for integer data<inline-code>GenericStruct<String, CustomDisplay></inline-code> for custom typesImplementation Notes</section-heading>
-The struct uses trait bounds to ensure type safety and provides default type parameters for common use cases.
-
-</truncated>
+This struct <elided chars="409"/></truncated>
 </item>
   <item><label><type-name>SubStruct</type-name></label>
-<truncated level="brief">A struct in a submodule
+<truncated level="single-line">A struct in a submodule
 
 </truncated>
 </item>
   <item><label><type-name>TestStruct</type-name></label>
-<truncated level="brief">A simple struct for testing basic functionality.
+<truncated level="single-line">A simple struct for testing basic functionality.
 
-This struct demonstrates basic usage patterns and should show completely since it only has one paragraph of documentation.
-
-It uses <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html">Vector</link> for testing intra-doc link resolution with renamed imports. Also tests [HashMap] which is a non-renamed import.
-
-</truncated>
+This struct demonstrates <elided chars="220"/></truncated>
 </item>
   <item><label><type-name>TupleStruct</type-name></label>
-<truncated level="brief">A tuple struct for testing
+<truncated level="single-line">A tuple struct for testing
 
 </truncated>
 </item>
   <item><label><type-name>UnitStruct</type-name></label>
-<truncated level="brief">A unit struct for testing
+<truncated level="single-line">A unit struct for testing
 
 </truncated>
 </item>
   <item><label><type-name>Vec</type-name></label>
-<truncated level="brief">A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.
+<truncated level="single-line">A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.
 
-<title>Examples</title>
-<code-block>
-let mut vec = Vec::new();
-vec.push(1);
-vec.push(2);
-
-assert_eq!(vec.len(), 2);
-assert_eq!(vec[0], 1);
-
-assert_eq!(vec.pop(), Some(2));
-assert_eq!(vec.len(), 1);
-
-vec[0] = 7;
-assert_eq!(vec[0], 7);
-
-vec.extend([1, 2, 3]);
-
-for x in &vec {
-    println!("{x}");
-}
-assert_eq!(vec, [7, 1, 2, 3]);
-</code-block>
-The <link href="http://docs.rust-lang.org/nightly/alloc/macro.vec.html">vec!</link> macro is provided for convenient initialization:
-
- <elided chars="8222"/></truncated>
+ <elided chars="8636"/></truncated>
 </item>
 </list>
 </section><section><section-title>Enums</section-title><list>
   <item><label><type-name>GenericEnum</type-name></label>
-<truncated level="brief">A generic enum for testing
+<truncated level="single-line">A generic enum for testing
 
-See also <link href="https://docs.rs/test-crate/0.1.0/test-crate/submodule/enum.TestEnum.html">crate::TestEnum</link>
+See also <link href="https://docs.rs/test-crate/0.1.0/test-crate/submodule/enum.TestEnum.html"><inline-code>crate::TestEnum</inline-code></link>
 
 </truncated>
 </item>
   <item><label><type-name>TestEnum</type-name></label>
-<truncated level="brief">An enum for testing
+<truncated level="single-line">An enum for testing
 
-This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link> but without the generic
+This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html"><inline-code>crate::GenericEnum</inline-code></link> but without the generic
 
 </truncated>
 </item>
 </list>
 </section><section><section-title>Traits</section-title><list>
   <item><label><type-name>ComplexTrait</type-name></label>
-<truncated level="brief">A more complex trait demonstrating various features
+<truncated level="single-line">A more complex trait demonstrating various features
 
 </truncated>
 </item>
   <item><label><type-name>TestTrait</type-name></label>
-<truncated level="brief">A trait for testing extremely long documentation that exceeds line limits.
+<truncated level="single-line">A trait for testing extremely long documentation that exceeds line limits.
 
-This trait provides a comprehensive interface for data processing operations. It demonstrates various method signatures including mutable references, error handling, and different return types. The trait is designed to be flexible and extensible for different use cases in data processing pipelines. Each method serves a specific purpose in the data transformation workflow. The implementation should handle edge cases <elided chars="845"/></truncated>
+This <elided chars="1265"/></truncated>
 </item>
 </list>
 </section><section><section-title>Functions</section-title><list>
   <item><label><type-name>async_function</type-name></label>
-<truncated level="brief">An async function
+<truncated level="single-line">An async function
 
 </truncated>
 </item>
   <item><label><type-name>generic_function</type-name></label>
-<truncated level="brief">A generic function
+<truncated level="single-line">A generic function
 
 </truncated>
 </item>
   <item><label><type-name>sub_function</type-name></label>
-<truncated level="brief">A function in a submodule
+<truncated level="single-line">A function in a submodule
 
 </truncated>
 </item>
   <item><label><type-name>test_function</type-name></label>
-<truncated level="brief">A public function
+<truncated level="single-line">A public function
 
 </truncated>
 </item>
 </list>
 </section><section><section-title>Constants</section-title><list>
   <item><label><type-name>TEST_CONSTANT</type-name></label>
-<truncated level="brief">A const for testing
+<truncated level="single-line">A const for testing
 
 </truncated>
 </item>
 </list>
 </section><section><section-title>Statics</section-title><list>
   <item><label><type-name>TEST_STATIC</type-name></label>
-<truncated level="brief">A static for testing
+<truncated level="single-line">A static for testing
 
 </truncated>
 </item>
 </list>
 </section><section><section-title>Variants</section-title><list>
   <item><label><type-name>VariantA</type-name></label>
-<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+<truncated level="single-line">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html"><inline-code>crate::GenericEnum</inline-code></link>)
 
 </truncated>
 </item>
   <item><label><type-name>VariantB</type-name></label>
-<truncated level="brief">Variant B with data
+<truncated level="single-line">Variant B with data
 
 </truncated>
 </item>
   <item><label><type-name>VariantC</type-name></label>
-<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+<truncated level="single-line">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
 
 </truncated>
 </item>

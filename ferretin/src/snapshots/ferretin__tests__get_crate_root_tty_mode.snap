@@ -2,83 +2,64 @@
 source: ferretin/src/tests.rs
 expression: "render_for_tests(Commands::get(\"crate\"), OutputMode::Tty)"
 ---
-[38;2;192;197;206mItem: test_crate
-[39m[38;2;192;197;206mKind: Module
-[39m[38;2;192;197;206mVisibility: Public
-[39m[38;2;192;197;206mDefined at: test_crate
-[39m[38;2;192;197;206m
-[39m[38;2;192;197;206mA minimal test crate for rustdoc JSON testing[39m[38;2;192;197;206m
+[38;2;192;197;206mItem: test_crate[0m
+[38;2;192;197;206mKind: Module[0m
+[38;2;192;197;206mVisibility: Public[0m
+[38;2;192;197;206mDefined at: [0m[38;2;192;197;206mtest_crate[0m
 
-[39m
-[38;2;192;197;206m
-[39m[1m[38;2;192;197;206mModules[39m[0m
-  • [1m[38;2;192;197;206mlink_resolution_tests[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mModule for testing intra-doc link resolution[39m[38;2;192;197;206m[39m
 
-  • [1m[38;2;192;197;206mreexport_mod[39m[0m
-  • [1m[38;2;192;197;206msubmodule[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA module with items[39m[38;2;192;197;206m[39m
+[38;2;192;197;206mA minimal test crate for rustdoc JSON testing[0m
 
-[1m[38;2;192;197;206mStructs[39m[0m
-  • [1m[38;2;192;197;206mGenericStruct[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA generic struct for testing multi-paragraph documentation.[39m[38;2;192;197;206m[39m[2m [...][0m
 
-  • [1m[38;2;192;197;206mSubStruct[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA struct in a submodule[39m[38;2;192;197;206m[39m
 
-  • [1m[38;2;192;197;206mTestStruct[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA simple struct for testing basic functionality.[39m[38;2;192;197;206m[39m[2m [...][0m
-
-  • [1m[38;2;192;197;206mTupleStruct[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA tuple struct for testing[39m[38;2;192;197;206m[39m
-
-  • [1m[38;2;192;197;206mUnitStruct[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA unit struct for testing[39m[38;2;192;197;206m[39m
-
-  • [1m[38;2;192;197;206mVec[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA contiguous growable array type, written as [39m[38;2;192;197;206mVec<T>[39m[38;2;192;197;206m, short for 'vector'.[39m[38;2;192;197;206m[39m[2m [...][0m
-
-[1m[38;2;192;197;206mEnums[39m[0m
-  • [1m[38;2;192;197;206mGenericEnum[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA generic enum for testing[39m[38;2;192;197;206m[39m[2m [...][0m
-
-  • [1m[38;2;192;197;206mTestEnum[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mAn enum for testing[39m[38;2;192;197;206m[39m[2m [...][0m
-
-[1m[38;2;192;197;206mTraits[39m[0m
-  • [1m[38;2;192;197;206mComplexTrait[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA more complex trait demonstrating various features[39m[38;2;192;197;206m[39m
-
-  • [1m[38;2;192;197;206mTestTrait[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA trait for testing extremely long documentation that exceeds line limits.[39m[38;2;192;197;206m[39m[2m [...][0m
-
-[1m[38;2;192;197;206mFunctions[39m[0m
-  • [1m[38;2;192;197;206masync_function[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mAn async function[39m[38;2;192;197;206m[39m
-
-  • [1m[38;2;192;197;206mgeneric_function[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA generic function[39m[38;2;192;197;206m[39m
-
-  • [1m[38;2;192;197;206msub_function[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA function in a submodule[39m[38;2;192;197;206m[39m
-
-  • [1m[38;2;192;197;206mtest_function[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA public function[39m[38;2;192;197;206m[39m
-
-[1m[38;2;192;197;206mConstants[39m[0m
-  • [1m[38;2;192;197;206mTEST_CONSTANT[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA const for testing[39m[38;2;192;197;206m[39m
-
-[1m[38;2;192;197;206mStatics[39m[0m
-  • [1m[38;2;192;197;206mTEST_STATIC[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mA static for testing[39m[38;2;192;197;206m[39m
-
-[1m[38;2;192;197;206mVariants[39m[0m
-  • [1m[38;2;192;197;206mVariantA[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mVariant A (see also [39m]8;;https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html\[38;2;192;197;206mcrate::GenericEnum[39m]8;;\[38;2;192;197;206m)[39m[38;2;192;197;206m[39m
-
-  • [1m[38;2;192;197;206mVariantB[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mVariant B with data[39m[38;2;192;197;206m[39m
-
-  • [1m[38;2;192;197;206mVariantC[39m[0m[38;2;192;197;206m
-[39m[38;2;192;197;206mVariant C with struct data ([39m[38;2;192;197;206mname[39m[38;2;192;197;206m and [39m[38;2;192;197;206mvalue[39m[38;2;192;197;206m)[39m[38;2;192;197;206m[39m
+[38;2;192;197;206;1mModules[0m
+  • [38;2;192;197;206;1mlink_resolution_tests[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mreexport_mod[0m
+  • [38;2;192;197;206;1msubmodule[0m[38;2;192;197;206m
+[0m
+[38;2;192;197;206;1mStructs[0m
+  • [38;2;192;197;206;1mGenericStruct[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mSubStruct[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mTestStruct[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mTupleStruct[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mUnitStruct[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mVec[0m[38;2;192;197;206m
+[0m
+[38;2;192;197;206;1mEnums[0m
+  • [38;2;192;197;206;1mGenericEnum[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mTestEnum[0m[38;2;192;197;206m
+[0m
+[38;2;192;197;206;1mTraits[0m
+  • [38;2;192;197;206;1mComplexTrait[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mTestTrait[0m[38;2;192;197;206m
+[0m
+[38;2;192;197;206;1mFunctions[0m
+  • [38;2;192;197;206;1masync_function[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mgeneric_function[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1msub_function[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mtest_function[0m[38;2;192;197;206m
+[0m
+[38;2;192;197;206;1mConstants[0m
+  • [38;2;192;197;206;1mTEST_CONSTANT[0m[38;2;192;197;206m
+[0m
+[38;2;192;197;206;1mStatics[0m
+  • [38;2;192;197;206;1mTEST_STATIC[0m[38;2;192;197;206m
+[0m
+[38;2;192;197;206;1mVariants[0m
+  • [38;2;192;197;206;1mVariantA[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mVariantB[0m[38;2;192;197;206m
+[0m
+  • [38;2;192;197;206;1mVariantC[0m[38;2;192;197;206m
+[0m

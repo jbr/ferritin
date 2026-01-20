@@ -12,10 +12,11 @@ enum TraitCategory {
     Std,        // std/core/alloc (least relevant, usually noise)
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 struct TraitImpl {
     name: String,
     category: TraitCategory,
+    full_path: String,
 }
 
 impl Request {
@@ -172,25 +173,24 @@ impl Request {
                     .path(&trait_path.id)
                     .map(|path| path.to_string())
                     .unwrap_or(trait_path.path.clone());
+
                 // Use the simple path name for display (generics not needed in trait lists)
                 let display_name = trait_path.path.clone();
 
                 let impl_ = self.categorize_trait(full_path, display_name);
 
-                let the_trait = impl_block.get_path(trait_path.id);
-
                 match impl_.category {
-                    TraitCategory::CrateLocal => crate_local.push((impl_.name, the_trait)),
-                    TraitCategory::External => external.push((impl_.name, the_trait)),
-                    TraitCategory::Std => std_traits.push((impl_.name, the_trait)),
+                    TraitCategory::CrateLocal => crate_local.push(impl_),
+                    TraitCategory::External => external.push(impl_),
+                    TraitCategory::Std => std_traits.push(impl_),
                 }
             }
         }
 
         // Sort each category alphabetically for stable output
-        crate_local.sort_by(|(a, _), (b, _)| a.cmp(b));
-        external.sort_by(|(a, _), (b, _)| a.cmp(b));
-        std_traits.sort_by(|(a, _), (b, _)| a.cmp(b));
+        crate_local.sort();
+        external.sort();
+        std_traits.sort();
 
         let mut doc_nodes = vec![];
 
@@ -201,8 +201,10 @@ impl Request {
 
         if !primary_traits.is_empty() {
             doc_nodes.push(DocumentNode::Span(Span::plain("Trait Implementations:\n")));
-            for (name, item) in primary_traits {
-                doc_nodes.push(DocumentNode::Span(Span::plain(name).with_target(item)));
+            for t in primary_traits {
+                doc_nodes.push(DocumentNode::Span(
+                    Span::plain(t.name).with_path(t.full_path),
+                ));
                 doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
             }
             doc_nodes.push(DocumentNode::Span(Span::plain("\n")));
@@ -211,8 +213,10 @@ impl Request {
         // Add std traits separately with truncation
         if !std_traits.is_empty() {
             doc_nodes.push(DocumentNode::Span(Span::plain("std traits: ")));
-            for (name, item) in std_traits {
-                doc_nodes.push(DocumentNode::Span(Span::plain(name).with_target(item)));
+            for t in std_traits {
+                doc_nodes.push(DocumentNode::Span(
+                    Span::plain(t.name).with_path(t.full_path),
+                ));
                 doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
             }
 
@@ -237,6 +241,7 @@ impl Request {
                 return TraitImpl {
                     category: TraitCategory::Std,
                     name: rendered_path.to_string(),
+                    full_path,
                 };
             }
 
@@ -245,6 +250,7 @@ impl Request {
                 return TraitImpl {
                     category: TraitCategory::CrateLocal,
                     name: rendered_path.to_string(),
+                    full_path,
                 };
             }
         }
@@ -252,6 +258,7 @@ impl Request {
         TraitImpl {
             category: TraitCategory::External,
             name: full_path.to_string(),
+            full_path,
         }
     }
 }

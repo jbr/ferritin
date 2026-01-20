@@ -5,11 +5,11 @@ expression: "render_for_tests(Commands::get(\"crate::submodule::TestEnum\"),\nOu
 Item: TestEnum
 Kind: Enum
 Visibility: Public
-Defined at: test_crate::submodule::TestEnum
+Defined at: <type-name>test_crate</type-name><punctuation>::</punctuation><type-name>submodule</type-name><punctuation>::</punctuation><type-name>TestEnum</type-name>
 
 <truncated level="full">An enum for testing
 
-This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link> but without the generic
+This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html"><inline-code>crate::GenericEnum</inline-code></link> but without the generic
 
 </truncated>
 
@@ -24,20 +24,20 @@ This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.Generi
 
 <section><section-title>Variants:</section-title><list>
   <item><type-name>VariantA</type-name>
-<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+<truncated level="single-line">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html"><inline-code>crate::GenericEnum</inline-code></link>)
 
 </truncated>
 </item>
   <item><type-name>VariantB</type-name>
-<truncated level="brief">Variant B with data
+<truncated level="single-line">Variant B with data
 
 </truncated>
 </item>
   <item><type-name>VariantC</type-name>
-<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+<truncated level="single-line">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
 
 </truncated>
 </item>
 </list>
 </section>
-std traits: Any, Borrow, BorrowMut, Freeze, From, Into, RefUnwindSafe, Send, Sync, TryFrom, TryInto, Unpin, UnwindSafe
+std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnwindSafe

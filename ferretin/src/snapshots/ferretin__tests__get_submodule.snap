@@ -5,7 +5,7 @@ expression: "render_for_tests(Commands::get(\"crate::submodule\"), OutputMode::T
 Item: submodule
 Kind: Module
 Visibility: Public
-Defined at: test_crate::submodule
+Defined at: <type-name>test_crate</type-name><punctuation>::</punctuation><type-name>submodule</type-name>
 
 <truncated level="full">A module with items
 
@@ -13,40 +13,40 @@ Defined at: test_crate::submodule
 
 <section><section-title>Structs</section-title><list>
   <item><label><type-name>SubStruct</type-name></label>
-<truncated level="brief">A struct in a submodule
+<truncated level="single-line">A struct in a submodule
 
 </truncated>
 </item>
 </list>
 </section><section><section-title>Enums</section-title><list>
   <item><label><type-name>TestEnum</type-name></label>
-<truncated level="brief">An enum for testing
+<truncated level="single-line">An enum for testing
 
-This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link> but without the generic
+This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html"><inline-code>crate::GenericEnum</inline-code></link> but without the generic
 
 </truncated>
 </item>
 </list>
 </section><section><section-title>Functions</section-title><list>
   <item><label><type-name>sub_function</type-name></label>
-<truncated level="brief">A function in a submodule
+<truncated level="single-line">A function in a submodule
 
 </truncated>
 </item>
 </list>
 </section><section><section-title>Variants</section-title><list>
   <item><label><type-name>VariantA</type-name></label>
-<truncated level="brief">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html">crate::GenericEnum</link>)
+<truncated level="single-line">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html"><inline-code>crate::GenericEnum</inline-code></link>)
 
 </truncated>
 </item>
   <item><label><type-name>VariantB</type-name></label>
-<truncated level="brief">Variant B with data
+<truncated level="single-line">Variant B with data
 
 </truncated>
 </item>
   <item><label><type-name>VariantC</type-name></label>
-<truncated level="brief">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
+<truncated level="single-line">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
 
 </truncated>
 </item>

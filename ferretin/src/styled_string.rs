@@ -5,8 +5,10 @@ use std::borrow::Cow;
 /// Interactive action that can be attached to a span
 #[derive(Debug, Clone)]
 pub enum TuiAction<'a> {
-    /// Navigate to an item (zero-cost since DocRef is Copy)
+    /// Navigate to an already-loaded item (zero-cost since DocRef is Copy)
     Navigate(DocRef<'a, Item>),
+    /// Navigate to an item by path (resolves lazily)
+    NavigateToPath(String),
     /// Expand a truncated block (identified by index path into document tree)
     ExpandBlock(NodePath),
     /// Open an external URL in browser
@@ -296,10 +298,17 @@ impl<'a> Span<'a> {
         self
     }
 
+    /// Attach a navigation action for an already-loaded item
     pub fn with_target(mut self, target: Option<DocRef<'a, Item>>) -> Self {
         if let Some(target) = target {
             self.action = Some(TuiAction::Navigate(target));
         }
+        self
+    }
+
+    /// Attach a navigation action for an item path (resolved lazily)
+    pub fn with_path(mut self, path: impl Into<String>) -> Self {
+        self.action = Some(TuiAction::NavigateToPath(path.into()));
         self
     }
 }
@@ -548,7 +557,7 @@ mod tests {
             vec![Span::plain("Click here")],
         );
 
-        if let DocumentNode::Link { url, text } = link {
+        if let DocumentNode::Link { url, text, .. } = link {
             assert_eq!(url, "https://example.com");
             assert_eq!(text.len(), 1);
         } else {
