@@ -20,7 +20,7 @@ impl Request {
 
         if !trait_data.generics.params.is_empty() {
             nodes.extend(
-                self.format_generics(&trait_data.item().generics)
+                self.format_generics(item, &trait_data.item().generics)
                     .into_iter()
                     .map(DocumentNode::Span),
             );
@@ -28,7 +28,7 @@ impl Request {
 
         if !trait_data.generics.where_predicates.is_empty() {
             nodes.extend(
-                self.format_where_clause(&trait_data.item().generics.where_predicates)
+                self.format_where_clause(item, &trait_data.item().generics.where_predicates)
                     .into_iter()
                     .map(DocumentNode::Span),
             );
@@ -41,7 +41,7 @@ impl Request {
         // Add trait members
         for trait_item in item.id_iter(&trait_data.item().items) {
             // Add documentation
-            if let Some(docs) = self.docs_to_show(trait_item, TruncationLevel::Brief) {
+            if let Some(docs) = self.docs_to_show(trait_item, TruncationLevel::SingleLine) {
                 nodes.push(DocumentNode::Span(Span::plain("    ")));
                 nodes.extend(docs);
                 nodes.push(DocumentNode::Span(Span::plain("\n")));
@@ -50,14 +50,23 @@ impl Request {
             let item_name = trait_item.name().unwrap_or("<unnamed>");
 
             match &trait_item.item().inner {
-                ItemEnum::Function(f) => self.format_trait_function(&mut nodes, f, item_name),
+                ItemEnum::Function(f) => {
+                    self.format_trait_function(trait_item, &mut nodes, f, item_name)
+                }
                 ItemEnum::AssocType {
                     generics,
                     bounds,
                     type_,
-                } => self.format_assoc_type(&mut nodes, generics, bounds, type_, item_name),
+                } => self.format_assoc_type(
+                    item,
+                    &mut nodes,
+                    generics,
+                    bounds,
+                    type_.as_ref(),
+                    item_name,
+                ),
                 ItemEnum::AssocConst { type_, value } => {
-                    self.format_assoc_const(&mut nodes, type_, value, item_name)
+                    self.format_assoc_const(item, &mut nodes, type_, value, item_name)
                 }
                 _ => {
                     nodes.push(DocumentNode::Span(Span::plain("    ")));
@@ -78,6 +87,7 @@ impl Request {
 
     fn format_assoc_const<'a>(
         &self,
+        item: DocRef<'a, Item>,
         nodes: &mut Vec<DocumentNode<'a>>,
         type_: &'a Type,
         value: &'a Option<String>,
@@ -89,7 +99,11 @@ impl Request {
         nodes.push(DocumentNode::Span(Span::plain(const_name)));
         nodes.push(DocumentNode::Span(Span::punctuation(":")));
         nodes.push(DocumentNode::Span(Span::plain(" ")));
-        nodes.extend(self.format_type(type_).into_iter().map(DocumentNode::Span));
+        nodes.extend(
+            self.format_type(item, type_)
+                .into_iter()
+                .map(DocumentNode::Span),
+        );
 
         if let Some(default_val) = value {
             nodes.push(DocumentNode::Span(Span::plain(" ")));
@@ -104,10 +118,11 @@ impl Request {
 
     fn format_assoc_type<'a>(
         &self,
+        item: DocRef<'a, Item>,
         nodes: &mut Vec<DocumentNode<'a>>,
         generics: &'a Generics,
         bounds: &'a [GenericBound],
-        type_: &'a Option<Type>,
+        type_: Option<&'a Type>,
         type_name: &'a str,
     ) {
         nodes.push(DocumentNode::Span(Span::plain("    ")));
@@ -117,7 +132,7 @@ impl Request {
 
         if !generics.params.is_empty() {
             nodes.extend(
-                self.format_generics(generics)
+                self.format_generics(item, generics)
                     .into_iter()
                     .map(DocumentNode::Span),
             );
@@ -127,7 +142,7 @@ impl Request {
             nodes.push(DocumentNode::Span(Span::punctuation(":")));
             nodes.push(DocumentNode::Span(Span::plain(" ")));
             nodes.extend(
-                self.format_generic_bounds(bounds)
+                self.format_generic_bounds(item, bounds)
                     .into_iter()
                     .map(DocumentNode::Span),
             );
@@ -138,7 +153,7 @@ impl Request {
             nodes.push(DocumentNode::Span(Span::operator("=")));
             nodes.push(DocumentNode::Span(Span::plain(" ")));
             nodes.extend(
-                self.format_type(default_type)
+                self.format_type(item, default_type)
                     .into_iter()
                     .map(DocumentNode::Span),
             );
@@ -150,6 +165,7 @@ impl Request {
 
     fn format_trait_function<'a>(
         &self,
+        item: DocRef<'a, Item>,
         nodes: &mut Vec<DocumentNode<'a>>,
         f: &'a Function,
         method_name: &'a str,
@@ -158,7 +174,7 @@ impl Request {
 
         nodes.push(DocumentNode::Span(Span::plain("    ")));
         nodes.extend(
-            self.format_function_signature(method_name, f)
+            self.format_function_signature(item, method_name, f)
                 .into_iter()
                 .map(DocumentNode::Span),
         );

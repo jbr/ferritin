@@ -16,16 +16,19 @@ ferretin-common = { path = "../ferretin-common" }
 
 anyhow.workspace = true
 clap = { version = "4.5.54", features = ["derive", "cargo", "env"] }
+crossterm = "0.29"
 fieldwork = "0.4.6"
 log = "0.4.29"
 env_logger = "0.11.8"
 owo-colors = { version = "4.2.3", features = ["supports-colors"] }
 pulldown-cmark = "0.13"
+ratatui = "0.30"
 regex = "1.12"
 rustdoc-types.workspace = true
 syntect = "5.3"
 terminal_size = "0.4"
 unicode-width = "0.2.2"
+webbrowser = "1.0.6"
 
 [dev-dependencies]
 insta = "1.46.1"

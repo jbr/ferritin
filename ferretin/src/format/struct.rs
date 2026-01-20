@@ -56,12 +56,13 @@ impl Request {
         ];
 
         if !struct_data.generics.params.is_empty() {
-            code_spans.extend(self.format_generics(&struct_data.item().generics));
+            code_spans.extend(self.format_generics(item, &struct_data.item().generics));
         }
 
         if !struct_data.generics.where_predicates.is_empty() {
-            code_spans
-                .extend(self.format_where_clause(&struct_data.item().generics.where_predicates));
+            code_spans.extend(
+                self.format_where_clause(item, &struct_data.item().generics.where_predicates),
+            );
         }
 
         code_spans.push(Span::plain(" "));
@@ -83,7 +84,7 @@ impl Request {
                 code_spans.push(Span::field_name(field_name));
                 code_spans.push(Span::punctuation(":"));
                 code_spans.push(Span::plain(" "));
-                code_spans.extend(self.format_type(field_type));
+                code_spans.extend(self.format_type(item, field_type));
                 code_spans.push(Span::punctuation(","));
                 code_spans.push(Span::plain("\n"));
             }
@@ -116,7 +117,7 @@ impl Request {
             .filter_map(|field| {
                 if let ItemEnum::StructField(field_type) = &field.item().inner
                     && let Some(name) = field.name()
-                    && let Some(docs) = self.docs_to_show(*field, TruncationLevel::Brief)
+                    && let Some(docs) = self.docs_to_show(*field, TruncationLevel::SingleLine)
                 {
                     let mut item_nodes = vec![
                         DocumentNode::Span(Span::field_name(name)),
@@ -125,7 +126,7 @@ impl Request {
                     ];
                     // Convert Vec<Span> to Vec<DocumentNode>
                     let type_spans: Vec<DocumentNode> = self
-                        .format_type(field_type)
+                        .format_type(item, field_type)
                         .into_iter()
                         .map(DocumentNode::Span)
                         .collect();
@@ -180,12 +181,13 @@ impl Request {
         ];
 
         if !struct_data.generics.params.is_empty() {
-            code_spans.extend(self.format_generics(&struct_data.item().generics));
+            code_spans.extend(self.format_generics(item, &struct_data.item().generics));
         }
 
         if !struct_data.generics.where_predicates.is_empty() {
-            code_spans
-                .extend(self.format_where_clause(&struct_data.item().generics.where_predicates));
+            code_spans.extend(
+                self.format_where_clause(item, &struct_data.item().generics.where_predicates),
+            );
         }
 
         code_spans.push(Span::punctuation("("));
@@ -202,7 +204,7 @@ impl Request {
                     code_spans.push(Span::keyword(visibility.trim()));
                     code_spans.push(Span::plain(" "));
                 }
-                code_spans.extend(self.format_type(field_type));
+                code_spans.extend(self.format_type(item, field_type));
                 code_spans.push(Span::punctuation(","));
                 code_spans.push(Span::plain(" "));
                 code_spans.push(Span::comment(format!("// field {i}")));
@@ -236,12 +238,12 @@ impl Request {
             .iter()
             .filter_map(|(i, field)| {
                 if let ItemEnum::StructField(field_type) = field.inner()
-                    && let Some(docs) = self.docs_to_show(*field, TruncationLevel::Brief)
+                    && let Some(docs) = self.docs_to_show(*field, TruncationLevel::SingleLine)
                 {
                     let mut item_nodes =
                         vec![DocumentNode::Span(Span::plain(format!("Field {}: ", i)))];
                     let type_spans: Vec<DocumentNode> = self
-                        .format_type(field_type)
+                        .format_type(item, field_type)
                         .into_iter()
                         .map(DocumentNode::Span)
                         .collect();
@@ -282,12 +284,13 @@ impl Request {
         ];
 
         if !struct_data.generics.params.is_empty() {
-            code_spans.extend(self.format_generics(&struct_data.item().generics));
+            code_spans.extend(self.format_generics(item, &struct_data.item().generics));
         }
 
         if !struct_data.generics.where_predicates.is_empty() {
-            code_spans
-                .extend(self.format_where_clause(&struct_data.item().generics.where_predicates));
+            code_spans.extend(
+                self.format_where_clause(item, &struct_data.item().generics.where_predicates),
+            );
         }
 
         code_spans.push(Span::punctuation(";"));

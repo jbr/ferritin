@@ -117,7 +117,10 @@ pub(crate) fn execute<'a>(
                 }
             }
 
-            list_items.push(ListItem::labeled(vec![Span::plain(path)], item_nodes));
+            list_items.push(ListItem::labeled(
+                vec![Span::plain(path).with_target(Some(item))],
+                item_nodes,
+            ));
         }
     }
 

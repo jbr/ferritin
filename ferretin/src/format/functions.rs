@@ -11,7 +11,7 @@ impl Request {
         function: DocRef<'a, Function>,
     ) -> Vec<DocumentNode<'a>> {
         let name = item.name().unwrap_or("<unnamed>");
-        self.format_function_signature(name, function.item())
+        self.format_function_signature(item, name, function.item())
             .into_iter()
             .map(DocumentNode::Span)
             .collect()
@@ -20,6 +20,7 @@ impl Request {
     /// Format a function signature
     pub(super) fn format_function_signature<'a>(
         &self,
+        item: DocRef<'a, Item>,
         name: &'a str,
         func: &'a Function,
     ) -> Vec<StyledSpan<'a>> {
@@ -125,9 +126,9 @@ impl Request {
         // Add function name and generics
         spans.push(StyledSpan::keyword("fn"));
         spans.push(StyledSpan::plain(" "));
-        spans.push(StyledSpan::plain(name));
+        spans.push(StyledSpan::plain(name).with_target(Some(item)));
         if !func.generics.params.is_empty() {
-            spans.extend(self.format_generics(&func.generics));
+            spans.extend(self.format_generics(item, &func.generics));
         }
         spans.push(StyledSpan::punctuation("("));
 
@@ -137,7 +138,7 @@ impl Request {
                 spans.push(StyledSpan::punctuation(","));
                 spans.push(StyledSpan::plain(" "));
             }
-            spans.extend(self.format_parameter(param_name, param_type));
+            spans.extend(self.format_parameter(item, param_name, param_type));
         }
         spans.push(StyledSpan::punctuation(")"));
 
@@ -146,12 +147,12 @@ impl Request {
             spans.push(StyledSpan::plain(" "));
             spans.push(StyledSpan::operator("->"));
             spans.push(StyledSpan::plain(" "));
-            spans.extend(self.format_type(output));
+            spans.extend(self.format_type(item, output));
         }
 
         // Add where clause if present
         if !func.generics.where_predicates.is_empty() {
-            spans.extend(self.format_where_clause(&func.generics.where_predicates));
+            spans.extend(self.format_where_clause(item, &func.generics.where_predicates));
         }
 
         spans
@@ -160,6 +161,7 @@ impl Request {
     /// Format a function parameter with idiomatic self shorthand
     pub(super) fn format_parameter<'a>(
         &self,
+        item: DocRef<'a, Item>,
         param_name: &'a str,
         param_type: &'a Type,
     ) -> Vec<StyledSpan<'a>> {
@@ -228,7 +230,7 @@ impl Request {
                         StyledSpan::punctuation(":"),
                         StyledSpan::plain(" "),
                     ];
-                    spans.extend(self.format_type(param_type));
+                    spans.extend(self.format_type(item, param_type));
                     spans
                 }
             }
@@ -239,13 +241,17 @@ impl Request {
                 StyledSpan::punctuation(":"),
                 StyledSpan::plain(" "),
             ];
-            spans.extend(self.format_type(param_type));
+            spans.extend(self.format_type(item, param_type));
             spans
         }
     }
 
     /// Format generics for signatures
-    pub(super) fn format_generics<'a>(&self, generics: &'a Generics) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_generics<'a>(
+        &self,
+        item: DocRef<'a, Item>,
+        generics: &'a Generics,
+    ) -> Vec<StyledSpan<'a>> {
         if generics.params.is_empty() {
             return vec![];
         }
@@ -257,7 +263,7 @@ impl Request {
                 spans.push(StyledSpan::punctuation(","));
                 spans.push(StyledSpan::plain(" "));
             }
-            spans.extend(self.format_generic_param(param));
+            spans.extend(self.format_generic_param(item, param));
         }
 
         spans.push(StyledSpan::punctuation(">"));
@@ -267,6 +273,7 @@ impl Request {
     /// Format a single generic parameter
     pub(super) fn format_generic_param<'a>(
         &self,
+        item: DocRef<'a, Item>,
         param: &'a GenericParamDef,
     ) -> Vec<StyledSpan<'a>> {
         match &param.kind {
@@ -291,13 +298,13 @@ impl Request {
                 if !bounds.is_empty() {
                     spans.push(StyledSpan::punctuation(":"));
                     spans.push(StyledSpan::plain(" "));
-                    spans.extend(self.format_generic_bounds(bounds));
+                    spans.extend(self.format_generic_bounds(item, bounds));
                 }
                 if let Some(default_type) = default {
                     spans.push(StyledSpan::plain(" "));
                     spans.push(StyledSpan::operator("="));
                     spans.push(StyledSpan::plain(" "));
-                    spans.extend(self.format_type(default_type));
+                    spans.extend(self.format_type(item, default_type));
                 }
                 spans
             }
@@ -309,7 +316,7 @@ impl Request {
                     StyledSpan::punctuation(":"),
                     StyledSpan::plain(" "),
                 ];
-                spans.extend(self.format_type(type_));
+                spans.extend(self.format_type(item, type_));
                 if let Some(default_val) = default {
                     spans.push(StyledSpan::plain(" "));
                     spans.push(StyledSpan::operator("="));
@@ -324,6 +331,7 @@ impl Request {
     /// Format generic bounds
     pub(super) fn format_generic_bounds<'a>(
         &self,
+        item: DocRef<'a, Item>,
         bounds: &'a [GenericBound],
     ) -> Vec<StyledSpan<'a>> {
         let mut spans = vec![];
@@ -331,13 +339,17 @@ impl Request {
             if i > 0 {
                 spans.push(StyledSpan::plain(" + "));
             }
-            spans.extend(self.format_generic_bound(bound));
+            spans.extend(self.format_generic_bound(item, bound));
         }
         spans
     }
 
     /// Format a single generic bound
-    pub(super) fn format_generic_bound<'a>(&self, bound: &'a GenericBound) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_generic_bound<'a>(
+        &self,
+        item: DocRef<'a, Item>,
+        bound: &'a GenericBound,
+    ) -> Vec<StyledSpan<'a>> {
         match bound {
             GenericBound::TraitBound {
                 trait_,
@@ -354,7 +366,7 @@ impl Request {
                             spans.push(StyledSpan::punctuation(","));
                             spans.push(StyledSpan::plain(" "));
                         }
-                        spans.extend(self.format_generic_param(p));
+                        spans.extend(self.format_generic_param(item, p));
                     }
                     spans.push(StyledSpan::punctuation(">"));
                     spans.push(StyledSpan::plain(" "));
@@ -369,7 +381,7 @@ impl Request {
                     }
                 }
 
-                spans.extend(self.format_path(trait_));
+                spans.extend(self.format_path(item, trait_));
                 spans
             }
             GenericBound::Outlives(lifetime) => vec![StyledSpan::lifetime(lifetime)],
@@ -380,6 +392,7 @@ impl Request {
     /// Format where clause
     pub(super) fn format_where_clause<'a>(
         &self,
+        item: DocRef<'a, Item>,
         predicates: &'a [WherePredicate],
     ) -> Vec<StyledSpan<'a>> {
         if predicates.is_empty() {
@@ -397,7 +410,7 @@ impl Request {
                 spans.push(StyledSpan::punctuation(","));
                 spans.push(StyledSpan::plain("\n    "));
             }
-            spans.extend(self.format_where_predicate(pred));
+            spans.extend(self.format_where_predicate(item, pred));
         }
 
         spans
@@ -406,6 +419,7 @@ impl Request {
     /// Format a where predicate
     pub(super) fn format_where_predicate<'a>(
         &self,
+        item: DocRef<'a, Item>,
         predicate: &'a WherePredicate,
     ) -> Vec<StyledSpan<'a>> {
         match predicate {
@@ -413,7 +427,7 @@ impl Request {
                 type_,
                 bounds,
                 generic_params,
-            } => self.format_bound_predicate(type_, bounds, generic_params),
+            } => self.format_bound_predicate(item, type_, bounds, generic_params),
             WherePredicate::LifetimePredicate { lifetime, outlives } => {
                 let mut spans = vec![StyledSpan::lifetime(lifetime), StyledSpan::punctuation(":")];
                 if !outlives.is_empty() {
@@ -429,11 +443,11 @@ impl Request {
             }
             WherePredicate::EqPredicate { lhs, rhs } => {
                 let mut spans = vec![];
-                spans.extend(self.format_type(lhs));
+                spans.extend(self.format_type(item, lhs));
                 spans.push(StyledSpan::plain(" "));
                 spans.push(StyledSpan::operator("="));
                 spans.push(StyledSpan::plain(" "));
-                spans.extend(self.format_term(rhs));
+                spans.extend(self.format_term(item, rhs));
                 spans
             }
         }
@@ -441,6 +455,7 @@ impl Request {
 
     fn format_bound_predicate<'a>(
         &self,
+        item: DocRef<'a, Item>,
         type_: &'a Type,
         bounds: &'a [GenericBound],
         generic_params: &'a [GenericParamDef],
@@ -455,48 +470,62 @@ impl Request {
                     spans.push(StyledSpan::punctuation(","));
                     spans.push(StyledSpan::plain(" "));
                 }
-                spans.extend(self.format_generic_param(p));
+                spans.extend(self.format_generic_param(item, p));
             }
             spans.push(StyledSpan::punctuation(">"));
             spans.push(StyledSpan::plain(" "));
         }
 
-        spans.extend(self.format_type(type_));
+        spans.extend(self.format_type(item, type_));
         spans.push(StyledSpan::punctuation(":"));
         spans.push(StyledSpan::plain(" "));
-        spans.extend(self.format_generic_bounds(bounds));
+        spans.extend(self.format_generic_bounds(item, bounds));
         spans
     }
 
     /// Format a term (for associated type equality)
-    pub(super) fn format_term<'a>(&self, term: &'a Term) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_term<'a>(
+        &self,
+        item: DocRef<'a, Item>,
+        term: &'a Term,
+    ) -> Vec<StyledSpan<'a>> {
         match term {
-            Term::Type(type_) => self.format_type(type_),
+            Term::Type(type_) => self.format_type(item, type_),
             Term::Constant(const_) => vec![StyledSpan::plain(const_.expr.clone())],
         }
     }
 
     /// Format a path
-    pub(super) fn format_path<'a>(&self, path: &'a Path) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_path<'a>(
+        &self,
+        item: DocRef<'a, Item>,
+        path: &'a Path,
+    ) -> Vec<StyledSpan<'a>> {
         if path.path.is_empty() {
             return vec![];
         }
 
-        let mut spans = vec![StyledSpan::type_name(&path.path)];
+        let type_span = StyledSpan::type_name(&path.path).with_target(item.get_path(path.id));
+
+        let mut spans = vec![type_span];
         if let Some(args) = &path.args {
-            spans.extend(self.format_generic_args(args));
+            spans.extend(self.format_generic_args(item, args));
         }
         spans
     }
 
     /// Format generic arguments
-    pub(super) fn format_generic_args<'a>(&self, args: &'a GenericArgs) -> Vec<StyledSpan<'a>> {
+    pub(super) fn format_generic_args<'a>(
+        &self,
+        item: DocRef<'a, Item>,
+        args: &'a GenericArgs,
+    ) -> Vec<StyledSpan<'a>> {
         match args {
             GenericArgs::AngleBracketed { args, constraints } => {
-                self.format_generic_angle_bracket(args, constraints)
+                self.format_generic_angle_bracket(item, args, constraints)
             }
             GenericArgs::Parenthesized { inputs, output } => {
-                self.format_generic_parenthesized(inputs, output)
+                self.format_generic_parenthesized(item, inputs, output)
             }
             GenericArgs::ReturnTypeNotation => vec![StyledSpan::plain("(..)")],
         }
@@ -504,6 +533,7 @@ impl Request {
 
     fn format_generic_parenthesized<'a>(
         &self,
+        item: DocRef<'a, Item>,
         inputs: &'a [Type],
         output: &'a Option<Type>,
     ) -> Vec<StyledSpan<'a>> {
@@ -515,7 +545,7 @@ impl Request {
                 spans.push(StyledSpan::punctuation(","));
                 spans.push(StyledSpan::plain(" "));
             }
-            spans.extend(self.format_type(t));
+            spans.extend(self.format_type(item, t));
         }
         spans.push(StyledSpan::punctuation(")"));
 
@@ -523,7 +553,7 @@ impl Request {
             spans.push(StyledSpan::plain(" "));
             spans.push(StyledSpan::operator("->"));
             spans.push(StyledSpan::plain(" "));
-            spans.extend(self.format_type(out));
+            spans.extend(self.format_type(item, out));
         }
 
         spans
@@ -531,6 +561,7 @@ impl Request {
 
     fn format_generic_angle_bracket<'a>(
         &self,
+        item: DocRef<'a, Item>,
         args: &'a [GenericArg],
         constraints: &'a [AssocItemConstraint],
     ) -> Vec<StyledSpan<'a>> {
@@ -550,7 +581,7 @@ impl Request {
 
             match arg {
                 GenericArg::Lifetime(lifetime) => spans.push(StyledSpan::lifetime(lifetime)),
-                GenericArg::Type(type_) => spans.extend(self.format_type(type_)),
+                GenericArg::Type(type_) => spans.extend(self.format_type(item, type_)),
                 GenericArg::Const(const_) => spans.push(StyledSpan::inline_code(&const_.expr)),
                 GenericArg::Infer => spans.push(StyledSpan::plain("_")),
             }
@@ -570,12 +601,12 @@ impl Request {
                     spans.push(StyledSpan::plain(" "));
                     spans.push(StyledSpan::operator("="));
                     spans.push(StyledSpan::plain(" "));
-                    spans.extend(self.format_term(term));
+                    spans.extend(self.format_term(item, term));
                 }
                 AssocItemConstraintKind::Constraint(bounds) => {
                     spans.push(StyledSpan::punctuation(":"));
                     spans.push(StyledSpan::plain(" "));
-                    spans.extend(self.format_generic_bounds(bounds));
+                    spans.extend(self.format_generic_bounds(item, bounds));
                 }
             };
         }

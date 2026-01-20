@@ -4,9 +4,12 @@ use std::{
     io::{self, IsTerminal},
 };
 
+mod interactive;
 mod plain;
 mod test_mode;
 mod tty;
+
+pub use interactive::render_interactive;
 
 /// Output mode for rendering documents
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

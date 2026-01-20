@@ -3,8 +3,9 @@ use crate::styled_string::{DocumentNode, Span as StyledSpan, TruncationLevel};
 use ferretin_common::doc_ref::DocRef;
 use rustdoc_types::{
     Abi, Constant, Enum, Function, FunctionPointer, GenericArg, GenericArgs, GenericBound,
-    GenericParamDef, GenericParamDefKind, Generics, Id, Item, ItemEnum, Path, Span, Static, Struct,
-    StructKind, Term, Trait, Type, TypeAlias, Union, VariantKind, Visibility, WherePredicate,
+    GenericParamDef, GenericParamDefKind, Generics, Id, Item, ItemEnum, ItemSummary, Path, Span,
+    Static, Struct, StructKind, Term, Trait, Type, TypeAlias, Union, VariantKind, Visibility,
+    WherePredicate,
 };
 use std::{collections::HashMap, fs};
 
@@ -38,10 +39,8 @@ impl Request {
             item.visibility
         ))));
 
-        if let Some(path) = item.path() {
-            doc_nodes.push(DocumentNode::Span(StyledSpan::plain(format!(
-                "Defined at: {path}\n"
-            ))));
+        if let Some(item_summary) = item.summary() {
+            doc_nodes.extend(self.format_item_summary(item, item_summary));
         }
 
         // Add documentation if available
@@ -110,5 +109,36 @@ impl Request {
         }
 
         doc_nodes
+    }
+
+    fn format_item_summary<'a>(
+        &'a self,
+        item: DocRef<'a, Item>,
+        item_summary: &'a ItemSummary,
+    ) -> Vec<DocumentNode<'a>> {
+        let mut nodes = vec![DocumentNode::Span(StyledSpan::plain("Defined at: "))];
+        let mut action_item = None;
+
+        for (i, segment) in item_summary.path.iter().enumerate() {
+            if i == 0 {
+                action_item = item
+                    .crate_docs()
+                    .traverse_to_crate_by_id(self, item_summary.crate_id)
+                    .map(|x| x.root_item(self));
+            } else {
+                nodes.push(DocumentNode::Span(StyledSpan::punctuation("::")));
+                if let Some(ai) = action_item {
+                    action_item = ai.find_child(segment);
+                }
+            }
+
+            nodes.push(DocumentNode::Span(
+                StyledSpan::type_name(segment).with_target(action_item),
+            ));
+        }
+
+        nodes.push(DocumentNode::Span(StyledSpan::plain("\n")));
+
+        nodes
     }
 }

@@ -57,7 +57,10 @@ pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool) {
             item_nodes.push(DocumentNode::Span(Span::plain(description)));
         }
 
-        list_items.push(ListItem::labeled(vec![Span::plain(crate_name)], item_nodes));
+        list_items.push(ListItem::labeled(
+            vec![Span::plain(crate_name).with_path(crate_name)],
+            item_nodes,
+        ));
     }
 
     nodes.push(DocumentNode::List { items: list_items });

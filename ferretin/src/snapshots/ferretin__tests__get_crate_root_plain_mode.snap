@@ -12,93 +12,72 @@ A minimal test crate for rustdoc JSON testing
 
 Modules
   • link_resolution_tests
-Module for testing intra-doc link resolution
-[+1 more paragraphs]
+Module for testing intra-doc link resolution [...]
 
   • reexport_mod
   • submodule
-A module with items
-[+1 more paragraphs]
+A module with items [...]
 
 Structs
   • GenericStruct
-A generic struct for testing multi-paragraph documentation.
-[+4 more paragraphs]
+A generic struct for testing multi-paragraph documentation. [...]
 
   • SubStruct
-A struct in a submodule
-[+1 more paragraphs]
+A struct in a submodule [...]
 
   • TestStruct
-A simple struct for testing basic functionality.
-[+3 more paragraphs]
+A simple struct for testing basic functionality. [...]
 
   • TupleStruct
-A tuple struct for testing
-[+1 more paragraphs]
+A tuple struct for testing [...]
 
   • UnitStruct
-A unit struct for testing
-[+1 more paragraphs]
+A unit struct for testing [...]
 
   • Vec
-A contiguous growable array type, written as Vec<T>, short for 'vector'.
-[+28 more paragraphs]
+A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
 
 Enums
   • GenericEnum
-A generic enum for testing
-[+2 more paragraphs]
+A generic enum for testing [...]
 
   • TestEnum
-An enum for testing
-[+2 more paragraphs]
+An enum for testing [...]
 
 Traits
   • ComplexTrait
-A more complex trait demonstrating various features
-[+1 more paragraphs]
+A more complex trait demonstrating various features [...]
 
   • TestTrait
-A trait for testing extremely long documentation that exceeds line limits.
-[+3 more paragraphs]
+A trait for testing extremely long documentation that exceeds line limits. [...]
 
 Functions
   • async_function
-An async function
-[+1 more paragraphs]
+An async function [...]
 
   • generic_function
-A generic function
-[+1 more paragraphs]
+A generic function [...]
 
   • sub_function
-A function in a submodule
-[+1 more paragraphs]
+A function in a submodule [...]
 
   • test_function
-A public function
-[+1 more paragraphs]
+A public function [...]
 
 Constants
   • TEST_CONSTANT
-A const for testing
-[+1 more paragraphs]
+A const for testing [...]
 
 Statics
   • TEST_STATIC
-A static for testing
-[+1 more paragraphs]
+A static for testing [...]
 
 Variants
   • VariantA
-Variant A (see also crate::GenericEnum)
-[+1 more paragraphs]
+Variant A (see also crate::GenericEnum) [...]
 
   • VariantB
-Variant B with data
-[+1 more paragraphs]
+Variant B with data [...]
 
   • VariantC
-Variant C with struct data (name and value)
-[+1 more paragraphs]
+Variant C with struct data (name and value) [...]

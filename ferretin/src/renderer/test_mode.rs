@@ -61,7 +61,7 @@ fn render_node(node: &DocumentNode, output: &mut impl Write) -> Result {
             writeln!(output, "</code-block>")?;
             Ok(())
         }
-        DocumentNode::Link { url, text } => {
+        DocumentNode::Link { url, text, .. } => {
             write!(output, "<link href=\"{}\">", url)?;
             render_spans(text, output)?;
             write!(output, "</link>")?;
@@ -281,6 +281,7 @@ fn render_node_partial(
                 let truncated_span = Span {
                     text: truncated.into(),
                     style: span.style,
+                    action: None,
                 };
                 render_span(&truncated_span, output)?;
             }

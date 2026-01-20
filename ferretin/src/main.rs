@@ -43,6 +43,10 @@ struct Cli {
     )]
     theme: String,
 
+    /// Enable interactive mode with scrolling and navigation
+    #[arg(short, long, global = true)]
+    interactive: bool,
+
     #[command(subcommand)]
     command: Commands,
 }
@@ -77,17 +81,27 @@ fn main() -> ExitCode {
                 .map(|(Width(w), _)| w as usize)
                 .unwrap_or(80),
         )
-        .with_theme(cli.theme.clone());
+        .with_theme(cli.theme.clone())
+        .with_interactive(cli.interactive);
 
     let request = Request::new(project, format_context);
 
-    let (document, is_error) = cli.command.execute(&request);
+    let (mut document, is_error, initial_item) = cli.command.execute(&request);
 
-    if request
-        .render(&document, &mut IoFmtWriter(std::io::stdout()))
-        .is_err()
-    {
-        return ExitCode::FAILURE;
+    if cli.interactive {
+        // Interactive mode with scrolling and navigation
+        if let Err(e) = renderer::render_interactive(&mut document, &request, initial_item) {
+            eprintln!("Interactive mode error: {}", e);
+            return ExitCode::FAILURE;
+        }
+    } else {
+        // One-shot mode: render to stdout and exit
+        if request
+            .render(&document, &mut IoFmtWriter(std::io::stdout()))
+            .is_err()
+        {
+            return ExitCode::FAILURE;
+        }
     }
 
     if is_error {

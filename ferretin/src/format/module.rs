@@ -27,7 +27,7 @@ struct FlatItem<'a> {
 impl Request {
     /// Collect all items in a module hierarchy as flat qualified paths
     fn collect_flat_items<'a>(
-        &self,
+        &'a self,
         collected: &mut Vec<FlatItem<'a>>,
         path: Option<String>,
         item: DocRef<'a, Item>,
@@ -52,7 +52,7 @@ impl Request {
     }
 
     /// Format collected flat items with grouping by type
-    fn format_grouped_flat_items<'a>(&self, items: &[FlatItem<'a>]) -> Vec<DocumentNode<'a>> {
+    fn format_grouped_flat_items<'a>(&'a self, items: &[FlatItem<'a>]) -> Vec<DocumentNode<'a>> {
         if items.is_empty() {
             return vec![
                 DocumentNode::Span(Span::plain("\n")),
@@ -108,20 +108,23 @@ impl Request {
     }
 
     /// Format a single flat item as a ListItem
-    fn format_flat_item<'a>(&self, flat_item: &FlatItem<'a>) -> ListItem<'a> {
+    fn format_flat_item<'a>(&'a self, flat_item: &FlatItem<'a>) -> ListItem<'a> {
         let mut nodes = vec![];
 
         // Add brief documentation if available
-        if let Some(docs) = self.docs_to_show(flat_item.item, TruncationLevel::Brief) {
+        if let Some(docs) = self.docs_to_show(flat_item.item, TruncationLevel::SingleLine) {
             nodes.push(DocumentNode::Span(Span::plain("\n")));
             nodes.extend(docs);
         }
 
-        ListItem::labeled(vec![Span::type_name(flat_item.path.clone())], nodes)
+        ListItem::labeled(
+            vec![Span::type_name(flat_item.path.clone()).with_target(Some(flat_item.item))],
+            nodes,
+        )
     }
 
     /// Format a module
-    pub(super) fn format_module<'a>(&self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
+    pub(super) fn format_module<'a>(&'a self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
         let mut collected = Vec::new();
         self.collect_flat_items(&mut collected, None, item);
         self.format_grouped_flat_items(&collected)

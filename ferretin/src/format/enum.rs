@@ -1,5 +1,5 @@
 use super::*;
-use crate::styled_string::DocumentNode;
+use crate::styled_string::{DocumentNode, ListItem, Span};
 
 impl Request {
     /// Format an enum
@@ -8,7 +8,6 @@ impl Request {
         item: DocRef<'a, Item>,
         enum_data: DocRef<'a, Enum>,
     ) -> Vec<DocumentNode<'a>> {
-        use crate::styled_string::{DocumentNode, ListItem, Span};
         let enum_name = item.name().unwrap_or("<unnamed>");
 
         // Build signature spans
@@ -19,12 +18,13 @@ impl Request {
         ];
 
         if !enum_data.generics.params.is_empty() {
-            code_spans.extend(self.format_generics(&enum_data.item().generics));
+            code_spans.extend(self.format_generics(item, &enum_data.item().generics));
         }
 
         if !enum_data.generics.where_predicates.is_empty() {
-            code_spans
-                .extend(self.format_where_clause(&enum_data.item().generics.where_predicates));
+            code_spans.extend(
+                self.format_where_clause(item, &enum_data.item().generics.where_predicates),
+            );
         }
 
         code_spans.push(Span::plain(" "));
@@ -58,7 +58,7 @@ impl Request {
                                     code_spans.push(Span::plain(" "));
                                 }
                                 first = false;
-                                code_spans.extend(self.format_type(field_type));
+                                code_spans.extend(self.format_type(item, field_type));
                             }
                         }
 
@@ -80,7 +80,7 @@ impl Request {
                                 code_spans.push(Span::field_name(field_name));
                                 code_spans.push(Span::punctuation(":"));
                                 code_spans.push(Span::plain(" "));
-                                code_spans.extend(self.format_type(field_type));
+                                code_spans.extend(self.format_type(item, field_type));
                                 code_spans.push(Span::punctuation(","));
                                 code_spans.push(Span::plain("\n"));
                             }
@@ -111,7 +111,7 @@ impl Request {
             .id_iter(&enum_data.item().variants)
             .filter_map(|variant| {
                 if let ItemEnum::Variant(_) = &variant.inner
-                    && let Some(docs) = self.docs_to_show(variant, TruncationLevel::Brief)
+                    && let Some(docs) = self.docs_to_show(variant, TruncationLevel::SingleLine)
                 {
                     let variant_name = variant.name().unwrap_or("<unnamed>");
                     let mut item_nodes = vec![

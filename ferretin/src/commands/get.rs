@@ -6,7 +6,11 @@ pub(crate) fn execute<'a>(
     path: &str,
     source: bool,
     recursive: bool,
-) -> (Document<'a>, bool) {
+) -> (
+    Document<'a>,
+    bool,
+    Option<ferretin_common::DocRef<'a, rustdoc_types::Item>>,
+) {
     request.mutate_format_context(|fc| {
         fc.set_include_source(source).set_recursive(recursive);
     });
@@ -16,7 +20,7 @@ pub(crate) fn execute<'a>(
     match request.resolve_path(path, &mut suggestions) {
         Some(item) => {
             let doc_nodes = request.format_item(item);
-            (Document::from(doc_nodes), false)
+            (Document::from(doc_nodes), false, Some(item))
         }
         None => {
             let mut nodes = vec![DocumentNode::Span(Span::plain(format!(
@@ -28,13 +32,17 @@ pub(crate) fn execute<'a>(
                 let items = suggestions
                     .iter()
                     .take(5)
-                    .map(|s| ListItem::from_span(Span::plain(s.path().to_string())))
+                    .map(|s| {
+                        ListItem::from_span(
+                            Span::plain(s.path().to_string()).with_target(s.item().copied()),
+                        )
+                    })
                     .collect();
 
                 nodes.push(DocumentNode::List { items });
             }
 
-            (Document::from(nodes), true)
+            (Document::from(nodes), true, None)
         }
     }
 }

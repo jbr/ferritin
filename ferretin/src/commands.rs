@@ -4,7 +4,7 @@ use std::fmt::Display;
 
 mod get;
 mod list;
-mod search;
+pub(crate) mod search;
 
 #[derive(clap::Subcommand, Debug)]
 pub(crate) enum Commands {
@@ -107,7 +107,14 @@ impl Commands {
         }
     }
 
-    pub fn execute<'a>(self, request: &'a Request) -> (Document<'a>, bool) {
+    pub fn execute<'a>(
+        self,
+        request: &'a Request,
+    ) -> (
+        Document<'a>,
+        bool,
+        Option<ferretin_common::DocRef<'a, rustdoc_types::Item>>,
+    ) {
         match self {
             Commands::Get {
                 path,
@@ -118,8 +125,14 @@ impl Commands {
                 query,
                 limit,
                 crate_,
-            } => search::execute(request, &query, limit, crate_.as_deref()),
-            Commands::List => list::execute(request),
+            } => {
+                let (doc, is_error) = search::execute(request, &query, limit, crate_.as_deref());
+                (doc, is_error, None)
+            }
+            Commands::List => {
+                let (doc, is_error) = list::execute(request);
+                (doc, is_error, None)
+            }
         }
     }
 }

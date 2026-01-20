@@ -23,6 +23,9 @@ pub(crate) struct FormatContext {
     terminal_width: usize,
     /// Output mode (TTY, Plain, TestMode)
     output_mode: OutputMode,
+    /// Interactive mode (affects link rendering)
+    #[field(get = "is_interactive")]
+    interactive: bool,
     /// Theme name for syntax highlighting
     #[field(skip)]
     theme_name: String,
@@ -49,6 +52,7 @@ impl FormatContext {
             color_scheme: ColorScheme::default(),
             terminal_width: 80,
             output_mode: OutputMode::TestMode,
+            interactive: false,
             theme_name: String::new(),
             syntax_set: SyntaxSet::load_defaults_newlines(),
             theme_set: ThemeSet::load_defaults(),

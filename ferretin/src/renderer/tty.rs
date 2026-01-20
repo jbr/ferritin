@@ -2,14 +2,17 @@ use std::fmt::{Result, Write};
 
 use crate::format_context::FormatContext;
 use crate::styled_string::{
-    Document, DocumentNode, HeadingLevel, ListItem, Span, SpanStyle, TruncationLevel,
+    Document, DocumentNode, HeadingLevel, Span, SpanStyle, TruncationLevel,
 };
-use owo_colors::OwoColorize;
+use ratatui::{
+    style::{Color, Modifier, Style},
+    text::{Line, Span as RatatuiSpan},
+};
 use syntect::easy::HighlightLines;
 use syntect::util::LinesWithEndings;
 
 /// Render budget for truncation
-enum RenderBudget {
+pub(super) enum RenderBudget {
     /// Stop at N characters OR first newline
     Characters { remaining: usize },
 
@@ -141,213 +144,256 @@ fn has_meaningful_content(nodes: &[DocumentNode]) -> bool {
     false
 }
 
-/// Render a document with ANSI escape codes for terminal display (public API)
+/// Render a document with ratatui for one-shot terminal output
 pub fn render(
     document: &Document,
     format_context: &FormatContext,
     output: &mut impl Write,
 ) -> Result {
+    // Build ratatui lines from document
     let mut budget = RenderBudget::Unlimited;
-    render_nodes(&document.nodes, format_context, output, &mut budget)?;
+    let lines = build_lines(&document.nodes, format_context, &mut budget);
+
+    // Write lines directly to output
+    for line in lines {
+        write_line_to_output(&line, output)?;
+        writeln!(output)?;
+    }
+
     Ok(())
 }
 
-/// Render nodes with budget tracking
-/// Returns (truncated, nodes_processed_count)
-fn render_nodes(
-    nodes: &[DocumentNode],
+/// Write a ratatui Line to output with ANSI codes
+fn write_line_to_output(line: &Line, output: &mut impl Write) -> Result {
+    for span in &line.spans {
+        write_styled_span(span, output)?;
+    }
+    Ok(())
+}
+
+/// Write a styled span with ANSI codes
+fn write_styled_span(span: &RatatuiSpan, output: &mut impl Write) -> Result {
+    let style = span.style;
+
+    // Build ANSI escape sequence
+    let mut codes = Vec::new();
+
+    if let Some(fg) = style.fg {
+        if let Color::Rgb(r, g, b) = fg {
+            codes.push(format!("38;2;{};{};{}", r, g, b));
+        }
+    }
+
+    if style.add_modifier.contains(Modifier::BOLD) {
+        codes.push("1".to_string());
+    }
+    if style.add_modifier.contains(Modifier::ITALIC) {
+        codes.push("3".to_string());
+    }
+    if style.add_modifier.contains(Modifier::UNDERLINED) {
+        codes.push("4".to_string());
+    }
+    if style.add_modifier.contains(Modifier::CROSSED_OUT) {
+        codes.push("9".to_string());
+    }
+
+    if !codes.is_empty() {
+        write!(output, "\x1b[{}m", codes.join(";"))?;
+    }
+
+    write!(output, "{}", span.content)?;
+
+    if !codes.is_empty() {
+        write!(output, "\x1b[0m")?;
+    }
+
+    Ok(())
+}
+
+/// Build ratatui Lines from document nodes
+pub(super) fn build_lines<'a>(
+    nodes: &'a [DocumentNode],
     format_context: &FormatContext,
-    output: &mut impl Write,
     budget: &mut RenderBudget,
-) -> std::result::Result<(bool, usize), std::fmt::Error> {
-    for (idx, node) in nodes.iter().enumerate() {
+) -> Vec<Line<'a>> {
+    let mut lines = Vec::new();
+
+    for node in nodes {
         if budget.is_exhausted() {
-            return Ok((true, idx)); // Truncated at this node
+            break;
         }
-        if render_node(node, output, format_context, budget)? {
-            return Ok((true, idx)); // Truncated in this node
-        }
-    }
-    Ok((false, nodes.len())) // Not truncated, processed all
-}
-
-fn render_code_block(
-    lang: Option<&str>,
-    code: &str,
-    output: &mut impl Write,
-    format_context: &FormatContext,
-) -> Result {
-    // Normalize rustdoc pseudo-languages to "rust"
-    let lang = match lang {
-        Some("no_run") | Some("should_panic") | Some("ignore") | Some("compile_fail")
-        | Some("edition2015") | Some("edition2018") | Some("edition2021") | Some("edition2024") => {
-            "rust"
-        }
-        Some(l) => l,
-        None => "rust", // Default to Rust
-    };
-
-    // Try to syntax highlight with the language
-    if let Some(syntax) = format_context.syntax_set().find_syntax_by_token(lang) {
-        let theme = format_context.theme();
-        let mut highlighter = HighlightLines::new(syntax, theme);
-
-        for line in LinesWithEndings::from(code) {
-            if let Ok(ranges) = highlighter.highlight_line(line, format_context.syntax_set()) {
-                for (style, text) in ranges {
-                    let fg = style.foreground;
-                    write!(output, "{}", text.truecolor(fg.r, fg.g, fg.b))?;
-                }
-            } else {
-                write!(output, "{line}")?;
-            }
-        }
-    } else {
-        // Fallback: just return the code as-is
-        write!(output, "{}", code.trim_end())?;
+        build_node_lines(node, format_context, budget, &mut lines);
     }
 
-    write!(output, "\n\n")?;
-    Ok(())
+    lines
 }
 
-/// Render a single node with budget tracking
-/// Returns true if truncation occurred
-fn render_node(
-    node: &DocumentNode,
-    output: &mut impl Write,
+/// Build lines for a single node
+fn build_node_lines<'a>(
+    node: &'a DocumentNode,
     format_context: &FormatContext,
     budget: &mut RenderBudget,
-) -> std::result::Result<bool, std::fmt::Error> {
+    lines: &mut Vec<Line<'a>>,
+) {
     if budget.is_exhausted() {
-        return Ok(true);
+        return;
     }
 
     match node {
         DocumentNode::Span(span) => {
-            if let Some(truncated_text) = budget.should_truncate(&span.text) {
-                let partial_span = Span {
-                    text: truncated_text.into(),
-                    style: span.style,
-                };
-                render_span(&partial_span, output, format_context)?;
-                Ok(true) // Truncated
+            // Spans are added to the current line
+            // This will be handled by the caller
+            if let Some(truncated) = budget.should_truncate(&span.text) {
+                let ratatui_span = convert_span_partial(span, truncated, format_context);
+                if !lines.is_empty() {
+                    lines.last_mut().unwrap().spans.push(ratatui_span);
+                } else {
+                    lines.push(Line::from(vec![ratatui_span]));
+                }
             } else {
-                render_span(span, output, format_context)?;
-                Ok(false) // Not truncated
+                let ratatui_span = convert_span(span, format_context);
+                if !lines.is_empty() && !span.text.contains('\n') {
+                    lines.last_mut().unwrap().spans.push(ratatui_span);
+                } else {
+                    // Handle multiline spans
+                    for (i, line_text) in span.text.split('\n').enumerate() {
+                        if i > 0 {
+                            lines.push(Line::from(vec![]));
+                        }
+                        if !line_text.is_empty() {
+                            let line_span = RatatuiSpan::styled(
+                                line_text,
+                                span_style_to_ratatui(span.style, format_context),
+                            );
+                            if i == 0 && !lines.is_empty() {
+                                lines.last_mut().unwrap().spans.push(line_span);
+                            } else {
+                                lines.push(Line::from(vec![line_span]));
+                            }
+                        }
+                    }
+                }
             }
         }
         DocumentNode::Heading { level, spans } => {
-            // Headings stop SingleLine budget but not Lines budget
             if matches!(budget, RenderBudget::Characters { .. }) {
-                return Ok(true);
+                return;
             }
 
-            render_spans(spans, output, true, format_context)?;
-            writeln!(output)?;
-
-            // Add decorative underlines
-            match level {
-                HeadingLevel::Title => {
-                    for _ in 0..format_context.terminal_width() {
-                        write!(output, "=")?;
-                    }
-                    writeln!(output)?;
-                }
-                HeadingLevel::Section => {
-                    for _ in 0..format_context.terminal_width() {
-                        write!(output, "-")?;
-                    }
-                    writeln!(output)?;
-                }
+            let mut heading_spans = Vec::new();
+            for span in spans {
+                heading_spans.push(convert_span_bold(span, format_context));
             }
-            Ok(false)
+            lines.push(Line::from(heading_spans));
+
+            // Add decorative underline
+            let underline_char = match level {
+                HeadingLevel::Title => "=",
+                HeadingLevel::Section => "-",
+            };
+            let underline = underline_char.repeat(format_context.terminal_width());
+            lines.push(Line::from(underline));
         }
         DocumentNode::Section { title, nodes } => {
             if let Some(title_spans) = title {
-                render_spans(title_spans, output, true, format_context)?;
-                writeln!(output)?;
+                let mut heading_spans = Vec::new();
+                for span in title_spans {
+                    heading_spans.push(convert_span_bold(span, format_context));
+                }
+                lines.push(Line::from(heading_spans));
             }
-            let (truncated, _) = render_nodes(nodes, format_context, output, budget)?;
-            Ok(truncated)
+            lines.extend(build_lines(nodes, format_context, budget));
         }
         DocumentNode::List { items } => {
-            // Lists stop SingleLine budget
             if matches!(budget, RenderBudget::Characters { .. }) {
-                return Ok(true);
+                return;
             }
 
             for item in items {
-                if render_list_item(item, output, format_context, budget)? {
-                    return Ok(true);
+                let mut item_spans = vec![RatatuiSpan::raw("  • ")];
+
+                if let Some(label) = &item.label {
+                    for span in label {
+                        item_spans.push(convert_span_bold(span, format_context));
+                    }
                 }
+
+                // Add content spans to the same line
+                for node in &item.content {
+                    if let DocumentNode::Span(span) = node {
+                        item_spans.push(convert_span(span, format_context));
+                    }
+                }
+
+                lines.push(Line::from(item_spans));
             }
-            Ok(false)
         }
         DocumentNode::CodeBlock { lang, code } => {
-            // Code blocks stop SingleLine budget
             if matches!(budget, RenderBudget::Characters { .. }) {
-                return Ok(true);
+                return;
             }
 
-            render_code_block(lang.as_deref(), code, output, format_context)?;
-            Ok(false)
+            lines.extend(render_code_block(lang.as_deref(), code, format_context));
         }
-        DocumentNode::Link { url, text } => {
-            write!(output, "\x1b]8;;{url}\x1b\\")?;
-            for span in text {
-                if let Some(truncated_text) = budget.should_truncate(&span.text) {
-                    let partial_span = Span {
-                        text: truncated_text.into(),
-                        style: span.style,
-                    };
-                    render_span(&partial_span, output, format_context)?;
-                    write!(output, "\x1b]8;;\x1b\\")?;
-                    return Ok(true); // Truncated
-                } else {
-                    render_span(span, output, format_context)?;
+        DocumentNode::Link { url, text, .. } => {
+            let link_spans: Vec<_> = if format_context.is_interactive() {
+                // Interactive mode: just render underlined text (will add TuiAction later)
+                // OSC 8 hyperlinks don't work through ratatui since it controls the terminal
+                text.iter()
+                    .map(|span| {
+                        let mut style = span_style_to_ratatui(span.style, format_context);
+                        style = style.add_modifier(Modifier::UNDERLINED);
+                        RatatuiSpan::styled(span.text.as_ref(), style)
+                    })
+                    .collect()
+            } else {
+                // One-shot mode: emit OSC 8 hyperlinks
+                let mut spans = vec![RatatuiSpan::raw(format!("\x1b]8;;{}\x1b\\", url))];
+                for span in text {
+                    spans.push(convert_span(span, format_context));
                 }
+                spans.push(RatatuiSpan::raw("\x1b]8;;\x1b\\"));
+                spans
+            };
+
+            if !lines.is_empty() {
+                lines.last_mut().unwrap().spans.extend(link_spans);
+            } else {
+                lines.push(Line::from(link_spans));
             }
-            write!(output, "\x1b]8;;\x1b\\")?;
-            Ok(false)
         }
         DocumentNode::HorizontalRule => {
-            // Horizontal rule stops SingleLine budget
             if matches!(budget, RenderBudget::Characters { .. }) {
-                return Ok(true);
+                return;
             }
 
-            for _ in 0..format_context.terminal_width() {
-                write!(output, "─")?;
-            }
-            writeln!(output)?;
-            Ok(false)
+            let rule = "─".repeat(format_context.terminal_width());
+            lines.push(Line::from(rule));
         }
         DocumentNode::BlockQuote { nodes } => {
-            write!(output, "  │ ")?;
-            let (truncated, _) = render_nodes(nodes, format_context, output, budget)?;
-            Ok(truncated)
+            let inner_lines = build_lines(nodes, format_context, budget);
+            for inner_line in inner_lines {
+                let mut quoted_spans = vec![RatatuiSpan::raw("  │ ")];
+                quoted_spans.extend(inner_line.spans);
+                lines.push(Line::from(quoted_spans));
+            }
         }
         DocumentNode::Table { header, rows } => {
-            // Tables stop SingleLine budget
             if matches!(budget, RenderBudget::Characters { .. }) {
-                return Ok(true);
+                return;
             }
 
-            // Placeholder for table rendering
             let row_count = rows.len();
             let col_count = header
                 .as_ref()
                 .map_or_else(|| rows.first().map_or(0, |r| r.len()), |h| h.len());
-            writeln!(
-                output,
+
+            lines.push(Line::from(format!(
                 "[Table: {} columns × {} rows]",
                 col_count, row_count
-            )?;
-            Ok(false)
+            )));
         }
         DocumentNode::TruncatedBlock { nodes, level } => {
-            // Swap to new budget for this block
             let mut new_budget = match level {
                 TruncationLevel::SingleLine => RenderBudget::Characters {
                     remaining: format_context.terminal_width().saturating_sub(6),
@@ -359,134 +405,122 @@ fn render_node(
                 TruncationLevel::Full => RenderBudget::Unlimited,
             };
 
-            let (truncated, nodes_processed) =
-                render_nodes(nodes, format_context, output, &mut new_budget)?;
+            let start_line_count = lines.len();
+            lines.extend(build_lines(nodes, format_context, &mut new_budget));
+            let nodes_processed = lines.len() - start_line_count;
 
-            // Only show [...] if we actually truncated and there's meaningful content in remaining nodes
-            if truncated && has_meaningful_content(&nodes[nodes_processed..]) {
-                write!(output, "{}", " [...]".dimmed())?;
-            }
-            writeln!(output)?;
-            Ok(false) // Don't propagate truncation to parent
-        }
-    }
-}
-
-fn render_spans(
-    spans: &[Span],
-    output: &mut impl Write,
-    bold: bool,
-    format_context: &FormatContext,
-) -> Result {
-    for span in spans {
-        render_span_with_bold(span, output, bold, format_context)?;
-    }
-    Ok(())
-}
-
-fn render_span(span: &Span, output: &mut impl Write, format_context: &FormatContext) -> Result {
-    render_span_with_bold(span, output, false, format_context)
-}
-
-fn render_span_with_bold(
-    span: &Span,
-    output: &mut impl Write,
-    force_bold: bool,
-    format_context: &FormatContext,
-) -> Result {
-    let text = &span.text;
-
-    // Get color from the color scheme based on semantic style
-    let color = format_context.color_scheme().color_for(span.style);
-
-    let styled = match span.style {
-        SpanStyle::Plain => {
-            // Plain text uses default foreground
-            let fg = format_context.color_scheme().default_foreground();
-            if force_bold {
-                write!(output, "{}", text.truecolor(fg.r, fg.g, fg.b).bold())?;
-            } else {
-                write!(output, "{}", text.truecolor(fg.r, fg.g, fg.b))?;
-            }
-            return Ok(());
-        }
-        SpanStyle::Punctuation => {
-            // Punctuation uses default foreground, no color
-            write!(output, "{text}")?;
-            return Ok(());
-        }
-        SpanStyle::InlineRustCode => {
-            // Inline Rust code gets syntax highlighting
-            if let Some(syntax) = format_context.syntax_set().find_syntax_by_token("rust") {
-                let theme = format_context.theme();
-                let mut highlighter = HighlightLines::new(syntax, theme);
-
-                if let Ok(ranges) = highlighter.highlight_line(text, format_context.syntax_set()) {
-                    for (style, text_segment) in ranges {
-                        let fg = style.foreground;
-                        write!(output, "{}", text_segment.truecolor(fg.r, fg.g, fg.b))?;
-                    }
+            // Check if we truncated
+            if new_budget.is_exhausted() && has_meaningful_content(&nodes[nodes_processed..]) {
+                if !lines.is_empty() {
+                    let dimmed_style = Style::default().fg(Color::DarkGray);
+                    lines
+                        .last_mut()
+                        .unwrap()
+                        .spans
+                        .push(RatatuiSpan::styled(" [...]", dimmed_style));
                 } else {
-                    // Fallback: just output the text
-                    write!(output, "{text}")?;
+                    let dimmed_style = Style::default().fg(Color::DarkGray);
+                    lines.push(Line::from(vec![RatatuiSpan::styled(
+                        " [...]",
+                        dimmed_style,
+                    )]));
                 }
-            } else {
-                // Fallback: just output the text
-                write!(output, "{text}")?;
             }
-            return Ok(());
         }
-        SpanStyle::InlineCode => {
-            // Generic inline code - use a theme color (constant color)
-            // Get the constant color from the theme
-            let fg = format_context
-                .color_scheme()
-                .color_for(SpanStyle::InlineCode);
-            write!(output, "{}", text.truecolor(fg.r, fg.g, fg.b))?;
-            return Ok(());
+    }
+}
+
+/// Render code block with syntax highlighting
+fn render_code_block<'a>(
+    lang: Option<&str>,
+    code: &'a str,
+    format_context: &FormatContext,
+) -> Vec<Line<'a>> {
+    let mut lines = Vec::new();
+
+    // Normalize rustdoc pseudo-languages to "rust"
+    let lang = match lang {
+        Some("no_run") | Some("should_panic") | Some("ignore") | Some("compile_fail")
+        | Some("edition2015") | Some("edition2018") | Some("edition2021") | Some("edition2024") => {
+            "rust"
         }
-        SpanStyle::Strong => {
-            // Bold text
-            write!(output, "{}", text.bold())?;
-            return Ok(());
-        }
-        SpanStyle::Emphasis => {
-            // Italic text
-            write!(output, "{}", text.italic())?;
-            return Ok(());
-        }
-        SpanStyle::Strikethrough => {
-            // Strikethrough text
-            write!(output, "{}", text.strikethrough())?;
-            return Ok(());
-        }
-        _ => {
-            // All other styles use their theme color
-            text.truecolor(color.r, color.g, color.b)
-        }
+        Some(l) => l,
+        None => "rust",
     };
 
-    if force_bold {
-        write!(output, "{}", styled.bold())?;
+    if let Some(syntax) = format_context.syntax_set().find_syntax_by_token(lang) {
+        let theme = format_context.theme();
+        let mut highlighter = HighlightLines::new(syntax, theme);
+
+        for line in LinesWithEndings::from(code) {
+            if let Ok(ranges) = highlighter.highlight_line(line, format_context.syntax_set()) {
+                let mut line_spans = Vec::new();
+                for (style, text) in ranges {
+                    let fg = style.foreground;
+                    line_spans.push(RatatuiSpan::styled(
+                        text.trim_end_matches('\n'),
+                        Style::default().fg(Color::Rgb(fg.r, fg.g, fg.b)),
+                    ));
+                }
+                lines.push(Line::from(line_spans));
+            } else {
+                lines.push(Line::from(line.trim_end_matches('\n')));
+            }
+        }
     } else {
-        write!(output, "{styled}")?;
+        for line in code.lines() {
+            lines.push(Line::from(line));
+        }
     }
-    Ok(())
+
+    lines.push(Line::from(""));
+    lines
 }
 
-fn render_list_item(
-    item: &ListItem,
-    output: &mut impl Write,
+/// Convert our Span to ratatui Span
+fn convert_span<'a>(span: &'a Span, format_context: &FormatContext) -> RatatuiSpan<'a> {
+    RatatuiSpan::styled(
+        span.text.as_ref(),
+        span_style_to_ratatui(span.style, format_context),
+    )
+}
+
+/// Convert span with partial text (for truncation)
+fn convert_span_partial<'a>(
+    span: &'a Span,
+    text: &'a str,
     format_context: &FormatContext,
-    budget: &mut RenderBudget,
-) -> std::result::Result<bool, std::fmt::Error> {
-    write!(output, "  • ")?;
-    if let Some(label) = &item.label {
-        render_spans(label, output, true, format_context)?;
+) -> RatatuiSpan<'a> {
+    RatatuiSpan::styled(text, span_style_to_ratatui(span.style, format_context))
+}
+
+/// Convert span with bold modifier
+fn convert_span_bold<'a>(span: &'a Span, format_context: &FormatContext) -> RatatuiSpan<'a> {
+    let mut style = span_style_to_ratatui(span.style, format_context);
+    style = style.add_modifier(Modifier::BOLD);
+    RatatuiSpan::styled(span.text.as_ref(), style)
+}
+
+/// Convert SpanStyle to ratatui Style
+fn span_style_to_ratatui(span_style: SpanStyle, format_context: &FormatContext) -> Style {
+    match span_style {
+        SpanStyle::Plain => {
+            let fg = format_context.color_scheme().default_foreground();
+            Style::default().fg(Color::Rgb(fg.r, fg.g, fg.b))
+        }
+        SpanStyle::Punctuation => Style::default(),
+        SpanStyle::Strong => Style::default().add_modifier(Modifier::BOLD),
+        SpanStyle::Emphasis => Style::default().add_modifier(Modifier::ITALIC),
+        SpanStyle::Strikethrough => Style::default().add_modifier(Modifier::CROSSED_OUT),
+        SpanStyle::InlineCode | SpanStyle::InlineRustCode => {
+            let color = format_context.color_scheme().color_for(span_style);
+            Style::default().fg(Color::Rgb(color.r, color.g, color.b))
+        }
+        _ => {
+            let color = format_context.color_scheme().color_for(span_style);
+            Style::default().fg(Color::Rgb(color.r, color.g, color.b))
+        }
     }
-    let (truncated, _) = render_nodes(&item.content, format_context, output, budget)?;
-    writeln!(output)?;
-    Ok(truncated)
 }
 
 #[cfg(test)]
@@ -543,7 +577,6 @@ mod tests {
         render(&doc, &format_context, &mut output).unwrap();
         assert!(output.contains("Test"));
         // Should have decorative underline
-        dbg!(&output);
         assert!(output.contains("=========="));
     }
 }

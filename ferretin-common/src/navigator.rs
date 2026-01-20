@@ -18,7 +18,7 @@ use std::path::PathBuf;
 /// Examples:
 /// - "https://docs.rs/tokio-macros/2.6.0/x86_64-unknown-linux-gnu/" -> ("tokio-macros", "2.6.0")
 /// - "https://docs.rs/serde/1.0.228" -> ("serde", "1.0.228")
-fn parse_docsrs_url(url: &str) -> Option<(&str, &str)> {
+pub(crate) fn parse_docsrs_url(url: &str) -> Option<(&str, &str)> {
     let url = url
         .strip_prefix("https://docs.rs/")
         .or_else(|| url.strip_prefix("http://docs.rs/"))?;
@@ -63,6 +63,9 @@ pub struct Navigator {
     // Working set cache: CrateKey -> RustdocData
     // CrateKey is (name, version) where version is None for local/workspace crates
     working_set: FrozenMap<CrateKey, Box<RustdocData>>,
+
+    // tracks versions in the working set
+    versions: FrozenMap<String, Box<Option<String>>>,
 
     // Map from internal name (underscores) to real name/version from external_crates
     external_crate_names: FrozenMap<String, Box<ExternalCrateInfo>>,
@@ -163,10 +166,17 @@ impl Navigator {
         let Some(crate_data) = self.load_crate(crate_name, None) else {
             // Generate suggestions from available crates
             if let Some(local) = self.local_source() {
-                suggestions.extend(local.list_available().map(|name| Suggestion {
-                    path: name.clone(),
-                    item: None,
-                    score: case_aware_jaro_winkler(&name, crate_name),
+                suggestions.extend(local.list_available().map(|name| {
+                    let version = self.versions.get(&name);
+                    let item = version
+                        .and_then(|v| self.working_set.get(&(name.clone(), v.clone())))
+                        .map(|x| x.root_item(self));
+
+                    Suggestion {
+                        path: name.clone(),
+                        item,
+                        score: case_aware_jaro_winkler(&name, crate_name),
+                    }
                 }));
             }
             if let Some(std) = &self.std_source {
@@ -191,6 +201,7 @@ impl Navigator {
     /// Load a crate by name and optional version
     ///
     /// If version is None:
+    /// - First checks external crate names from loaded crates
     /// - For local context crates: use the locked version from Cargo.lock
     /// - For arbitrary crates: use "latest"
     ///
@@ -234,6 +245,8 @@ impl Navigator {
                 // Index external crates for future lookups
                 self.index_external_crates(&data);
 
+                self.versions
+                    .insert(name_str, Box::new(resolved_version.map(String::from)));
                 // Cache in working set
                 Some(self.working_set.insert(key.clone(), Box::new(data)))
             }
@@ -559,6 +572,7 @@ impl NavigatorBuilder {
             working_set: FrozenMap::new(),
             external_crate_names: FrozenMap::new(),
             failed_loads: FrozenMap::new(),
+            versions: FrozenMap::new(),
         })
     }
 }

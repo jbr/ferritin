@@ -1,13 +1,56 @@
+use ferretin_common::DocRef;
+use rustdoc_types::Item;
 use std::borrow::Cow;
 
+/// Interactive action that can be attached to a span
+#[derive(Debug, Clone)]
+pub enum TuiAction<'a> {
+    /// Navigate to an already-loaded item (zero-cost since DocRef is Copy)
+    Navigate(DocRef<'a, Item>),
+    /// Navigate to an item by path (resolves lazily)
+    NavigateToPath(String),
+    /// Expand a truncated block (identified by index path into document tree)
+    ExpandBlock(NodePath),
+    /// Open an external URL in browser
+    OpenUrl(String),
+}
+
+/// Path to a node in the document tree using indices
+/// Example: [2, 3, 1] means nodes[2].children[3].children[1]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct NodePath {
+    indices: [u16; 8], // 8 levels deep should be enough
+    len: u8,
+}
+
+impl NodePath {
+    pub fn new() -> Self {
+        Self {
+            indices: [0; 8],
+            len: 0,
+        }
+    }
+
+    pub fn push(&mut self, index: usize) {
+        if (self.len as usize) < self.indices.len() {
+            self.indices[self.len as usize] = index as u16;
+            self.len += 1;
+        }
+    }
+
+    pub fn indices(&self) -> &[u16] {
+        &self.indices[..self.len as usize]
+    }
+}
+
 /// A semantic content tree for Rust documentation
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub struct Document<'a> {
     pub nodes: Vec<DocumentNode<'a>>,
 }
 
 /// A node in the documentation tree
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub enum DocumentNode<'a> {
     /// Inline styled text
     Span(Span<'a>),
@@ -34,7 +77,11 @@ pub enum DocumentNode<'a> {
     },
 
     /// Hyperlink
-    Link { url: String, text: Vec<Span<'a>> },
+    Link {
+        url: String,
+        text: Vec<Span<'a>>,
+        item: Option<DocRef<'a, Item>>,
+    },
 
     /// Horizontal rule/divider
     HorizontalRule,
@@ -57,13 +104,13 @@ pub enum DocumentNode<'a> {
 }
 
 /// A single cell in a table
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub struct TableCell<'a> {
     pub spans: Vec<Span<'a>>,
 }
 
 /// A single item in a list
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub struct ListItem<'a> {
     pub label: Option<Vec<Span<'a>>>,
     pub content: Vec<DocumentNode<'a>>,
@@ -88,10 +135,11 @@ pub enum TruncationLevel {
 }
 
 /// A styled text span with semantic meaning
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub struct Span<'a> {
     pub text: Cow<'a, str>,
     pub style: SpanStyle,
+    pub action: Option<TuiAction<'a>>,
 }
 
 /// Semantic styling categories for Rust code elements
@@ -127,6 +175,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Keyword,
+            action: None,
         }
     }
 
@@ -134,6 +183,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::TypeName,
+            action: None,
         }
     }
 
@@ -141,6 +191,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::FunctionName,
+            action: None,
         }
     }
 
@@ -148,6 +199,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::FieldName,
+            action: None,
         }
     }
 
@@ -155,6 +207,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Lifetime,
+            action: None,
         }
     }
 
@@ -162,6 +215,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Generic,
+            action: None,
         }
     }
 
@@ -170,6 +224,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Plain,
+            action: None,
         }
     }
 
@@ -177,6 +232,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Punctuation,
+            action: None,
         }
     }
 
@@ -184,6 +240,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Operator,
+            action: None,
         }
     }
 
@@ -191,6 +248,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Comment,
+            action: None,
         }
     }
 
@@ -198,6 +256,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::InlineRustCode,
+            action: None,
         }
     }
 
@@ -205,6 +264,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::InlineCode,
+            action: None,
         }
     }
 
@@ -212,6 +272,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Strong,
+            action: None,
         }
     }
 
@@ -219,6 +280,7 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Emphasis,
+            action: None,
         }
     }
 
@@ -226,7 +288,28 @@ impl<'a> Span<'a> {
         Self {
             text: text.into(),
             style: SpanStyle::Strikethrough,
+            action: None,
         }
+    }
+
+    /// Chainable method to attach an action to this span
+    pub fn with_action(mut self, action: TuiAction<'a>) -> Self {
+        self.action = Some(action);
+        self
+    }
+
+    /// Attach a navigation action for an already-loaded item
+    pub fn with_target(mut self, target: Option<DocRef<'a, Item>>) -> Self {
+        if let Some(target) = target {
+            self.action = Some(TuiAction::Navigate(target));
+        }
+        self
+    }
+
+    /// Attach a navigation action for an item path (resolved lazily)
+    pub fn with_path(mut self, path: impl Into<String>) -> Self {
+        self.action = Some(TuiAction::NavigateToPath(path.into()));
+        self
     }
 }
 
@@ -347,7 +430,11 @@ impl<'a> DocumentNode<'a> {
 
     /// Convenience constructor for a link
     pub fn link(url: String, text: Vec<Span<'a>>) -> Self {
-        DocumentNode::Link { url, text }
+        DocumentNode::Link {
+            url,
+            text,
+            item: None,
+        }
     }
 
     /// Convenience constructor for a horizontal rule
@@ -470,7 +557,7 @@ mod tests {
             vec![Span::plain("Click here")],
         );
 
-        if let DocumentNode::Link { url, text } = link {
+        if let DocumentNode::Link { url, text, .. } = link {
             assert_eq!(url, "https://example.com");
             assert_eq!(text.len(), 1);
         } else {

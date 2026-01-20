@@ -35,26 +35,28 @@ impl DocInfo {
 impl Request {
     /// Render markdown documentation to structured DocumentNodes
     pub(crate) fn render_docs<'a>(
-        &self,
-        item: DocRef<'_, Item>,
+        &'a self,
+        item: DocRef<'a, Item>,
         markdown: &str,
     ) -> Vec<DocumentNode<'a>> {
         // Create a link resolver that can resolve intra-doc links
-        let link_resolver =
-            |url: &str| -> Option<String> { self.resolve_intra_doc_link(item, url) };
+        let link_resolver = |url: &str| -> Option<(String, DocRef<'_, Item>)> {
+            self.resolve_intra_doc_link(item, url)
+        };
 
         MarkdownRenderer::render_with_resolver(markdown, link_resolver)
     }
 
     /// Resolve an intra-doc link to a docs.rs URL or navigation hint
-    fn resolve_intra_doc_link(&self, item: DocRef<'_, Item>, url: &str) -> Option<String> {
-        // Use the centralized intra-doc link resolver
-        // render_docs() needs to be refactored to accept an origin parameter
-
+    fn resolve_intra_doc_link<'a>(
+        &'a self,
+        item: DocRef<'a, Item>,
+        url: &str,
+    ) -> Option<(String, DocRef<'a, Item>)> {
         let resolved = resolve_link(self, item, url);
 
         match resolved {
-            ResolvedLink::Item(item) => Some(generate_docsrs_url(item)),
+            ResolvedLink::Item(item) => Some((generate_docsrs_url(item), item)),
             ResolvedLink::Fragment(_) | ResolvedLink::External(_) | ResolvedLink::Unresolved => {
                 // Keep these as-is (return None to use original URL)
                 None
@@ -67,8 +69,8 @@ impl Request {
     /// Returns None if no docs should be shown, Some(docs) if docs should be displayed.
     /// Docs are wrapped in a TruncatedBlock with appropriate level hint.
     pub(crate) fn docs_to_show<'a>(
-        &self,
-        item: DocRef<'_, Item>,
+        &'a self,
+        item: DocRef<'a, Item>,
         truncation_level: TruncationLevel,
     ) -> Option<Vec<DocumentNode<'a>>> {
         // Extract docs from item

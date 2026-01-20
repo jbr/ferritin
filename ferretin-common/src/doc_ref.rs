@@ -17,6 +17,15 @@ pub struct DocRef<'a, T> {
     name: Option<&'a str>,
 }
 
+// Equality based on item pointer and crate provenance
+impl<'a, T> PartialEq for DocRef<'a, T> {
+    fn eq(&self, other: &Self) -> bool {
+        std::ptr::eq(self.item, other.item) && std::ptr::eq(self.crate_docs, other.crate_docs)
+    }
+}
+
+impl<'a, T> Eq for DocRef<'a, T> {}
+
 impl<'a, T> From<&DocRef<'a, T>> for &'a RustdocData {
     fn from(value: &DocRef<'a, T>) -> Self {
         value.crate_docs
@@ -36,13 +45,21 @@ impl<'a, T> Deref for DocRef<'a, T> {
     }
 }
 
-impl<'a> DocRef<'a, Item> {
-    pub fn name(&self) -> Option<&'a str> {
-        self.name.or(self.item.name.as_deref())
-    }
-
+impl<'a, T> DocRef<'a, T> {
     pub fn build_ref<U>(&self, inner: &'a U) -> DocRef<'a, U> {
         DocRef::new(self.navigator, self.crate_docs, inner)
+    }
+
+    pub fn get_path(&self, id: Id) -> Option<DocRef<'a, Item>> {
+        self.crate_docs.get_path(self.navigator, id)
+    }
+}
+
+impl<'a> DocRef<'a, Item> {
+    pub fn name(&self) -> Option<&'a str> {
+        self.name
+            .or(self.item.name.as_deref())
+            .or(self.summary().and_then(|x| x.path.last().map(|y| &**y)))
     }
 
     pub fn inner(&self) -> &'a ItemEnum {
@@ -51,6 +68,34 @@ impl<'a> DocRef<'a, Item> {
 
     pub fn path(&self) -> Option<Path<'a>> {
         self.crate_docs().path(&self.id)
+    }
+
+    pub fn summary(&self) -> Option<&'a ItemSummary> {
+        self.crate_docs().paths.get(&self.id)
+    }
+
+    pub fn find_child(&self, child_name: &str) -> Option<DocRef<'a, Item>> {
+        self.child_items()
+            .find(|c| c.name().is_some_and(|n| n == child_name))
+    }
+
+    pub(crate) fn find_by_path<'b>(
+        &self,
+        mut iter: impl Iterator<Item = &'b String>,
+    ) -> Option<DocRef<'a, Item>> {
+        let Some(next) = iter.next() else {
+            return Some(*self);
+        };
+
+        for child in self.child_items() {
+            if let Some(name) = child.name()
+                && name == next
+            {
+                return child.find_by_path(iter);
+            }
+        }
+
+        None
     }
 
     pub fn kind(&self) -> ItemKind {
@@ -140,6 +185,16 @@ pub struct Path<'a>(&'a [String]);
 impl<'a> From<&'a ItemSummary> for Path<'a> {
     fn from(value: &'a ItemSummary) -> Self {
         Self(&value.path)
+    }
+}
+
+impl<'a> IntoIterator for Path<'a> {
+    type Item = &'a str;
+
+    type IntoIter = Box<dyn Iterator<Item = Self::Item> + 'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        Box::new(self.0.iter().map(|x| &**x))
     }
 }
 

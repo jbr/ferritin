@@ -2,7 +2,7 @@ use anyhow::{Result, anyhow};
 use cargo_metadata::{DependencyKind, Metadata, MetadataCommand};
 use cargo_toml::Manifest;
 use fieldwork::Fieldwork;
-use rustdoc_types::{Crate, FORMAT_VERSION, Id, Item};
+use rustdoc_types::{Crate, ExternalCrate, FORMAT_VERSION, Id, Item};
 use serde::Deserialize;
 use std::collections::BTreeMap;
 use std::fmt::{self, Debug, Formatter};
@@ -15,7 +15,7 @@ use walkdir::WalkDir;
 use crate::crate_name::CrateName;
 use crate::doc_ref::{self, DocRef};
 use crate::docsrs_client::DocsRsClient;
-use crate::navigator::Navigator;
+use crate::navigator::{Navigator, parse_docsrs_url};
 
 pub const RUST_CRATES: [CrateName<'_>; 5] = [
     CrateName("std"),
@@ -793,5 +793,46 @@ impl RustdocData {
 
     pub fn path<'a>(&'a self, id: &Id) -> Option<doc_ref::Path<'a>> {
         self.paths.get(id).map(|summary| summary.into())
+    }
+
+    pub fn root_item<'a>(&'a self, navigator: &'a Navigator) -> DocRef<'a, Item> {
+        DocRef::new(navigator, self, &self.index[&self.root])
+    }
+
+    pub fn traverse_to_crate_by_id<'a>(
+        &'a self,
+        navigator: &'a Navigator,
+        id: u32,
+    ) -> Option<&'a RustdocData> {
+        if id == 0 {
+            //special case: 0 is not in external crates, and it always means "this crate"
+            return Some(self);
+        }
+
+        let ExternalCrate {
+            name,
+            html_root_url,
+            ..
+        } = self.external_crates.get(&id)?;
+
+        let (name, version) = html_root_url
+            .as_deref()
+            .and_then(parse_docsrs_url)
+            .map_or((&**name, None), |(name, version)| (name, Some(version)));
+
+        navigator.load_crate(name, version)
+    }
+
+    pub(crate) fn get_path<'a>(
+        &'a self,
+        navigator: &'a Navigator,
+        id: Id,
+    ) -> Option<DocRef<'a, Item>> {
+        let item_summary = self.paths.get(&id)?;
+        let crate_ = self.traverse_to_crate_by_id(navigator, item_summary.crate_id)?;
+
+        crate_
+            .root_item(navigator)
+            .find_by_path(item_summary.path.iter().skip(1))
     }
 }

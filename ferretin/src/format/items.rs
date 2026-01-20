@@ -22,7 +22,7 @@ impl Request {
 
         // Add type spans
         doc_nodes.extend(
-            self.format_type(&type_alias.item().type_)
+            self.format_type(item, &type_alias.item().type_)
                 .into_iter()
                 .map(DocumentNode::Span),
         );
@@ -66,7 +66,11 @@ impl Request {
         ];
 
         // Add type spans
-        doc_nodes.extend(self.format_type(type_).into_iter().map(DocumentNode::Span));
+        doc_nodes.extend(
+            self.format_type(item, type_)
+                .into_iter()
+                .map(DocumentNode::Span),
+        );
 
         if let Some(value) = &const_.value {
             doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
@@ -100,7 +104,7 @@ impl Request {
 
         // Add type spans
         doc_nodes.extend(
-            self.format_type(&static_item.type_)
+            self.format_type(item, &static_item.type_)
                 .into_iter()
                 .map(DocumentNode::Span),
         );
