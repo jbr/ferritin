@@ -1,6 +1,6 @@
 [package]
 name = "rustdoc-mcp"
-version = "0.1.4"
+version = "0.1.5"
 edition.workspace = true
 description = "mcp server for rustdocs"
 readme = "./README.md"
@@ -11,7 +11,7 @@ keywords = ["mcp"]
 categories = []
 
 [dependencies]
-ferretin-common = { path = "../ferretin-common" }
+ferretin-common = { path = "../ferretin-common", version = "0.1.0" }
 
 anyhow.workspace = true
 clap = { version = "4.5.54", features = ["derive"] }
