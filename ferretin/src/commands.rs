@@ -128,7 +128,11 @@ impl Commands {
                 crate_,
             } => {
                 let (doc, is_error) = search::execute(request, &query, limit, crate_.as_deref());
-                (doc, is_error, None)
+                let history_entry = Some(HistoryEntry::Search {
+                    query,
+                    crate_name: crate_,
+                });
+                (doc, is_error, history_entry)
             }
             Commands::List => {
                 let (doc, is_error) = list::execute(request);
