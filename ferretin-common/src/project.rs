@@ -555,7 +555,7 @@ impl RustdocProject {
                 // First try to find in available crates
                 self.available_crates()
                     .find(|correct_name| eq_ignoring_dash_underscore(correct_name, name))
-                    .or_else(|| {
+                    .or({
                         // If not found in available crates, still return the name so
                         // load_crate can attempt to fetch from docs.rs
                         Some(CrateName(name))

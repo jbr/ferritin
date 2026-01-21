@@ -178,11 +178,10 @@ fn write_styled_span(span: &RatatuiSpan, output: &mut impl Write) -> Result {
     // Build ANSI escape sequence
     let mut codes = Vec::new();
 
-    if let Some(fg) = style.fg {
-        if let Color::Rgb(r, g, b) = fg {
+    if let Some(fg) = style.fg
+        && let Color::Rgb(r, g, b) = fg {
             codes.push(format!("38;2;{};{};{}", r, g, b));
         }
-    }
 
     if style.add_modifier.contains(Modifier::BOLD) {
         codes.push("1".to_string());

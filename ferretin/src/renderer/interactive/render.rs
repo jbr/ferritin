@@ -434,12 +434,11 @@ pub(super) fn render_node<'a>(
                 // Render nodes
                 for (idx, child_node) in nodes.iter().enumerate() {
                     // Check if we've hit our truncation point
-                    if let Some(cutoff) = truncate_at {
-                        if idx >= cutoff {
+                    if let Some(cutoff) = truncate_at
+                        && idx >= cutoff {
                             rendered_all = false;
                             break;
                         }
-                    }
 
                     // Check if we've exceeded the line limit (fallback)
                     if *row - start_row >= line_limit && !matches!(level, TruncationLevel::Full) {
@@ -625,11 +624,7 @@ pub(super) fn render_span_with_modifier<'a>(
         while !remaining.is_empty() {
             // Calculate available width: columns from current to edge (exclusive)
             // area.width is the total width, so valid columns are 0 to area.width-1
-            let available_width = if *col < area.width {
-                area.width - *col
-            } else {
-                0
-            };
+            let available_width = area.width.saturating_sub(*col);
 
             if available_width == 0 {
                 // No space left on this line, wrap to next

@@ -282,8 +282,7 @@ impl DocsRsClient {
         // Handle redirects (docs.rs redirects to resolved version)
         if let Some(status) = conn.status()
             && status.is_redirection()
-        {
-            if let Some(location) = conn.response_headers().get("location") {
+            && let Some(location) = conn.response_headers().get("location") {
                 let location_str = location.to_string();
                 // Location might be relative, construct full URL
                 let redirect_url = if location_str.starts_with("http") {
@@ -294,7 +293,6 @@ impl DocsRsClient {
                 log::debug!("Following redirect to: {}", redirect_url);
                 conn = self.http_client.get(redirect_url).await?;
             }
-        }
 
         // Check for success after following redirects
         let mut conn = conn

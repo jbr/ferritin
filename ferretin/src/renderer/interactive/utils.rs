@@ -130,7 +130,7 @@ pub(super) fn estimate_node_lines(node: &DocumentNode, screen_width: u16) -> u16
             let text_len = span.text.len() as u16;
             let newline_count = span.text.matches('\n').count() as u16;
             let wrapped_lines = if screen_width > 0 {
-                (text_len + screen_width - 1) / screen_width // Ceiling division
+                text_len.div_ceil(screen_width) // Ceiling division
             } else {
                 1
             };

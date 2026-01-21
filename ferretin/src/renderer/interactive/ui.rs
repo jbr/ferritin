@@ -77,7 +77,7 @@ pub(super) fn render_breadcrumb_bar<'a>(
         let end_col = start_col + name_len as u16;
 
         // Check if this item is being hovered
-        let is_hovered = hover_pos.map_or(false, |(hover_col, _)| {
+        let is_hovered = hover_pos.is_some_and(|(hover_col, _)| {
             hover_col >= start_col && hover_col < end_col
         });
 

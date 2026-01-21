@@ -174,7 +174,7 @@ fn derive_accent_fg(settings: &ThemeSettings, default_fg: Color) -> Color {
 
 /// Derive secondary accent foreground color (for key bindings)
 fn derive_secondary_accent_fg(settings: &ThemeSettings, accent: Color) -> Color {
-    settings.find_highlight_foreground.unwrap_or_else(|| {
+    settings.find_highlight_foreground.unwrap_or({
         // Shift hue slightly from accent by rotating RGB components
         Color {
             r: accent.b,
