@@ -29,7 +29,7 @@ pub(crate) enum Commands {
         query: String,
 
         /// Crate to search
-        #[arg(long = "crate")]
+        #[arg(short, long = "crate")]
         crate_: Option<String>,
 
         /// Maximum number of results
