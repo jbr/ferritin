@@ -435,10 +435,11 @@ pub(super) fn render_node<'a>(
                 for (idx, child_node) in nodes.iter().enumerate() {
                     // Check if we've hit our truncation point
                     if let Some(cutoff) = truncate_at
-                        && idx >= cutoff {
-                            rendered_all = false;
-                            break;
-                        }
+                        && idx >= cutoff
+                    {
+                        rendered_all = false;
+                        break;
+                    }
 
                     // Check if we've exceeded the line limit (fallback)
                     if *row - start_row >= line_limit && !matches!(level, TruncationLevel::Full) {

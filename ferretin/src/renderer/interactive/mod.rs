@@ -71,18 +71,24 @@ pub fn render_interactive<'a>(
     let mut is_hovering = false;
     let mut mouse_enabled = true;
     let mut debug_message =
-        String::from("ferretin - q:quit ?:help ←/→:history g:go s:search l:list");
+        String::from("ferretin - q:quit ?:help ←/→:history g:go s:search l:list c:code");
 
     // Input mode state
     let mut input_mode = InputMode::Normal;
     let mut input_buffer = String::new();
     let mut search_all_crates = false;
     let mut show_help = false;
+    let mut include_source = false;
 
     // Main event loop
     let result = loop {
-        let format_context = request.format_context();
+        // Ensure format context is synchronized with current toggle state
+        request.mutate_format_context(|fc| {
+            fc.set_include_source(include_source);
+        });
+
         let _ = terminal.draw(|frame| {
+            let format_context = request.format_context();
             // Reserve last 2 lines for status bars
             let main_area = ratatui::layout::Rect {
                 x: frame.area().x,
@@ -215,13 +221,19 @@ pub fn render_interactive<'a>(
                     };
                 } else {
                     debug_message = format!(
-                        "Pos: ({}, {}) | Scroll: {} | Mouse: ON (m to disable)",
-                        pos.0, pos.1, scroll_offset
+                        "Pos: ({}, {}) | Scroll: {} | Mouse: ON | Source: {}",
+                        pos.0,
+                        pos.1,
+                        scroll_offset,
+                        if include_source { "ON" } else { "OFF" }
                     );
                 }
             }
         } else {
-            debug_message = "Mouse: OFF (text selection enabled - m to re-enable)".to_string();
+            debug_message = format!(
+                "Mouse: OFF (text selection enabled - m to re-enable) | Source: {}",
+                if include_source { "ON" } else { "OFF" }
+            );
         }
 
         // Handle any clicked action from previous iteration
@@ -282,7 +294,7 @@ pub fn render_interactive<'a>(
                             input_mode = InputMode::Normal;
                             input_buffer.clear();
                             debug_message =
-                                "ferretin - q:quit ?:help ←/→:history g:go s:search l:list"
+                                "ferretin - q:quit ?:help ←/→:history g:go s:search l:list c:code"
                                     .to_string();
                         } else {
                             break Ok(());
@@ -484,6 +496,19 @@ pub fn render_interactive<'a>(
                                     debug_message =
                                         "Mouse disabled (text selection enabled)".to_string();
                                 }
+                            }
+
+                            // Toggle source code display
+                            (KeyCode::Char('c'), _) => {
+                                include_source = !include_source;
+                                request.mutate_format_context(|fc| {
+                                    fc.set_include_source(include_source);
+                                });
+                                debug_message = if include_source {
+                                    "Source code display enabled".to_string()
+                                } else {
+                                    "Source code display disabled".to_string()
+                                };
                             }
 
                             // Show help

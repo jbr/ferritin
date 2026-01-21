@@ -230,6 +230,7 @@ pub(super) fn render_help_screen(buf: &mut Buffer, area: Rect, theme: &Interacti
             key_style,
         ),
         ("  l", "List available crates", key_style),
+        ("  c", "Toggle source code display", key_style),
         ("  Esc", "Cancel input mode / Exit help / Quit", key_style),
         ("", "", bg_style),
         ("Mouse:", "", title_style),

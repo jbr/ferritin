@@ -18,4 +18,3 @@ impl Verbosity {
         matches!(self, Self::Full)
     }
 }
-
