@@ -12,7 +12,7 @@ In crate: test-crate (0.1.0)
 
 This struct demonstrates basic usage patterns and should show completely since it only has one paragraph of documentation.
 
-It uses <link href="http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html"><inline-code>Vector</inline-code></link> for testing intra-doc link resolution with renamed imports. Also tests <link href="HashMap"><inline-code>HashMap</inline-code></link> which is a non-renamed import.
+It uses <link href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html"><inline-code>Vector</inline-code></link> for testing intra-doc link resolution with renamed imports. Also tests <link href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html"><inline-code>HashMap</inline-code></link> which is a non-renamed import.
 
 </truncated>
 

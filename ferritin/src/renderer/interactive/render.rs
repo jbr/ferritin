@@ -260,12 +260,22 @@ pub(super) fn render_node<'a>(
             *col = left_margin;
         }
 
-        DocumentNode::Link { url, text, item } => {
-            // Determine the action based on whether this is an internal or external link
-            let action = if let Some(doc_ref) = item {
-                TuiAction::Navigate(*doc_ref)
-            } else {
-                TuiAction::OpenUrl(url.clone())
+        DocumentNode::Link { url, text, target } => {
+            use crate::styled_string::LinkTarget;
+            // Determine the action based on the link target
+            let action = match target {
+                Some(LinkTarget::Resolved(doc_ref)) => {
+                    // Already resolved - navigate directly
+                    TuiAction::Navigate(*doc_ref)
+                }
+                Some(LinkTarget::Path(path)) => {
+                    // Unresolved path - navigate by path (lazy resolution)
+                    TuiAction::NavigateToPath(path.clone())
+                }
+                None => {
+                    // External link - open in browser
+                    TuiAction::OpenUrl(url.clone())
+                }
             };
 
             // Calculate total length of link text to avoid splitting it across lines

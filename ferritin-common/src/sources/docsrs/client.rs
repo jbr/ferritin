@@ -259,13 +259,24 @@ impl DocsRsClient {
                 path.display()
             );
 
+            let start = std::time::Instant::now();
             let json = async_fs::read(&path)
                 .await
                 .context("Failed to read cached file")?;
+            let read_elapsed = start.elapsed();
+            log::info!(
+                "⏱️ Read {} ({:.2} MB) in {:?}",
+                crate_name,
+                json.len() as f64 / 1_000_000.0,
+                read_elapsed
+            );
 
             // Normalize to current format version
+            let start = std::time::Instant::now();
             let crate_data = crate::conversions::load_and_normalize(&json)
                 .context("Failed to normalize cached JSON")?;
+            let parse_elapsed = start.elapsed();
+            log::info!("⏱️ Parsed {} in {:?}", crate_name, parse_elapsed);
 
             let version = crate_data
                 .crate_version

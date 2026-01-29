@@ -8,7 +8,8 @@ pub enum TuiAction<'a> {
     /// Navigate to an already-loaded item (zero-cost since DocRef is Copy)
     Navigate(DocRef<'a, Item>),
     /// Navigate to an item by path (resolves lazily)
-    NavigateToPath(String),
+    /// Uses Cow to borrow from JSON when possible, avoiding allocation
+    NavigateToPath(Cow<'a, str>),
     /// Expand a truncated block (identified by index path into document tree)
     ExpandBlock(NodePath),
     /// Open an external URL in browser
@@ -41,6 +42,15 @@ impl NodePath {
     pub fn indices(&self) -> &[u16] {
         &self.indices[..self.len as usize]
     }
+}
+
+/// Target for an intra-doc link
+#[derive(Debug, Clone)]
+pub enum LinkTarget<'a> {
+    /// A resolved item reference (for same-crate items we already loaded)
+    Resolved(DocRef<'a, Item>),
+    /// An unresolved path string (for external items or fallback)
+    Path(Cow<'a, str>),
 }
 
 /// A semantic content tree for Rust documentation
@@ -80,7 +90,9 @@ pub enum DocumentNode<'a> {
     Link {
         url: String,
         text: Vec<Span<'a>>,
-        item: Option<DocRef<'a, Item>>,
+        /// Optional link target for intra-doc links
+        /// Can be either a resolved DocRef (for same-crate items) or an unresolved path
+        target: Option<LinkTarget<'a>>,
     },
 
     /// Horizontal rule/divider
@@ -307,7 +319,7 @@ impl<'a> Span<'a> {
     }
 
     /// Attach a navigation action for an item path (resolved lazily)
-    pub fn with_path(mut self, path: impl Into<String>) -> Self {
+    pub fn with_path(mut self, path: impl Into<Cow<'a, str>>) -> Self {
         self.action = Some(TuiAction::NavigateToPath(path.into()));
         self
     }
@@ -433,7 +445,7 @@ impl<'a> DocumentNode<'a> {
         DocumentNode::Link {
             url,
             text,
-            item: None,
+            target: None,
         }
     }
 

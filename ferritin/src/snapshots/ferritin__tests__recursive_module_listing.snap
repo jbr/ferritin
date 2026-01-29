@@ -67,7 +67,7 @@ This struct demonstrates <elided chars="220"/></truncated>
  <elided chars="8635"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::HashSet</type-name></label>
-<truncated level="single-line">A <link href="http://docs.rust-lang.org/nightly/std/index.html">hash set</link> implemented as a <inline-code>HashMap</inline-code> where the value is <inline-code>()</inline-code>.
+<truncated level="single-line">A <link href="https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3Acollections">hash set</link> implemented as a <inline-code>HashMap</inline-code> where the value is <inline-code>()</inline-code>.
 
 As with the <link href="http://docs.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html"><inline-code>HashMap</inline-code></link> <elided chars="3232"/></truncated>
 </item>
@@ -99,7 +99,7 @@ Given a key type with a <link href="https://en.wikipedia.org/wiki/Total_order">t
   <item><label><type-name>link_resolution_tests::nested::Str</type-name></label>
 <truncated level="single-line">A UTF-8–encoded, growable string.
 
-<inline-code>String</inline-code> is the most common string type. It <elided chars="6910"/></truncated>
+<inline-code>String</inline-code> is the most common string type. It <elided chars="6908"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::deeply_nested::DeepStruct</type-name></label>
 <truncated level="single-line">Struct in deeply nested module
@@ -244,7 +244,7 @@ Note that this method has no effect on <elided chars="109"/></truncated>
 <truncated level="single-line">Interns the <inline-code>Vec<T></inline-code>, making the underlying memory read-only. This method should <elided chars="178"/></truncated>
 </item>
   <item><label><type-name>Vec::dedup</type-name></label>
-<truncated level="single-line">Removes consecutive repeated elements in the vector according to the <link href="http://docs.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><inline-code>PartialEq</inline-code></link> <elided chars="165"/></truncated>
+<truncated level="single-line">Removes consecutive repeated elements in the vector according to the <link href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><inline-code>PartialEq</inline-code></link> <elided chars="165"/></truncated>
 </item>
   <item><label><type-name>Vec::dedup_by</type-name></label>
 <truncated level="single-line">Removes all but the first of consecutive elements in the vector satisfying a <elided chars="491"/></truncated>
@@ -293,7 +293,7 @@ This <elided chars="3079"/></truncated>
 <truncated level="single-line">Inserts an element at position <inline-code>index</inline-code> within the vector, shifting all elements <elided chars="413"/></truncated>
 </item>
   <item><label><type-name>Vec::into_boxed_slice</type-name></label>
-<truncated level="single-line">Converts the vector into <link href="Box"><inline-code>Box<[T]></inline-code></link>.
+<truncated level="single-line">Converts the vector into <link href="http://docs.rust-lang.org/nightly/alloc/boxed/struct.Box.html"><inline-code>Box<[T]></inline-code></link>.
 
 Before doing the conversion, this method <elided chars="313"/></truncated>
 </item>
@@ -346,7 +346,7 @@ The vector will not allocate until elements <elided chars="129"/></truncated>
 <truncated level="single-line">Returns a mutable reference to the last item in the vector, or <inline-code>None</inline-code> if it is <elided chars="277"/></truncated>
 </item>
   <item><label><type-name>Vec::pop</type-name></label>
-<truncated level="single-line">Removes the last element from a vector and returns it, or <link href="None"><inline-code>None</inline-code></link> if it is empty.
+<truncated level="single-line">Removes the last element from a vector and returns it, or <link href="https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone"><inline-code>None</inline-code></link> if it is empty.
 
  <elided chars="211"/></truncated>
 </item>
@@ -368,7 +368,7 @@ Panics if the new <elided chars="369"/></truncated>
 <truncated level="single-line">Appends an element and returns a reference to it if there is sufficient spare <elided chars="882"/></truncated>
 </item>
   <item><label><type-name>Vec::recycle</type-name></label>
-<truncated level="single-line">This clears out this <inline-code>Vec</inline-code> and recycles the allocation into a new <inline-code>Vec</inline-code>. The item <elided chars="1218"/></truncated>
+<truncated level="single-line">This clears out this <inline-code>Vec</inline-code> and recycles the allocation into a new <inline-code>Vec</inline-code>. The item <elided chars="1152"/></truncated>
 </item>
   <item><label><type-name>Vec::remove</type-name></label>
 <truncated level="single-line">Removes and returns the element at position <inline-code>index</inline-code> within the vector, shifting <elided chars="459"/></truncated>
@@ -510,7 +510,7 @@ The value may be any borrowed form <elided chars="246"/></truncated>
 <truncated level="single-line">Inserts a value computed from <inline-code>f</inline-code> into the set if the given <inline-code>value</inline-code> is not present, <elided chars="434"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::HashSet::hasher</type-name></label>
-<truncated level="single-line">Returns a reference to the set's <link href="http://docs.rust-lang.org/nightly/core/hash/trait.BuildHasher.html"><inline-code>BuildHasher</inline-code></link>.
+<truncated level="single-line">Returns a reference to the set's <link href="https://doc.rust-lang.org/nightly/core/hash/trait.BuildHasher.html"><inline-code>BuildHasher</inline-code></link>.
 
 <title>Examples</title>
  <elided chars="162"/></truncated>
@@ -865,19 +865,19 @@ Panics if the <elided chars="409"/></truncated>
 This is <elided chars="963"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf16</type-name></label>
-<truncated level="single-line">Decode a native endian UTF-16–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <link href="Err"><inline-code>Err</inline-code></link> <elided chars="350"/></truncated>
+<truncated level="single-line">Decode a native endian UTF-16–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <link href="https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr"><inline-code>Err</inline-code></link> <elided chars="350"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf16_lossy</type-name></label>
 <truncated level="single-line">Decode a native endian UTF-16–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing <elided chars="440"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf16be</type-name></label>
-<truncated level="single-line">Decode a UTF-16BE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <link href="Err"><inline-code>Err</inline-code></link> if <inline-code>v</inline-code> contains <elided chars="447"/></truncated>
+<truncated level="single-line">Decode a UTF-16BE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <link href="https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr"><inline-code>Err</inline-code></link> if <inline-code>v</inline-code> contains <elided chars="447"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf16be_lossy</type-name></label>
 <truncated level="single-line">Decode a UTF-16BE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with  <elided chars="517"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf16le</type-name></label>
-<truncated level="single-line">Decode a UTF-16LE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <link href="Err"><inline-code>Err</inline-code></link> if <inline-code>v</inline-code> contains <elided chars="447"/></truncated>
+<truncated level="single-line">Decode a UTF-16LE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <link href="https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr"><inline-code>Err</inline-code></link> if <inline-code>v</inline-code> contains <elided chars="447"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf16le_lossy</type-name></label>
 <truncated level="single-line">Decode a UTF-16LE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with  <elided chars="517"/></truncated>
@@ -885,7 +885,7 @@ This is <elided chars="963"/></truncated>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf8</type-name></label>
 <truncated level="single-line">Converts a vector of bytes to a <inline-code>String</inline-code>.
 
-A string (<link href="http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"><inline-code>String</inline-code></link>) is made of bytes (<link href="https://doc.rust-lang.org/nightly/core/"><inline-code>u8</inline-code></link>) <elided chars="1328"/></truncated>
+A string (<link href="http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"><inline-code>String</inline-code></link>) is made of bytes (<link href="https://doc.rust-lang.org/nightly/core/primitive.u8.html"><inline-code>u8</inline-code></link>) <elided chars="1328"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::from_utf8_lossy</type-name></label>
 <truncated level="single-line">Converts a slice of bytes to a string, including invalid characters.
@@ -909,7 +909,7 @@ Reallocates if <inline-code>self.</inline-code> <elided chars="457"/></truncated
 Reallocates if <inline-code>se</inline-code> <elided chars="428"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::into_boxed_str</type-name></label>
-<truncated level="single-line">Converts this <inline-code>String</inline-code> into a <link href="Box">Box</link><<link href="http://docs.rust-lang.org/nightly/alloc/index.html">str</link>>.
+<truncated level="single-line">Converts this <inline-code>String</inline-code> into a <link href="http://docs.rust-lang.org/nightly/alloc/boxed/struct.Box.html">Box</link><<link href="https://doc.rust-lang.org/nightly/core/primitive.str.html">str</link>>.
 
 Before doing the conversion, this method <elided chars="182"/></truncated>
 </item>
@@ -919,7 +919,7 @@ Before doing the conversion, this method <elided chars="182"/></truncated>
 This consumes the <inline-code>String</inline-code>, so we do not <elided chars="149"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::into_chars</type-name></label>
-<truncated level="single-line">Converts a <inline-code>String</inline-code> into an iterator over the <link href="prim@char"><inline-code>char</inline-code></link>s of the string.
+<truncated level="single-line">Converts a <inline-code>String</inline-code> into an iterator over the <link href="https://doc.rust-lang.org/nightly/core/primitive.char.html"><inline-code>char</inline-code></link>s of the string.
 
 As a string <elided chars="1089"/></truncated>
 </item>
@@ -938,7 +938,7 @@ Retur <elided chars="673"/></truncated>
 <truncated level="single-line">Consumes and leaks the <inline-code>String</inline-code>, returning a mutable reference to the contents, <inline-code>&'</inline-code> <elided chars="681"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::len</type-name></label>
-<truncated level="single-line">Returns the length of this <inline-code>String</inline-code>, in bytes, not <link href="http://docs.rust-lang.org/nightly/core/index.html"><inline-code>char</inline-code></link>s or graphemes. In other <elided chars="238"/></truncated>
+<truncated level="single-line">Returns the length of this <inline-code>String</inline-code>, in bytes, not <link href="https://doc.rust-lang.org/nightly/core/primitive.char.html"><inline-code>char</inline-code></link>s or graphemes. In other <elided chars="238"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::new</type-name></label>
 <truncated level="single-line">Creates a new empty <inline-code>String</inline-code>.
@@ -948,10 +948,10 @@ Given that the <inline-code>String</inline-code> is empty, this will not <elided
   <item><label><type-name>link_resolution_tests::nested::Str::pop</type-name></label>
 <truncated level="single-line">Removes the last character from the string buffer and returns it.
 
-Returns <link href="None"><inline-code>None</inline-code></link> <elided chars="193"/></truncated>
+Returns <link href="https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone"><inline-code>None</inline-code></link> <elided chars="193"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::push</type-name></label>
-<truncated level="single-line">Appends the given <link href="http://docs.rust-lang.org/nightly/core/index.html"><inline-code>char</inline-code></link> to the end of this <inline-code>String</inline-code>.
+<truncated level="single-line">Appends the given <link href="https://doc.rust-lang.org/nightly/core/primitive.char.html"><inline-code>char</inline-code></link> to the end of this <inline-code>String</inline-code>.
 
 <title>Panics</title>
 Panics if the new <elided chars="137"/></truncated>
@@ -963,7 +963,7 @@ Panics if the new <elided chars="137"/></truncated>
 Panics if the <elided chars="125"/></truncated>
 </item>
   <item><label><type-name>link_resolution_tests::nested::Str::remove</type-name></label>
-<truncated level="single-line">Removes a <link href="http://docs.rust-lang.org/nightly/core/index.html"><inline-code>char</inline-code></link> from this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code> and returns it.
+<truncated level="single-line">Removes a <link href="https://doc.rust-lang.org/nightly/core/primitive.char.html"><inline-code>char</inline-code></link> from this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code> and returns it.
 
 Copies <elided chars="361"/></truncated>
 </item>

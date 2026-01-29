@@ -5,7 +5,6 @@ pub use rustdoc_types;
 pub mod conversions;
 pub mod crate_name;
 pub mod doc_ref;
-pub mod intra_doc_links;
 pub mod iterators;
 mod navigator;
 mod project;

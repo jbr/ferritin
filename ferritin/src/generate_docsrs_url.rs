@@ -26,14 +26,6 @@ fn generate_url_for_item_with_path(
     let segments = path.to_string();
     let parts: Vec<&str> = segments.split("::").collect();
 
-    // parts[0] is the crate name, skip it
-    // The rest form the module path + item name
-    let module_path = if parts.len() > 2 {
-        parts[1..parts.len() - 1].join("/")
-    } else {
-        String::new()
-    };
-
     let item_name = item.name().unwrap_or("unknown");
     let kind = item.kind();
 
@@ -43,94 +35,74 @@ fn generate_url_for_item_with_path(
         format!("https://docs.rs/{crate_name}/{version}",)
     };
 
+    // For modules, the full path (after crate name) forms the module path
+    // For other items, the last part is the item name, everything before is the module path
     match kind {
         rustdoc_types::ItemKind::Module => {
-            if module_path.is_empty() {
+            // Module: full path after crate name is the module path
+            // e.g., tokio::net -> tokio/net/index.html
+            if parts.len() <= 1 {
+                // Just the crate root
                 format!("{}/{}/index.html", base, crate_name)
             } else {
+                // parts[1..] are all part of the module path
+                let module_path = parts[1..].join("/");
                 format!("{}/{}/{}/index.html", base, crate_name, module_path)
             }
         }
-        rustdoc_types::ItemKind::Struct => {
-            let path_prefix = if module_path.is_empty() {
-                crate_name.to_string()
-            } else {
-                format!("{}/{}", crate_name, module_path)
-            };
-            format!("{}/{}/struct.{}.html", base, path_prefix, item_name)
-        }
-        rustdoc_types::ItemKind::Enum => {
-            let path_prefix = if module_path.is_empty() {
-                crate_name.to_string()
-            } else {
-                format!("{}/{}", crate_name, module_path)
-            };
-            format!("{}/{}/enum.{}.html", base, path_prefix, item_name)
-        }
-        rustdoc_types::ItemKind::Trait => {
-            let path_prefix = if module_path.is_empty() {
-                crate_name.to_string()
-            } else {
-                format!("{}/{}", crate_name, module_path)
-            };
-            format!("{}/{}/trait.{}.html", base, path_prefix, item_name)
-        }
-        rustdoc_types::ItemKind::Function => {
-            let path_prefix = if module_path.is_empty() {
-                crate_name.to_string()
-            } else {
-                format!("{}/{}", crate_name, module_path)
-            };
-            format!("{}/{}/fn.{}.html", base, path_prefix, item_name)
-        }
-        rustdoc_types::ItemKind::TypeAlias => {
-            let path_prefix = if module_path.is_empty() {
-                crate_name.to_string()
-            } else {
-                format!("{}/{}", crate_name, module_path)
-            };
-            format!("{}/{}/type.{}.html", base, path_prefix, item_name)
-        }
-        rustdoc_types::ItemKind::Constant => {
-            let path_prefix = if module_path.is_empty() {
-                crate_name.to_string()
-            } else {
-                format!("{}/{}", crate_name, module_path)
-            };
-            format!("{}/{}/constant.{}.html", base, path_prefix, item_name)
-        }
-        rustdoc_types::ItemKind::Static => {
-            let path_prefix = if module_path.is_empty() {
-                crate_name.to_string()
-            } else {
-                format!("{}/{}", crate_name, module_path)
-            };
-            format!("{}/{}/static.{}.html", base, path_prefix, item_name)
-        }
-        rustdoc_types::ItemKind::Union => {
-            let path_prefix = if module_path.is_empty() {
-                crate_name.to_string()
-            } else {
-                format!("{}/{}", crate_name, module_path)
-            };
-            format!("{}/{}/union.{}.html", base, path_prefix, item_name)
-        }
-        rustdoc_types::ItemKind::Macro
-        | rustdoc_types::ItemKind::ProcAttribute
-        | rustdoc_types::ItemKind::ProcDerive => {
-            let path_prefix = if module_path.is_empty() {
-                crate_name.to_string()
-            } else {
-                format!("{}/{}", crate_name, module_path)
-            };
-            format!("{}/{}/macro.{}.html", base, path_prefix, item_name)
-        }
-        rustdoc_types::ItemKind::Primitive => {
-            format!("{}/{}/primitive.{}.html", base, crate_name, item_name)
-        }
         _ => {
-            // Fallback for unknown kinds
-            format!("{}/{}/", base, crate_name)
+            // For non-module items, split the path into module path and item name
+            // e.g., tokio::net::TcpStream -> module_path="tokio/net", item_name="TcpStream"
+            let module_path = if parts.len() > 2 {
+                parts[1..parts.len() - 1].join("/")
+            } else {
+                String::new()
+            };
+
+            let path_prefix = if module_path.is_empty() {
+                crate_name.to_string()
+            } else {
+                format!("{}/{}", crate_name, module_path)
+            };
+
+            match kind {
+                rustdoc_types::ItemKind::Struct => {
+                    format!("{}/{}/struct.{}.html", base, path_prefix, item_name)
+                }
+                rustdoc_types::ItemKind::Enum => {
+                    format!("{}/{}/enum.{}.html", base, path_prefix, item_name)
+                }
+                rustdoc_types::ItemKind::Trait => {
+                    format!("{}/{}/trait.{}.html", base, path_prefix, item_name)
+                }
+                rustdoc_types::ItemKind::Function => {
+                    format!("{}/{}/fn.{}.html", base, path_prefix, item_name)
+                }
+                rustdoc_types::ItemKind::TypeAlias => {
+                    format!("{}/{}/type.{}.html", base, path_prefix, item_name)
+                }
+                rustdoc_types::ItemKind::Constant => {
+                    format!("{}/{}/constant.{}.html", base, path_prefix, item_name)
+                }
+                rustdoc_types::ItemKind::Static => {
+                    format!("{}/{}/static.{}.html", base, path_prefix, item_name)
+                }
+                rustdoc_types::ItemKind::Union => {
+                    format!("{}/{}/union.{}.html", base, path_prefix, item_name)
+                }
+                rustdoc_types::ItemKind::Macro
+                | rustdoc_types::ItemKind::ProcAttribute
+                | rustdoc_types::ItemKind::ProcDerive => {
+                    format!("{}/{}/macro.{}.html", base, path_prefix, item_name)
+                }
+                rustdoc_types::ItemKind::Primitive => {
+                    format!("{}/{}/primitive.{}.html", base, crate_name, item_name)
+                }
+                _ => {
+                    // Fallback for unknown kinds
+                    format!("{}/{}/", base, crate_name)
+                }
+            }
         }
     }
 }

@@ -244,18 +244,18 @@ pub fn render_interactive<'a>(
                 .map(|(_, action)| action.clone());
 
             if let Some(action) = action_opt {
-                debug_message = format!(
-                    "Clicked: {:?}",
-                    match &action {
-                        TuiAction::Navigate(doc_ref) => doc_ref
+                debug_message = match &action {
+                    TuiAction::Navigate(doc_ref) => format!(
+                        "Clicked: {}",
+                        doc_ref
                             .path()
                             .map(|p| p.to_string())
-                            .unwrap_or_else(|| "unknown".to_string()),
-                        TuiAction::NavigateToPath(path) => path.clone(),
-                        TuiAction::ExpandBlock(path) => format!("{:?}", path.indices()),
-                        TuiAction::OpenUrl(url) => url.clone(),
-                    }
-                );
+                            .unwrap_or_else(|| "unknown".to_string())
+                    ),
+                    TuiAction::NavigateToPath(path) => format!("Clicked: {}", path),
+                    TuiAction::ExpandBlock(path) => format!("Clicked: {:?}", path.indices()),
+                    TuiAction::OpenUrl(url) => format!("Clicked: {}", url),
+                };
 
                 if let Some((new_doc, doc_ref)) = handle_action(document, &action, request) {
                     *document = new_doc;

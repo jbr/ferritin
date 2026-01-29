@@ -1,14 +1,16 @@
-use crate::styled_string::{DocumentNode, HeadingLevel, Span, SpanStyle};
-use ferritin_common::DocRef;
+use crate::styled_string::{DocumentNode, HeadingLevel, LinkTarget, Span, SpanStyle};
 use pulldown_cmark::{BrokenLink, CodeBlockKind, Event, Options, Parser, Tag, TagEnd};
-use rustdoc_types::Item;
 
 pub struct MarkdownRenderer;
 
 impl MarkdownRenderer {
+    /// Render markdown with an optional link resolver
+    ///
+    /// The link_resolver should return (url, link_target) for intra-doc links.
+    /// The link_target can be either a resolved DocRef or an unresolved path.
     pub fn render_with_resolver<'a, F>(markdown: &str, link_resolver: F) -> Vec<DocumentNode<'a>>
     where
-        F: Fn(&str) -> Option<(String, DocRef<'a, Item>)>,
+        F: Fn(&str) -> Option<(String, LinkTarget<'a>)>,
     {
         let callback = |broken_link: BrokenLink| {
             Some((
@@ -32,7 +34,7 @@ impl MarkdownRenderer {
         let mut in_strikethrough = false;
         let mut in_heading = false;
         let mut heading_level: Option<HeadingLevel> = None;
-        let mut current_link_url: Option<(String, Option<DocRef<'a, Item>>)> = None;
+        let mut current_link_url: Option<(String, Option<LinkTarget<'a>>)> = None;
         let mut link_spans: Vec<Span<'a>> = Vec::new();
         let mut in_list = false;
         let mut list_items: Vec<crate::styled_string::ListItem<'a>> = Vec::new();
@@ -45,12 +47,14 @@ impl MarkdownRenderer {
                     Tag::CodeBlock(kind) => {
                         in_code_block = true;
                         code_block_lang = Some(match kind {
-                            CodeBlockKind::Fenced(lang) => match &*lang {
-                                "no_run" | "should_panic" | "ignore" | "compile_fail"
-                                | "edition2015" | "edition2018" | "edition2021" | "edition2024"
-                                | "" => "rust".to_string(),
-                                other => other.to_string(),
-                            },
+                            CodeBlockKind::Fenced(lang) => {
+                                match lang.split(',').next().unwrap_or(&*lang) {
+                                    "no_run" | "should_panic" | "ignore" | "compile_fail"
+                                    | "edition2015" | "edition2018" | "edition2021"
+                                    | "edition2024" | "rust" | "" => "rust".to_string(),
+                                    other => other.to_string(),
+                                }
+                            }
                             CodeBlockKind::Indented => "rust".to_string(),
                         });
                         code_block_content.clear();
@@ -66,7 +70,7 @@ impl MarkdownRenderer {
                     }
                     Tag::Link { dest_url, .. } => {
                         let resolved_url = link_resolver(dest_url.as_ref())
-                            .map(|(link, item)| (link, Some(item)))
+                            .map(|(link, target)| (link, Some(target)))
                             .unwrap_or_else(|| (dest_url.to_string(), None));
                         current_link_url = Some(resolved_url);
                     }
@@ -138,12 +142,12 @@ impl MarkdownRenderer {
                         in_strikethrough = false;
                     }
                     TagEnd::Link => {
-                        if let Some((url, item)) = current_link_url.take() {
+                        if let Some((url, target)) = current_link_url.take() {
                             let link_text = std::mem::take(&mut link_spans);
                             let link_node = DocumentNode::Link {
                                 url,
                                 text: link_text,
-                                item,
+                                target,
                             };
 
                             if in_item {

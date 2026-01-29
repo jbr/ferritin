@@ -201,19 +201,14 @@ impl SearchIndex {
         let crate_docs = item.crate_docs();
         let crate_name = crate_docs.name().to_string();
 
-        let mtime = item
-            .crate_docs()
+        let mtime = crate_docs
             .fs_path()
             .metadata()
             .ok()
             .and_then(|m| m.modified().ok());
 
-        let path = item
-            .crate_docs()
-            .fs_path()
-            .parent()
-            .unwrap()
-            .join(format!("{}.index", crate_name.replace('-', "_")));
+        let mut path = crate_docs.fs_path().to_path_buf();
+        path.set_extension("index");
 
         if let Some(terms) = Self::load(&path, mtime) {
             Ok(Self { crate_name, terms })

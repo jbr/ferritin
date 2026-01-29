@@ -218,7 +218,10 @@ impl Navigator {
         } else {
             log::debug!("Loading {resolved_name}");
         }
+        let start = std::time::Instant::now();
         let result = self.load(&resolved_name, resolved_version.as_ref(), provenance_hint);
+        let elapsed = start.elapsed();
+        log::info!("⏱️ Total load time for {}: {:?}", resolved_name, elapsed);
 
         match result {
             Some(data) => {

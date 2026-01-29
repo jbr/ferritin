@@ -948,6 +948,7 @@ dependencies = [
  "insta",
  "log",
  "owo-colors",
+ "percent-encoding",
  "pulldown-cmark",
  "ratatui",
  "regex",
