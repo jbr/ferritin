@@ -42,7 +42,7 @@ struct Cli {
         short,
         global = true,
         default_value = "Solarized (dark)",
-        env = "FERRETIN_THEME",
+        env = "FERRITIN_THEME",
         value_parser = ["InspiredGitHub", "Solarized (dark)", "Solarized (light)", "base16-eighties.dark", "base16-mocha.dark", "base16-ocean.dark", "base16-ocean.light"]
     )]
     theme: String,

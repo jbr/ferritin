@@ -25,7 +25,7 @@ pub enum OutputMode {
 impl OutputMode {
     /// Detect the appropriate output mode based on environment
     pub fn detect() -> Self {
-        if std::env::var("FERRETIN_TEST_MODE").is_ok() {
+        if std::env::var("FERRITIN_TEST_MODE").is_ok() {
             OutputMode::TestMode
         } else if io::stdout().is_terminal() {
             OutputMode::Tty

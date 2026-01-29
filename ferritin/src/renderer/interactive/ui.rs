@@ -209,7 +209,7 @@ pub(super) fn render_help_screen(buf: &mut Buffer, area: Rect, theme: &Interacti
     }
 
     let help_text = vec![
-        ("", "FERRETIN INTERACTIVE MODE - KEYBINDINGS", title_style),
+        ("", "FERRITIN INTERACTIVE MODE - KEYBINDINGS", title_style),
         ("", "", bg_style),
         ("Navigation:", "", title_style),
         ("  j, ↓", "Scroll down", key_style),
