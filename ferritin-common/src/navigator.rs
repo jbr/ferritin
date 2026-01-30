@@ -5,7 +5,7 @@ use crate::DocRef;
 use crate::RustdocData;
 use crate::sources::{CrateProvenance, DocsRsSource, LocalSource, Source, StdSource};
 use crate::string_utils::case_aware_jaro_winkler;
-use elsa::FrozenMap;
+use elsa::sync::FrozenMap;
 use fieldwork::Fieldwork;
 use rustdoc_types::{Id, Item, ItemEnum};
 use semver::Version;
@@ -384,3 +384,16 @@ impl Navigator {
         })
     }
 }
+
+// Compile-time assertions that Navigator is thread-safe
+// This is required for multi-threaded interactive TUI
+#[allow(dead_code)]
+const _: () = {
+    const fn assert_send<T: Send>() {}
+    const fn assert_sync<T: Sync>() {}
+
+    const fn check_navigator_thread_safety() {
+        assert_send::<Navigator>();
+        assert_sync::<Navigator>();
+    }
+};
