@@ -15,7 +15,7 @@ path = "src/main.rs"
 ferritin-common = { path = "../ferritin-common", version = "0.1.0" }
 
 anyhow.workspace = true
-clap = { version = "4.5.54", features = ["derive", "cargo", "env"] }
+clap = { version = "4.5.56", features = ["derive", "cargo", "env"] }
 crossterm = "0.29"
 fieldwork = "0.4.6"
 log = "0.4.29"
