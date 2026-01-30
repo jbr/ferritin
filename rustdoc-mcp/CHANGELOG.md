@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.6](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.1.5...rustdoc-mcp-v0.1.6) - 2026-01-29
+
+### Added
+
+- large restructure to Navigator, fix crate name typo
+
+### Other
+
+- Merge pull request #23 from jbr/large-refactor-and-rename
+
 ## [0.1.5](https://github.com/jbr/ferretin/releases/tag/rustdoc-mcp-v0.1.5) - 2026-01-21
 
 ### Added
