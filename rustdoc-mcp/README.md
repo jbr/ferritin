@@ -1,12 +1,12 @@
 # rustdoc-mcp
 
-[![codecov](https://codecov.io/gh/jbr/rustdoc-mcp/graph/badge.svg?token=FDpsPBK9zl)](https://codecov.io/gh/jbr/rustdoc-mcp)
+[![codecov](https://codecov.io/gh/jbr/ferritin/graph/badge.svg?token=FDpsPBK9zl)](https://codecov.io/gh/jbr/ferritin)
 [![ci][ci-badge]][ci]
 [![crates.io version badge][version-badge]][crate]
 
-[ci]: https://github.com/jbr/rustdoc-mcp/actions?query=workflow%3ACI
-[ci-badge]: https://github.com/jbr/rustdoc-mcp/workflows/CI/badge.svg
-[version-badge]: https://img.shields.io/crates/v/rustdoc-mcp.svg?style=flat-square
+[ci]: https://github.com/jbr/ferritin/actions?query=workflow%3ACI
+[ci-badge]: https://github.com/jbr/ferritin/workflows/CI/badge.svg
+[version-badge]: https://img.shields.io/crates/v/ferritin.svg?style=flat-square
 [crate]: https://crates.io/crates/rustdoc-mcp
 
 
