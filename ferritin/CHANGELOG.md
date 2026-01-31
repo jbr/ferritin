@@ -7,5 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1](https://github.com/jbr/ferritin/compare/ferritin-v0.1.0...ferritin-v0.1.1) - 2026-01-31
+
+### Added
+
+- ferritin interactive-mode is no longer single-threaded
+
+### Other
+
+- Merge pull request #28 from jbr/threading
+
 ## [0.1.0](https://github.com/jbr/ferritin/releases/tag/ferritin-v0.1.0) - 2026-01-29
 

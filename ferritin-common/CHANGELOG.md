@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.1.0...ferritin-common-v0.2.0) - 2026-01-31
+
+### Added
+
+- *(ferritin-common)* DocRef and Navigator are now Sync
+
 ## [0.1.0](https://github.com/jbr/ferritin/releases/tag/ferritin-common-v0.1.0) - 2026-01-29
 
 ### Added
