@@ -11,9 +11,10 @@ pub(crate) fn execute<'a>(
     bool,
     Option<ferritin_common::DocRef<'a, rustdoc_types::Item>>,
 ) {
-    request.mutate_format_context(|fc| {
-        fc.set_include_source(source).set_recursive(recursive);
-    });
+    request
+        .format_context()
+        .set_include_source(source)
+        .set_recursive(recursive);
 
     let mut suggestions = vec![];
 

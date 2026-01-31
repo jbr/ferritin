@@ -24,7 +24,9 @@ A key architectural challenge is handling re-exports and cross-crate references.
 
 ### Runtime Model
 
-The architecture is single-threaded; blocking operations (network fetches, crate builds) occur on the main thread. Errors are handled via `Option` types with fail-fast or skip semantics—nonexistent crates and load failures are not distinguished.
+**CLI mode** is single-threaded; blocking operations occur on the main thread. **Interactive TUI mode** uses scoped threads for parallelism: a request thread owns `Navigator` and handles documentation operations, while a UI thread handles rendering and input. Channel-based communication maintains the zero-copy borrowing architecture across thread boundaries (`Navigator` and `DocRef` are `Send + Sync`).
+
+Errors are handled via `Option` types with fail-fast or skip semantics—nonexistent crates and load failures are not distinguished.
 
 ---
 
@@ -88,7 +90,7 @@ Using the resolved `CrateInfo`, Navigator calls the appropriate source's `load` 
 working_set: FrozenMap<CrateName, Box<Option<RustdocData>>>
 ```
 
-This is **the only place** in ferritin-common that owns `RustdocData` instances. All `&'a RustdocData` and `DocRef<'a>` references borrow from this map. The `elsa::FrozenMap` provides interior mutability with `&self`, enabling caching without mutable borrows.
+This is **the only place** in ferritin-common that owns `RustdocData` instances. All `&'a RustdocData` and `DocRef<'a>` references borrow from this map. The `elsa::sync::FrozenMap` provides thread-safe interior mutability with `&self`, enabling caching without mutable borrows while supporting multi-threaded access.
 
 **Known limitation:** The cache stores only one version of each crate per `Navigator` instance. Multiple crates with conflicting dependency versions may load the wrong version or fail. This is not currently a practical issue but noted for future consideration.
 
@@ -260,7 +262,7 @@ Span<'a> {
 }
 ```
 
-The `SpanStyle` enum represents semantic categories (Keyword, TypeName, FunctionName, etc.), not terminal colors. This makes the IR renderer-agnostic.
+The `SpanStyle` enum represents semantic categories (Keyword, TypeName, FunctionName, etc.), not terminal colors. This makes the IR renderer-agnostic. The IR also supports conditional nodes that appear only in specific modes (interactive vs. non-interactive), enabling formatters to prepare mode-specific content.
 
 ### Stage 2: Render IR to Output
 
@@ -282,16 +284,9 @@ Example - Plain renderer handles truncation:
 - **Brief:** Render until first paragraph break, show `[+N more paragraphs]`
 - **Full:** Render everything
 
-### Format Context
+### Format Context & Render Context
 
-```rust
-Request {
-    navigator: Navigator,
-    format_context: RefCell<FormatContext>
-}
-```
-
-`FormatContext` holds rendering settings (source inclusion, recursion depth, verbosity, terminal width, output mode, theme, etc.) in a `RefCell` to allow mutation without mutable borrows during formatting.
+The architecture separates formatting concerns (what to include in a `Document`) from rendering concerns (how to display it). `FormatContext` holds thread-safe formatting preferences (source inclusion, recursion) that can be mutated at runtime. `RenderContext` holds immutable display configuration (colors, terminal width, output mode, themes) used by renderers.
 
 ## Intra-doc Link Resolution
 
@@ -381,7 +376,7 @@ Markdown documentation (from doc comments) is parsed with pulldown_cmark and tra
 
 ## Interactive TUI
 
-The TUI mode (`ferritin -i`) uses a standard ratatui event loop (crossterm + ratatui) to consume the `Document` IR. Maintains navigation state and scroll positions. `TuiAction`s from `Span`s enable clickable navigation, with hover detection and breadcrumb context display.
+The TUI mode (`ferritin -i`) uses scoped threads to maintain UI responsiveness during expensive operations. A request thread (main) owns `Navigator` and processes documentation commands, while a spawned UI thread handles rendering (ratatui + crossterm) and input. Channel-based communication passes commands and formatted `Document<'a>` results between threads. Because both threads operate within the scoped lifetime, `Document<'a>` can safely borrow from `Navigator` across thread boundaries, preserving the zero-copy architecture.
 
 ## Testing
 
@@ -399,5 +394,6 @@ The ferritin architecture achieves its goals through several key design choices:
 4. **Two-stage rendering** separating content from presentation
 5. **Lazy indexing** for fast search with disk caching
 6. **Format version normalization** for long-term cache compatibility
+7. **Scoped threading** for responsive TUI without sacrificing zero-copy architecture
 
-The architecture is designed to feel instant despite working with large documentation datasets, by caching aggressively (both in-memory and on disk) and borrowing rather than copying wherever possible.
+The architecture is designed to feel instant despite working with large documentation datasets, by caching aggressively (both in-memory and on disk) and borrowing rather than copying wherever possible. The multi-threaded interactive mode maintains this efficiency while keeping the UI responsive during expensive operations.

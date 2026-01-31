@@ -59,6 +59,17 @@ pub struct Document<'a> {
     pub nodes: Vec<DocumentNode<'a>>,
 }
 
+/// Condition for when to show content (used by Conditional node)
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ShowWhen {
+    /// Always show (default)
+    Always,
+    /// Only in interactive mode
+    Interactive,
+    /// Only in non-interactive mode
+    NonInteractive,
+}
+
 /// A node in the documentation tree
 #[derive(Debug, Clone)]
 pub enum DocumentNode<'a> {
@@ -112,6 +123,13 @@ pub enum DocumentNode<'a> {
     TruncatedBlock {
         nodes: Vec<DocumentNode<'a>>,
         level: TruncationLevel,
+    },
+
+    /// Conditionally shown content based on render context
+    /// Formatters can use this to include content that only appears in certain modes
+    Conditional {
+        show_when: ShowWhen,
+        nodes: Vec<DocumentNode<'a>>,
     },
 }
 
@@ -481,6 +499,27 @@ impl<'a> TableCell<'a> {
         Self { spans: vec![span] }
     }
 }
+
+// Compile-time thread-safety assertions for Document
+//
+// Document<'a> contains DocumentNode<'a> which may hold DocRef<'a> references.
+// For the threading model to work, Document must be Send so it can be passed
+// between threads in scoped thread scenarios (formatting thread → UI thread).
+#[allow(dead_code)]
+const _: () = {
+    const fn assert_send<T: Send>() {}
+    const fn assert_sync<T: Sync>() {}
+
+    // Document<'a> must be Send (can cross thread boundaries in scoped threads)
+    const fn check_document_send() {
+        assert_send::<Document<'_>>();
+    }
+
+    // Document<'a> should also be Sync (multiple threads can hold &Document safely)
+    const fn check_document_sync() {
+        assert_sync::<Document<'_>>();
+    }
+};
 
 #[cfg(test)]
 mod tests {

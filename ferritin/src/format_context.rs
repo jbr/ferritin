@@ -1,61 +1,50 @@
-use crate::color_scheme::ColorScheme;
-use crate::renderer::OutputMode;
-use crate::verbosity::Verbosity;
-use fieldwork::Fieldwork;
-use syntect::highlighting::{Theme, ThemeSet};
-use syntect::parsing::SyntaxSet;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 /// Context for formatting operations
-#[derive(Debug, Fieldwork)]
-#[fieldwork(get, with, set)]
+///
+/// This contains configuration that determines what content to include in Documents.
+/// Separate from RenderContext (which controls how to display Documents).
+#[derive(Debug)]
 pub(crate) struct FormatContext {
-    /// Whether to include source code snippets
-    include_source: bool,
+    /// Whether to include source code snippets (toggled at runtime)
+    include_source: AtomicBool,
     /// Whether to show recursive/nested content
-    #[field(get = "is_recursive", with = with_recursion)]
-    recursive: bool,
-    /// Level of documentation detail to show
-    #[field(copy)]
-    verbosity: Verbosity,
-    /// Color scheme for rendering (derived from syntect theme)
-    color_scheme: ColorScheme,
-    /// Terminal width for wrapping/layout
-    terminal_width: usize,
-    /// Output mode (TTY, Plain, TestMode)
-    output_mode: OutputMode,
-    /// Interactive mode (affects link rendering)
-    #[field(get = "is_interactive")]
-    interactive: bool,
-    /// Theme name for syntax highlighting
-    #[field(skip)]
-    theme_name: String,
-    syntax_set: SyntaxSet,
-    theme_set: ThemeSet,
+    recursive: AtomicBool,
 }
 
 impl FormatContext {
-    pub(crate) fn theme(&self) -> &Theme {
-        &self.theme_set.themes[&self.theme_name]
-    }
-
-    pub(crate) fn with_theme(mut self, theme_name: String) -> Self {
-        self.color_scheme = ColorScheme::from_syntect_theme(&self.theme_set.themes[&theme_name]);
-        self.theme_name = theme_name;
-        self
-    }
-
     pub(crate) fn new() -> Self {
         Self {
-            include_source: false,
-            recursive: false,
-            verbosity: Verbosity::Full,
-            color_scheme: ColorScheme::default(),
-            terminal_width: 80,
-            output_mode: OutputMode::TestMode,
-            interactive: false,
-            theme_name: String::new(),
-            syntax_set: SyntaxSet::load_defaults_newlines(),
-            theme_set: ThemeSet::load_defaults(),
+            include_source: AtomicBool::new(false),
+            recursive: AtomicBool::new(false),
         }
+    }
+
+    /// Check if source code should be included
+    pub(crate) fn include_source(&self) -> bool {
+        self.include_source.load(Ordering::Relaxed)
+    }
+
+    /// Set source code inclusion (thread-safe)
+    pub(crate) fn set_include_source(&self, value: bool) -> &Self {
+        self.include_source.store(value, Ordering::Relaxed);
+        self // For chaining
+    }
+
+    /// Check if recursive display is enabled
+    pub(crate) fn is_recursive(&self) -> bool {
+        self.recursive.load(Ordering::Relaxed)
+    }
+
+    /// Set recursive display (thread-safe)
+    pub(crate) fn set_recursive(&self, value: bool) -> &Self {
+        self.recursive.store(value, Ordering::Relaxed);
+        self // For chaining
+    }
+
+    /// Builder method for recursive
+    pub(crate) fn with_recursion(self, value: bool) -> Self {
+        self.set_recursive(value);
+        self
     }
 }

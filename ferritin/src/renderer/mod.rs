@@ -1,4 +1,4 @@
-use crate::{format_context::FormatContext, request::Request, styled_string::Document};
+use crate::{render_context::RenderContext, styled_string::Document};
 use std::{
     fmt::Write,
     io::{self, IsTerminal},
@@ -38,19 +38,13 @@ impl OutputMode {
 /// Render a document to a string based on the output mode
 pub fn render(
     document: &Document,
-    format_context: &FormatContext,
+    render_context: &RenderContext,
     output: &mut impl Write,
 ) -> std::fmt::Result {
-    match format_context.output_mode() {
-        OutputMode::Tty => tty::render(document, format_context, output),
+    match render_context.output_mode() {
+        OutputMode::Tty => tty::render(document, render_context, output),
         OutputMode::Plain => plain::render(document, output),
         OutputMode::TestMode => test_mode::render(document, output),
-    }
-}
-
-impl Request {
-    pub fn render(&self, document: &Document, output: &mut impl Write) -> std::fmt::Result {
-        render(document, &self.format_context(), output)
     }
 }
 
@@ -76,19 +70,19 @@ mod tests {
         // Test that all modes produce output without panicking
         render(
             &doc,
-            &FormatContext::new().with_output_mode(OutputMode::Tty),
+            &RenderContext::new().with_output_mode(OutputMode::Tty),
             &mut tty_output,
         )
         .unwrap();
         render(
             &doc,
-            &FormatContext::new().with_output_mode(OutputMode::Plain),
+            &RenderContext::new().with_output_mode(OutputMode::Plain),
             &mut plain_output,
         )
         .unwrap();
         render(
             &doc,
-            &FormatContext::new().with_output_mode(OutputMode::TestMode),
+            &RenderContext::new().with_output_mode(OutputMode::TestMode),
             &mut test_output,
         )
         .unwrap();

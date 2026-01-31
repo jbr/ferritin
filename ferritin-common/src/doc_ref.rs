@@ -209,3 +209,24 @@ impl Display for Path<'_> {
         Ok(())
     }
 }
+
+// Compile-time thread-safety assertions for DocRef
+//
+// DocRef holds references (&'a T, &'a Navigator, &'a RustdocData) which are Send
+// when the referenced types are Sync. This is critical for the threading model:
+// DocRef can be sent between threads in scoped thread scenarios.
+#[allow(dead_code)]
+const _: () = {
+    const fn assert_send<T: Send>() {}
+    const fn assert_sync<T: Sync>() {}
+
+    // DocRef<'a, Item> must be Send (can cross thread boundaries in scoped threads)
+    const fn check_doc_ref_send() {
+        assert_send::<DocRef<'_, rustdoc_types::Item>>();
+    }
+
+    // DocRef<'a, Item> must be Sync (multiple threads can hold &DocRef safely)
+    const fn check_doc_ref_sync() {
+        assert_sync::<DocRef<'_, rustdoc_types::Item>>();
+    }
+};

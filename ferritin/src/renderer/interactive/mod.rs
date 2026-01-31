@@ -1,8 +1,11 @@
+mod channels;
 mod events;
 mod render;
+mod request_thread;
 mod state;
 mod theme;
 mod ui;
+mod ui_config;
 mod utils;
 
 use events::handle_action;
@@ -14,10 +17,7 @@ use state::InputMode;
 use ui::{render_breadcrumb_bar, render_help_screen, render_status_bar};
 use utils::{set_cursor_shape, supports_cursor_shape};
 
-use crate::{
-    request::Request,
-    styled_string::{Document, TuiAction},
-};
+use crate::{commands::Commands, request::Request, styled_string::TuiAction};
 use crossterm::{
     event::{
         self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyModifiers, MouseEvent,
@@ -26,29 +26,83 @@ use crossterm::{
     execute,
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
-use ratatui::{Terminal, backend::CrosstermBackend, layout::Position};
+use ratatui::{
+    Terminal,
+    backend::CrosstermBackend,
+    layout::{Position, Rect},
+};
 use std::{
+    borrow::Cow,
     io::{self, stdout},
+    ops::Range,
+    sync::mpsc::channel,
     time::Duration,
 };
 
+use channels::{RequestResponse, UiCommand};
+use request_thread::request_thread_loop;
+use ui_config::UiRenderConfig;
+
 /// Render a document in interactive mode with scrolling and hover tracking
-pub fn render_interactive<'a>(
-    initial_document: &mut Document<'a>,
-    request: &'a Request,
-    initial_entry: Option<HistoryEntry<'a>>,
+pub fn render_interactive(
+    request: &Request,
+    render_context: crate::render_context::RenderContext,
+    initial_command: Option<Commands>,
 ) -> io::Result<()> {
-    let document = initial_document;
+    // Use scoped threads so request can be borrowed by both threads
+    std::thread::scope(|s| render_interactive_impl(s, request, render_context, initial_command))
+}
 
-    // Navigation history
-    let mut history: Vec<HistoryEntry<'a>> = Vec::new();
-    let mut history_index: usize = 0;
+fn render_interactive_impl<'scope, 'env>(
+    scope: &'scope std::thread::Scope<'scope, 'env>,
+    request: &'env Request,
+    render_context: crate::render_context::RenderContext,
+    initial_command: Option<Commands>,
+) -> io::Result<()>
+where
+    'env: 'scope,
+{
+    // Extract rendering config for UI thread (not the full RenderContext)
+    let ui_config = UiRenderConfig::from_render_context(&render_context);
+    let interactive_theme = InteractiveTheme::from_render_context(&render_context);
 
-    // Initialize history with current entry if provided
-    if let Some(entry) = initial_entry {
-        history.push(entry);
-    }
+    // Create channels for communication between UI and request threads
+    let (cmd_tx, cmd_rx) = channel::<UiCommand<'env>>();
+    let (resp_tx, resp_rx) = channel::<RequestResponse<'env>>();
 
+    // Spawn UI thread - it only renders and handles input
+    // UI thread starts without a document - will receive initial document via channel
+    let ui_handle = scope.spawn(|| -> io::Result<()> {
+        ui_thread_loop(ui_config, interactive_theme, cmd_tx, resp_rx)
+    });
+
+    // Main thread becomes request thread - owns Request and does all formatting
+    // Send initial document via channel
+    let (document, _is_error, initial_entry) = initial_command
+        .unwrap_or_else(Commands::list)
+        .execute(request);
+
+    let _ = resp_tx.send(RequestResponse::Document {
+        doc: document,
+        entry: initial_entry,
+    });
+
+    // Run request thread loop
+    request_thread_loop(request, cmd_rx, resp_tx);
+
+    // Wait for UI thread to complete and return its result
+    ui_handle.join().unwrap()?;
+
+    Ok(())
+}
+
+/// UI thread loop - handles terminal rendering and input events only
+fn ui_thread_loop<'a>(
+    ui_config: UiRenderConfig,
+    interactive_theme: InteractiveTheme,
+    cmd_tx: std::sync::mpsc::Sender<UiCommand<'a>>,
+    resp_rx: std::sync::mpsc::Receiver<RequestResponse<'a>>,
+) -> io::Result<()> {
     // Set up terminal
     enable_raw_mode()?;
     let mut stdout = stdout();
@@ -57,15 +111,26 @@ pub fn render_interactive<'a>(
     let mut terminal = Terminal::new(backend)?;
     terminal.clear()?;
 
-    // Build theme once at startup
-    let interactive_theme = InteractiveTheme::from_format_context(&request.format_context());
+    // Wait for initial document from request thread
+    let (mut document, mut history, mut history_index) = match resp_rx.recv() {
+        Ok(RequestResponse::Document { doc, entry }) => {
+            let mut history = Vec::new();
+            if let Some(entry) = entry {
+                history.push(entry);
+            }
+            (doc, history, 0)
+        }
+        _ => {
+            return Err(io::Error::other("Failed to receive initial document"));
+        }
+    };
 
     // Track scroll position and cursor
     let mut scroll_offset = 0u16;
     let mut cursor_pos: Option<(u16, u16)> = None;
     let mut actions = Vec::new();
     let mut clicked_position: Option<Position> = None;
-    let mut breadcrumb_clickable_areas: Vec<(usize, std::ops::Range<u16>)> = Vec::new();
+    let mut breadcrumb_clickable_areas: Vec<(usize, Range<u16>)> = Vec::new();
     let mut breadcrumb_hover_pos: Option<(u16, u16)> = None;
     let supports_cursor = supports_cursor_shape();
     let mut is_hovering = false;
@@ -80,29 +145,57 @@ pub fn render_interactive<'a>(
     let mut show_help = false;
     let mut include_source = false;
 
+    // Request state - track if we're waiting for a response
+    let mut pending_request = false;
+    let mut was_loading = false;
+    let mut frame_count = 0u32;
+
     // Main event loop
     let result = loop {
-        // Ensure format context is synchronized with current toggle state
-        request.mutate_format_context(|fc| {
-            fc.set_include_source(include_source);
-        });
+        frame_count = frame_count.wrapping_add(1);
+        // Check for responses from request thread (non-blocking)
+        if let Ok(response) = resp_rx.try_recv() {
+            pending_request = false;
+            match response {
+                RequestResponse::Document { doc, entry } => {
+                    document = doc;
+                    scroll_offset = 0;
+
+                    // Add to history if we got an entry
+                    if let Some(new_entry) = entry {
+                        if history.is_empty() || history.get(history_index) != Some(&new_entry) {
+                            history.truncate(history_index + 1);
+                            history.push(new_entry.clone());
+                            history_index = history.len() - 1;
+                        }
+                        debug_message =
+                            format!("Loaded: {}", history[history_index].display_name());
+                    }
+                }
+                RequestResponse::Error(err) => {
+                    debug_message = err;
+                }
+                RequestResponse::ShuttingDown => {
+                    break Ok(());
+                }
+            }
+        }
 
         let _ = terminal.draw(|frame| {
-            let format_context = request.format_context();
             // Reserve last 2 lines for status bars
-            let main_area = ratatui::layout::Rect {
+            let main_area = Rect {
                 x: frame.area().x,
                 y: frame.area().y,
                 width: frame.area().width,
                 height: frame.area().height.saturating_sub(2),
             };
-            let breadcrumb_area = ratatui::layout::Rect {
+            let breadcrumb_area = Rect {
                 x: frame.area().x,
                 y: frame.area().height.saturating_sub(2),
                 width: frame.area().width,
                 height: 1,
             };
-            let status_area = ratatui::layout::Rect {
+            let status_area = Rect {
                 x: frame.area().x,
                 y: frame.area().height.saturating_sub(1),
                 width: frame.area().width,
@@ -128,7 +221,7 @@ pub fn render_interactive<'a>(
                 // Render main document
                 actions = render_document(
                     &document.nodes,
-                    &format_context,
+                    &ui_config,
                     main_area,
                     frame.buffer_mut(),
                     scroll_offset,
@@ -163,32 +256,45 @@ pub fn render_interactive<'a>(
                     search_all_crates,
                     current_crate,
                     &interactive_theme,
+                    pending_request,
+                    frame_count,
                 );
             }
         })?;
 
-        // Update cursor shape based on hover state (both content and breadcrumb)
+        // Update cursor shape based on loading and hover state
         if supports_cursor {
-            let content_hover = cursor_pos
-                .map(|pos| {
-                    actions
-                        .iter()
-                        .any(|(rect, _)| rect.contains(Position::new(pos.0, pos.1)))
-                })
-                .unwrap_or(false);
+            if pending_request {
+                // Loading takes precedence - show wait cursor
+                if !was_loading {
+                    let _ = set_cursor_shape(terminal.backend_mut(), "wait");
+                    was_loading = true;
+                }
+            } else {
+                // When not loading, check hover state
+                let content_hover = cursor_pos
+                    .map(|pos| {
+                        actions
+                            .iter()
+                            .any(|(rect, _)| rect.contains(Position::new(pos.0, pos.1)))
+                    })
+                    .unwrap_or(false);
 
-            let breadcrumb_hover = breadcrumb_clickable_areas.iter().any(|(_, range)| {
-                breadcrumb_hover_pos
-                    .map(|(col, _)| range.contains(&col))
-                    .unwrap_or(false)
-            });
+                let breadcrumb_hover = breadcrumb_clickable_areas.iter().any(|(_, range)| {
+                    breadcrumb_hover_pos
+                        .map(|(col, _)| range.contains(&col))
+                        .unwrap_or(false)
+                });
 
-            let now_hovering = content_hover || breadcrumb_hover;
+                let now_hovering = content_hover || breadcrumb_hover;
 
-            if now_hovering != is_hovering {
-                is_hovering = now_hovering;
-                let shape = if is_hovering { "pointer" } else { "default" };
-                let _ = set_cursor_shape(terminal.backend_mut(), shape);
+                // Update cursor only if state changed
+                if was_loading || now_hovering != is_hovering {
+                    let shape = if now_hovering { "pointer" } else { "default" };
+                    let _ = set_cursor_shape(terminal.backend_mut(), shape);
+                    is_hovering = now_hovering;
+                    was_loading = false;
+                }
             }
         }
 
@@ -257,27 +363,12 @@ pub fn render_interactive<'a>(
                     TuiAction::OpenUrl(url) => format!("Clicked: {}", url),
                 };
 
-                if let Some((new_doc, doc_ref)) = handle_action(document, &action, request) {
-                    *document = new_doc;
-                    scroll_offset = 0; // Reset scroll to top of new document
-
-                    let new_entry = HistoryEntry::Item(doc_ref);
-                    // Add to history if not a duplicate of current position
-                    if history.is_empty() || history.get(history_index) != Some(&new_entry) {
-                        // Truncate history after current position (discard forward history)
-                        history.truncate(history_index + 1);
-                        // Add new item
-                        history.push(new_entry);
-                        history_index = history.len() - 1;
-                    }
-
-                    debug_message = format!(
-                        "Navigated to: {}",
-                        doc_ref
-                            .path()
-                            .map(|p| p.to_string())
-                            .unwrap_or_else(|| "?".to_string())
-                    );
+                // Handle the action - may return a command to send
+                if let Some(command) = handle_action(&mut document, action) {
+                    // Send command to request thread (non-blocking)
+                    let _ = cmd_tx.send(command);
+                    pending_request = true;
+                    debug_message = "Loading...".to_string();
                 }
             }
         }
@@ -324,84 +415,32 @@ pub fn render_interactive<'a>(
                                 // Execute the command
                                 match input_mode {
                                     InputMode::GoTo => {
-                                        let mut suggestions = vec![];
-                                        if let Some(item) =
-                                            request.resolve_path(&input_buffer, &mut suggestions)
-                                        {
-                                            let doc_nodes = request.format_item(item);
-                                            *document = Document::from(doc_nodes);
-                                            scroll_offset = 0;
-
-                                            let new_entry = HistoryEntry::Item(item);
-                                            // Add to history
-                                            if history.is_empty()
-                                                || history.get(history_index) != Some(&new_entry)
-                                            {
-                                                history.truncate(history_index + 1);
-                                                history.push(new_entry);
-                                                history_index = history.len() - 1;
-                                            }
-
-                                            debug_message = format!(
-                                                "Navigated to: {}",
-                                                item.path()
-                                                    .map(|p| p.to_string())
-                                                    .unwrap_or_else(|| "?".to_string())
-                                            );
-                                        } else {
-                                            debug_message = format!("Not found: {}", input_buffer);
-                                        }
+                                        // Send NavigateToPath command to request thread (non-blocking)
+                                        let _ = cmd_tx.send(UiCommand::NavigateToPath(Cow::Owned(
+                                            input_buffer.clone(),
+                                        )));
+                                        pending_request = true;
+                                        debug_message = format!("Loading: {}...", input_buffer);
                                     }
                                     InputMode::Search => {
-                                        // Determine search scope (clone to avoid borrow issues)
+                                        // Determine search scope
                                         let search_crate = if search_all_crates {
                                             None
                                         } else {
                                             history
                                                 .get(history_index)
                                                 .and_then(|entry| entry.crate_name())
-                                                .map(|s| s.to_string())
+                                                .map(|s| Cow::Owned(s.to_string()))
                                         };
 
-                                        // Execute search
-                                        let (search_doc, is_error) =
-                                            crate::commands::search::execute(
-                                                request,
-                                                &input_buffer,
-                                                20, // limit
-                                                search_crate.as_deref(),
-                                            );
-                                        *document = search_doc;
-                                        scroll_offset = 0;
-
-                                        if is_error {
-                                            debug_message =
-                                                format!("No results for: {}", input_buffer);
-                                        } else {
-                                            // Add search to history
-                                            let new_entry = HistoryEntry::Search {
-                                                query: input_buffer.clone(),
-                                                crate_name: search_crate.clone(),
-                                            };
-
-                                            if history.is_empty()
-                                                || history.get(history_index) != Some(&new_entry)
-                                            {
-                                                history.truncate(history_index + 1);
-                                                history.push(new_entry);
-                                                history_index = history.len() - 1;
-                                            }
-
-                                            let scope = if search_all_crates {
-                                                "all crates"
-                                            } else {
-                                                search_crate.as_deref().unwrap_or("current crate")
-                                            };
-                                            debug_message = format!(
-                                                "Search results in {}: {}",
-                                                scope, input_buffer
-                                            );
-                                        }
+                                        // Send Search command to request thread (non-blocking)
+                                        let _ = cmd_tx.send(UiCommand::Search {
+                                            query: Cow::Owned(input_buffer.clone()),
+                                            crate_name: search_crate.clone(),
+                                            limit: 20,
+                                        });
+                                        pending_request = true;
+                                        debug_message = format!("Searching: {}...", input_buffer);
                                     }
                                     InputMode::Normal => unreachable!(),
                                 }
@@ -468,20 +507,10 @@ pub fn render_interactive<'a>(
 
                             // Show list of crates
                             (KeyCode::Char('l'), _) => {
-                                let (list_doc, _is_error) = crate::commands::list::execute(request);
-                                *document = list_doc;
-                                scroll_offset = 0;
-
-                                let new_entry = HistoryEntry::List;
-                                if history.is_empty()
-                                    || history.get(history_index) != Some(&new_entry)
-                                {
-                                    history.truncate(history_index + 1);
-                                    history.push(new_entry);
-                                    history_index = history.len() - 1;
-                                }
-
-                                debug_message = "List of crates".to_string();
+                                // Send List command to request thread (non-blocking)
+                                let _ = cmd_tx.send(UiCommand::List);
+                                pending_request = true;
+                                debug_message = "Loading crate list...".to_string();
                             }
 
                             // Toggle mouse mode for text selection
@@ -501,8 +530,10 @@ pub fn render_interactive<'a>(
                             // Toggle source code display
                             (KeyCode::Char('c'), _) => {
                                 include_source = !include_source;
-                                request.mutate_format_context(|fc| {
-                                    fc.set_include_source(include_source);
+                                // Send command to request thread to update FormatContext
+                                let _ = cmd_tx.send(UiCommand::ToggleSource {
+                                    include_source,
+                                    current_item: history[history_index].item(),
                                 });
                                 debug_message = if include_source {
                                     "Source code display enabled".to_string()
@@ -521,9 +552,11 @@ pub fn render_interactive<'a>(
                                 if history_index > 0 {
                                     history_index -= 1;
                                     let entry = &history[history_index];
-                                    *document = entry.render(request);
-                                    scroll_offset = 0;
-                                    debug_message = format!("Back to: {}", entry.display_name());
+
+                                    // Send command from history entry (non-blocking)
+                                    let _ = cmd_tx.send(entry.to_command());
+                                    pending_request = true;
+                                    debug_message = format!("Loading: {}...", entry.display_name());
                                 } else {
                                     debug_message = "Already at beginning of history".to_string();
                                 }
@@ -534,9 +567,11 @@ pub fn render_interactive<'a>(
                                 if history_index + 1 < history.len() {
                                     history_index += 1;
                                     let entry = &history[history_index];
-                                    *document = entry.render(request);
-                                    scroll_offset = 0;
-                                    debug_message = format!("Forward to: {}", entry.display_name());
+
+                                    // Send command from history entry (non-blocking)
+                                    let _ = cmd_tx.send(entry.to_command());
+                                    pending_request = true;
+                                    debug_message = format!("Loading: {}...", entry.display_name());
                                 } else {
                                     debug_message = "Already at end of history".to_string();
                                 }
@@ -618,9 +653,11 @@ pub fn render_interactive<'a>(
                             // Jump to this history position
                             history_index = *idx;
                             let entry = &history[history_index];
-                            *document = entry.render(request);
-                            scroll_offset = 0;
-                            debug_message = format!("Jumped to: {}", entry.display_name());
+
+                            // Send command from history entry (non-blocking)
+                            let _ = cmd_tx.send(entry.to_command());
+                            pending_request = true;
+                            debug_message = format!("Loading: {}...", entry.display_name());
                         }
                     }
                 }

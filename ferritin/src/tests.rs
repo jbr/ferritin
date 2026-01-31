@@ -1,6 +1,7 @@
 use crate::{
     commands::Commands,
     format_context::FormatContext,
+    render_context::RenderContext,
     renderer::{OutputMode, render},
     request::Request,
 };
@@ -16,21 +17,19 @@ fn get_test_crate_path() -> PathBuf {
 }
 
 /// Create a test state with isolated session
-fn create_test_state(output_mode: OutputMode) -> Request {
+fn create_test_state() -> Request {
     let navigator = Navigator::default()
         .with_local_source(LocalSource::load(&get_test_crate_path()).ok())
         .with_std_source(StdSource::from_rustup());
-    Request::new(
-        navigator,
-        FormatContext::new().with_output_mode(output_mode),
-    )
+    Request::new(navigator, FormatContext::new())
 }
 
 fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
-    let request = create_test_state(output_mode);
+    let request = create_test_state();
     let (document, _, _) = command.execute(&request);
     let mut output = String::new();
-    render(&document, &request.format_context(), &mut output).unwrap();
+    let render_context = RenderContext::new().with_output_mode(output_mode);
+    render(&document, &render_context, &mut output).unwrap();
 
     // Normalize the test crate path for consistent snapshots across environments
     let test_crate_path = get_test_crate_path();

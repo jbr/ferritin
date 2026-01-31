@@ -119,6 +119,8 @@ pub(super) fn render_status_bar(
     search_all_crates: bool,
     current_crate: Option<&str>,
     theme: &InteractiveTheme,
+    loading: bool,
+    frame_count: u32,
 ) {
     let style = theme.status_style;
     let hint_style = theme.status_hint_style;
@@ -129,8 +131,16 @@ pub(super) fn render_status_bar(
         buf.cell_mut((x, area.y)).unwrap().set_style(style);
     }
 
+    // Spinner characters that cycle
+    const SPINNER: &[char] = &['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+    let spinner_char = if loading {
+        SPINNER[(frame_count as usize / 2) % SPINNER.len()]
+    } else {
+        ' '
+    };
+
     // Determine what to display based on input mode
-    let (display_text, hint_text) = match input_mode {
+    let (mut display_text, hint_text) = match input_mode {
         InputMode::Normal => (message.to_string(), None),
         InputMode::GoTo => (format!("Go to: {}", input_buffer), None),
         InputMode::Search => {
@@ -147,6 +157,11 @@ pub(super) fn render_status_bar(
             )
         }
     };
+
+    // Prepend spinner if loading
+    if loading {
+        display_text = format!("{} {}", spinner_char, display_text);
+    }
 
     // Calculate space for hint text
     let hint_len = hint_text.as_ref().map(|h| h.len()).unwrap_or(0);
