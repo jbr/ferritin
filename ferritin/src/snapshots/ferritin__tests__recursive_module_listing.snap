@@ -290,7 +290,7 @@ This <elided chars="3079"/></truncated>
 <truncated level="single-line">Inserts an element at position <inline-code>index</inline-code> within the vector, shifting all elements <elided chars="398"/></truncated>
 </item>
   <item><label><type-name>Vec::insert_mut</type-name></label>
-<truncated level="single-line">Inserts an element at position <inline-code>index</inline-code> within the vector, shifting all elements <elided chars="413"/></truncated>
+<truncated level="single-line">Inserts an element at position <inline-code>index</inline-code> within the vector, shifting all elements <elided chars="391"/></truncated>
 </item>
   <item><label><type-name>Vec::into_boxed_slice</type-name></label>
 <truncated level="single-line">Converts the vector into <link href="http://docs.rust-lang.org/nightly/alloc/boxed/struct.Box.html"><inline-code>Box<[T]></inline-code></link>.
@@ -362,7 +362,7 @@ Panics if the new <elided chars="369"/></truncated>
   <item><label><type-name>Vec::push_mut</type-name></label>
 <truncated level="single-line">Appends an element to the back of a collection, returning a reference to it.
 
- <elided chars="531"/></truncated>
+ <elided chars="507"/></truncated>
 </item>
   <item><label><type-name>Vec::push_within_capacity</type-name></label>
 <truncated level="single-line">Appends an element and returns a reference to it if there is sufficient spare <elided chars="882"/></truncated>
