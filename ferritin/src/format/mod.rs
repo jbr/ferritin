@@ -35,10 +35,7 @@ impl Request {
             "Kind: {:?}\n",
             item.kind()
         ))));
-        doc_nodes.push(DocumentNode::Span(StyledSpan::plain(format!(
-            "Visibility: {:?}\n",
-            item.visibility
-        ))));
+        doc_nodes.extend(self.format_visibility(item));
 
         if let Some(item_summary) = item.summary() {
             doc_nodes.extend(self.format_item_summary(item, item_summary));
@@ -159,6 +156,45 @@ impl Request {
             nodes.push(DocumentNode::Span(StyledSpan::plain(version)));
             nodes.push(DocumentNode::Span(StyledSpan::plain(")")));
         }
+        nodes.push(DocumentNode::Span(StyledSpan::plain("\n")));
+
+        nodes
+    }
+
+    pub(crate) fn format_visibility<'a>(&'a self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
+        let mut nodes = vec![DocumentNode::Span(StyledSpan::plain("Visibility: "))];
+
+        match &item.item().visibility {
+            Visibility::Public => nodes.push(DocumentNode::Span(StyledSpan::plain("Public"))),
+            Visibility::Default => nodes.push(DocumentNode::Span(StyledSpan::plain("Private"))),
+            Visibility::Crate => nodes.push(DocumentNode::Span(StyledSpan::plain("Crate"))),
+            Visibility::Restricted { parent, path } => {
+                nodes.push(DocumentNode::Span(StyledSpan::plain("Restricted to ")));
+                if let Some(parent_summary) = item.get(parent).and_then(|item| item.summary()) {
+                    let mut action_item = None;
+                    for (i, segment) in parent_summary.path.iter().enumerate() {
+                        if i == 0 {
+                            action_item = item
+                                .crate_docs()
+                                .traverse_to_crate_by_id(self, parent_summary.crate_id)
+                                .map(|x| x.root_item(self));
+                        } else {
+                            nodes.push(DocumentNode::Span(StyledSpan::punctuation("::")));
+                            if let Some(ai) = action_item {
+                                action_item = ai.find_child(segment);
+                            }
+                        }
+
+                        nodes.push(DocumentNode::Span(
+                            StyledSpan::type_name(segment).with_target(action_item),
+                        ));
+                    }
+                } else {
+                    nodes.push(DocumentNode::Span(StyledSpan::plain(path)));
+                }
+            }
+        }
+
         nodes.push(DocumentNode::Span(StyledSpan::plain("\n")));
 
         nodes
