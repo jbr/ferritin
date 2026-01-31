@@ -1,7 +1,7 @@
 use std::fmt::{Result, Write};
 
 use crate::styled_string::{
-    Document, DocumentNode, HeadingLevel, ListItem, Span, SpanStyle, TruncationLevel,
+    Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, SpanStyle, TruncationLevel,
 };
 
 /// Render a document with semantic XML-like tags for testing
@@ -139,6 +139,17 @@ fn render_node(node: &DocumentNode, output: &mut impl Write) -> Result {
             writeln!(output, "</truncated>")?;
             Ok(())
         }
+        DocumentNode::Conditional { show_when, nodes } => {
+            let when_str = match show_when {
+                ShowWhen::Always => "always",
+                ShowWhen::Interactive => "interactive",
+                ShowWhen::NonInteractive => "non-interactive",
+            };
+            write!(output, "<conditional when=\"{}\">", when_str)?;
+            render_nodes(nodes, output)?;
+            writeln!(output, "</conditional>")?;
+            Ok(())
+        }
     }
 }
 
@@ -234,6 +245,7 @@ fn count_chars_in_node(node: &DocumentNode) -> usize {
             header_len + rows_len
         }
         DocumentNode::TruncatedBlock { nodes, .. } => count_chars_in_nodes(nodes),
+        DocumentNode::Conditional { nodes, .. } => count_chars_in_nodes(nodes),
     }
 }
 

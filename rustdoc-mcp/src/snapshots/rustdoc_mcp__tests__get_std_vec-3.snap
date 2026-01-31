@@ -59,7 +59,7 @@ where
     Appends an element to the back of a collection. [+19 more lines]
 
 • pub const fn push_mut(&mut self, value: T) -> &mut T
-    Appends an element to the back of a collection, returning a reference to it. [+27 more lines]
+    Appends an element to the back of a collection, returning a reference to it. [+24 more lines]
 
 • pub const fn new_in(alloc: A) -> Self
     Constructs a new, empty `Vec<T, A>`. [+13 more lines]
@@ -134,7 +134,7 @@ where
     Inserts an element at position `index` within the vector, shifting all [+21 more lines]
 
 • pub fn insert_mut(&mut self, index: usize, element: T) -> &mut T
-    Inserts an element at position `index` within the vector, shifting all [+22 more lines]
+    Inserts an element at position `index` within the vector, shifting all [+21 more lines]
 
 • pub fn remove(&mut self, index: usize) -> T
     Removes and returns the element at position `index` within the vector, [+22 more lines]

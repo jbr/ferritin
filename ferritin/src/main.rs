@@ -9,7 +9,8 @@ use std::{path::PathBuf, process::ExitCode};
 use terminal_size::{Width, terminal_size};
 
 use crate::{
-    commands::Commands, format_context::FormatContext, renderer::OutputMode, request::Request,
+    commands::Commands, format_context::FormatContext, render_context::RenderContext,
+    renderer::OutputMode, request::Request,
 };
 
 mod color_scheme;
@@ -19,6 +20,7 @@ mod format_context;
 mod generate_docsrs_url;
 mod indent;
 mod markdown;
+mod render_context;
 mod renderer;
 mod request;
 mod styled_string;
@@ -88,7 +90,9 @@ fn main() -> ExitCode {
         .with_local_source(LocalSource::load(&path).ok())
         .with_docsrs_source(DocsRsSource::from_default_cache());
 
-    let format_context = FormatContext::new()
+    let format_context = FormatContext::new();
+
+    let render_context = RenderContext::new()
         .with_output_mode(OutputMode::detect())
         .with_terminal_width(
             terminal_size()
@@ -100,23 +104,28 @@ fn main() -> ExitCode {
 
     let request = Request::new(navigator, format_context);
 
-    let (mut document, is_error, initial_entry) =
-        cli.command.unwrap_or_else(Commands::list).execute(&request);
-
     if cli.interactive {
         // Interactive mode with scrolling and navigation
-        if let Err(e) = renderer::render_interactive(&mut document, &request, initial_entry) {
+        if let Err(e) = renderer::render_interactive(&request, render_context, cli.command) {
             eprintln!("Interactive mode error: {}", e);
             return ExitCode::FAILURE;
         }
-    } else {
-        // One-shot mode: render to stdout and exit
-        if request
-            .render(&document, &mut IoFmtWriter(std::io::stdout()))
-            .is_err()
-        {
-            return ExitCode::FAILURE;
-        }
+        return ExitCode::SUCCESS;
+    }
+
+    // One-shot mode: execute command and render to stdout
+    let (document, is_error, _initial_entry) =
+        cli.command.unwrap_or_else(Commands::list).execute(&request);
+
+    // Render to stdout and exit
+    if renderer::render(
+        &document,
+        &render_context,
+        &mut IoFmtWriter(std::io::stdout()),
+    )
+    .is_err()
+    {
+        return ExitCode::FAILURE;
     }
 
     if is_error {

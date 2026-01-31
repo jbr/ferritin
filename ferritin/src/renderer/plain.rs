@@ -1,6 +1,8 @@
 use std::fmt::{Result, Write};
 
-use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span, TruncationLevel};
+use crate::styled_string::{
+    Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, TruncationLevel,
+};
 
 /// Render a document as plain text without any styling
 pub fn render(document: &Document, output: &mut impl Write) -> Result {
@@ -114,6 +116,19 @@ fn render_node(node: &DocumentNode, output: &mut impl Write) -> Result {
             }
             Ok(())
         }
+        DocumentNode::Conditional { show_when, nodes } => {
+            // Plain mode is non-interactive, so only show Always and NonInteractive content
+            let should_show = match show_when {
+                ShowWhen::Always => true,
+                ShowWhen::Interactive => false,
+                ShowWhen::NonInteractive => true,
+            };
+
+            if should_show {
+                render_nodes(nodes, output)?;
+            }
+            Ok(())
+        }
     }
 }
 
@@ -151,7 +166,8 @@ fn render_node_until_newline(
         }
         DocumentNode::Section { nodes, .. }
         | DocumentNode::BlockQuote { nodes }
-        | DocumentNode::TruncatedBlock { nodes, .. } => render_until_newline(nodes, output),
+        | DocumentNode::TruncatedBlock { nodes, .. }
+        | DocumentNode::Conditional { nodes, .. } => render_until_newline(nodes, output),
         DocumentNode::List { .. } | DocumentNode::Table { .. } | DocumentNode::HorizontalRule => {
             // These are multi-line structures, stop here
             Ok(false)
@@ -227,7 +243,8 @@ fn count_paragraphs_in_node(node: &DocumentNode) -> usize {
         DocumentNode::Span(span) => span.text.matches("\n\n").count(),
         DocumentNode::Section { nodes, .. }
         | DocumentNode::BlockQuote { nodes }
-        | DocumentNode::TruncatedBlock { nodes, .. } => {
+        | DocumentNode::TruncatedBlock { nodes, .. }
+        | DocumentNode::Conditional { nodes, .. } => {
             nodes.iter().map(count_paragraphs_in_node).sum()
         }
         DocumentNode::List { items } => items

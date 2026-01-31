@@ -1,13 +1,12 @@
 use ferritin_common::Navigator;
-use std::cell::{Ref, RefCell};
 use std::ops::Deref;
 
 use crate::format_context::FormatContext;
 
-/// wrapper around Navigator that adds formatting capabilities
+/// Wrapper around Navigator that adds formatting capabilities
 pub(crate) struct Request {
     navigator: Navigator,
-    format_context: RefCell<FormatContext>,
+    format_context: FormatContext,
 }
 
 impl Deref for Request {
@@ -19,20 +18,16 @@ impl Deref for Request {
 }
 
 impl Request {
-    /// Create a new request, optionally with a local project context
+    /// Create a new request with Navigator and formatting configuration
     pub(crate) fn new(navigator: Navigator, format_context: FormatContext) -> Self {
         Self {
             navigator,
-            format_context: RefCell::new(format_context),
+            format_context,
         }
     }
 
-    pub(crate) fn mutate_format_context(&self, f: impl FnOnce(&mut FormatContext)) {
-        let mut b = self.format_context.borrow_mut();
-        f(&mut b);
-    }
-
-    pub(crate) fn format_context(&self) -> Ref<'_, FormatContext> {
-        self.format_context.borrow()
+    /// Get the formatting context
+    pub(crate) fn format_context(&self) -> &FormatContext {
+        &self.format_context
     }
 }

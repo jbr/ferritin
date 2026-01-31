@@ -1,5 +1,5 @@
 use crate::request::Request;
-use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span};
+use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span};
 
 pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool) {
     let mut nodes = vec![
@@ -74,16 +74,20 @@ pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool) {
 
     nodes.push(DocumentNode::List { items: list_items });
 
-    if request.local_source().is_none() && request.format_context().is_interactive() {
-        nodes.push(DocumentNode::Span(Span::plain(
-            "\n\
-            To navigate:\n\
-            • Press 'g' and enter a path like \"std::vec::Vec\"\n\
-            • Press 's' to search within a crate\n\
-            • Click on any item above to explore\n\n\
-            To view documentation for a specific crate from docs.rs:\n\
-            • Press 'g' and enter \"crate_name\" or \"crate_name::Item\"\n",
-        )));
+    // Show usage hints only in interactive mode when no local project
+    if request.local_source().is_none() {
+        nodes.push(DocumentNode::Conditional {
+            show_when: ShowWhen::Interactive,
+            nodes: vec![DocumentNode::Span(Span::plain(
+                "\n\
+                To navigate:\n\
+                • Press 'g' and enter a path like \"std::vec::Vec\"\n\
+                • Press 's' to search within a crate\n\
+                • Click on any item above to explore\n\n\
+                To view documentation for a specific crate from docs.rs:\n\
+                • Press 'g' and enter \"crate_name\" or \"crate_name::Item\"\n",
+            ))],
+        });
     }
 
     (Document::from(nodes), false)

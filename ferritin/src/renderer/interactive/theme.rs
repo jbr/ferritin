@@ -1,7 +1,7 @@
 use ratatui::style::{Color as RatatuiColor, Modifier, Style};
 use syntect::highlighting::{Color, ThemeSettings};
 
-use crate::format_context::FormatContext;
+use crate::render_context::RenderContext;
 
 /// Pre-computed theme styles for interactive UI elements
 pub(super) struct InteractiveTheme {
@@ -37,12 +37,12 @@ pub(super) struct InteractiveTheme {
 }
 
 impl InteractiveTheme {
-    /// Build theme from FormatContext at renderer startup
-    pub(super) fn from_format_context(format_context: &FormatContext) -> Self {
-        let theme = format_context.theme();
+    /// Build theme from RenderContext at renderer startup
+    pub(super) fn from_render_context(render_context: &RenderContext) -> Self {
+        let theme = render_context.theme();
         let settings = &theme.settings;
-        let default_fg = format_context.color_scheme().default_foreground();
-        let default_bg = format_context.color_scheme().default_background();
+        let default_fg = render_context.color_scheme().default_foreground();
+        let default_bg = render_context.color_scheme().default_background();
 
         // Derive colors with intelligent fallbacks
         let breadcrumb_bg = derive_breadcrumb_bg(settings, default_fg);

@@ -1,8 +1,9 @@
 use super::theme::InteractiveTheme;
+use super::ui_config::UiRenderConfig;
 use super::utils::find_paragraph_truncation_point;
-use crate::format_context::FormatContext;
 use crate::styled_string::{
-    DocumentNode, HeadingLevel, NodePath, Span, SpanStyle, TableCell, TruncationLevel, TuiAction,
+    DocumentNode, HeadingLevel, NodePath, ShowWhen, Span, SpanStyle, TableCell, TruncationLevel,
+    TuiAction,
 };
 use ratatui::{
     buffer::Buffer,
@@ -12,11 +13,87 @@ use ratatui::{
 use syntect::easy::HighlightLines;
 use syntect::util::LinesWithEndings;
 
+/// Rendering position tracker (mutable state passed through recursion)
+#[derive(Debug, Clone, Copy)]
+pub(super) struct Position {
+    /// Current row in the buffer
+    pub row: u16,
+    /// Current column in the buffer
+    pub col: u16,
+}
+
+impl Position {
+    /// Create a new position at (0, 0)
+    pub fn new() -> Self {
+        Self { row: 0, col: 0 }
+    }
+
+    /// Move to a new line with the given left margin
+    pub fn newline(&mut self, left_margin: u16) {
+        self.row += 1;
+        self.col = left_margin;
+    }
+
+    /// Check if this position is visible in the viewport
+    pub fn is_visible(&self, scroll: u16, area_height: u16) -> bool {
+        self.row >= scroll && self.row < scroll + area_height
+    }
+
+    /// Get the screen row (accounting for scroll offset)
+    pub fn screen_row(&self, scroll: u16) -> u16 {
+        self.row.saturating_sub(scroll)
+    }
+}
+
+/// Rendering context bundling immutable config and mutable output state
+///
+/// This groups parameters commonly passed together through the rendering pipeline,
+/// reducing function signatures from 10+ params to ~5 params.
+pub(super) struct RenderContext<'a> {
+    /// UI rendering configuration (colors, syntax highlighting)
+    pub ui_config: &'a UiRenderConfig,
+    /// Interactive theme (breadcrumb, status bar colors)
+    pub theme: &'a InteractiveTheme,
+    /// Available rendering area
+    pub area: Rect,
+    /// Vertical scroll offset
+    pub scroll: u16,
+    /// Current cursor position for hover detection
+    pub cursor_pos: Option<(u16, u16)>,
+    /// Output buffer for rendering
+    pub buf: &'a mut Buffer,
+    /// Accumulated clickable actions
+    pub actions: &'a mut Vec<(Rect, TuiAction<'a>)>,
+}
+
+impl<'a> RenderContext<'a> {
+    /// Create a new render context
+    pub fn new(
+        ui_config: &'a UiRenderConfig,
+        theme: &'a InteractiveTheme,
+        area: Rect,
+        scroll: u16,
+        cursor_pos: Option<(u16, u16)>,
+        buf: &'a mut Buffer,
+        actions: &'a mut Vec<(Rect, TuiAction<'a>)>,
+    ) -> Self {
+        Self {
+            ui_config,
+            theme,
+            area,
+            scroll,
+            cursor_pos,
+            buf,
+            actions,
+        }
+    }
+}
+
 /// Render document nodes to buffer, returning action map
 /// The lifetime 'doc is for the document nodes, 'action is for the TuiActions (from Request)
 pub(super) fn render_document<'a>(
     nodes: &[DocumentNode<'a>],
-    format_context: &FormatContext,
+    ui_config: &UiRenderConfig,
     area: Rect,
     buf: &mut Buffer,
     scroll: u16,
@@ -37,7 +114,7 @@ pub(super) fn render_document<'a>(
         node_path.push(idx);
         render_node(
             node,
-            format_context,
+            ui_config,
             area,
             buf,
             &mut row,
@@ -58,7 +135,7 @@ pub(super) fn render_document<'a>(
 #[allow(clippy::too_many_arguments)]
 pub(super) fn render_node<'a>(
     node: &DocumentNode<'a>,
-    format_context: &FormatContext,
+    ui_config: &UiRenderConfig,
     area: Rect,
     buf: &mut Buffer,
     row: &mut u16,
@@ -74,7 +151,7 @@ pub(super) fn render_node<'a>(
         DocumentNode::Span(span) => {
             render_span(
                 span,
-                format_context,
+                ui_config,
                 area,
                 buf,
                 row,
@@ -98,7 +175,7 @@ pub(super) fn render_node<'a>(
                 render_span_with_modifier(
                     span,
                     Modifier::BOLD,
-                    format_context,
+                    ui_config,
                     area,
                     buf,
                     row,
@@ -154,7 +231,7 @@ pub(super) fn render_node<'a>(
                         render_span_with_modifier(
                             span,
                             Modifier::BOLD,
-                            format_context,
+                            ui_config,
                             area,
                             buf,
                             row,
@@ -172,7 +249,7 @@ pub(super) fn render_node<'a>(
                     content_path.push(content_idx);
                     render_node(
                         content_node,
-                        format_context,
+                        ui_config,
                         area,
                         buf,
                         row,
@@ -202,7 +279,7 @@ pub(super) fn render_node<'a>(
                     render_span_with_modifier(
                         span,
                         Modifier::BOLD,
-                        format_context,
+                        ui_config,
                         area,
                         buf,
                         row,
@@ -223,7 +300,7 @@ pub(super) fn render_node<'a>(
                 child_path.push(idx);
                 render_node(
                     child_node,
-                    format_context,
+                    ui_config,
                     area,
                     buf,
                     row,
@@ -247,7 +324,7 @@ pub(super) fn render_node<'a>(
             render_code_block(
                 lang.as_deref(),
                 code,
-                format_context,
+                ui_config,
                 area,
                 buf,
                 row,
@@ -298,7 +375,7 @@ pub(super) fn render_node<'a>(
                 render_span_with_modifier(
                     &span_with_action,
                     Modifier::UNDERLINED,
-                    format_context,
+                    ui_config,
                     area,
                     buf,
                     row,
@@ -347,7 +424,7 @@ pub(super) fn render_node<'a>(
                 child_path.push(idx);
                 render_node(
                     child_node,
-                    format_context,
+                    ui_config,
                     area,
                     buf,
                     row,
@@ -371,7 +448,7 @@ pub(super) fn render_node<'a>(
             render_table(
                 header.as_deref(),
                 rows,
-                format_context,
+                ui_config,
                 area,
                 buf,
                 row,
@@ -403,7 +480,7 @@ pub(super) fn render_node<'a>(
                     for span in spans {
                         render_span(
                             span,
-                            format_context,
+                            ui_config,
                             area,
                             buf,
                             row,
@@ -476,7 +553,7 @@ pub(super) fn render_node<'a>(
                     child_path.push(idx);
                     render_node(
                         child_node,
-                        format_context,
+                        ui_config,
                         area,
                         buf,
                         row,
@@ -555,6 +632,34 @@ pub(super) fn render_node<'a>(
                 actions.push((rect, TuiAction::ExpandBlock(*path)));
             }
         }
+
+        DocumentNode::Conditional { show_when, nodes } => {
+            // Interactive renderer is always in interactive mode
+            let should_show = match show_when {
+                ShowWhen::Always => true,
+                ShowWhen::Interactive => true,
+                ShowWhen::NonInteractive => false,
+            };
+
+            if should_show {
+                for node in nodes {
+                    render_node(
+                        node,
+                        ui_config,
+                        area,
+                        buf,
+                        row,
+                        col,
+                        scroll,
+                        cursor_pos,
+                        actions,
+                        path,
+                        theme,
+                        left_margin,
+                    );
+                }
+            }
+        }
     }
 }
 
@@ -562,7 +667,7 @@ pub(super) fn render_node<'a>(
 #[allow(clippy::too_many_arguments)]
 pub(super) fn render_span<'a>(
     span: &Span<'a>,
-    format_context: &FormatContext,
+    ui_config: &UiRenderConfig,
     area: Rect,
     buf: &mut Buffer,
     row: &mut u16,
@@ -575,7 +680,7 @@ pub(super) fn render_span<'a>(
     render_span_with_modifier(
         span,
         Modifier::empty(),
-        format_context,
+        ui_config,
         area,
         buf,
         row,
@@ -592,7 +697,7 @@ pub(super) fn render_span<'a>(
 pub(super) fn render_span_with_modifier<'a>(
     span: &Span<'a>,
     modifier: Modifier,
-    format_context: &FormatContext,
+    ui_config: &UiRenderConfig,
     area: Rect,
     buf: &mut Buffer,
     row: &mut u16,
@@ -602,7 +707,7 @@ pub(super) fn render_span_with_modifier<'a>(
     actions: &mut Vec<(Rect, TuiAction<'a>)>,
     left_margin: u16,
 ) {
-    let mut style = span_style_to_ratatui(span.style, format_context);
+    let mut style = span_style_to_ratatui(span.style, ui_config);
     style = style.add_modifier(modifier);
 
     let start_col = *col;
@@ -751,7 +856,7 @@ fn write_text(
 pub(super) fn render_code_block(
     lang: Option<&str>,
     code: &str,
-    format_context: &FormatContext,
+    ui_config: &UiRenderConfig,
     area: Rect,
     buf: &mut Buffer,
     row: &mut u16,
@@ -832,11 +937,8 @@ pub(super) fn render_code_block(
     *row += 1;
 
     // Render code content with side borders (no background color)
-    if let Some(syntax) = format_context
-        .syntax_set()
-        .find_syntax_by_token(lang_display)
-    {
-        let theme = format_context.theme();
+    if let Some(syntax) = ui_config.syntax_set().find_syntax_by_token(lang_display) {
+        let theme = ui_config.theme();
         let mut highlighter = HighlightLines::new(syntax, theme);
 
         for line in LinesWithEndings::from(code) {
@@ -846,7 +948,7 @@ pub(super) fn render_code_block(
 
                 let mut col = left_margin + 2;
 
-                if let Ok(ranges) = highlighter.highlight_line(line, format_context.syntax_set()) {
+                if let Ok(ranges) = highlighter.highlight_line(line, ui_config.syntax_set()) {
                     for (style, text) in ranges {
                         let fg = style.foreground;
                         let ratatui_style = Style::default().fg(Color::Rgb(fg.r, fg.g, fg.b));
@@ -936,7 +1038,7 @@ pub(super) fn render_code_block(
 pub(super) fn render_table<'a>(
     header: Option<&[TableCell<'a>]>,
     rows: &[Vec<TableCell<'a>>],
-    format_context: &FormatContext,
+    ui_config: &UiRenderConfig,
     area: Rect,
     buf: &mut Buffer,
     row: &mut u16,
@@ -1023,7 +1125,7 @@ pub(super) fn render_table<'a>(
                         &span.text
                     };
 
-                    let mut style = span_style_to_ratatui(span.style, format_context);
+                    let mut style = span_style_to_ratatui(span.style, ui_config);
                     style = style.add_modifier(Modifier::BOLD);
 
                     write_text(buf, *row, cell_col, span_text, scroll, area, style);
@@ -1086,7 +1188,7 @@ pub(super) fn render_table<'a>(
                         &span.text
                     };
 
-                    let style = span_style_to_ratatui(span.style, format_context);
+                    let style = span_style_to_ratatui(span.style, ui_config);
                     write_text(buf, *row, cell_col, span_text, scroll, area, style);
                     cell_col += span_text.len() as u16;
                 }
@@ -1176,10 +1278,10 @@ fn find_wrap_position(text: &str, max_width: usize) -> Option<usize> {
 }
 
 /// Convert SpanStyle to ratatui Style
-fn span_style_to_ratatui(span_style: SpanStyle, format_context: &FormatContext) -> Style {
+fn span_style_to_ratatui(span_style: SpanStyle, ui_config: &UiRenderConfig) -> Style {
     match span_style {
         SpanStyle::Plain => {
-            let fg = format_context.color_scheme().default_foreground();
+            let fg = ui_config.color_scheme().default_foreground();
             Style::default().fg(Color::Rgb(fg.r, fg.g, fg.b))
         }
         SpanStyle::Punctuation => Style::default(),
@@ -1187,11 +1289,11 @@ fn span_style_to_ratatui(span_style: SpanStyle, format_context: &FormatContext) 
         SpanStyle::Emphasis => Style::default().add_modifier(Modifier::ITALIC),
         SpanStyle::Strikethrough => Style::default().add_modifier(Modifier::CROSSED_OUT),
         SpanStyle::InlineCode | SpanStyle::InlineRustCode => {
-            let color = format_context.color_scheme().color_for(span_style);
+            let color = ui_config.color_scheme().color_for(span_style);
             Style::default().fg(Color::Rgb(color.r, color.g, color.b))
         }
         _ => {
-            let color = format_context.color_scheme().color_for(span_style);
+            let color = ui_config.color_scheme().color_for(span_style);
             Style::default().fg(Color::Rgb(color.r, color.g, color.b))
         }
     }

@@ -1,8 +1,8 @@
 use std::fmt::{Result, Write};
 
-use crate::format_context::FormatContext;
+use crate::render_context::RenderContext;
 use crate::styled_string::{
-    Document, DocumentNode, HeadingLevel, Span, SpanStyle, TruncationLevel,
+    Document, DocumentNode, HeadingLevel, ShowWhen, Span, SpanStyle, TruncationLevel,
 };
 use ratatui::{
     style::{Color, Modifier, Style},
@@ -147,12 +147,12 @@ fn has_meaningful_content(nodes: &[DocumentNode]) -> bool {
 /// Render a document with ratatui for one-shot terminal output
 pub fn render(
     document: &Document,
-    format_context: &FormatContext,
+    render_context: &RenderContext,
     output: &mut impl Write,
 ) -> Result {
     // Build ratatui lines from document
     let mut budget = RenderBudget::Unlimited;
-    let lines = build_lines(&document.nodes, format_context, &mut budget);
+    let lines = build_lines(&document.nodes, render_context, &mut budget);
 
     // Write lines directly to output
     for line in lines {
@@ -213,7 +213,7 @@ fn write_styled_span(span: &RatatuiSpan, output: &mut impl Write) -> Result {
 /// Build ratatui Lines from document nodes
 pub(super) fn build_lines<'a>(
     nodes: &'a [DocumentNode],
-    format_context: &FormatContext,
+    render_context: &RenderContext,
     budget: &mut RenderBudget,
 ) -> Vec<Line<'a>> {
     let mut lines = Vec::new();
@@ -222,7 +222,7 @@ pub(super) fn build_lines<'a>(
         if budget.is_exhausted() {
             break;
         }
-        build_node_lines(node, format_context, budget, &mut lines);
+        build_node_lines(node, render_context, budget, &mut lines);
     }
 
     lines
@@ -231,7 +231,7 @@ pub(super) fn build_lines<'a>(
 /// Build lines for a single node
 fn build_node_lines<'a>(
     node: &'a DocumentNode,
-    format_context: &FormatContext,
+    render_context: &RenderContext,
     budget: &mut RenderBudget,
     lines: &mut Vec<Line<'a>>,
 ) {
@@ -244,14 +244,14 @@ fn build_node_lines<'a>(
             // Spans are added to the current line
             // This will be handled by the caller
             if let Some(truncated) = budget.should_truncate(&span.text) {
-                let ratatui_span = convert_span_partial(span, truncated, format_context);
+                let ratatui_span = convert_span_partial(span, truncated, render_context);
                 if !lines.is_empty() {
                     lines.last_mut().unwrap().spans.push(ratatui_span);
                 } else {
                     lines.push(Line::from(vec![ratatui_span]));
                 }
             } else {
-                let ratatui_span = convert_span(span, format_context);
+                let ratatui_span = convert_span(span, render_context);
                 if !lines.is_empty() && !span.text.contains('\n') {
                     lines.last_mut().unwrap().spans.push(ratatui_span);
                 } else {
@@ -263,7 +263,7 @@ fn build_node_lines<'a>(
                         if !line_text.is_empty() {
                             let line_span = RatatuiSpan::styled(
                                 line_text,
-                                span_style_to_ratatui(span.style, format_context),
+                                span_style_to_ratatui(span.style, render_context),
                             );
                             if i == 0 && !lines.is_empty() {
                                 lines.last_mut().unwrap().spans.push(line_span);
@@ -282,7 +282,7 @@ fn build_node_lines<'a>(
 
             let mut heading_spans = Vec::new();
             for span in spans {
-                heading_spans.push(convert_span_bold(span, format_context));
+                heading_spans.push(convert_span_bold(span, render_context));
             }
             lines.push(Line::from(heading_spans));
 
@@ -291,18 +291,18 @@ fn build_node_lines<'a>(
                 HeadingLevel::Title => "=",
                 HeadingLevel::Section => "-",
             };
-            let underline = underline_char.repeat(format_context.terminal_width());
+            let underline = underline_char.repeat(render_context.terminal_width());
             lines.push(Line::from(underline));
         }
         DocumentNode::Section { title, nodes } => {
             if let Some(title_spans) = title {
                 let mut heading_spans = Vec::new();
                 for span in title_spans {
-                    heading_spans.push(convert_span_bold(span, format_context));
+                    heading_spans.push(convert_span_bold(span, render_context));
                 }
                 lines.push(Line::from(heading_spans));
             }
-            lines.extend(build_lines(nodes, format_context, budget));
+            lines.extend(build_lines(nodes, render_context, budget));
         }
         DocumentNode::List { items } => {
             if matches!(budget, RenderBudget::Characters { .. }) {
@@ -314,14 +314,14 @@ fn build_node_lines<'a>(
 
                 if let Some(label) = &item.label {
                     for span in label {
-                        item_spans.push(convert_span_bold(span, format_context));
+                        item_spans.push(convert_span_bold(span, render_context));
                     }
                 }
 
                 // Add content spans to the same line
                 for node in &item.content {
                     if let DocumentNode::Span(span) = node {
-                        item_spans.push(convert_span(span, format_context));
+                        item_spans.push(convert_span(span, render_context));
                     }
                 }
 
@@ -333,15 +333,15 @@ fn build_node_lines<'a>(
                 return;
             }
 
-            lines.extend(render_code_block(lang.as_deref(), code, format_context));
+            lines.extend(render_code_block(lang.as_deref(), code, render_context));
         }
         DocumentNode::Link { url, text, .. } => {
-            let link_spans: Vec<_> = if format_context.is_interactive() {
+            let link_spans: Vec<_> = if render_context.is_interactive() {
                 // Interactive mode: just render underlined text (will add TuiAction later)
                 // OSC 8 hyperlinks don't work through ratatui since it controls the terminal
                 text.iter()
                     .map(|span| {
-                        let mut style = span_style_to_ratatui(span.style, format_context);
+                        let mut style = span_style_to_ratatui(span.style, render_context);
                         style = style.add_modifier(Modifier::UNDERLINED);
                         RatatuiSpan::styled(span.text.as_ref(), style)
                     })
@@ -350,7 +350,7 @@ fn build_node_lines<'a>(
                 // One-shot mode: emit OSC 8 hyperlinks
                 let mut spans = vec![RatatuiSpan::raw(format!("\x1b]8;;{}\x1b\\", url))];
                 for span in text {
-                    spans.push(convert_span(span, format_context));
+                    spans.push(convert_span(span, render_context));
                 }
                 spans.push(RatatuiSpan::raw("\x1b]8;;\x1b\\"));
                 spans
@@ -367,11 +367,11 @@ fn build_node_lines<'a>(
                 return;
             }
 
-            let rule = "─".repeat(format_context.terminal_width());
+            let rule = "─".repeat(render_context.terminal_width());
             lines.push(Line::from(rule));
         }
         DocumentNode::BlockQuote { nodes } => {
-            let inner_lines = build_lines(nodes, format_context, budget);
+            let inner_lines = build_lines(nodes, render_context, budget);
             for inner_line in inner_lines {
                 let mut quoted_spans = vec![RatatuiSpan::raw("  │ ")];
                 quoted_spans.extend(inner_line.spans);
@@ -396,7 +396,7 @@ fn build_node_lines<'a>(
         DocumentNode::TruncatedBlock { nodes, level } => {
             let mut new_budget = match level {
                 TruncationLevel::SingleLine => RenderBudget::Characters {
-                    remaining: format_context.terminal_width().saturating_sub(6),
+                    remaining: render_context.terminal_width().saturating_sub(6),
                 },
                 TruncationLevel::Brief => RenderBudget::Lines {
                     remaining: 10,
@@ -406,7 +406,7 @@ fn build_node_lines<'a>(
             };
 
             let start_line_count = lines.len();
-            lines.extend(build_lines(nodes, format_context, &mut new_budget));
+            lines.extend(build_lines(nodes, render_context, &mut new_budget));
             let nodes_processed = lines.len() - start_line_count;
 
             // Check if we truncated
@@ -427,6 +427,18 @@ fn build_node_lines<'a>(
                 }
             }
         }
+        DocumentNode::Conditional { show_when, nodes } => {
+            // Check if content should be shown based on render context
+            let should_show = match show_when {
+                ShowWhen::Always => true,
+                ShowWhen::Interactive => render_context.is_interactive(),
+                ShowWhen::NonInteractive => !render_context.is_interactive(),
+            };
+
+            if should_show {
+                lines.extend(build_lines(nodes, render_context, budget));
+            }
+        }
     }
 }
 
@@ -434,7 +446,7 @@ fn build_node_lines<'a>(
 fn render_code_block<'a>(
     lang: Option<&str>,
     code: &'a str,
-    format_context: &FormatContext,
+    render_context: &RenderContext,
 ) -> Vec<Line<'a>> {
     let mut lines = Vec::new();
 
@@ -448,12 +460,12 @@ fn render_code_block<'a>(
         None => "rust",
     };
 
-    if let Some(syntax) = format_context.syntax_set().find_syntax_by_token(lang) {
-        let theme = format_context.theme();
+    if let Some(syntax) = render_context.syntax_set().find_syntax_by_token(lang) {
+        let theme = render_context.theme();
         let mut highlighter = HighlightLines::new(syntax, theme);
 
         for line in LinesWithEndings::from(code) {
-            if let Ok(ranges) = highlighter.highlight_line(line, format_context.syntax_set()) {
+            if let Ok(ranges) = highlighter.highlight_line(line, render_context.syntax_set()) {
                 let mut line_spans = Vec::new();
                 for (style, text) in ranges {
                     let fg = style.foreground;
@@ -478,10 +490,10 @@ fn render_code_block<'a>(
 }
 
 /// Convert our Span to ratatui Span
-fn convert_span<'a>(span: &'a Span, format_context: &FormatContext) -> RatatuiSpan<'a> {
+fn convert_span<'a>(span: &'a Span, render_context: &RenderContext) -> RatatuiSpan<'a> {
     RatatuiSpan::styled(
         span.text.as_ref(),
-        span_style_to_ratatui(span.style, format_context),
+        span_style_to_ratatui(span.style, render_context),
     )
 }
 
@@ -489,23 +501,23 @@ fn convert_span<'a>(span: &'a Span, format_context: &FormatContext) -> RatatuiSp
 fn convert_span_partial<'a>(
     span: &'a Span,
     text: &'a str,
-    format_context: &FormatContext,
+    render_context: &RenderContext,
 ) -> RatatuiSpan<'a> {
-    RatatuiSpan::styled(text, span_style_to_ratatui(span.style, format_context))
+    RatatuiSpan::styled(text, span_style_to_ratatui(span.style, render_context))
 }
 
 /// Convert span with bold modifier
-fn convert_span_bold<'a>(span: &'a Span, format_context: &FormatContext) -> RatatuiSpan<'a> {
-    let mut style = span_style_to_ratatui(span.style, format_context);
+fn convert_span_bold<'a>(span: &'a Span, render_context: &RenderContext) -> RatatuiSpan<'a> {
+    let mut style = span_style_to_ratatui(span.style, render_context);
     style = style.add_modifier(Modifier::BOLD);
     RatatuiSpan::styled(span.text.as_ref(), style)
 }
 
 /// Convert SpanStyle to ratatui Style
-fn span_style_to_ratatui(span_style: SpanStyle, format_context: &FormatContext) -> Style {
+fn span_style_to_ratatui(span_style: SpanStyle, render_context: &RenderContext) -> Style {
     match span_style {
         SpanStyle::Plain => {
-            let fg = format_context.color_scheme().default_foreground();
+            let fg = render_context.color_scheme().default_foreground();
             Style::default().fg(Color::Rgb(fg.r, fg.g, fg.b))
         }
         SpanStyle::Punctuation => Style::default(),
@@ -513,11 +525,11 @@ fn span_style_to_ratatui(span_style: SpanStyle, format_context: &FormatContext) 
         SpanStyle::Emphasis => Style::default().add_modifier(Modifier::ITALIC),
         SpanStyle::Strikethrough => Style::default().add_modifier(Modifier::CROSSED_OUT),
         SpanStyle::InlineCode | SpanStyle::InlineRustCode => {
-            let color = format_context.color_scheme().color_for(span_style);
+            let color = render_context.color_scheme().color_for(span_style);
             Style::default().fg(Color::Rgb(color.r, color.g, color.b))
         }
         _ => {
-            let color = format_context.color_scheme().color_for(span_style);
+            let color = render_context.color_scheme().color_for(span_style);
             Style::default().fg(Color::Rgb(color.r, color.g, color.b))
         }
     }
@@ -537,8 +549,8 @@ mod tests {
             DocumentNode::Span(Span::type_name("Foo")),
         ]);
         let mut output = String::new();
-        let format_context = FormatContext::new().with_output_mode(OutputMode::Tty);
-        render(&doc, &format_context, &mut output).unwrap();
+        let render_context = RenderContext::new().with_output_mode(OutputMode::Tty);
+        render(&doc, &render_context, &mut output).unwrap();
         // Should contain ANSI codes
         assert!(output.contains("\x1b"));
         // Should contain the actual text
@@ -553,9 +565,9 @@ mod tests {
             vec![Span::plain("Click here")],
         )]);
         let mut output = String::new();
-        let format_context = FormatContext::new().with_output_mode(OutputMode::Tty);
+        let render_context = RenderContext::new().with_output_mode(OutputMode::Tty);
 
-        render(&doc, &format_context, &mut output).unwrap();
+        render(&doc, &render_context, &mut output).unwrap();
         // Should contain OSC 8 escape sequence
         assert!(output.contains("\x1b]8;;"));
         assert!(output.contains("https://example.com"));
@@ -570,11 +582,11 @@ mod tests {
         )]);
 
         let mut output = String::new();
-        let format_context = FormatContext::new()
+        let render_context = RenderContext::new()
             .with_output_mode(OutputMode::Tty)
             .with_terminal_width(10);
 
-        render(&doc, &format_context, &mut output).unwrap();
+        render(&doc, &render_context, &mut output).unwrap();
         assert!(output.contains("Test"));
         // Should have decorative underline
         assert!(output.contains("=========="));

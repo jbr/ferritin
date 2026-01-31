@@ -1,4 +1,8 @@
-use crate::styled_string::Document;
+use ferritin_common::DocRef;
+use rustdoc_types::Item;
+
+use super::channels::UiCommand;
+use std::borrow::Cow;
 
 /// Input mode for the interactive renderer
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -15,7 +19,7 @@ pub(super) enum InputMode {
 #[derive(Debug, Clone, PartialEq)]
 pub enum HistoryEntry<'a> {
     /// Regular item navigation
-    Item(ferritin_common::DocRef<'a, rustdoc_types::Item>),
+    Item(DocRef<'a, Item>),
     /// Search result page
     Search {
         query: String,
@@ -26,6 +30,14 @@ pub enum HistoryEntry<'a> {
 }
 
 impl<'a> HistoryEntry<'a> {
+    pub(super) fn item(&self) -> Option<DocRef<'a, Item>> {
+        if let Self::Item(item) = self {
+            Some(*item)
+        } else {
+            None
+        }
+    }
+
     /// Get a display name for this history entry
     pub(super) fn display_name(&self) -> String {
         match self {
@@ -50,26 +62,16 @@ impl<'a> HistoryEntry<'a> {
         }
     }
 
-    /// Render this history entry to a document
-    pub(super) fn render(&self, request: &'a crate::request::Request) -> Document<'a> {
+    /// Convert this history entry to a command that can be sent to the request thread
+    pub(super) fn to_command(&self) -> UiCommand<'a> {
         match self {
-            HistoryEntry::Item(item) => {
-                let doc_nodes = request.format_item(*item);
-                Document::from(doc_nodes)
-            }
-            HistoryEntry::Search { query, crate_name } => {
-                let (search_doc, _is_error) = crate::commands::search::execute(
-                    request,
-                    query,
-                    20, // limit
-                    crate_name.as_deref(),
-                );
-                search_doc
-            }
-            HistoryEntry::List => {
-                let (list_doc, _is_error) = crate::commands::list::execute(request);
-                list_doc
-            }
+            HistoryEntry::Item(item) => UiCommand::Navigate(*item),
+            HistoryEntry::Search { query, crate_name } => UiCommand::Search {
+                query: Cow::Owned(query.clone()),
+                crate_name: crate_name.as_ref().map(|c| Cow::Owned(c.clone())),
+                limit: 20,
+            },
+            HistoryEntry::List => UiCommand::List,
         }
     }
 }

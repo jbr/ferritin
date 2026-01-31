@@ -1,15 +1,15 @@
+use super::channels::UiCommand;
 use super::utils::find_node_at_path_mut;
 use crate::styled_string::{Document, DocumentNode, TruncationLevel, TuiAction};
 
-/// Handle a TuiAction, returning (new Document, DocRef) if navigation occurred
+/// Handle a TuiAction, returning a command to send if navigation is needed
+///
+/// Some actions (ExpandBlock) mutate the document in place and return None.
+/// Navigation actions return a UiCommand that the caller should send via channel.
 pub(super) fn handle_action<'a>(
     document: &mut Document<'a>,
-    action: &TuiAction<'a>,
-    request: &'a crate::request::Request,
-) -> Option<(
-    Document<'a>,
-    ferritin_common::DocRef<'a, rustdoc_types::Item>,
-)> {
+    action: TuiAction<'a>,
+) -> Option<UiCommand<'a>> {
     match action {
         TuiAction::ExpandBlock(path) => {
             // Find the node at this path and expand it
@@ -22,29 +22,22 @@ pub(super) fn handle_action<'a>(
                     TruncationLevel::Full => TruncationLevel::Full, // Already expanded
                 };
             }
-            None // No new document, just mutated in place
+            None // No command needed, just mutated in place
         }
         TuiAction::Navigate(doc_ref) => {
-            // Format the item directly without path lookup
-            let doc_nodes = request.format_item(*doc_ref);
-            Some((Document::from(doc_nodes), *doc_ref))
+            // Return Navigate command - caller will send it and wait for response
+            Some(UiCommand::Navigate(doc_ref))
         }
         TuiAction::NavigateToPath(path) => {
-            // Resolve the path and navigate if found
-            let mut suggestions = vec![];
-            if let Some(doc_ref) = request.resolve_path(path, &mut suggestions) {
-                let doc_nodes = request.format_item(doc_ref);
-                Some((Document::from(doc_nodes), doc_ref))
-            } else {
-                None // Path not found
-            }
+            // Return NavigateToPath command - caller will send it and wait for response
+            Some(UiCommand::NavigateToPath(path))
         }
         TuiAction::OpenUrl(url) => {
             // Open external URL in browser
-            if let Err(e) = webbrowser::open(url) {
+            if let Err(e) = webbrowser::open(&url) {
                 eprintln!("[ERROR] Failed to open URL {}: {}", url, e);
             }
-            None // No new document
+            None // No command needed
         }
     }
 }
