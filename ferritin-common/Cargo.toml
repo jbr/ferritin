@@ -19,7 +19,7 @@ log = "0.4.29"
 rkyv = "0.8.14"
 rustc-hash.workspace = true
 rustdoc-types.workspace = true
-rustdoc-types-56 = { package = "rustdoc-types", version = "0.56" }
+rustdoc-types-56 = { package = "rustdoc-types", version = "0.57" }
 rustdoc-types-55 = { package = "rustdoc-types", version = "0.55" }
 serde.workspace = true
 serde_json.workspace = true
