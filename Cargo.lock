@@ -975,7 +975,6 @@ dependencies = [
  "log",
  "rkyv",
  "rustc-hash",
- "rustdoc-types 0.55.0",
  "rustdoc-types 0.56.0",
  "rustdoc-types 0.57.0",
  "semver",
@@ -2497,16 +2496,6 @@ dependencies = [
  "shellexpand",
  "strum",
  "tempfile",
-]
-
-[[package]]
-name = "rustdoc-types"
-version = "0.55.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61f25a84ea78419de928cd82c3b2f76709a696a64a880486c567b4c4da8f2dda"
-dependencies = [
- "serde",
- "serde_derive",
 ]
 
 [[package]]
