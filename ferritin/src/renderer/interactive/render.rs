@@ -7,7 +7,7 @@ use crate::styled_string::{
 };
 use ratatui::{
     buffer::Buffer,
-    layout::Rect,
+    layout::{Position as RatatuiPosition, Rect},
     style::{Color, Modifier, Style},
 };
 use syntect::easy::HighlightLines;
@@ -59,7 +59,7 @@ pub(super) struct RenderContext<'a> {
     /// Vertical scroll offset
     pub scroll: u16,
     /// Current cursor position for hover detection
-    pub cursor_pos: Option<(u16, u16)>,
+    pub cursor_pos: Option<RatatuiPosition>,
     /// Output buffer for rendering
     pub buf: &'a mut Buffer,
     /// Accumulated clickable actions
@@ -73,7 +73,7 @@ impl<'a> RenderContext<'a> {
         theme: &'a InteractiveTheme,
         area: Rect,
         scroll: u16,
-        cursor_pos: Option<(u16, u16)>,
+        cursor_pos: Option<RatatuiPosition>,
         buf: &'a mut Buffer,
         actions: &'a mut Vec<(Rect, TuiAction<'a>)>,
     ) -> Self {
@@ -97,7 +97,7 @@ pub(super) fn render_document<'a>(
     area: Rect,
     buf: &mut Buffer,
     scroll: u16,
-    cursor_pos: Option<(u16, u16)>,
+    cursor_pos: Option<RatatuiPosition>,
     theme: &InteractiveTheme,
 ) -> Vec<(Rect, TuiAction<'a>)> {
     let mut actions = Vec::new();
@@ -141,7 +141,7 @@ pub(super) fn render_node<'a>(
     row: &mut u16,
     col: &mut u16,
     scroll: u16,
-    cursor_pos: Option<(u16, u16)>,
+    cursor_pos: Option<RatatuiPosition>,
     actions: &mut Vec<(Rect, TuiAction<'a>)>,
     path: &crate::styled_string::NodePath,
     theme: &InteractiveTheme,
@@ -602,10 +602,10 @@ pub(super) fn render_node<'a>(
                 // Check if hovered
                 let is_hovered = cursor_pos.map_or_else(
                     || false,
-                    |(cx, cy)| {
-                        cy == ellipsis_row
-                            && cx >= left_margin
-                            && cx < left_margin + ellipsis_text.len() as u16
+                    |pos| {
+                        pos.y == ellipsis_row
+                            && pos.x >= left_margin
+                            && pos.x < left_margin + ellipsis_text.len() as u16
                     },
                 );
 
@@ -673,7 +673,7 @@ pub(super) fn render_span<'a>(
     row: &mut u16,
     col: &mut u16,
     scroll: u16,
-    cursor_pos: Option<(u16, u16)>,
+    cursor_pos: Option<RatatuiPosition>,
     actions: &mut Vec<(Rect, TuiAction<'a>)>,
     left_margin: u16,
 ) {
@@ -703,7 +703,7 @@ pub(super) fn render_span_with_modifier<'a>(
     row: &mut u16,
     col: &mut u16,
     scroll: u16,
-    cursor_pos: Option<(u16, u16)>,
+    cursor_pos: Option<RatatuiPosition>,
     actions: &mut Vec<(Rect, TuiAction<'a>)>,
     left_margin: u16,
 ) {
@@ -717,7 +717,7 @@ pub(super) fn render_span_with_modifier<'a>(
     let is_hovered = if span.action.is_some() {
         cursor_pos.map_or_else(
             || false,
-            |(cx, cy)| cy == *row && cx >= *col && cx < *col + span.text.len() as u16,
+            |pos| pos.y == *row && pos.x >= *col && pos.x < *col + span.text.len() as u16,
         )
     } else {
         false

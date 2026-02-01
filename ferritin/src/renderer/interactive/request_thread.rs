@@ -1,7 +1,7 @@
 //! Request thread - handles Navigator operations and document formatting
 
 use super::channels::{RequestResponse, UiCommand};
-use super::state::HistoryEntry;
+use super::history::HistoryEntry;
 use crate::commands::{list, search};
 use crate::{request::Request, styled_string::Document};
 use std::sync::mpsc::{Receiver, Sender};

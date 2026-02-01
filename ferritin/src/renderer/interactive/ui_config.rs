@@ -9,6 +9,7 @@ use syntect::parsing::SyntaxSet;
 ///
 /// This contains only what's needed to render already-formatted documents.
 /// Formatting happens on the request thread with the full FormatContext.
+#[derive(Debug)]
 pub struct UiRenderConfig {
     /// Syntax highlighting theme
     pub(super) syntax_theme: Theme,

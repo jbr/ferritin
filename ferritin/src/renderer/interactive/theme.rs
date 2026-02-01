@@ -4,6 +4,7 @@ use syntect::highlighting::{Color, ThemeSettings};
 use crate::render_context::RenderContext;
 
 /// Pre-computed theme styles for interactive UI elements
+#[derive(Debug)]
 pub(super) struct InteractiveTheme {
     /// Breadcrumb bar (navigation history) - normal state
     pub breadcrumb_style: Style,

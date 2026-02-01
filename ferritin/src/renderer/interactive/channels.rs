@@ -3,7 +3,7 @@
 use ferritin_common::DocRef;
 use rustdoc_types::Item;
 
-use super::state::HistoryEntry;
+use super::history::HistoryEntry;
 use crate::styled_string::Document;
 use std::borrow::Cow;
 

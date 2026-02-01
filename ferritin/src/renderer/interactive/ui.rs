@@ -1,122 +1,13 @@
-use super::state::{HistoryEntry, InputMode};
+use super::state::{InputMode, UiMode};
 use super::theme::InteractiveTheme;
 use ratatui::{buffer::Buffer, layout::Rect};
-
-/// Render breadcrumb bar showing full navigation history
-pub(super) fn render_breadcrumb_bar<'a>(
-    buf: &mut Buffer,
-    area: Rect,
-    history: &[HistoryEntry<'a>],
-    current_idx: usize,
-    clickable_areas: &mut Vec<(usize, std::ops::Range<u16>)>,
-    hover_pos: Option<(u16, u16)>,
-    theme: &InteractiveTheme,
-) {
-    let bg_style = theme.breadcrumb_style;
-
-    // Clear the breadcrumb line
-    for x in 0..area.width {
-        buf.cell_mut((x, area.y)).unwrap().reset();
-        buf.cell_mut((x, area.y)).unwrap().set_style(bg_style);
-    }
-
-    if history.is_empty() {
-        let text = "📍 <no history>";
-        for (i, ch) in text.chars().enumerate() {
-            if i >= area.width as usize {
-                break;
-            }
-            buf.cell_mut((i as u16, area.y))
-                .unwrap()
-                .set_char(ch)
-                .set_style(bg_style);
-        }
-        return;
-    }
-
-    // Build breadcrumb trail: a → b → c with current item italicized
-    let mut col = 0u16;
-
-    // Start with icon
-    let icon = " 🦀  ";
-    for ch in icon.chars() {
-        if col >= area.width {
-            break;
-        }
-        buf.cell_mut((col, area.y))
-            .unwrap()
-            .set_char(ch)
-            .set_style(bg_style);
-        col += 1;
-    }
-
-    for (idx, item) in history.iter().enumerate() {
-        if col >= area.width {
-            break;
-        }
-
-        // Add arrow separator (except for first item)
-        if idx > 0 {
-            let arrow = " → ";
-            for ch in arrow.chars() {
-                if col >= area.width {
-                    break;
-                }
-                buf.cell_mut((col, area.y))
-                    .unwrap()
-                    .set_char(ch)
-                    .set_style(bg_style);
-                col += 1;
-            }
-        }
-
-        // Render item name with appropriate style
-        let name = item.display_name();
-        let start_col = col;
-        let name_len = name.chars().count().min((area.width - start_col) as usize);
-        let end_col = start_col + name_len as u16;
-
-        // Check if this item is being hovered
-        let is_hovered =
-            hover_pos.is_some_and(|(hover_col, _)| hover_col >= start_col && hover_col < end_col);
-
-        let item_style = if is_hovered {
-            // Hovered: reversed colors for visual feedback
-            theme.breadcrumb_hover_style
-        } else if idx == current_idx {
-            // Current item: italic
-            theme.breadcrumb_current_style
-        } else {
-            // Other items: normal
-            theme.breadcrumb_style
-        };
-
-        for ch in name.chars() {
-            if col >= area.width {
-                break;
-            }
-            buf.cell_mut((col, area.y))
-                .unwrap()
-                .set_char(ch)
-                .set_style(item_style);
-            col += 1;
-        }
-
-        // Track clickable area for this item
-        if end_col > start_col {
-            clickable_areas.push((idx, start_col..end_col));
-        }
-    }
-}
 
 /// Render status bar at the bottom of the screen
 pub(super) fn render_status_bar(
     buf: &mut Buffer,
     area: Rect,
     message: &str,
-    input_mode: InputMode,
-    input_buffer: &str,
-    search_all_crates: bool,
+    ui_mode: &UiMode,
     current_crate: Option<&str>,
     theme: &InteractiveTheme,
     loading: bool,
@@ -139,12 +30,12 @@ pub(super) fn render_status_bar(
         ' '
     };
 
-    // Determine what to display based on input mode
-    let (mut display_text, hint_text) = match input_mode {
-        InputMode::Normal => (message.to_string(), None),
-        InputMode::GoTo => (format!("Go to: {}", input_buffer), None),
-        InputMode::Search => {
-            let scope = if search_all_crates {
+    // Determine what to display based on UI mode
+    let (mut display_text, hint_text) = match ui_mode {
+        UiMode::Normal | UiMode::Help => (message.to_string(), None),
+        UiMode::Input(InputMode::GoTo { buffer }) => (format!("Go to: {}", buffer), None),
+        UiMode::Input(InputMode::Search { buffer, all_crates }) => {
+            let scope = if *all_crates {
                 "all crates".to_string()
             } else {
                 current_crate
@@ -152,7 +43,7 @@ pub(super) fn render_status_bar(
                     .unwrap_or_else(|| "current crate".to_string())
             };
             (
-                format!("Search in {}: {}", scope, input_buffer),
+                format!("Search in {}: {}", scope, buffer),
                 Some("[tab] toggle scope"),
             )
         }

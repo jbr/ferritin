@@ -1,31 +1,25 @@
 use crate::styled_string::DocumentNode;
-use crossterm::queue;
-use ratatui::backend::CrosstermBackend;
-use std::io::{self, Write};
+use crossterm::{queue, style::Print};
+use ratatui::prelude::Backend;
+use std::{env, io};
 
 /// Detect if the terminal supports mouse cursor shape changes
 pub(super) fn supports_cursor_shape() -> bool {
     // Kitty, WezTerm, and some other modern terminals support OSC 22
-    std::env::var("TERM_PROGRAM")
+    env::var("TERM_PROGRAM")
         .map(|t| t == "kitty" || t == "WezTerm")
         .unwrap_or(false)
-        || std::env::var("TERM")
+        || env::var("TERM")
             .map(|t| t.contains("kitty"))
             .unwrap_or(false)
 }
 
 /// Set the mouse cursor shape (for terminals that support it)
-pub(super) fn set_cursor_shape(
-    backend: &mut CrosstermBackend<std::io::Stdout>,
-    shape: &str,
-) -> io::Result<()> {
+pub(super) fn set_cursor_shape<B: Backend + io::Write>(backend: &mut B, shape: &str) {
     // OSC 22 sequence: \x1b]22;<shape>\x07
     // Supported shapes: default, pointer, text, etc.
-    queue!(
-        backend,
-        crossterm::style::Print(format!("\x1b]22;{}\x07", shape))
-    )?;
-    backend.flush()
+    let _ = queue!(backend, Print(format!("\x1b]22;{}\x07", shape)));
+    let _ = Backend::flush(backend);
 }
 
 pub(super) fn find_node_at_path_mut<'a, 'b>(
