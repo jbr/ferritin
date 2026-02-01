@@ -1,0 +1,2 @@
+[workspace]
+features_always_increment_minor = true
