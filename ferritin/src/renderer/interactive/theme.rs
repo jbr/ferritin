@@ -46,7 +46,8 @@ impl InteractiveTheme {
         let default_bg = render_context.color_scheme().default_background();
 
         // Derive colors with intelligent fallbacks, validating fg/bg pairs for contrast
-        let (breadcrumb_bg, breadcrumb_fg) = derive_breadcrumb_colors(settings, default_fg, default_bg);
+        let (breadcrumb_bg, breadcrumb_fg) =
+            derive_breadcrumb_colors(settings, default_fg, default_bg);
         let (status_bg, status_fg) = derive_status_colors(settings, default_fg, default_bg);
         let muted_fg = derive_muted_fg(settings, default_fg);
         let accent_fg = derive_accent_fg(settings, default_fg);

@@ -145,7 +145,6 @@ impl ColorScheme {
         }
     }
 
-
     /// Get the color for a specific span style
     pub fn color_for(&self, style: SpanStyle) -> Color {
         self.colors
@@ -212,7 +211,6 @@ impl Default for ColorScheme {
 #[cfg(test)]
 mod tests {
     use super::*;
-
 
     #[test]
     fn test_color_for_style() {
