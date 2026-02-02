@@ -25,12 +25,16 @@ pulldown-cmark = "0.13"
 ratatui = "0.30"
 regex = "1.12"
 rustdoc-types.workspace = true
-syntect = "5.3"
+syntect = { version = "5.3", default-features = false, features = ["parsing", "default-syntaxes", "html", "plist-load", "yaml-load", "dump-load", "dump-create", "regex-onig"] }
 terminal_size = "0.4"
+thiserror = "2"
 unicode-width = "0.2.2"
 webbrowser = "1.0.6"
 semver = "1.0.27"
 percent-encoding = "2.3"
+
+[build-dependencies]
+syntect = { version = "5.3", default-features = false, features = ["parsing", "plist-load", "dump-load", "dump-create", "regex-onig"] }
 
 [dev-dependencies]
 insta = { version = "1.46.1", features = ["filters"] }

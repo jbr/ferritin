@@ -1,0 +1,43 @@
+[submodule "ferritin/assets/themes/sublime-monokai-extended"]
+	path = ferritin/assets/themes/sublime-monokai-extended
+	url = https://github.com/jonschlinkert/sublime-monokai-extended
+[submodule "ferritin/assets/themes/DarkNeon"]
+	path = ferritin/assets/themes/DarkNeon
+	url = https://github.com/RainyDayMedia/DarkNeon
+[submodule "ferritin/assets/themes/github-sublime-theme"]
+	path = ferritin/assets/themes/github-sublime-theme
+	url = https://github.com/AlexanderEkdahl/github-sublime-theme
+[submodule "ferritin/assets/themes/1337-Scheme"]
+	path = ferritin/assets/themes/1337-Scheme
+	url = https://github.com/MarkMichos/1337-Scheme
+[submodule "ferritin/assets/themes/TwoDark"]
+	path = ferritin/assets/themes/TwoDark
+	url = https://github.com/erremauro/TwoDark
+[submodule "ferritin/assets/themes/zenburn"]
+	path = ferritin/assets/themes/zenburn
+	url = https://github.com/colinta/zenburn.git
+[submodule "ferritin/assets/themes/onehalf"]
+	path = ferritin/assets/themes/onehalf
+	url = https://github.com/sonph/onehalf
+[submodule "ferritin/assets/themes/sublime-snazzy"]
+	path = ferritin/assets/themes/sublime-snazzy
+	url = https://github.com/greggb/sublime-snazzy
+[submodule "ferritin/assets/themes/dracula-sublime"]
+	path = ferritin/assets/themes/dracula-sublime
+	url = https://github.com/dracula/sublime.git
+[submodule "ferritin/assets/themes/Nord-sublime"]
+	path = ferritin/assets/themes/Nord-sublime
+	url = https://github.com/crabique/Nord-plist.git
+[submodule "ferritin/assets/themes/Solarized"]
+	path = ferritin/assets/themes/Solarized
+	url = https://github.com/braver/Solarized
+[submodule "ferritin/assets/themes/Coldark"]
+	path = ferritin/assets/themes/Coldark
+	url = https://github.com/ArmandPhilippot/coldark-bat.git
+[submodule "ferritin/assets/themes/gruvbox"]
+	path = ferritin/assets/themes/gruvbox
+	url = https://github.com/subnut/gruvbox-tmTheme.git
+	branch = bat-source
+[submodule "ferritin/assets/themes/Catppuccin"]
+	path = ferritin/assets/themes/Catppuccin
+	url = https://github.com/SchweGELBin/catppuccin-bat-sub.git

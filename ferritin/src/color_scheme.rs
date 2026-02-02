@@ -1,5 +1,5 @@
 use crate::styled_string::SpanStyle;
-use syntect::highlighting::{Color, Highlighter, Theme, ThemeSet};
+use syntect::highlighting::{Color, Highlighter, Theme};
 use syntect::parsing::{Scope, ScopeStack};
 
 /// A color scheme mapping semantic span styles to colors
@@ -21,63 +21,128 @@ impl ColorScheme {
 
         let mut colors = std::collections::HashMap::new();
 
-        // Map our semantic styles to TextMate scopes
-        // These scope names follow standard TextMate conventions
+        // Map our semantic styles to TextMate scopes with fallback chains
+        // Based on scope coverage analysis across our theme set
+
+        // Rust code elements (all have 95-100% coverage)
         colors.insert(
             SpanStyle::Keyword,
-            Self::color_for_scope(&highlighter, "keyword.control"),
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["keyword.control", "keyword.other"],
+                default_style.foreground,
+            ),
         );
         colors.insert(
             SpanStyle::TypeName,
-            Self::color_for_scope(&highlighter, "entity.name.type"),
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["entity.name.type", "entity.name.class", "storage.type"],
+                default_style.foreground,
+            ),
         );
         colors.insert(
             SpanStyle::FunctionName,
-            Self::color_for_scope(&highlighter, "entity.name.function"),
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["entity.name.function"],
+                default_style.foreground,
+            ),
         );
         colors.insert(
             SpanStyle::FieldName,
-            Self::color_for_scope(&highlighter, "variable.other.member"),
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["variable.other.member", "variable.other"],
+                default_style.foreground,
+            ),
         );
         colors.insert(
             SpanStyle::Lifetime,
-            Self::color_for_scope(&highlighter, "storage.modifier.lifetime"),
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["storage.modifier.lifetime", "storage.modifier"],
+                default_style.foreground,
+            ),
         );
         colors.insert(
             SpanStyle::Generic,
-            Self::color_for_scope(&highlighter, "entity.name.type.parameter"),
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["entity.name.type.parameter", "entity.name.type"],
+                default_style.foreground,
+            ),
         );
         colors.insert(
             SpanStyle::Operator,
-            Self::color_for_scope(&highlighter, "keyword.operator"),
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["keyword.operator"],
+                default_style.foreground,
+            ),
         );
         colors.insert(
             SpanStyle::Comment,
-            Self::color_for_scope(&highlighter, "comment.line"),
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["comment.line", "comment.block"],
+                default_style.foreground,
+            ),
         );
-        // Plain and Punctuation use default foreground
+
+        // Code content - inline code uses string color as fallback since markup.inline.raw
+        // is only supported in 9% of themes
+        colors.insert(
+            SpanStyle::InlineRustCode,
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["markup.inline.raw", "string.quoted", "constant.language"],
+                default_style.foreground,
+            ),
+        );
+        colors.insert(
+            SpanStyle::InlineCode,
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["markup.inline.raw", "string.quoted"],
+                default_style.foreground,
+            ),
+        );
+
+        // Markdown semantic styles (68% coverage for bold/italic)
+        colors.insert(
+            SpanStyle::Strong,
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["markup.bold", "keyword.control"],
+                default_style.foreground,
+            ),
+        );
+        colors.insert(
+            SpanStyle::Emphasis,
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["markup.italic", "comment.line"],
+                default_style.foreground,
+            ),
+        );
+        colors.insert(
+            SpanStyle::Strikethrough,
+            Self::color_for_scope_with_fallback(
+                &highlighter,
+                &["markup.strikethrough", "comment.line"],
+                default_style.foreground,
+            ),
+        );
+
+        // Punctuation uses default foreground (only 27-31% coverage in themes)
+        // Plain also uses default
 
         Self {
             colors,
             default_foreground: default_style.foreground,
             default_background: default_style.background,
         }
-    }
-
-    /// Load a named theme from the default theme set
-    pub fn from_theme_name(name: &str) -> Result<Self, String> {
-        let theme_set = ThemeSet::load_defaults();
-        theme_set
-            .themes
-            .get(name)
-            .map(Self::from_syntect_theme)
-            .ok_or_else(|| format!("Theme '{}' not found", name))
-    }
-
-    /// Get available theme names
-    pub fn available_themes() -> Vec<String> {
-        let theme_set = ThemeSet::load_defaults();
-        theme_set.themes.keys().cloned().collect()
     }
 
     /// Get the color for a specific span style
@@ -98,64 +163,54 @@ impl ColorScheme {
         self.default_background
     }
 
-    /// Helper to get color for a scope string
-    fn color_for_scope(highlighter: &Highlighter, scope_str: &str) -> Color {
-        // Parse the scope string into a Scope
-        let scope = Scope::new(scope_str).unwrap_or_else(|_| {
-            // Fallback to empty scope if parsing fails
-            Scope::new("").unwrap()
-        });
+    /// Try multiple scope strings, using the first one that has a distinct color
+    fn color_for_scope_with_fallback(
+        highlighter: &Highlighter,
+        scope_strs: &[&str],
+        default_color: Color,
+    ) -> Color {
+        for scope_str in scope_strs {
+            if let Ok(scope) = Scope::new(scope_str) {
+                let mut stack = ScopeStack::new();
+                stack.push(scope);
+                let style = highlighter.style_for_stack(stack.as_slice());
 
-        // Create a scope stack with just this scope
-        let mut stack = ScopeStack::new();
-        stack.push(scope);
+                // Use this color if it's different from the default
+                if style.foreground != default_color {
+                    return style.foreground;
+                }
+            }
+        }
 
-        // Get the style for this scope
-        let style = highlighter.style_for_stack(stack.as_slice());
-        style.foreground
+        // All scopes fell back to default, so return default
+        default_color
     }
 }
 
 impl Default for ColorScheme {
     fn default() -> Self {
-        // Default to base16-ocean.dark theme (same as markdown renderer)
-        Self::from_theme_name("base16-ocean.dark").unwrap_or_else(|_| {
-            // Fallback if theme loading fails
-            Self {
-                colors: std::collections::HashMap::new(),
-                default_foreground: Color {
-                    r: 200,
-                    g: 200,
-                    b: 200,
-                    a: 255,
-                },
-                default_background: Color {
-                    r: 0,
-                    g: 0,
-                    b: 0,
-                    a: 255,
-                },
-            }
-        })
+        // Simple default color scheme
+        Self {
+            colors: std::collections::HashMap::new(),
+            default_foreground: Color {
+                r: 200,
+                g: 200,
+                b: 200,
+                a: 255,
+            },
+            default_background: Color {
+                r: 0,
+                g: 0,
+                b: 0,
+                a: 255,
+            },
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_load_theme() {
-        let scheme = ColorScheme::from_theme_name("base16-ocean.dark");
-        assert!(scheme.is_ok());
-    }
-
-    #[test]
-    fn test_available_themes() {
-        let themes = ColorScheme::available_themes();
-        assert!(!themes.is_empty());
-        assert!(themes.contains(&"base16-ocean.dark".to_string()));
-    }
 
     #[test]
     fn test_color_for_style() {

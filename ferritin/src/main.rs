@@ -1,6 +1,11 @@
 #![allow(dead_code)]
 
 use clap::Parser;
+
+// Include the generated themes module
+mod themes {
+    include!(concat!(env!("OUT_DIR"), "/themes.rs"));
+}
 use ferritin_common::{
     Navigator,
     sources::{DocsRsSource, LocalSource, StdSource},
@@ -38,14 +43,14 @@ struct Cli {
     #[arg(short, long, global = true)]
     manifest_path: Option<PathBuf>,
 
-    /// Syntax highlighting theme
+    /// Syntax highlighting theme (theme name or path to .tmTheme file)
     #[arg(
         long,
         short,
         global = true,
-        default_value = "Solarized (dark)",
+        default_value = "Catppuccin Frappe",
         env = "FERRITIN_THEME",
-        value_parser = ["InspiredGitHub", "Solarized (dark)", "Solarized (light)", "base16-eighties.dark", "base16-mocha.dark", "base16-ocean.dark", "base16-ocean.light"]
+        long_help = build_theme_help()
     )]
     theme: String,
 
@@ -55,6 +60,25 @@ struct Cli {
 
     #[command(subcommand)]
     command: Option<Commands>,
+}
+
+fn build_theme_help() -> &'static str {
+    use std::sync::OnceLock;
+    static HELP: OnceLock<String> = OnceLock::new();
+
+    HELP.get_or_init(|| {
+        let mut help = String::from("Syntax highlighting theme\n\n");
+        help.push_str("Can be either:\n");
+        help.push_str("  - A theme name from the list below\n");
+        help.push_str("  - A path to a .tmTheme file\n\n");
+        help.push_str("Available themes:\n");
+
+        for name in themes::THEME_NAMES {
+            help.push_str(&format!("  - {}\n", name));
+        }
+
+        help
+    })
 }
 
 struct IoFmtWriter<T>(T);
@@ -92,15 +116,19 @@ fn main() -> ExitCode {
 
     let format_context = FormatContext::new();
 
-    let render_context = RenderContext::new()
+    let mut render_context = RenderContext::new()
         .with_output_mode(OutputMode::detect())
         .with_terminal_width(
             terminal_size()
                 .map(|(Width(w), _)| w as usize)
                 .unwrap_or(80),
         )
-        .with_theme(cli.theme.clone())
         .with_interactive(cli.interactive);
+
+    if let Err(e) = render_context.set_theme_name(&cli.theme) {
+        eprintln!("{e}");
+        return ExitCode::FAILURE;
+    };
 
     let request = Request::new(navigator, format_context);
 

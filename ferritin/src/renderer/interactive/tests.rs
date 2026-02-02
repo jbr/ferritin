@@ -1,8 +1,7 @@
 use super::*;
 use crate::styled_string::{Document, DocumentNode, Span, SpanStyle};
-use ratatui::{Terminal, backend::TestBackend, style::Style};
+use ratatui::{Terminal, backend::TestBackend};
 use std::sync::mpsc::channel;
-use syntect::{highlighting::ThemeSet, parsing::SyntaxSet};
 
 /// Helper to create a minimal test state
 fn create_test_state<'a>() -> InteractiveState<'a> {
@@ -16,29 +15,9 @@ fn create_test_state<'a>() -> InteractiveState<'a> {
             action: None,
         })],
     };
-
-    // Create minimal ui_config and theme for testing
-    let theme_set = ThemeSet::load_defaults();
-    let ui_config = UiRenderConfig {
-        syntax_theme: theme_set.themes.get("base16-ocean.dark").unwrap().clone(),
-        syntax_set: SyntaxSet::load_defaults_newlines(),
-        color_scheme: crate::color_scheme::ColorScheme::default(),
-    };
-
-    let theme = InteractiveTheme {
-        breadcrumb_style: Style::default(),
-        breadcrumb_current_style: Style::default(),
-        breadcrumb_hover_style: Style::default(),
-        status_style: Style::default(),
-        status_hint_style: Style::default(),
-        help_bg_style: Style::default(),
-        help_title_style: Style::default(),
-        help_key_style: Style::default(),
-        help_desc_style: Style::default(),
-        muted_style: Style::default(),
-        document_bg_style: Style::default(),
-        code_block_border_style: Style::default(),
-    };
+    let render_context = RenderContext::new();
+    let ui_config = UiRenderConfig::from_render_context(&render_context);
+    let theme = InteractiveTheme::from_render_context(&render_context);
 
     InteractiveState::new(document, None, cmd_tx, resp_rx, ui_config, theme)
 }
