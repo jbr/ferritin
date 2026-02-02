@@ -45,11 +45,9 @@ impl InteractiveTheme {
         let default_fg = render_context.color_scheme().default_foreground();
         let default_bg = render_context.color_scheme().default_background();
 
-        // Derive colors with intelligent fallbacks
-        let breadcrumb_bg = derive_breadcrumb_bg(settings, default_fg);
-        let breadcrumb_fg = derive_breadcrumb_fg(settings, default_fg);
-        let status_bg = derive_status_bg(settings, default_bg);
-        let status_fg = derive_status_fg(settings, default_fg);
+        // Derive colors with intelligent fallbacks, validating fg/bg pairs for contrast
+        let (breadcrumb_bg, breadcrumb_fg) = derive_breadcrumb_colors(settings, default_fg, default_bg);
+        let (status_bg, status_fg) = derive_status_colors(settings, default_fg, default_bg);
         let muted_fg = derive_muted_fg(settings, default_fg);
         let accent_fg = derive_accent_fg(settings, default_fg);
         let secondary_accent_fg = derive_secondary_accent_fg(settings, accent_fg);
@@ -126,35 +124,82 @@ fn brighten_color(color: Color, factor: f32) -> Color {
     }
 }
 
-/// Derive breadcrumb background color
-fn derive_breadcrumb_bg(settings: &ThemeSettings, default_fg: Color) -> Color {
-    settings
-        .selection
-        .or(settings.accent)
-        .unwrap_or_else(|| brighten_color(default_fg, 0.3))
+/// Calculate relative luminance for contrast checking (simplified)
+fn luminance(color: Color) -> f32 {
+    // Simplified relative luminance calculation
+    (0.299 * color.r as f32 + 0.587 * color.g as f32 + 0.114 * color.b as f32) / 255.0
 }
 
-/// Derive breadcrumb foreground color
-fn derive_breadcrumb_fg(settings: &ThemeSettings, default_fg: Color) -> Color {
-    settings
-        .selection_foreground
-        .or(settings.foreground)
-        .unwrap_or(default_fg)
+/// Check if two colors have sufficient contrast (WCAG AA minimum ~4.5:1)
+fn has_good_contrast(fg: Color, bg: Color) -> bool {
+    let l1 = luminance(fg);
+    let l2 = luminance(bg);
+    let contrast = if l1 > l2 {
+        (l1 + 0.05) / (l2 + 0.05)
+    } else {
+        (l2 + 0.05) / (l1 + 0.05)
+    };
+    contrast >= 3.0 // Relaxed threshold for UI chrome
 }
 
-/// Derive status bar background color
-fn derive_status_bg(settings: &ThemeSettings, default_bg: Color) -> Color {
-    settings
-        .gutter
-        .unwrap_or_else(|| dim_color(default_bg, 0.8))
+/// Try a list of (bg, fg) option pairs, returning the first valid pair with good contrast
+fn try_color_pairs(
+    pairs: &[(Option<Color>, Option<Color>)],
+    fallback_bg: Color,
+    fallback_fg: Color,
+) -> (Color, Color) {
+    for (bg_opt, fg_opt) in pairs {
+        if let (Some(bg), Some(fg)) = (bg_opt, fg_opt) {
+            if has_good_contrast(*fg, *bg) {
+                return (*bg, *fg);
+            }
+        }
+    }
+    (fallback_bg, fallback_fg)
 }
 
-/// Derive status bar foreground color
-fn derive_status_fg(settings: &ThemeSettings, default_fg: Color) -> Color {
-    settings
-        .gutter_foreground
-        .or(settings.foreground)
-        .unwrap_or(default_fg)
+/// Derive breadcrumb colors as a validated fg/bg pair
+fn derive_breadcrumb_colors(
+    settings: &ThemeSettings,
+    default_fg: Color,
+    default_bg: Color,
+) -> (Color, Color) {
+    // Try pairs in order of specificity, validating contrast
+    let pairs = [
+        // Most specific: accent with its foreground
+        (settings.accent, settings.selection_foreground),
+        // Specific: accent with general foreground
+        (settings.accent, settings.foreground),
+        // Common: selection pair
+        (settings.selection, settings.selection_foreground),
+        // Fallback: selection bg with general fg
+        (settings.selection, settings.foreground),
+    ];
+
+    let fallback_bg = brighten_color(default_bg, 0.3);
+    let fallback_fg = default_fg;
+
+    try_color_pairs(&pairs, fallback_bg, fallback_fg)
+}
+
+/// Derive status bar colors as a validated fg/bg pair
+fn derive_status_colors(
+    settings: &ThemeSettings,
+    default_fg: Color,
+    default_bg: Color,
+) -> (Color, Color) {
+    // Try pairs in order of specificity
+    let pairs = [
+        // Most specific: gutter pair
+        (settings.gutter, settings.gutter_foreground),
+        // Fallback: gutter bg with general fg
+        (settings.gutter, settings.foreground),
+    ];
+
+    let fallback_bg = dim_color(default_bg, 0.8);
+    let fallback_fg = default_fg;
+
+    try_color_pairs(&pairs, fallback_bg, fallback_fg)
 }
 
 /// Derive muted/dimmed foreground color
