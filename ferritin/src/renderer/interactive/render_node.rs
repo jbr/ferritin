@@ -1,52 +1,58 @@
-use ratatui::{
-    buffer::Buffer,
-    layout::{Position, Rect},
-    style::Modifier,
-};
+use ratatui::{buffer::Buffer, layout::Rect, style::Modifier};
 
 use super::{state::InteractiveState, utils::find_paragraph_truncation_point};
-use crate::styled_string::{
-    DocumentNode, HeadingLevel, NodePath, ShowWhen, Span, TruncationLevel, TuiAction,
-};
+use crate::styled_string::{DocumentNode, HeadingLevel, ShowWhen, TruncationLevel, TuiAction};
+
+// Truncated block borders are outdented (to the left of content) so that content
+// doesn't shift when expanding/collapsing the block. The border is purely decorative.
+const TRUNCATION_BORDER_WIDTH: u16 = 2; // "│ " takes 2 columns
+const TRUNCATION_BORDER_OUTDENT: i16 = -2; // Draw border 2 columns left of content
 
 impl<'a> InteractiveState<'a> {
+    /// Draw all active blockquote markers at the current row
+    pub(super) fn draw_blockquote_markers(&mut self, buf: &mut Buffer) {
+        let quote_style = self.theme.muted_style;
+        for &marker_x in &self.layout.blockquote_markers {
+            self.write_text(
+                buf,
+                self.layout.pos.y,
+                marker_x,
+                "  ┃ ",
+                self.layout.area,
+                quote_style,
+            );
+        }
+    }
+
     /// Render a single node
-    pub(super) fn render_node(
-        &mut self,
-        node: &DocumentNode<'a>,
-        area: Rect,
-        buf: &mut Buffer,
-        pos: &mut Position,
-        path: &NodePath,
-        left_margin: u16,
-    ) {
+    pub(super) fn render_node(&mut self, node: &DocumentNode<'a>, buf: &mut Buffer) {
         match node {
-            DocumentNode::Span(span) => {
-                self.render_span(span, area, buf, pos, left_margin);
+            DocumentNode::Paragraph { spans } => {
+                // Block element: unconditionally position at indent
+                self.layout.pos.x = self.layout.indent;
+                // Draw blockquote markers if we're inside a blockquote
+                self.draw_blockquote_markers(buf);
+                for span in spans {
+                    self.render_span(span, buf);
+                }
+
+                // Block element: increment y when done
+                self.layout.pos.y += 1;
             }
 
             DocumentNode::Heading { level, spans } => {
-                // Start new line if not at beginning
-                if pos.x > 0 {
-                    pos.y += 1;
-                    pos.x = left_margin;
-                }
+                // Block element: unconditionally position at indent
+                self.layout.pos.x = self.layout.indent;
+                // Draw blockquote markers if we're inside a blockquote
+                self.draw_blockquote_markers(buf);
 
                 // Render heading spans (bold)
                 for span in spans {
-                    self.render_span_with_modifier(
-                        span,
-                        Modifier::BOLD,
-                        area,
-                        buf,
-                        pos,
-                        left_margin,
-                    );
+                    self.render_span_with_modifier(span, Modifier::BOLD, buf);
                 }
 
                 // New line after heading
-                pos.y += 1;
-                pos.x = left_margin;
+                self.layout.pos.y += 1;
 
                 // Add decorative underline (respecting left margin)
                 let underline_char = match level {
@@ -54,208 +60,201 @@ impl<'a> InteractiveState<'a> {
                     HeadingLevel::Section => '-',
                 };
 
-                if pos.y >= self.viewport.scroll_offset
-                    && pos.y < self.viewport.scroll_offset + area.height
+                // Draw blockquote markers on underline row
+                self.draw_blockquote_markers(buf);
+
+                if self.layout.pos.y >= self.viewport.scroll_offset
+                    && self.layout.pos.y < self.viewport.scroll_offset + self.layout.area.height
                 {
-                    for c in left_margin..area.width {
-                        buf.cell_mut((c, pos.y - self.viewport.scroll_offset))
+                    for c in self.layout.indent..self.layout.area.width {
+                        buf.cell_mut((c, self.layout.pos.y - self.viewport.scroll_offset))
                             .unwrap()
                             .set_char(underline_char);
                     }
                 }
 
-                pos.y += 1;
-                pos.x = left_margin;
+                // Block element: increment y when done
+                self.layout.pos.y += 1;
             }
 
             DocumentNode::List { items } => {
                 for (item_idx, item) in items.iter().enumerate() {
-                    // Start new line
-                    if pos.x > 0 {
-                        pos.y += 1;
-                        pos.x = left_margin;
+                    // Add blank line between list items
+                    if item_idx > 0 {
+                        // Draw blockquote markers on blank line
+                        self.draw_blockquote_markers(buf);
+                        self.layout.pos.y += 1;
                     }
 
-                    // Bullet with nice unicode character
+                    // Block element: unconditionally position at indent
+                    self.layout.pos.x = self.layout.indent;
+                    // Draw blockquote markers before bullet
+                    self.draw_blockquote_markers(buf);
+
+                    // Bullet with nice unicode character based on nesting level
+                    let bullet = crate::renderer::bullet_for_indent(self.layout.indent);
+                    let bullet_text = format!("  {} ", bullet);
                     let bullet_style = self.theme.muted_style;
-                    self.write_text(buf, pos.y, pos.x, "  ◦ ", area, bullet_style);
-                    pos.x += 4;
+                    self.write_text(
+                        buf,
+                        self.layout.pos.y,
+                        self.layout.pos.x,
+                        &bullet_text,
+                        self.layout.area,
+                        bullet_style,
+                    );
+                    self.layout.pos.x += 4;
 
-                    // Capture left margin for content right after bullet
-                    let content_left_margin = pos.x;
+                    // Save indent and update for content
+                    let saved_indent = self.layout.indent;
+                    self.layout.indent = self.layout.pos.x;
 
-                    // Label (if any) - should wrap to content_left_margin, not parent's left_margin
-                    if let Some(label_spans) = &item.label {
-                        for span in label_spans {
-                            self.render_span_with_modifier(
-                                span,
-                                Modifier::BOLD,
-                                area,
-                                buf,
-                                pos,
-                                content_left_margin,
-                            );
-                        }
-                    }
+                    // Render content nodes
+                    // Note: no blank line spacing between blocks in list items - keep them compact
                     for (content_idx, content_node) in item.content.iter().enumerate() {
-                        let mut content_path = *path;
-                        content_path.push(item_idx);
-                        content_path.push(content_idx);
-                        self.render_node(
-                            content_node,
-                            area,
-                            buf,
-                            pos,
-                            &content_path,
-                            content_left_margin,
-                        );
+                        // Save path, update it, render, restore
+                        let saved_path = self.layout.node_path;
+                        self.layout.node_path.push(item_idx);
+                        self.layout.node_path.push(content_idx);
+
+                        self.render_node(content_node, buf);
+
+                        self.layout.node_path = saved_path;
                     }
 
-                    pos.y += 1;
-                    pos.x = left_margin;
+                    // Restore indent
+                    self.layout.indent = saved_indent;
                 }
+                // Container: children handle their own spacing
             }
 
             DocumentNode::Section { title, nodes } => {
                 if let Some(title_spans) = title {
-                    if pos.x > 0 {
-                        pos.y += 1;
-                        pos.x = left_margin;
-                    }
+                    // Block element: unconditionally position at indent
+                    self.layout.pos.x = self.layout.indent;
 
                     for span in title_spans {
-                        self.render_span_with_modifier(
-                            span,
-                            Modifier::BOLD,
-                            area,
-                            buf,
-                            pos,
-                            left_margin,
-                        );
+                        self.render_span_with_modifier(span, Modifier::BOLD, buf);
                     }
 
-                    pos.y += 1;
-                    pos.x = left_margin;
+                    // Add blank line after section title
+                    self.layout.pos.y += 1;
+                    self.layout.pos.y += 1;
                 }
 
                 for (idx, child_node) in nodes.iter().enumerate() {
-                    let mut child_path = *path;
-                    child_path.push(idx);
-                    self.render_node(child_node, area, buf, pos, &child_path, left_margin);
+                    // Add blank line between consecutive blocks
+                    if idx > 0 {
+                        self.layout.pos.y += 1;
+                    }
+
+                    // Save and update path
+                    let saved_path = self.layout.node_path;
+                    self.layout.node_path.push(idx);
+
+                    self.render_node(child_node, buf);
+
+                    self.layout.node_path = saved_path;
                 }
+                // Container: children handle their own spacing
             }
 
             DocumentNode::CodeBlock { lang, code } => {
-                if pos.x > 0 {
-                    pos.y += 1;
-                    pos.x = left_margin;
-                }
+                // Block element: unconditionally position at indent
+                self.layout.pos.x = self.layout.indent;
 
-                self.render_code_block(lang.as_deref(), code, area, buf, pos, left_margin);
+                self.render_code_block(lang.as_deref(), code, buf);
 
-                pos.y += 1;
-                pos.x = left_margin;
+                // Block element: increment y when done
+                self.layout.pos.y += 1;
             }
 
-            DocumentNode::Link { url, text, target } => {
-                use crate::styled_string::LinkTarget;
-                // Determine the action based on the link target
-                let action = match target {
-                    Some(LinkTarget::Resolved(doc_ref)) => {
-                        // Already resolved - navigate directly
-                        TuiAction::Navigate(*doc_ref)
-                    }
-                    Some(LinkTarget::Path(path)) => {
-                        // Unresolved path - navigate by path (lazy resolution)
-                        TuiAction::NavigateToPath(path.clone())
-                    }
-                    None => {
-                        // External link - open in browser
-                        TuiAction::OpenUrl(url.clone())
-                    }
-                };
+            DocumentNode::GeneratedCode { spans } => {
+                // Block element: unconditionally position at indent
+                self.layout.pos.x = self.layout.indent;
+                // Draw blockquote markers if we're inside a blockquote
+                self.draw_blockquote_markers(buf);
 
-                // Calculate total length of link text to avoid splitting it across lines
-                let total_length: usize = text.iter().map(|s| s.text.len()).sum();
-                let available_width = area.width.saturating_sub(pos.x);
-
-                // If link won't fit on current line, wrap to next line first
-                if total_length as u16 > available_width && pos.x > left_margin {
-                    pos.y += 1;
-                    pos.x = left_margin;
+                // Render spans inline (flows with current position)
+                for span in spans {
+                    self.render_span(span, buf);
                 }
 
-                // Render underlined text with the action attached
-                for span in text {
-                    let span_with_action = Span {
-                        text: span.text.clone(),
-                        style: span.style,
-                        action: Some(action.clone()),
-                    };
-                    self.render_span_with_modifier(
-                        &span_with_action,
-                        Modifier::UNDERLINED,
-                        area,
-                        buf,
-                        pos,
-                        left_margin,
-                    );
-                }
+                // Block element: increment y when done
+                self.layout.pos.y += 1;
             }
 
             DocumentNode::HorizontalRule => {
-                if pos.x > 0 {
-                    pos.y += 1;
-                    pos.x = left_margin;
-                }
+                // Block element: unconditionally position at indent
+                self.layout.pos.x = self.layout.indent;
+                // Draw blockquote markers if we're inside a blockquote
+                self.draw_blockquote_markers(buf);
 
-                if pos.y >= self.viewport.scroll_offset
-                    && pos.y < self.viewport.scroll_offset + area.height
+                if self.layout.pos.y >= self.viewport.scroll_offset
+                    && self.layout.pos.y < self.viewport.scroll_offset + self.layout.area.height
                 {
                     let rule_style = self.theme.muted_style;
                     // Use a decorative pattern: ─── • ───
                     let pattern = ['─', '─', '─', ' ', '•', ' '];
-                    for c in 0..area.width {
+                    for c in 0..self.layout.area.width {
                         let ch = pattern[(c as usize) % pattern.len()];
-                        if let Some(cell) = buf.cell_mut((c, pos.y - self.viewport.scroll_offset)) {
+                        if let Some(cell) =
+                            buf.cell_mut((c, self.layout.pos.y - self.viewport.scroll_offset))
+                        {
                             cell.set_char(ch);
                             cell.set_style(rule_style);
                         }
                     }
                 }
 
-                pos.y += 1;
-                pos.x = left_margin;
+                // Block element: increment y when done
+                self.layout.pos.y += 1;
             }
 
             DocumentNode::BlockQuote { nodes } => {
+                // Add this blockquote's marker position to the stack
+                let marker_x = self.layout.indent;
+                self.layout.blockquote_markers.push(marker_x);
+
+                // Update indent to account for marker
+                let saved_indent = self.layout.indent;
+                self.layout.indent += 4; // "  ┃ " takes 4 columns
+
                 for (idx, child_node) in nodes.iter().enumerate() {
-                    if pos.x == left_margin {
-                        // Use a thicker vertical bar for quotes
-                        let quote_style = self.theme.muted_style;
-                        self.write_text(buf, pos.y, pos.x, "  ┃ ", area, quote_style);
-                        pos.x += 4;
+                    // Add blank line between consecutive blocks
+                    if idx > 0 {
+                        // Draw all blockquote markers on the blank line
+                        self.draw_blockquote_markers(buf);
+                        self.layout.pos.y += 1;
                     }
 
-                    let mut child_path = *path;
-                    child_path.push(idx);
-                    self.render_node(child_node, area, buf, pos, &child_path, left_margin);
+                    let saved_path = self.layout.node_path;
+                    self.layout.node_path.push(idx);
+                    self.render_node(child_node, buf);
+                    self.layout.node_path = saved_path;
                 }
+
+                // Restore indent and pop marker
+                self.layout.indent = saved_indent;
+                self.layout.blockquote_markers.pop();
+
+                // Container: children handle their own spacing
             }
 
             DocumentNode::Table { header, rows } => {
-                if pos.x > 0 {
-                    pos.y += 1;
-                    pos.x = left_margin;
-                }
+                // Block element: unconditionally position at indent
+                self.layout.pos.x = self.layout.indent;
 
-                self.render_table(header.as_deref(), rows, area, buf, pos);
+                self.render_table(header.as_deref(), rows, buf);
 
-                pos.y += 1;
-                pos.x = left_margin;
+                // Block element: increment y when done
+                self.layout.pos.y += 1;
             }
 
             DocumentNode::TruncatedBlock { nodes, level } => {
+                // Transparent container: doesn't add its own newlines
+                // Just controls which children to render and adds decorative borders if truncated
+
                 // Determine line limit based on truncation level
                 let line_limit = match level {
                     TruncationLevel::SingleLine => 3,  // Show ~3 lines for single-line
@@ -263,22 +262,35 @@ impl<'a> InteractiveState<'a> {
                     TruncationLevel::Full => u16::MAX, // Show everything
                 };
 
-                let start_row = pos.y;
+                let start_row = self.layout.pos.y;
                 let mut rendered_all = true;
                 let border_style = self.theme.muted_style;
 
-                // For SingleLine with heading as first node, just show the heading text
+                // Calculate border and content columns
+                // Border is outdented (to the left) so content doesn't shift when expanding
+                // Full mode never truncates, so it will never use the border
+                let border_col = self
+                    .layout
+                    .indent
+                    .saturating_add_signed(TRUNCATION_BORDER_OUTDENT);
+                let content_col = self.layout.indent; // Content stays at current indent
+
+                // For SingleLine with heading as first node, just show the heading text (no decoration)
                 let render_nodes = if matches!(level, TruncationLevel::SingleLine) {
-                    // Check if first node is a heading
-                    if let Some(DocumentNode::Heading { spans, .. }) = nodes.first() {
-                        // Just render the spans without the heading decoration
-                        for span in spans {
-                            self.render_span(span, area, buf, pos, left_margin);
+                    match nodes.first() {
+                        Some(DocumentNode::Heading { spans, .. }) => {
+                            // Block element: unconditionally position at indent
+                            self.layout.pos.x = self.layout.indent;
+                            // Just render the spans without the heading decoration
+                            for span in spans {
+                                self.render_span(span, buf);
+                            }
+                            // Heading normally increments y, so do it here too
+                            self.layout.pos.y += 1;
+                            rendered_all = nodes.len() <= 1;
+                            false // Skip normal rendering
                         }
-                        rendered_all = nodes.len() <= 1;
-                        false // Skip normal rendering
-                    } else {
-                        true
+                        _ => true, // Normal rendering for other node types
                     }
                 } else {
                     true
@@ -287,16 +299,9 @@ impl<'a> InteractiveState<'a> {
                 if render_nodes {
                     // For Brief mode, try to find a good truncation point at second paragraph break
                     let truncate_at = if matches!(level, TruncationLevel::Brief) {
-                        find_paragraph_truncation_point(nodes, line_limit, area.width)
+                        find_paragraph_truncation_point(nodes, line_limit, self.layout.area.width)
                     } else {
                         None
-                    };
-
-                    // Increase left margin for content to make room for border
-                    let content_left_margin = if !matches!(level, TruncationLevel::Full) {
-                        left_margin + 2
-                    } else {
-                        left_margin
                     };
 
                     // Track last row with actual content (to trim trailing blank lines)
@@ -313,7 +318,7 @@ impl<'a> InteractiveState<'a> {
                         }
 
                         // Check if we've exceeded the line limit (fallback)
-                        if pos.y - start_row >= line_limit
+                        if self.layout.pos.y - start_row >= line_limit
                             && !matches!(level, TruncationLevel::Full)
                         {
                             rendered_all = false;
@@ -330,25 +335,41 @@ impl<'a> InteractiveState<'a> {
                             break;
                         }
 
-                        // If we're at the left margin, move to content area
-                        if !matches!(level, TruncationLevel::Full) && pos.x == left_margin {
-                            pos.x = content_left_margin;
+                        // Skip code blocks and lists in Brief/SingleLine mode
+                        // These are multi-line structures that don't make sense in snippets
+                        if !matches!(level, TruncationLevel::Full)
+                            && matches!(
+                                child_node,
+                                DocumentNode::CodeBlock { .. }
+                                    | DocumentNode::GeneratedCode { .. }
+                                    | DocumentNode::List { .. }
+                            )
+                        {
+                            rendered_all = false;
+                            break;
                         }
 
-                        let mut child_path = *path;
-                        child_path.push(idx);
-                        self.render_node(
-                            child_node,
-                            area,
-                            buf,
-                            pos,
-                            &child_path,
-                            content_left_margin,
-                        );
+                        // Add blank line between consecutive blocks
+                        if idx > 0 {
+                            self.layout.pos.y += 1;
+                        }
 
-                        // Track last row with content (not just blank lines)
-                        if pos.x > content_left_margin {
-                            last_content_row = pos.y;
+                        // Save and update path and indent
+                        let saved_path = self.layout.node_path;
+                        self.layout.node_path.push(idx);
+                        let saved_indent = self.layout.indent;
+                        self.layout.indent = content_col;
+
+                        let row_before = self.layout.pos.y;
+                        self.render_node(child_node, buf);
+
+                        // Restore path and indent
+                        self.layout.node_path = saved_path;
+                        self.layout.indent = saved_indent;
+
+                        // Track last row with content
+                        if self.layout.pos.y > row_before {
+                            last_content_row = self.layout.pos.y;
                         }
 
                         // If this is the last node, we rendered everything
@@ -357,37 +378,38 @@ impl<'a> InteractiveState<'a> {
                         }
                     }
 
-                    // Draw left border on all lines with content (trim trailing blank lines)
-                    if !matches!(level, TruncationLevel::Full) {
-                        // Draw borders only up to the last row with actual content
-                        let end_row = last_content_row + 1;
-
-                        for r in start_row..end_row {
+                    // Draw left border only if content was truncated
+                    if !rendered_all {
+                        // Draw borders from start to last content row (exclusive)
+                        for r in start_row..last_content_row {
                             if r >= self.viewport.scroll_offset
-                                && r < self.viewport.scroll_offset + area.height
+                                && r < self.viewport.scroll_offset + self.layout.area.height
                             {
-                                self.write_text(buf, r, left_margin, "│ ", area, border_style);
+                                self.write_text(
+                                    buf,
+                                    r,
+                                    border_col,
+                                    "│ ",
+                                    self.layout.area,
+                                    border_style,
+                                );
                             }
                         }
-
-                        // Move to the row after last content for the closing border
-                        pos.y = last_content_row + 1;
-                        pos.x = left_margin;
                     }
                 }
 
                 // Show bottom border with [...] if we didn't render all nodes
-                if !rendered_all && !matches!(level, TruncationLevel::Full) {
+                if !rendered_all {
                     let ellipsis_text = "╰─[...]";
-                    let ellipsis_row = pos.y;
+                    let ellipsis_row = self.layout.pos.y;
 
                     // Check if hovered
                     let is_hovered = self.viewport.cursor_pos.map_or_else(
                         || false,
-                        |pos| {
-                            pos.y == ellipsis_row
-                                && pos.x >= left_margin
-                                && pos.x < left_margin + ellipsis_text.len() as u16
+                        |cursor_pos| {
+                            cursor_pos.y == ellipsis_row
+                                && cursor_pos.x >= border_col
+                                && cursor_pos.x < border_col + ellipsis_text.len() as u16
                         },
                     );
 
@@ -401,22 +423,26 @@ impl<'a> InteractiveState<'a> {
                     self.write_text(
                         buf,
                         ellipsis_row,
-                        left_margin,
+                        border_col,
                         ellipsis_text,
-                        area,
+                        self.layout.area,
                         final_style,
                     );
-                    pos.x = left_margin + ellipsis_text.len() as u16;
 
                     // Track the action with the current path
-                    let rect = Rect::new(left_margin, ellipsis_row, ellipsis_text.len() as u16, 1);
+                    let rect = Rect::new(border_col, ellipsis_row, ellipsis_text.len() as u16, 1);
                     self.render_cache
                         .actions
-                        .push((rect, TuiAction::ExpandBlock(*path)));
+                        .push((rect, TuiAction::ExpandBlock(self.layout.node_path)));
+
+                    // Increment y to account for ellipsis line
+                    self.layout.pos.y += 1;
                 }
+                // Transparent container: no additional spacing
             }
 
             DocumentNode::Conditional { show_when, nodes } => {
+                // Transparent container: doesn't add its own newlines
                 // Interactive renderer is always in interactive mode
                 let should_show = match show_when {
                     ShowWhen::Always => true,
@@ -425,10 +451,15 @@ impl<'a> InteractiveState<'a> {
                 };
 
                 if should_show {
-                    for node in nodes {
-                        self.render_node(node, area, buf, pos, path, left_margin);
+                    for (idx, node) in nodes.iter().enumerate() {
+                        // Add blank line between consecutive blocks
+                        if idx > 0 {
+                            self.layout.pos.y += 1;
+                        }
+                        self.render_node(node, buf);
                     }
                 }
+                // Transparent container: no additional spacing
             }
         }
     }

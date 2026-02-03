@@ -6,14 +6,33 @@ use std::borrow::Cow;
 #[derive(Debug, Clone)]
 pub enum TuiAction<'a> {
     /// Navigate to an already-loaded item (zero-cost since DocRef is Copy)
-    Navigate(DocRef<'a, Item>),
+    Navigate {
+        doc_ref: DocRef<'a, Item>,
+        /// Optional docs.rs URL for renderers that need it (e.g., TTY mode OSC8 links)
+        url: Option<Cow<'a, str>>,
+    },
     /// Navigate to an item by path (resolves lazily)
     /// Uses Cow to borrow from JSON when possible, avoiding allocation
-    NavigateToPath(Cow<'a, str>),
+    NavigateToPath {
+        path: Cow<'a, str>,
+        /// Optional docs.rs URL for renderers that need it (e.g., TTY mode OSC8 links)
+        url: Option<Cow<'a, str>>,
+    },
     /// Expand a truncated block (identified by index path into document tree)
     ExpandBlock(NodePath),
     /// Open an external URL in browser
-    OpenUrl(String),
+    OpenUrl(Cow<'a, str>),
+}
+
+impl<'a> TuiAction<'a> {
+    pub fn url(&self) -> Option<&str> {
+        match self {
+            TuiAction::Navigate { url, .. } => url.as_deref(),
+            TuiAction::NavigateToPath { url, .. } => url.as_deref(),
+            TuiAction::ExpandBlock(_) => None,
+            TuiAction::OpenUrl(cow) => Some(cow),
+        }
+    }
 }
 
 /// Path to a node in the document tree using indices
@@ -73,8 +92,8 @@ pub enum ShowWhen {
 /// A node in the documentation tree
 #[derive(Debug, Clone)]
 pub enum DocumentNode<'a> {
-    /// Inline styled text
-    Span(Span<'a>),
+    /// Block-level paragraph
+    Paragraph { spans: Vec<Span<'a>> },
 
     /// Block-level heading
     Heading {
@@ -91,20 +110,14 @@ pub enum DocumentNode<'a> {
     /// List of items
     List { items: Vec<ListItem<'a>> },
 
-    /// Code block with syntax highlighting
+    /// Code block with syntax highlighting (from markdown fenced blocks)
     CodeBlock {
         lang: Option<Cow<'a, str>>,
         code: Cow<'a, str>,
     },
 
-    /// Hyperlink
-    Link {
-        url: String,
-        text: Vec<Span<'a>>,
-        /// Optional link target for intra-doc links
-        /// Can be either a resolved DocRef (for same-crate items) or an unresolved path
-        target: Option<LinkTarget<'a>>,
-    },
+    /// Generated code with pre-styled spans (for signatures, etc.)
+    GeneratedCode { spans: Vec<Span<'a>> },
 
     /// Horizontal rule/divider
     HorizontalRule,
@@ -142,7 +155,6 @@ pub struct TableCell<'a> {
 /// A single item in a list
 #[derive(Debug, Clone)]
 pub struct ListItem<'a> {
-    pub label: Option<Vec<Span<'a>>>,
     pub content: Vec<DocumentNode<'a>>,
 }
 
@@ -170,6 +182,12 @@ pub struct Span<'a> {
     pub text: Cow<'a, str>,
     pub style: SpanStyle,
     pub action: Option<TuiAction<'a>>,
+}
+
+impl<'a> Span<'a> {
+    pub fn url(&self) -> Option<&str> {
+        self.action.as_ref()?.url()
+    }
 }
 
 /// Semantic styling categories for Rust code elements
@@ -331,14 +349,20 @@ impl<'a> Span<'a> {
     /// Attach a navigation action for an already-loaded item
     pub fn with_target(mut self, target: Option<DocRef<'a, Item>>) -> Self {
         if let Some(target) = target {
-            self.action = Some(TuiAction::Navigate(target));
+            self.action = Some(TuiAction::Navigate {
+                doc_ref: target,
+                url: None,
+            });
         }
         self
     }
 
     /// Attach a navigation action for an item path (resolved lazily)
     pub fn with_path(mut self, path: impl Into<Cow<'a, str>>) -> Self {
-        self.action = Some(TuiAction::NavigateToPath(path.into()));
+        self.action = Some(TuiAction::NavigateToPath {
+            path: path.into(),
+            url: None,
+        });
         self
     }
 }
@@ -359,41 +383,10 @@ impl<'a> Default for Document<'a> {
     }
 }
 
-// Ergonomic conversions for building Documents from Spans
-impl<'a> From<Span<'a>> for DocumentNode<'a> {
-    fn from(span: Span<'a>) -> Self {
-        DocumentNode::Span(span)
-    }
-}
-
-impl<'a> FromIterator<Span<'a>> for Document<'a> {
-    fn from_iter<T: IntoIterator<Item = Span<'a>>>(iter: T) -> Self {
-        Self {
-            nodes: iter.into_iter().map(DocumentNode::Span).collect(),
-        }
-    }
-}
-
 // Into<Document> conversions for ergonomic render() calls
-impl<'a> From<Vec<Span<'a>>> for Document<'a> {
-    fn from(spans: Vec<Span<'a>>) -> Self {
-        Self {
-            nodes: spans.into_iter().map(DocumentNode::Span).collect(),
-        }
-    }
-}
-
 impl<'a> From<Vec<DocumentNode<'a>>> for Document<'a> {
     fn from(nodes: Vec<DocumentNode<'a>>) -> Self {
         Self { nodes }
-    }
-}
-
-impl<'a> From<&'a [Span<'a>]> for Document<'a> {
-    fn from(spans: &'a [Span<'a>]) -> Self {
-        Self {
-            nodes: spans.iter().cloned().map(DocumentNode::Span).collect(),
-        }
     }
 }
 
@@ -405,25 +398,16 @@ impl<'a, 'b> From<&'b Document<'a>> for Document<'a> {
 
 impl<'a> ListItem<'a> {
     pub fn new(content: Vec<DocumentNode<'a>>) -> Self {
-        Self {
-            content,
-            label: None,
-        }
-    }
-
-    pub fn from_span(span: Span<'a>) -> Self {
-        Self::new(vec![DocumentNode::Span(span)])
-    }
-
-    pub fn labeled(label: Vec<Span<'a>>, content: Vec<DocumentNode<'a>>) -> Self {
-        Self {
-            label: Some(label),
-            content,
-        }
+        Self { content }
     }
 }
 
 impl<'a> DocumentNode<'a> {
+    /// Convenience constructor for a paragraph
+    pub fn paragraph(spans: Vec<Span<'a>>) -> Self {
+        DocumentNode::Paragraph { spans }
+    }
+
     /// Convenience constructor for a heading
     pub fn heading(level: HeadingLevel, spans: Vec<Span<'a>>) -> Self {
         DocumentNode::Heading { level, spans }
@@ -458,13 +442,9 @@ impl<'a> DocumentNode<'a> {
         }
     }
 
-    /// Convenience constructor for a link
-    pub fn link(url: String, text: Vec<Span<'a>>) -> Self {
-        DocumentNode::Link {
-            url,
-            text,
-            target: None,
-        }
+    /// Convenience constructor for generated code
+    pub fn generated_code(spans: Vec<Span<'a>>) -> Self {
+        DocumentNode::GeneratedCode { spans }
     }
 
     /// Convenience constructor for a horizontal rule
@@ -533,22 +513,12 @@ mod tests {
     }
 
     #[test]
-    fn test_document_creation() {
-        let doc = Document::with_nodes(vec![
-            DocumentNode::Span(Span::keyword("struct")),
-            DocumentNode::Span(Span::plain(" ")),
-            DocumentNode::Span(Span::type_name("Foo")),
-        ]);
-        assert_eq!(doc.nodes.len(), 3);
-    }
-
-    #[test]
     fn test_section() {
         let section = DocumentNode::section(
             vec![Span::plain("Fields:")],
             vec![DocumentNode::list(vec![
-                ListItem::from_span(Span::field_name("x")),
-                ListItem::from_span(Span::field_name("y")),
+                ListItem::new(vec![DocumentNode::paragraph(vec![Span::field_name("x")])]),
+                ListItem::new(vec![DocumentNode::paragraph(vec![Span::field_name("y")])]),
             ])],
         );
 
@@ -563,17 +533,17 @@ mod tests {
     #[test]
     fn test_list_items() {
         let list = DocumentNode::list(vec![
-            ListItem::new(vec![
-                DocumentNode::Span(Span::field_name("foo")),
-                DocumentNode::Span(Span::punctuation(":")),
-                DocumentNode::Span(Span::type_name("u32")),
-            ]),
-            ListItem::from_span(Span::field_name("bar")),
+            ListItem::new(vec![DocumentNode::paragraph(vec![
+                Span::field_name("foo"),
+                Span::punctuation(":"),
+                Span::type_name("u32"),
+            ])]),
+            ListItem::new(vec![DocumentNode::paragraph(vec![Span::field_name("bar")])]),
         ]);
 
         if let DocumentNode::List { items } = list {
             assert_eq!(items.len(), 2);
-            assert_eq!(items[0].content.len(), 3);
+            assert_eq!(items[0].content.len(), 1);
             assert_eq!(items[1].content.len(), 1);
         } else {
             panic!("Expected list node");
@@ -598,21 +568,6 @@ mod tests {
             assert_eq!(code, "fn main() {}");
         } else {
             panic!("Expected code block");
-        }
-    }
-
-    #[test]
-    fn test_link() {
-        let link = DocumentNode::link(
-            "https://example.com".to_string(),
-            vec![Span::plain("Click here")],
-        );
-
-        if let DocumentNode::Link { url, text, .. } = link {
-            assert_eq!(url, "https://example.com");
-            assert_eq!(text.len(), 1);
-        } else {
-            panic!("Expected link");
         }
     }
 }

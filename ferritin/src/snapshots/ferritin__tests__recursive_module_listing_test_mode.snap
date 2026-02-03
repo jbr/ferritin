@@ -1,0 +1,1507 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate\").recursive(), OutputMode :: TestMode)"
+---
+<p>
+<strong>Item:</strong> test_crate
+<strong>Kind:</strong> Module
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>test_crate</type-name>
+<strong>In crate:</strong> test-crate (0.1.0)</p>
+<truncated level="full"><p>
+A minimal test crate for rustdoc JSON testing</p>
+</truncated>
+<section><section-title>Modules</section-title><list>
+  <item><p>
+<type-name>link_resolution_tests</type-name> </p>
+<truncated level="single-line"><p>
+Module for testing intra-doc link resolution</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested</type-name> </p>
+<truncated level="single-line"><p>
+Nested module for testing scoped resolution</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::deeply_nested</type-name> </p>
+<truncated level="single-line"><p>
+Another nested module</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>markdown_test</type-name> </p>
+<truncated level="single-line"><title>Markdown: Syntax</title>
+ <elided chars="8712"/></truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod</type-name> </p>
+</item>
+  <item><p>
+<type-name>submodule</type-name> </p>
+<truncated level="single-line"><p>
+A module with items</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Structs</section-title><list>
+  <item><p>
+<type-name>GenericStruct</type-name> </p>
+<truncated level="single-line"><p>
+A generic struct for testing multi-paragraph documentation.</p>
+This struct and provides a <elided chars="401"/></truncated>
+</item>
+  <item><p>
+<type-name>SubStruct</type-name> </p>
+<truncated level="single-line"><p>
+A struct in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestStruct</type-name> </p>
+<truncated level="single-line"><p>
+A simple struct for testing basic functionality.</p>
+This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>
+</item>
+  <item><p>
+<type-name>TupleStruct</type-name> </p>
+<truncated level="single-line"><p>
+A tuple struct for testing</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>UnitStruct</type-name> </p>
+<truncated level="single-line"><p>
+A unit struct for testing</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>Vec</type-name> </p>
+<truncated level="single-line"><p>
+A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.</p>
+<title>Examples</title>
+ <elided chars="8583"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet</type-name> </p>
+<truncated level="single-line"><p>
+A hash set implemented as a <inline-code>HashMap</inline-code> where the value is <inline-code>()</inline-code>.</p>
+As with the <inline-code>HashMap</inline-code> type, a <inline-code>HashSet</inline-code> requires that the implement the <inline-code>Eq</inline-code> and <inline-code>Hash</inline-code> traits. This can using <inline-code>#[derive(PartialEq,</inline-code>. If you implement it is important that <elided chars="3216"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::LinkTestStruct</type-name> </p>
+<truncated level="single-line"><p>
+Struct in link test module</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::RenamedTestStruct</type-name> </p>
+<truncated level="single-line"><p>
+A simple struct for testing basic functionality.</p>
+This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::SubStruct</type-name> </p>
+<truncated level="single-line"><p>
+A struct in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree</type-name> </p>
+<truncated level="single-line"><p>
+An ordered map based on a B-Tree.</p>
+Given a key type with a total order, an ordered map stores its entries in key That means that keys must be of a type that<inline-code>Ord</inline-code> trait, such that two keys can always be compared to<inline-code>Ordering</inline-code>. Examples of keys with a total order are and numbers with their natural order. <elided chars="5721"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::NestedStruct</type-name> </p>
+<truncated level="single-line"><p>
+Struct in nested module</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str</type-name> </p>
+<truncated level="single-line"><p>
+A UTF-8–encoded, growable string.</p>
+<inline-code>String</inline-code> is the most common string type. It has of the string, stored in a heap-allocatedRepresentation). It is closely related to its borrowed<inline-code>str</inline-code>. <elided chars="6862"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::deeply_nested::DeepStruct</type-name> </p>
+<truncated level="single-line"><p>
+Struct in deeply nested module</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::SubStruct</type-name> </p>
+<truncated level="single-line"><p>
+A struct in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::SubStruct</type-name> </p>
+<truncated level="single-line"><p>
+A struct in a submodule</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Enums</section-title><list>
+  <item><p>
+<type-name>GenericEnum</type-name> </p>
+<truncated level="single-line"><p>
+A generic enum for testing</p>
+<p>
+See also <inline-code>crate::TestEnum</inline-code></p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestEnum</type-name> </p>
+<truncated level="single-line"><p>
+An enum for testing</p>
+<p>
+This is like <inline-code>crate::GenericEnum</inline-code> but without the generic</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::TestEnum</type-name> </p>
+<truncated level="single-line"><p>
+An enum for testing</p>
+<p>
+This is like <inline-code>crate::GenericEnum</inline-code> but without the generic</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::TestEnum</type-name> </p>
+<truncated level="single-line"><p>
+An enum for testing</p>
+<p>
+This is like <inline-code>crate::GenericEnum</inline-code> but without the generic</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Traits</section-title><list>
+  <item><p>
+<type-name>ComplexTrait</type-name> </p>
+<truncated level="single-line"><p>
+A more complex trait demonstrating various features</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestTrait</type-name> </p>
+<truncated level="single-line"><p>
+A trait for testing extremely long documentation that exceeds line limits.</p>
+This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::TestTrait</type-name> </p>
+<truncated level="single-line"><p>
+A trait for testing extremely long documentation that exceeds line limits.</p>
+This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
+</item>
+</list>
+</section><section><section-title>Functions</section-title><list>
+  <item><p>
+<type-name>SubStruct::double</type-name> </p>
+<truncated level="single-line"><p>
+Double the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>SubStruct::get_value</type-name> </p>
+<truncated level="single-line"><p>
+Get the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>SubStruct::new</type-name> </p>
+<truncated level="single-line"><p>
+Create a new SubStruct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestStruct::get_field</type-name> </p>
+<truncated level="single-line"><p>
+Get the field value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestStruct::increment_count</type-name> </p>
+<truncated level="single-line"><p>
+Update the count</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestStruct::new</type-name> </p>
+<truncated level="single-line"><p>
+Create a new TestStruct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>Vec::allocator</type-name> </p>
+<truncated level="single-line"><p>
+Returns a reference to the underlying allocator.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>Vec::append</type-name> </p>
+<truncated level="single-line"><p>
+Moves all the elements of <inline-code>other</inline-code> into <inline-code>self</inline-code>, leaving <inline-code>other</inline-code> empty.</p>
+<title>Panics</title>
+Panics if<inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>. <elided chars="189"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::as_mut_ptr</type-name> </p>
+<truncated level="single-line">Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer valid for zero sized reads if the vector didn't allocate. <elided chars="2164"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::as_mut_slice</type-name> </p>
+<truncated level="single-line"><p>
+Extracts a mutable slice of the entire vector.</p>
+<p>
+Equivalent to <inline-code>&mut s[..]</inline-code>.</p>
+<title>Examples</title>
+ <elided chars="116"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::as_non_null</type-name> </p>
+<truncated level="single-line">Returns a <inline-code>NonNull</inline-code> pointer to the vector's buffer, or a dangling <inline-code>NonNull</inline-code> pointer valid for zero sized reads if the vector didn't allocate. <elided chars="1478"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::as_ptr</type-name> </p>
+<truncated level="single-line">Returns a raw pointer to the vector's buffer, or a dangling raw pointer valid for zero sized reads if the vector didn't allocate. <elided chars="1581"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::as_slice</type-name> </p>
+<truncated level="single-line"><p>
+Extracts a slice containing the entire vector.</p>
+<p>
+Equivalent to <inline-code>&s[..]</inline-code>.</p>
+<title>Examples</title>
+ <elided chars="102"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::capacity</type-name> </p>
+<truncated level="single-line"><p>
+Returns the total number of elements the vector can hold without reallocating.</p>
+ <elided chars="350"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::clear</type-name> </p>
+<truncated level="single-line"><p>
+Clears the vector, removing all values.</p>
+Note that this method has no effect on of the vector. <elided chars="105"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::const_make_global</type-name> </p>
+<truncated level="single-line">Interns the <inline-code>Vec<T></inline-code>, making the underlying memory read-only. This method should be called during compile time. (This is a no-op if called during runtime) <elided chars="174"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::dedup</type-name> </p>
+<truncated level="single-line">Removes consecutive repeated elements in the vector according to the <inline-code>PartialEq</inline-code> trait implementation. <elided chars="161"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::dedup_by</type-name> </p>
+<truncated level="single-line">Removes all but the first of consecutive elements in the vector satisfying a relation. <elided chars="485"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::dedup_by_key</type-name> </p>
+<truncated level="single-line">Removes all but the first of consecutive elements in the vector that resolve to key. <elided chars="181"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::drain</type-name> </p>
+<truncated level="single-line">Removes the subslice indicated by the given range from the vector, returning a double-ended iterator over the removed subslice. <elided chars="774"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::extend_from_slice</type-name> </p>
+<truncated level="single-line"><p>
+Clones and appends all elements in a slice to the <inline-code>Vec</inline-code>.</p>
+Iterates over the slice <inline-code>other</inline-code>, clones each element, it to this <inline-code>Vec</inline-code>. The <inline-code>other</inline-code> slice is traversed <elided chars="433"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::extend_from_within</type-name> </p>
+<truncated level="single-line">Given a range <inline-code>src</inline-code>, clones a slice of elements in that range and appends it to the end. <elided chars="696"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::extract_if</type-name> </p>
+<truncated level="single-line">Creates an iterator which uses a closure to determine if an element in the <elided chars="1872"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::from_fn</type-name> </p>
+<truncated level="single-line">Creates a <inline-code>Vec<T></inline-code> where each element is produced by calling <inline-code>f</inline-code> with that element's index while walking forward through the <inline-code>Vec<T></inline-code>. <elided chars="987"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::from_parts</type-name> </p>
+<truncated level="single-line"><p>
+Creates a <inline-code>Vec<T></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, and a capacity.</p>
+ <elided chars="2885"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::from_parts_in</type-name> </p>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2868"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::from_raw_parts</type-name> </p>
+<truncated level="single-line"><p>
+Creates a <inline-code>Vec<T></inline-code> directly from a pointer, a length, and a capacity.</p>
+<title>Safety</title>
+This checked <elided chars="3067"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::from_raw_parts_in</type-name> </p>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator. <elided chars="2866"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::insert</type-name> </p>
+<truncated level="single-line">Inserts an element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the right. <elided chars="392"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::insert_mut</type-name> </p>
+<truncated level="single-line">Inserts an element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the right, and returning a reference to the new element. <elided chars="385"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::into_boxed_slice</type-name> </p>
+<truncated level="single-line"><p>
+Converts the vector into <inline-code>Box<[T]></inline-code>.</p>
+Before doing the conversion, this method<inline-code>shrink_to_fit</inline-code>. <elided chars="307"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::into_chunks</type-name> </p>
+<truncated level="single-line">Groups every <inline-code>N</inline-code> elements in the <inline-code>Vec<T></inline-code> into chunks to produce a <inline-code>Vec<[T; N]></inline-code>, dropping elements in the remainder. <inline-code>N</inline-code> must be greater than zero. <elided chars="649"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::into_flattened</type-name> </p>
+<truncated level="single-line"><p>
+Takes a <inline-code>Vec<[T; N]></inline-code> and flattens it into a <inline-code>Vec<T></inline-code>.</p>
+<title>Panics</title>
+Panics if the length of<inline-code>usize</inline-code>. <elided chars="393"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::into_parts</type-name> </p>
+<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity)</inline-code>. <elided chars="862"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::into_parts_with_alloc</type-name> </p>
+<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity, allocator)</inline-code>. <elided chars="1013"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::into_raw_parts</type-name> </p>
+<truncated level="single-line"><p>
+Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(pointer, length, capacity)</inline-code>.</p>
+Returns the data order<inline-code>from_ra</inline-code>. <elided chars="1010"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::into_raw_parts_with_alloc</type-name> </p>
+<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(pointer, length, capacity, allocator)</inline-code>. <elided chars="993"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::is_empty</type-name> </p>
+<truncated level="single-line"><p>
+Returns <inline-code>true</inline-code> if the vector contains no elements.</p>
+<title>Examples</title>
+ <elided chars="58"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::leak</type-name> </p>
+<truncated level="single-line">Consumes and leaks the <inline-code>Vec</inline-code>, returning a mutable reference to the contents, <inline-code>&'a mut [T]</inline-code>. <elided chars="616"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::len</type-name> </p>
+<truncated level="single-line"><p>
+Returns the number of elements in the vector, also referred to as its 'length'.</p>
+ <elided chars="53"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::new</type-name> </p>
+<truncated level="single-line"><p>
+Constructs a new, empty <inline-code>Vec<T></inline-code>.</p>
+The vector will not allocate until elements are <elided chars="57"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::new_in</type-name> </p>
+<truncated level="single-line"><p>
+Constructs a new, empty <inline-code>Vec<T, A></inline-code>.</p>
+The vector will not allocate until elements <elided chars="125"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::peek_mut</type-name> </p>
+<truncated level="single-line">Returns a mutable reference to the last item in the vector, or <inline-code>None</inline-code> if it is empty. <elided chars="273"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::pop</type-name> </p>
+<truncated level="single-line"><p>
+Removes the last element from a vector and returns it, or <inline-code>None</inline-code> if it is empty.</p>
+If <inline-code>Ve</inline-code> <elided chars="205"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::pop_if</type-name> </p>
+<truncated level="single-line">Removes and returns the last element from a vector if the predicate returns <inline-code>true</inline-code>, or <inline-code>None</inline-code> if the predicate returns false or the vector is empty (the predicate will not be called in that case). <elided chars="293"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::push</type-name> </p>
+<truncated level="single-line"><p>
+Appends an element to the back of a collection.</p>
+<title>Panics</title>
+Panics if the new capacity<inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>. <elided chars="363"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::push_mut</type-name> </p>
+<truncated level="single-line"><p>
+Appends an element to the back of a collection, returning a reference to it.</p>
+ <elided chars="501"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::push_within_capacity</type-name> </p>
+<truncated level="single-line">Appends an element and returns a reference to it if there is sufficient spare otherwise an error is returned with the element. <elided chars="874"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::recycle</type-name> </p>
+<truncated level="single-line">This clears out this <inline-code>Vec</inline-code> and recycles the allocation into a new <inline-code>Vec</inline-code>. The item type of the resulting <inline-code>Vec</inline-code> needs to have the same size and alignment as the item type of the original <inline-code>Vec</inline-code>. <elided chars="1144"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::remove</type-name> </p>
+<truncated level="single-line">Removes and returns the element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the left. <elided chars="453"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::reserve</type-name> </p>
+<truncated level="single-line">Reserves capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the given <inline-code>Vec<T></inline-code>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling <inline-code>reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if capacity is already sufficient. <elided chars="370"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::reserve_exact</type-name> </p>
+<truncated level="single-line">Reserves the minimum capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the given <inline-code>Vec<T></inline-code>. Unlike <inline-code>reserve</inline-code>, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling <inline-code>reserve_exact</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if the capacity is already sufficient. <elided chars="609"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::resize</type-name> </p>
+<truncated level="single-line"><p>
+Resizes the <inline-code>Vec</inline-code> in-place so that <inline-code>len</inline-code> is equal to <inline-code>new_len</inline-code>.</p>
+If <inline-code>new_len</inline-code> is greater than <inline-code>len</inline-code>, the <inline-code>Vec</inline-code> is extended by the difference, with each<inline-code>value</inline-code>. If <inline-code>new_len</inline-code> is less than <inline-code>len</inline-code>, the <inline-code>Vec</inline-code> is simply truncated. <elided chars="656"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::resize_with</type-name> </p>
+<truncated level="single-line"><p>
+Resizes the <inline-code>Vec</inline-code> in-place so that <inline-code>len</inline-code> is equal to <inline-code>new_len</inline-code>.</p>
+If <inline-code>new_len</inline-code> is greater than <inline-code>len</inline-code>, the <inline-code>Vec</inline-code> is extended by the difference, with each calling the closure <inline-code>f</inline-code>. The return values<inline-code>f</inline-code> will end up in the <inline-code>Vec</inline-code> in the order they <elided chars="767"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::retain</type-name> </p>
+<truncated level="single-line"><p>
+Retains only the elements specified by the predicate.</p>
+In other words, remove all<inline-code>e</inline-code> for which <inline-code>f(&e)</inline-code> returns <inline-code>false</inline-code>. This method operates in original order, and <elided chars="576"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::retain_mut</type-name> </p>
+<truncated level="single-line">Retains only the elements specified by the predicate, passing a mutable <elided chars="363"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::set_len</type-name> </p>
+<truncated level="single-line"><p>
+Forces the length of the vector to <inline-code>new_len</inline-code>.</p>
+This is a low-level operation that invariants of the type. Normally is done using one of the safe <inline-code>truncate</inline-code>, <inline-code>resize</inline-code>, <inline-code>extend</inline-code>, or <inline-code>clear</inline-code>. <elided chars="1767"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::shrink_to</type-name> </p>
+<truncated level="single-line"><p>
+Shrinks the capacity of the vector with a lower bound.</p>
+The capacity will remain and the supplied value. <elided chars="324"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::shrink_to_fit</type-name> </p>
+<truncated level="single-line"><p>
+Shrinks the capacity of the vector as much as possible.</p>
+The behavior of this in-place or reallocate. is the case for <inline-code>with_capacity</inline-code>. See <inline-code>Allocator::shrink</inline-code> for more details. <elided chars="376"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::spare_capacity_mut</type-name> </p>
+<truncated level="single-line"><p>
+Returns the remaining spare capacity of the vector as a slice of <inline-code>MaybeUninit<T></inline-code>.</p>
+ <elided chars="499"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::splice</type-name> </p>
+<truncated level="single-line">Creates a splicing iterator that replaces the specified range in the vector with the given <inline-code>replace_with</inline-code> iterator and yields the removed items. <inline-code>replace_with</inline-code> does not need to be the same length as <inline-code>range</inline-code>. <elided chars="1135"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::split_at_spare_mut</type-name> </p>
+<truncated level="single-line">Returns vector content as a slice of <inline-code>T</inline-code>, along with the remaining spare capacity of the vector as a slice of <inline-code>MaybeUninit<T></inline-code>. <elided chars="999"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::split_off</type-name> </p>
+<truncated level="single-line"><p>
+Splits the collection into two at the given index.</p>
+Returns a newly allocated <inline-code>[at, len)</inline-code>. After the call, the the elements <inline-code>[0, at)</inline-code> with its previous capacity <elided chars="635"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::swap_remove</type-name> </p>
+<truncated level="single-line"><p>
+Removes an element from the vector and returns it.</p>
+The removed element is <elided chars="407"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::truncate</type-name> </p>
+<truncated level="single-line"><p>
+Shortens the vector, keeping the first <inline-code>len</inline-code> elements and dropping the rest.</p>
+If <inline-code>len</inline-code> is no <elided chars="665"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::try_remove</type-name> </p>
+<truncated level="single-line">Remove and return the element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the left, or <inline-code>None</inline-code> if it does not exist. <elided chars="398"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::try_reserve</type-name> </p>
+<truncated level="single-line">Tries to reserve capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the given <inline-code>Vec<T></inline-code>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling <inline-code>try_reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if capacity is already sufficient. This method preserves the contents even if an error occurs. <elided chars="839"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::try_reserve_exact</type-name> </p>
+<truncated level="single-line">Tries to reserve the minimum capacity for at least <inline-code>additional</inline-code> elements to be inserted in the given <inline-code>Vec<T></inline-code>. Unlike <inline-code>try_reserve</inline-code>, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling <inline-code>try_reserve_exact</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if the capacity is already sufficient. <elided chars="1021"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::try_with_capacity</type-name> </p>
+<truncated level="single-line"><p>
+Constructs a new, empty <inline-code>Vec<T></inline-code> with at least the specified capacity.</p>
+The vector<inline-code>capacity</inline-code> elements reallocating <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, <elided chars="299"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::try_with_capacity_in</type-name> </p>
+<truncated level="single-line">Constructs a new, empty <inline-code>Vec<T, A></inline-code> with at least the specified capacity with the provided allocator. <elided chars="330"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::with_capacity</type-name> </p>
+<truncated level="single-line"><p>
+Constructs a new, empty <inline-code>Vec<T></inline-code> with at least the specified capacity.</p>
+The vector<inline-code>capacity</inline-code> elements reallocating <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, <elided chars="1321"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::with_capacity_in</type-name> </p>
+<truncated level="single-line">Constructs a new, empty <inline-code>Vec<T, A></inline-code> with at least the specified capacity with the provided allocator. <elided chars="1438"/></truncated>
+</item>
+  <item><p>
+<type-name>async_function</type-name> </p>
+<truncated level="single-line"><p>
+An async function</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generic_function</type-name> </p>
+<truncated level="single-line"><p>
+A generic function</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::capacity</type-name> </p>
+<truncated level="single-line"><p>
+Returns the number of elements the set can hold without reallocating.</p>
+<title>Examples</title>
+ <elided chars="112"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::clear</type-name> </p>
+<truncated level="single-line"><p>
+Clears the set, removing all values.</p>
+<title>Examples</title>
+ <elided chars="70"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::contains</type-name> </p>
+<truncated level="single-line"><p>
+Returns <inline-code>true</inline-code> if the set contains a value.</p>
+The value may be any borrowed form of <inline-code>Hash</inline-code> and <inline-code>Eq</inline-code> on the borrowed form <emphasis>must</emphasis> match those for the value type. <elided chars="242"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::difference</type-name> </p>
+<truncated level="single-line">Visits the values representing the difference, i.e., the values that are in <inline-code>self</inline-code> but not in <inline-code>other</inline-code>. <elided chars="480"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::drain</type-name> </p>
+<truncated level="single-line">Clears the set, returning all elements as an iterator. Keeps the allocated memory for reuse. <elided chars="414"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::entry</type-name> </p>
+<truncated level="single-line"><p>
+Gets the given value's corresponding entry in the set for in-place manipulation.</p>
+ <elided chars="956"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::extract_if</type-name> </p>
+<truncated level="single-line">Creates an iterator which uses a closure to determine if an element should be <elided chars="862"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::get</type-name> </p>
+<truncated level="single-line">Returns a reference to the value in the set, if any, that is equal to the given <elided chars="280"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::get_or_insert</type-name> </p>
+<truncated level="single-line">Inserts the given <inline-code>value</inline-code> into the set if it is not present, then returns a reference to the value in the set. <elided chars="288"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::get_or_insert_with</type-name> </p>
+<truncated level="single-line">Inserts a value computed from <inline-code>f</inline-code> into the set if the given <inline-code>value</inline-code> is not present, then returns a reference to the value in the set. <elided chars="432"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::hasher</type-name> </p>
+<truncated level="single-line"><p>
+Returns a reference to the set's <inline-code>BuildHasher</inline-code>.</p>
+<title>Examples</title>
+ <elided chars="160"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::insert</type-name> </p>
+<truncated level="single-line"><p>
+Adds a value to the set.</p>
+<p>
+Returns whether the value was newly inserted. That is:</p>
+ <elided chars="393"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::intersection</type-name> </p>
+<truncated level="single-line">Visits the values representing the intersection, i.e., the values that are both in <inline-code>self</inline-code> and <inline-code>other</inline-code>. <elided chars="623"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::is_disjoint</type-name> </p>
+<truncated level="single-line">Returns <inline-code>true</inline-code> if <inline-code>self</inline-code> has no elements in common with <inline-code>other</inline-code>. This is equivalent to checking for an empty intersection. <elided chars="276"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::is_empty</type-name> </p>
+<truncated level="single-line"><p>
+Returns <inline-code>true</inline-code> if the set contains no elements.</p>
+<title>Examples</title>
+ <elided chars="92"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::is_subset</type-name> </p>
+<truncated level="single-line">Returns <inline-code>true</inline-code> if the set is a subset of another, i.e., <inline-code>other</inline-code> contains at least all the values in <inline-code>self</inline-code>. <elided chars="275"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::is_superset</type-name> </p>
+<truncated level="single-line">Returns <inline-code>true</inline-code> if the set is a superset of another, i.e., <inline-code>self</inline-code> contains at least all the values in <inline-code>other</inline-code>. <elided chars="298"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::iter</type-name> </p>
+<truncated level="single-line">An iterator visiting all elements in arbitrary order. The iterator element type is <inline-code>&'a T</inline-code>. <elided chars="343"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::len</type-name> </p>
+<truncated level="single-line"><p>
+Returns the number of elements in the set.</p>
+<title>Examples</title>
+ <elided chars="90"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::new</type-name> </p>
+<truncated level="single-line"><p>
+Creates an empty <inline-code>HashSet</inline-code>.</p>
+The hash set is initially created with a capacity of is first inserted into. <elided chars="135"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::new_in</type-name> </p>
+<truncated level="single-line"><p>
+Creates an empty <inline-code>HashSet</inline-code> in the provided allocator.</p>
+The hash set is initially is first inserted into. <elided chars="83"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::remove</type-name> </p>
+<truncated level="single-line"><p>
+Removes a value from the set. Returns whether the value was present in the set.</p>
+T <inline-code>H</inline-code><inline-code>E</inline-code><emphasis>m</emphasis> t <elided chars="286"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::replace</type-name> </p>
+<truncated level="single-line">Adds a value to the set, replacing the existing value, if any, that is equal to one. Returns the replaced value. <elided chars="287"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::reserve</type-name> </p>
+<truncated level="single-line">Reserves capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the <inline-code>HashSet</inline-code>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling <inline-code>reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if capacity is already sufficient. <elided chars="415"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::retain</type-name> </p>
+<truncated level="single-line"><p>
+Retains only the elements specified by the predicate.</p>
+In other words, remove all<inline-code>e</inline-code> for which <inline-code>f(&e)</inline-code> returns <inline-code>false</inline-code>. The elements are visited <elided chars="408"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::shrink_to</type-name> </p>
+<truncated level="single-line">Shrinks the capacity of the set with a lower limit. It will drop down no lower than the supplied limit while maintaining the internal rules and possibly leaving some space in accordance with the resize policy. <elided chars="441"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::shrink_to_fit</type-name> </p>
+<truncated level="single-line">Shrinks the capacity of the set as much as possible. It will drop down as much as possible while maintaining the internal rules and possibly leaving some space in accordance with the resize policy. <elided chars="312"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::symmetric_difference</type-name> </p>
+<truncated level="single-line">Visits the values representing the symmetric difference, i.e., the values that are in <inline-code>self</inline-code> or in <inline-code>other</inline-code> but not in both. <elided chars="440"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::take</type-name> </p>
+<truncated level="single-line">Removes and returns the value in the set, if any, that is equal to the given <elided chars="280"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::try_reserve</type-name> </p>
+<truncated level="single-line">Tries to reserve capacity for at least <inline-code>additional</inline-code> more elements to be inserted in the <inline-code>HashSet</inline-code>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling <inline-code>try_reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if capacity is already sufficient. <elided chars="524"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::union</type-name> </p>
+<truncated level="single-line">Visits the values representing the union, i.e., all the values in <inline-code>self</inline-code> or <inline-code>other</inline-code>, without duplicates. <elided chars="314"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::with_capacity</type-name> </p>
+<truncated level="single-line"><p>
+Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity.</p>
+The hash set will<inline-code>capacity</inline-code> elements without reallocating. <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the <elided chars="306"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::with_capacity_and_hasher</type-name> </p>
+<truncated level="single-line">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity, using <inline-code>hasher</inline-code> to hash the keys. <elided chars="743"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::with_capacity_and_hasher_in</type-name> </p>
+<truncated level="single-line">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity, using <inline-code>hasher</inline-code> to hash the keys and <inline-code>alloc</inline-code> to allocate memory. <elided chars="606"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::with_capacity_in</type-name> </p>
+<truncated level="single-line"><p>
+Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity.</p>
+The hash set will<inline-code>capacity</inline-code> elements without reallocating. <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the <elided chars="306"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::with_hasher</type-name> </p>
+<truncated level="single-line"><p>
+Creates a new empty hash set which will use the given hasher to hash keys.</p>
+The <elided chars="567"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::HashSet::with_hasher_in</type-name> </p>
+<truncated level="single-line">Creates a new empty hash set which will use the given hasher to hash keys and will allocate memory using the provided allocator. <elided chars="472"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::LinkTestStruct::get_data</type-name> </p>
+<truncated level="single-line"><p>
+Another method</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::LinkTestStruct::new</type-name> </p>
+<truncated level="single-line"><p>
+Method for testing Self resolution</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::RenamedTestStruct::get_field</type-name> </p>
+<truncated level="single-line"><p>
+Get the field value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::RenamedTestStruct::increment_count</type-name> </p>
+<truncated level="single-line"><p>
+Update the count</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::RenamedTestStruct::new</type-name> </p>
+<truncated level="single-line"><p>
+Create a new TestStruct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::SubStruct::double</type-name> </p>
+<truncated level="single-line"><p>
+Double the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::SubStruct::get_value</type-name> </p>
+<truncated level="single-line"><p>
+Get the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::SubStruct::new</type-name> </p>
+<truncated level="single-line"><p>
+Create a new SubStruct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::append</type-name> </p>
+<truncated level="single-line"><p>
+Moves all elements from <inline-code>other</inline-code> into <inline-code>self</inline-code>, leaving <inline-code>other</inline-code> empty.</p>
+If a key from <inline-code>other</inline-code> is already<inline-code>self</inline-code>, the respective value from <inline-code>self</inline-code> will be<inline-code>other</inline-code>. Similar to <inline-code>insert</inline-code>, though, the key which matters for<inline-code>==</inline-code> without being <elided chars="739"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::clear</type-name> </p>
+<truncated level="single-line"><p>
+Clears the map, removing all elements.</p>
+<title>Examples</title>
+ <elided chars="79"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::contains_key</type-name> </p>
+<truncated level="single-line"><p>
+Returns <inline-code>true</inline-code> if the map contains a value for the specified key.</p>
+The key may be on the borrowed<emphasis>must</emphasis> match the <elided chars="289"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::entry</type-name> </p>
+<truncated level="single-line"><p>
+Gets the given key's corresponding entry in the map for in-place manipulation.</p>
+ <elided chars="341"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::extract_if</type-name> </p>
+<truncated level="single-line">Creates an iterator that visits elements (key-value pairs) in the specified ascending key order and uses a closure to determine if an element should be removed. <elided chars="1488"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::first_entry</type-name> </p>
+<truncated level="single-line">Returns the first entry in the map for in-place manipulation. The key of this entry is the minimum key in the map. <elided chars="339"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::first_key_value</type-name> </p>
+<truncated level="single-line">Returns the first key-value pair in the map. The key in this pair is the minimum key in the map. <elided chars="221"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::get</type-name> </p>
+<truncated level="single-line"><p>
+Returns a reference to the value corresponding to the key.</p>
+The key may be any on the borrowed form <emphasis>must</emphasis> match the ordering <elided chars="271"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::get_key_value</type-name> </p>
+<truncated level="single-line">Returns the key-value pair corresponding to the supplied key. This is potentially useful: <elided chars="1272"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::get_mut</type-name> </p>
+<truncated level="single-line"><p>
+Returns a mutable reference to the value corresponding to the key.</p>
+The key may on the<emphasis>must</emphasis> match the <elided chars="288"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::insert</type-name> </p>
+<truncated level="single-line"><p>
+Inserts a key-value pair into the map.</p>
+If the map did not have this key present, <inline-code>None</inline-code> is returned. <elided chars="485"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::into_keys</type-name> </p>
+<truncated level="single-line">Creates a consuming iterator visiting all the keys, in sorted order. The map cannot be used after calling this. The iterator element type is <inline-code>K</inline-code>. <elided chars="241"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::into_values</type-name> </p>
+<truncated level="single-line">Creates a consuming iterator visiting all the values, in order by key. The map cannot be used after calling this. The iterator element type is <inline-code>V</inline-code>. <elided chars="274"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::is_empty</type-name> </p>
+<truncated level="single-line"><p>
+Returns <inline-code>true</inline-code> if the map contains no elements.</p>
+<title>Examples</title>
+ <elided chars="99"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::iter</type-name> </p>
+<truncated level="single-line"><p>
+Gets an iterator over the entries of the map, sorted by key.</p>
+<title>Examples</title>
+ <elided chars="289"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::iter_mut</type-name> </p>
+<truncated level="single-line"><p>
+Gets a mutable iterator over the entries of the map, sorted by key.</p>
+<title>Examples</title>
+ <elided chars="234"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::keys</type-name> </p>
+<truncated level="single-line"><p>
+Gets an iterator over the keys of the map, in sorted order.</p>
+<title>Examples</title>
+ <elided chars="159"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::last_entry</type-name> </p>
+<truncated level="single-line">Returns the last entry in the map for in-place manipulation. The key of this entry is the maximum key in the map. <elided chars="335"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::last_key_value</type-name> </p>
+<truncated level="single-line">Returns the last key-value pair in the map. The key in this pair is the maximum key in the map. <elided chars="178"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::len</type-name> </p>
+<truncated level="single-line"><p>
+Returns the number of elements in the map.</p>
+<title>Examples</title>
+ <elided chars="97"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::lower_bound</type-name> </p>
+<truncated level="single-line">Returns a <inline-code>Cursor</inline-code> pointing at the gap before the smallest key greater than the given bound. <elided chars="954"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::lower_bound_mut</type-name> </p>
+<truncated level="single-line">Returns a <inline-code>CursorMut</inline-code> pointing at the gap before the smallest key greater than the given bound. <elided chars="1005"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::new</type-name> </p>
+<truncated level="single-line"><p>
+Makes a new, empty <inline-code>BTreeMap</inline-code>.</p>
+<p>
+Does not allocate anything on its own.</p>
+<title>Examples</title>
+ <elided chars="128"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::new_in</type-name> </p>
+<truncated level="single-line"><p>
+Makes a new empty BTreeMap with a reasonable choice for B.</p>
+<title>Examples</title>
+ <elided chars="153"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::pop_first</type-name> </p>
+<truncated level="single-line">Removes and returns the first element in the map. The key of this element is the minimum key that was in the map. <elided chars="348"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::pop_last</type-name> </p>
+<truncated level="single-line">Removes and returns the last element in the map. The key of this element is the maximum key that was in the map. <elided chars="347"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::range</type-name> </p>
+<truncated level="single-line">Constructs a double-ended iterator over a sub-range of elements in the map. The simplest way is to use the range syntax <inline-code>min..max</inline-code>, thus <inline-code>range(min..max)</inline-code> will yield elements from min (inclusive) to max (exclusive). The range may also be entered as <inline-code>(Bound<T>, Bound<T>)</inline-code>, so for example <inline-code>range((Excluded(4), Included(10)))</inline-code> will yield a left-exclusive, right-inclusive range from 4 to 10. <elided chars="707"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::range_mut</type-name> </p>
+<truncated level="single-line">Constructs a mutable double-ended iterator over a sub-range of elements in the The simplest way is to use the range syntax <inline-code>min..max</inline-code>, thus <inline-code>range(min..max)</inline-code> will yield elements from min (inclusive) to max (exclusive). The range may also be entered as <inline-code>(Bound<T>, Bound<T>)</inline-code>, so for example <inline-code>range((Excluded(4), Included(10)))</inline-code> will yield a left-exclusive, right-inclusive range from 4 to 10. <elided chars="688"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::remove</type-name> </p>
+<truncated level="single-line">Removes a key from the map, returning the value at the key if the key was previously in the map. <elided chars="314"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::remove_entry</type-name> </p>
+<truncated level="single-line">Removes a key from the map, returning the stored key and value if the key was previously in the map. <elided chars="335"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::retain</type-name> </p>
+<truncated level="single-line"><p>
+Retains only the elements specified by the predicate.</p>
+In other words, remove all<inline-code>(k, v)</inline-code> for which <inline-code>f(&k, &mut v)</inline-code> returns <inline-code>false</inline-code>. The elements are visited <elided chars="364"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::split_off</type-name> </p>
+<truncated level="single-line">Splits the collection into two at the given key. Returns everything after the including the key. If the key is not present, the split will occur at the greater key, or return an empty map if no such key exists. <elided chars="509"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::try_insert</type-name> </p>
+<truncated level="single-line">Tries to insert a key-value pair into the map, and returns a mutable reference to the value in the entry. <elided chars="453"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::upper_bound</type-name> </p>
+<truncated level="single-line">Returns a <inline-code>Cursor</inline-code> pointing at the gap after the greatest key smaller than the given bound. <elided chars="950"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::upper_bound_mut</type-name> </p>
+<truncated level="single-line">Returns a <inline-code>CursorMut</inline-code> pointing at the gap after the greatest key smaller than the given bound. <elided chars="1001"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::values</type-name> </p>
+<truncated level="single-line"><p>
+Gets an iterator over the values of the map, in order by key.</p>
+<title>Examples</title>
+ <elided chars="194"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::values_mut</type-name> </p>
+<truncated level="single-line"><p>
+Gets a mutable iterator over the values of the map, in order by key.</p>
+<title>Examples</title>
+ <elided chars="339"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::NestedStruct::new</type-name> </p>
+<truncated level="single-line"><p>
+Create new NestedStruct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::as_bytes</type-name> </p>
+<truncated level="single-line"><p>
+Returns a byte slice of this <inline-code>String</inline-code>'s contents.</p>
+The inverse of this method is <inline-code>from_utf8</inline-code>. <elided chars="100"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::as_mut_str</type-name> </p>
+<truncated level="single-line"><p>
+Converts a <inline-code>String</inline-code> into a mutable string slice.</p>
+<title>Examples</title>
+ <elided chars="110"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::as_mut_vec</type-name> </p>
+<truncated level="single-line"><p>
+Returns a mutable reference to the contents of this <inline-code>String</inline-code>.</p>
+<title>Safety</title>
+This function<inline-code>&mut Vec</inline-code> allows writing bytes which the original <inline-code>String</inline-code> after<inline-code>&mut Vec</inline-code> may violate safety, as the<inline-code>String</inline-code>s are valid UTF-8. <elided chars="459"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::as_str</type-name> </p>
+<truncated level="single-line"><p>
+Extracts a string slice containing the entire <inline-code>String</inline-code>.</p>
+<title>Examples</title>
+ <elided chars="41"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::capacity</type-name> </p>
+<truncated level="single-line"><p>
+Returns this <inline-code>String</inline-code>'s capacity, in bytes.</p>
+<title>Examples</title>
+ <elided chars="33"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::clear</type-name> </p>
+<truncated level="single-line"><p>
+Truncates this <inline-code>String</inline-code>, removing all contents.</p>
+While this means the <inline-code>String</inline-code> will have a length of zero, it touch its capacity. <elided chars="181"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::drain</type-name> </p>
+<truncated level="single-line">Removes the specified range from the string in bulk, returning all removed characters as an iterator. <elided chars="863"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::extend_from_within</type-name> </p>
+<truncated level="single-line"><p>
+Copies elements from <inline-code>src</inline-code> range to the end of the string.</p>
+<title>Panics</title>
+Panics if the<inline-code>start_bound ></inline-code>, if the range is bounded on either<inline-code>char</inline-code> boundary, or if new capacity<inline-code>isize::MAX</inline-code> bytes. <elided chars="405"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_raw_parts</type-name> </p>
+<truncated level="single-line"><p>
+Creates a new <inline-code>String</inline-code> from a pointer, a length and a capacity.</p>
+<title>Safety</title>
+This is checked: <elided chars="955"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf16</type-name> </p>
+<truncated level="single-line">Decode a native endian UTF-16–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <inline-code>Err</inline-code> if <inline-code>v</inline-code> contains any invalid data. <elided chars="348"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf16_lossy</type-name> </p>
+<truncated level="single-line">Decode a native endian UTF-16–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with the replacement character (<inline-code>U+FFFD</inline-code>). <elided chars="436"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf16be</type-name> </p>
+<truncated level="single-line">Decode a UTF-16BE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <inline-code>Err</inline-code> if <inline-code>v</inline-code> contains any invalid data. <elided chars="443"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf16be_lossy</type-name> </p>
+<truncated level="single-line">Decode a UTF-16BE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with the replacement character (<inline-code>U+FFFD</inline-code>). <elided chars="511"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf16le</type-name> </p>
+<truncated level="single-line">Decode a UTF-16LE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <inline-code>Err</inline-code> if <inline-code>v</inline-code> contains any invalid data. <elided chars="443"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf16le_lossy</type-name> </p>
+<truncated level="single-line">Decode a UTF-16LE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with the replacement character (<inline-code>U+FFFD</inline-code>). <elided chars="511"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf8</type-name> </p>
+<truncated level="single-line"><p>
+Converts a vector of bytes to a <inline-code>String</inline-code>.</p>
+A string (<inline-code>String</inline-code>) is made of bytes (<inline-code>u8</inline-code>), and a vector of bytes (<inline-code>Vec<u8></inline-code>) is made of bytes, so this function two. Not all byte slices are valid <inline-code>String</inline-code>s, however: <inline-code>String</inline-code> requires that it is valid UTF-8. <inline-code>from_utf8()</inline-code> checks to ensure that the bytes are valid UTF-8, and then does <elided chars="1308"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf8_lossy</type-name> </p>
+<truncated level="single-line"><p>
+Converts a slice of bytes to a string, including invalid characters.</p>
+Strings are<inline-code>u8</inline-code>), and a (<inline-code>&[u8]</inline-code>) is made between the are <inline-code>from_utf8_lo</inline-code> will <inline-code>U+FFFD</inline-code>, which <elided chars="1229"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf8_lossy_owned</type-name> </p>
+<truncated level="single-line">Converts a <inline-code>Vec<u8></inline-code> to a <inline-code>String</inline-code>, substituting invalid UTF-8 sequences with replacement characters. <elided chars="624"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf8_unchecked</type-name> </p>
+<truncated level="single-line">Converts a vector of bytes to a <inline-code>String</inline-code> without checking that the string contains valid UTF-8. <elided chars="534"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::insert</type-name> </p>
+<truncated level="single-line"><p>
+Inserts a character into this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code>.</p>
+Reallocates if <inline-code>self.capacity()</inline-code> is insufficient, <inline-code>self.capacity()</inline-code> bytes. Makes space <inline-code>&self[idx..]</inline-code> to new positions. <elided chars="449"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::insert_str</type-name> </p>
+<truncated level="single-line"><p>
+Inserts a string slice into this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code>.</p>
+Reallocates if <inline-code>self.capacity()</inline-code> is insufficient, <inline-code>self.capacity()</inline-code> bytes. Makes <inline-code>&self[idx..]</inline-code> to new positions. <elided chars="420"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::into_boxed_str</type-name> </p>
+<truncated level="single-line"><p>
+Converts this <inline-code>String</inline-code> into a Box<str>.</p>
+Before doing the conversion, this method<inline-code>shrink_to_fit</inline-code>. Note that this call may reallocate and <elided chars="178"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::into_bytes</type-name> </p>
+<truncated level="single-line"><p>
+Converts a <inline-code>String</inline-code> into a byte vector.</p>
+This consumes the <inline-code>String</inline-code>, so we do not need to copy its contents. <elided chars="145"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::into_chars</type-name> </p>
+<truncated level="single-line"><p>
+Converts a <inline-code>String</inline-code> into an iterator over the <inline-code>char</inline-code>s of the string.</p>
+As a string by <inline-code>char</inline-code>. This method <elided chars="1079"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::into_raw_parts</type-name> </p>
+<truncated level="single-line"><p>
+Decomposes a <inline-code>String</inline-code> into its raw components: <inline-code>(pointer, length, capacity)</inline-code>.</p>
+Returns the (in the<inline-code>from_ra</inline-code>. <elided chars="667"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::is_empty</type-name> </p>
+<truncated level="single-line"><p>
+Returns <inline-code>true</inline-code> if this <inline-code>String</inline-code> has a length of zero, and <inline-code>false</inline-code> otherwise.</p>
+<title>Examples</title>
+ <elided chars="85"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::leak</type-name> </p>
+<truncated level="single-line">Consumes and leaks the <inline-code>String</inline-code>, returning a mutable reference to the contents, <inline-code>&'a mut str</inline-code>. <elided chars="675"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::len</type-name> </p>
+<truncated level="single-line">Returns the length of this <inline-code>String</inline-code>, in bytes, not <inline-code>char</inline-code>s or graphemes. In other words, it might not be what a human considers the length of the string. <elided chars="236"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::new</type-name> </p>
+<truncated level="single-line"><p>
+Creates a new empty <inline-code>String</inline-code>.</p>
+Given that the <inline-code>String</inline-code> is empty, this will not allocate any initial buffer. While that means that this initial operation inexpensive, it may cause excessive allocation later data. If you have an idea of how much data the <inline-code>String</inline-code> will hold, consider the <inline-code>with_capacity</inline-code> method to prevent excessive re-allocation. <elided chars="305"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::pop</type-name> </p>
+<truncated level="single-line"><p>
+Removes the last character from the string buffer and returns it.</p>
+Returns <inline-code>None</inline-code> if this <inline-code>String</inline-code> is empty. <elided chars="189"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::push</type-name> </p>
+<truncated level="single-line"><p>
+Appends the given <inline-code>char</inline-code> to the end of this <inline-code>String</inline-code>.</p>
+<title>Panics</title>
+Panics if the new<inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>. <elided chars="133"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::push_str</type-name> </p>
+<truncated level="single-line"><p>
+Appends a given string slice onto the end of this <inline-code>String</inline-code>.</p>
+<title>Panics</title>
+Panics if the<inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>. <elided chars="121"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::remove</type-name> </p>
+<truncated level="single-line"><p>
+Removes a <inline-code>char</inline-code> from this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code> and returns it.</p>
+Copies all <elided chars="353"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::remove_matches</type-name> </p>
+<truncated level="single-line"><p>
+Remove all matches of pattern <inline-code>pat</inline-code> in the <inline-code>String</inline-code>.</p>
+<title>Examples</title>
+ <elided chars="401"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::replace_first</type-name> </p>
+<truncated level="single-line"><p>
+Replaces the leftmost occurrence of a pattern with another string, in-place.</p>
+This<inline-code>stri</inline-code>, as<inline-code>Stri</inline-code>'s suff <elided chars="392"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::replace_last</type-name> </p>
+<truncated level="single-line"><p>
+Replaces the rightmost occurrence of a pattern with another string, in-place.</p>
+ <elided chars="220"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::replace_range</type-name> </p>
+<truncated level="single-line">Removes the specified range in the string, and replaces it with the given string. The given string doesn't need to be the same length as the range. <elided chars="472"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::reserve</type-name> </p>
+<truncated level="single-line">Reserves capacity for at least <inline-code>additional</inline-code> bytes more than the current length. The allocator may reserve more space to speculatively avoid frequent allocations. After calling <inline-code>reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if capacity is already sufficient. <elided chars="770"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::reserve_exact</type-name> </p>
+<truncated level="single-line">Reserves the minimum capacity for at least <inline-code>additional</inline-code> bytes more than the current length. Unlike <inline-code>reserve</inline-code>, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling <inline-code>reserve_exact</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code>. Does nothing if the capacity is already sufficient. <elided chars="824"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::retain</type-name> </p>
+<truncated level="single-line"><p>
+Retains only the characters specified by the predicate.</p>
+In other words, remove<inline-code>c</inline-code> such that <inline-code>f(c)</inline-code> returns <inline-code>false</inline-code>. This method operates in original order, and <elided chars="579"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::shrink_to</type-name> </p>
+<truncated level="single-line"><p>
+Shrinks the capacity of this <inline-code>String</inline-code> with a lower bound.</p>
+The capacity will remain and the supplied value. <elided chars="308"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::shrink_to_fit</type-name> </p>
+<truncated level="single-line"><p>
+Shrinks the capacity of this <inline-code>String</inline-code> to match its length.</p>
+<title>Examples</title>
+ <elided chars="112"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::split_off</type-name> </p>
+<truncated level="single-line"><p>
+Splits the string into two at the given byte index.</p>
+Returns a newly allocated <inline-code>String</inline-code>. <inline-code>self</inline-code> contains bytes <inline-code>[0, at)</inline-code>, and the returned <inline-code>String</inline-code> contains bytes <inline-code>[at, len)</inline-code>. <inline-code>at</inline-code> must be on the boundary of a UTF-8 code <elided chars="436"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::truncate</type-name> </p>
+<truncated level="single-line"><p>
+Shortens this <inline-code>String</inline-code> to the specified length.</p>
+If <inline-code>new_len</inline-code> is greater than or equal to the effect. <elided chars="263"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::try_reserve</type-name> </p>
+<truncated level="single-line">Tries to reserve capacity for at least <inline-code>additional</inline-code> bytes more than the current length. The allocator may reserve more space to speculatively avoid frequent allocations. After calling <inline-code>try_reserve</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if capacity is already sufficient. This method preserves the contents even if an error occurs. <elided chars="756"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::try_reserve_exact</type-name> </p>
+<truncated level="single-line">Tries to reserve the minimum capacity for at least <inline-code>additional</inline-code> bytes more than the current length. Unlike <inline-code>try_reserve</inline-code>, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling <inline-code>try_reserve_exact</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if the capacity is already sufficient. <elided chars="946"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::try_with_capacity</type-name> </p>
+<truncated level="single-line"><p>
+Creates a new empty <inline-code>String</inline-code> with at least the specified capacity.</p>
+<title>Errors</title>
+Returns <inline-code>Err</inline-code> if the<inline-code>isize::MAX</inline-code> bytes, or if the <elided chars="87"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::with_capacity</type-name> </p>
+<truncated level="single-line"><p>
+Creates a new empty <inline-code>String</inline-code> with at least the specified capacity.</p>
+<inline-code>String</inline-code>s have an the length of<inline-code>capacity</inline-code> method. This<inline-code>String</inline-code>, but one with buffer that can<inline-code>capacity</inline-code> bytes. This is may be<inline-code>String</inline-code>, reducing the reallocations <elided chars="850"/></truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::SubStruct::double</type-name> </p>
+<truncated level="single-line"><p>
+Double the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::SubStruct::get_value</type-name> </p>
+<truncated level="single-line"><p>
+Get the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::SubStruct::new</type-name> </p>
+<truncated level="single-line"><p>
+Create a new SubStruct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::sub_function</type-name> </p>
+<truncated level="single-line"><p>
+A function in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>sub_function</type-name> </p>
+<truncated level="single-line"><p>
+A function in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::SubStruct::double</type-name> </p>
+<truncated level="single-line"><p>
+Double the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::SubStruct::get_value</type-name> </p>
+<truncated level="single-line"><p>
+Get the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::SubStruct::new</type-name> </p>
+<truncated level="single-line"><p>
+Create a new SubStruct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::sub_function</type-name> </p>
+<truncated level="single-line"><p>
+A function in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>test_function</type-name> </p>
+<truncated level="single-line"><p>
+A public function</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Constants</section-title><list>
+  <item><p>
+<type-name>TEST_CONSTANT</type-name> </p>
+<truncated level="single-line"><p>
+A const for testing</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Statics</section-title><list>
+  <item><p>
+<type-name>TEST_STATIC</type-name> </p>
+<truncated level="single-line"><p>
+A static for testing</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Variants</section-title><list>
+  <item><p>
+<type-name>GenericEnum::Mixed</type-name> </p>
+<truncated level="single-line"><p>
+Variant with mixed generics</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>GenericEnum::Simple</type-name> </p>
+<truncated level="single-line"><p>
+Simple variant</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>GenericEnum::WithData</type-name> </p>
+<truncated level="single-line"><p>
+Variant with generic data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestEnum::VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestEnum::VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestEnum::VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::TestEnum::VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::TestEnum::VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::TestEnum::VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod::VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::TestEnum::VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::TestEnum::VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::TestEnum::VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>submodule::VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>AssocConst</section-title><list>
+  <item><p>
+<type-name>TestStruct::ASSOCIATED_CONST</type-name> </p>
+<truncated level="single-line"><p>
+This is an associated constant for a struct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::RenamedTestStruct::ASSOCIATED_CONST</type-name> </p>
+<truncated level="single-line"><p>
+This is an associated constant for a struct</p>
+</truncated>
+</item>
+</list>
+</section>

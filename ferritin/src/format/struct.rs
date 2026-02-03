@@ -105,11 +105,8 @@ impl Request {
         // Build document nodes
         let mut doc_nodes = vec![];
 
-        // Add signature as spans
-        for span in code_spans {
-            doc_nodes.push(DocumentNode::Span(span));
-        }
-        doc_nodes.push(DocumentNode::Span(Span::plain("\n\n")));
+        // Add signature as generated code block
+        doc_nodes.push(DocumentNode::generated_code(code_spans));
 
         // Build fields section with List
         let field_items: Vec<ListItem> = visible_fields
@@ -119,20 +116,15 @@ impl Request {
                     && let Some(name) = field.name()
                     && let Some(docs) = self.docs_to_show(*field, TruncationLevel::SingleLine)
                 {
-                    let mut item_nodes = vec![
-                        DocumentNode::Span(Span::field_name(name)),
-                        DocumentNode::Span(Span::punctuation(":")),
-                        DocumentNode::Span(Span::plain(" ")),
+                    // Build field signature as GeneratedCode
+                    let mut signature_spans = vec![
+                        Span::field_name(name),
+                        Span::punctuation(":"),
+                        Span::plain(" "),
                     ];
-                    // Convert Vec<Span> to Vec<DocumentNode>
-                    let type_spans: Vec<DocumentNode> = self
-                        .format_type(item, field_type)
-                        .into_iter()
-                        .map(DocumentNode::Span)
-                        .collect();
-                    item_nodes.extend(type_spans);
-                    item_nodes.push(DocumentNode::Span(Span::plain("\n")));
-                    // TODO: Re-add indentation for docs
+                    signature_spans.extend(self.format_type(item, field_type));
+
+                    let mut item_nodes = vec![DocumentNode::generated_code(signature_spans)];
                     item_nodes.extend(docs);
                     Some(ListItem::new(item_nodes))
                 } else {
@@ -227,11 +219,8 @@ impl Request {
         // Build document nodes
         let mut doc_nodes = vec![];
 
-        // Add signature as spans
-        for span in code_spans {
-            doc_nodes.push(DocumentNode::Span(span));
-        }
-        doc_nodes.push(DocumentNode::Span(Span::plain("\n\n")));
+        // Add signature as generated code block
+        doc_nodes.push(DocumentNode::generated_code(code_spans));
 
         // Build fields section with List
         let field_items: Vec<ListItem> = visible_fields
@@ -240,15 +229,11 @@ impl Request {
                 if let ItemEnum::StructField(field_type) = field.inner()
                     && let Some(docs) = self.docs_to_show(*field, TruncationLevel::SingleLine)
                 {
-                    let mut item_nodes =
-                        vec![DocumentNode::Span(Span::plain(format!("Field {}: ", i)))];
-                    let type_spans: Vec<DocumentNode> = self
-                        .format_type(item, field_type)
-                        .into_iter()
-                        .map(DocumentNode::Span)
-                        .collect();
-                    item_nodes.extend(type_spans);
-                    item_nodes.push(DocumentNode::Span(Span::plain("\n")));
+                    // Build field signature as GeneratedCode
+                    let mut signature_spans = vec![Span::plain(format!("Field {}: ", i))];
+                    signature_spans.extend(self.format_type(item, field_type));
+
+                    let mut item_nodes = vec![DocumentNode::generated_code(signature_spans)];
                     item_nodes.extend(docs);
                     Some(ListItem::new(item_nodes))
                 } else {
@@ -295,6 +280,6 @@ impl Request {
 
         code_spans.push(Span::punctuation(";"));
 
-        code_spans.into_iter().map(DocumentNode::Span).collect()
+        vec![DocumentNode::generated_code(code_spans)]
     }
 }

@@ -78,27 +78,27 @@ impl Request {
         let list_items: Vec<ListItem> = items
             .iter()
             .map(|item| {
-                let mut item_nodes = vec![];
+                let mut signature_spans = vec![];
 
                 // Add visibility
                 match &item.item().visibility {
                     Visibility::Public => {
-                        item_nodes.push(DocumentNode::Span(Span::keyword("pub")));
-                        item_nodes.push(DocumentNode::Span(Span::plain(" ")));
+                        signature_spans.push(Span::keyword("pub"));
+                        signature_spans.push(Span::plain(" "));
                     }
                     Visibility::Crate => {
-                        item_nodes.push(DocumentNode::Span(Span::keyword("pub")));
-                        item_nodes.push(DocumentNode::Span(Span::punctuation("(")));
-                        item_nodes.push(DocumentNode::Span(Span::keyword("crate")));
-                        item_nodes.push(DocumentNode::Span(Span::punctuation(")")));
-                        item_nodes.push(DocumentNode::Span(Span::plain(" ")));
+                        signature_spans.push(Span::keyword("pub"));
+                        signature_spans.push(Span::punctuation("("));
+                        signature_spans.push(Span::keyword("crate"));
+                        signature_spans.push(Span::punctuation(")"));
+                        signature_spans.push(Span::plain(" "));
                     }
                     Visibility::Restricted { path, .. } => {
-                        item_nodes.push(DocumentNode::Span(Span::keyword("pub")));
-                        item_nodes.push(DocumentNode::Span(Span::punctuation("(")));
-                        item_nodes.push(DocumentNode::Span(Span::plain(path)));
-                        item_nodes.push(DocumentNode::Span(Span::punctuation(")")));
-                        item_nodes.push(DocumentNode::Span(Span::plain(" ")));
+                        signature_spans.push(Span::keyword("pub"));
+                        signature_spans.push(Span::punctuation("("));
+                        signature_spans.push(Span::plain(path));
+                        signature_spans.push(Span::punctuation(")"));
+                        signature_spans.push(Span::plain(" "));
                     }
                     Visibility::Default => {}
                 }
@@ -108,12 +108,7 @@ impl Request {
 
                 // For functions, show the signature inline
                 if let ItemEnum::Function(inner) = &item.item().inner {
-                    let signature_spans: Vec<DocumentNode> = self
-                        .format_function_signature(*item, name, inner)
-                        .into_iter()
-                        .map(DocumentNode::Span)
-                        .collect();
-                    item_nodes.extend(signature_spans);
+                    signature_spans.extend(self.format_function_signature(*item, name, inner));
                 } else {
                     // For other items, show kind + name
                     let kind_str = match kind {
@@ -123,36 +118,28 @@ impl Request {
                     };
 
                     if !kind_str.is_empty() {
-                        item_nodes.push(DocumentNode::Span(Span::keyword(kind_str)));
-                        item_nodes.push(DocumentNode::Span(Span::plain(" ")));
+                        signature_spans.push(Span::keyword(kind_str));
+                        signature_spans.push(Span::plain(" "));
                     }
 
-                    item_nodes.push(DocumentNode::Span(Span::plain(name)));
+                    signature_spans.push(Span::plain(name));
                 }
+
+                let mut item_nodes = vec![DocumentNode::generated_code(signature_spans)];
 
                 // Add brief doc preview
                 if let Some(docs) = self.docs_to_show(*item, TruncationLevel::SingleLine) {
-                    item_nodes.push(DocumentNode::Span(Span::plain("\n")));
-                    // TODO: Re-add indentation for docs
                     item_nodes.extend(docs);
                 }
-
-                item_nodes.push(DocumentNode::Span(Span::plain("\n")));
 
                 ListItem::new(item_nodes)
             })
             .collect();
 
-        vec![
-            DocumentNode::Span(Span::plain("\n")),
-            DocumentNode::section(
-                vec![Span::plain(title)],
-                vec![
-                    DocumentNode::Span(Span::plain("\n")),
-                    DocumentNode::list(list_items),
-                ],
-            ),
-        ]
+        vec![DocumentNode::section(
+            vec![Span::plain(title)],
+            vec![DocumentNode::list(list_items)],
+        )]
     }
 
     /// Format trait implementations with explicit category groups
@@ -193,7 +180,8 @@ impl Request {
         external.sort();
         std_traits.sort();
 
-        let mut doc_nodes = vec![];
+        // Build trait implementation content
+        let mut trait_content = vec![];
 
         // Add crate-local and external traits (most relevant)
         let mut primary_traits = Vec::new();
@@ -201,34 +189,33 @@ impl Request {
         primary_traits.extend(external);
 
         if !primary_traits.is_empty() {
-            doc_nodes.push(DocumentNode::Span(Span::plain("Trait Implementations:\n")));
+            let mut trait_spans = vec![Span::plain("Trait Implementations: ")];
             for t in primary_traits {
-                doc_nodes.push(DocumentNode::Span(
-                    Span::plain(t.name).with_path(t.full_path),
-                ));
-                doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
+                trait_spans.push(Span::plain(t.name).with_path(t.full_path));
+                trait_spans.push(Span::plain(" "));
             }
-            doc_nodes.push(DocumentNode::Span(Span::plain("\n")));
+            trait_content.push(DocumentNode::paragraph(trait_spans));
         }
 
-        // Add std traits separately with truncation
+        // Add std traits separately
         if !std_traits.is_empty() {
-            doc_nodes.push(DocumentNode::Span(Span::plain("std traits: ")));
+            let mut trait_spans = vec![Span::plain("std traits: ")];
             for t in std_traits {
-                doc_nodes.push(DocumentNode::Span(
-                    Span::plain(t.name).with_path(t.full_path),
-                ));
-                doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
+                trait_spans.push(Span::plain(t.name).with_path(t.full_path));
+                trait_spans.push(Span::plain(" "));
             }
-
-            doc_nodes.push(DocumentNode::Span(Span::plain("\n")));
+            trait_content.push(DocumentNode::paragraph(trait_spans));
         }
 
-        if !doc_nodes.is_empty() {
-            doc_nodes.insert(0, DocumentNode::Span(Span::plain("\n")));
+        // Wrap in a section if we have any trait implementations
+        if !trait_content.is_empty() {
+            vec![DocumentNode::section(
+                vec![Span::plain("Trait Implementations")],
+                trait_content,
+            )]
+        } else {
+            vec![]
         }
-
-        doc_nodes
     }
 
     fn categorize_trait(&self, full_path: String, rendered_path: String) -> TraitImpl {

@@ -1,0 +1,47 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::submodule::TestEnum\"), OutputMode ::\nTestMode)"
+---
+<p>
+<strong>Item:</strong> TestEnum
+<strong>Kind:</strong> Enum
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>test_crate</type-name><punctuation>::</punctuation><type-name>submodule</type-name><punctuation>::</punctuation><type-name>TestEnum</type-name>
+<strong>In crate:</strong> test-crate (0.1.0)</p>
+<truncated level="full"><p>
+An enum for testing</p>
+<p>
+This is like <inline-code>crate::GenericEnum</inline-code> but without the generic</p>
+</truncated>
+<generated-code>
+<keyword>enum</keyword> <type-name>TestEnum</type-name> <punctuation>{</punctuation>
+    <type-name>VariantA</type-name><punctuation>,</punctuation>
+    <type-name>VariantB</type-name><punctuation>(</punctuation><type-name>String</type-name><punctuation>)</punctuation><punctuation>,</punctuation>
+    <type-name>VariantC</type-name> <punctuation>{</punctuation>
+        <field-name>name</field-name><punctuation>:</punctuation> <type-name>String</type-name><punctuation>,</punctuation>
+        <field-name>value</field-name><punctuation>:</punctuation> <type-name>i32</type-name><punctuation>,</punctuation>
+    <punctuation>}</punctuation><punctuation>,</punctuation>
+<punctuation>}</punctuation></generated-code>
+<section><section-title>Variants:</section-title><list>
+  <item><p>
+<type-name>VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Trait Implementations</section-title><p>
+std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnwindSafe </p>
+</section>

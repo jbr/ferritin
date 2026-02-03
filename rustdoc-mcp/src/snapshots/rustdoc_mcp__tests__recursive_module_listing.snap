@@ -14,6 +14,7 @@ Modules:
 link_resolution_tests // Module for testing intra-doc link resolution
 link_resolution_tests::nested // Nested module for testing scoped resolution
 link_resolution_tests::nested::deeply_nested // Another nested module
+markdown_test // # Markdown: Syntax [+332 more lines]
 reexport_mod
 submodule // A module with items
 

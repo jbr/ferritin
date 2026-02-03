@@ -10,27 +10,21 @@ impl Request {
     ) -> Vec<DocumentNode<'a>> {
         let name = item.name().unwrap_or("<unnamed>");
 
-        let mut doc_nodes = vec![
-            DocumentNode::Span(Span::plain("\n")),
-            DocumentNode::Span(Span::keyword("type")),
-            DocumentNode::Span(Span::plain(" ")),
-            DocumentNode::Span(Span::type_name(name)),
-            DocumentNode::Span(Span::plain(" ")),
-            DocumentNode::Span(Span::operator("=")),
-            DocumentNode::Span(Span::plain(" ")),
+        let mut spans = vec![
+            Span::keyword("type"),
+            Span::plain(" "),
+            Span::type_name(name),
+            Span::plain(" "),
+            Span::operator("="),
+            Span::plain(" "),
         ];
 
         // Add type spans
-        doc_nodes.extend(
-            self.format_type(item, &type_alias.item().type_)
-                .into_iter()
-                .map(DocumentNode::Span),
-        );
+        spans.extend(self.format_type(item, &type_alias.item().type_));
 
-        doc_nodes.push(DocumentNode::Span(Span::punctuation(";")));
-        doc_nodes.push(DocumentNode::Span(Span::plain("\n")));
+        spans.push(Span::punctuation(";"));
 
-        doc_nodes
+        vec![DocumentNode::generated_code(spans)]
     }
 
     /// Format a union
@@ -40,11 +34,9 @@ impl Request {
         _union: DocRef<'a, Union>,
     ) -> Vec<DocumentNode<'a>> {
         // TODO: Implement union formatting
-        vec![
-            DocumentNode::Span(Span::plain("\n")),
-            DocumentNode::Span(Span::plain("[Union formatting not yet implemented]")),
-            DocumentNode::Span(Span::plain("\n")),
-        ]
+        vec![DocumentNode::paragraph(vec![Span::plain(
+            "[Union formatting not yet implemented]",
+        )])]
     }
 
     /// Format a constant
@@ -56,33 +48,27 @@ impl Request {
     ) -> Vec<DocumentNode<'a>> {
         let name = item.name().unwrap_or("<unnamed>");
 
-        let mut doc_nodes = vec![
-            DocumentNode::Span(Span::plain("\n")),
-            DocumentNode::Span(Span::keyword("const")),
-            DocumentNode::Span(Span::plain(" ")),
-            DocumentNode::Span(Span::plain(name)),
-            DocumentNode::Span(Span::punctuation(":")),
-            DocumentNode::Span(Span::plain(" ")),
+        let mut spans = vec![
+            Span::keyword("const"),
+            Span::plain(" "),
+            Span::plain(name),
+            Span::punctuation(":"),
+            Span::plain(" "),
         ];
 
         // Add type spans
-        doc_nodes.extend(
-            self.format_type(item, type_)
-                .into_iter()
-                .map(DocumentNode::Span),
-        );
+        spans.extend(self.format_type(item, type_));
 
         if let Some(value) = &const_.value {
-            doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
-            doc_nodes.push(DocumentNode::Span(Span::operator("=")));
-            doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
-            doc_nodes.push(DocumentNode::Span(Span::inline_code(value)));
+            spans.push(Span::plain(" "));
+            spans.push(Span::operator("="));
+            spans.push(Span::plain(" "));
+            spans.push(Span::inline_code(value));
         }
 
-        doc_nodes.push(DocumentNode::Span(Span::punctuation(";")));
-        doc_nodes.push(DocumentNode::Span(Span::plain("\n")));
+        spans.push(Span::punctuation(";"));
 
-        doc_nodes
+        vec![DocumentNode::generated_code(spans)]
     }
 
     /// Format a static
@@ -93,29 +79,23 @@ impl Request {
     ) -> Vec<DocumentNode<'a>> {
         let name = item.name().unwrap_or("<unnamed>");
 
-        let mut doc_nodes = vec![
-            DocumentNode::Span(Span::plain("\n")),
-            DocumentNode::Span(Span::keyword("static")),
-            DocumentNode::Span(Span::plain(" ")),
-            DocumentNode::Span(Span::plain(name)),
-            DocumentNode::Span(Span::punctuation(":")),
-            DocumentNode::Span(Span::plain(" ")),
+        let mut spans = vec![
+            Span::keyword("static"),
+            Span::plain(" "),
+            Span::plain(name),
+            Span::punctuation(":"),
+            Span::plain(" "),
         ];
 
         // Add type spans
-        doc_nodes.extend(
-            self.format_type(item, &static_item.type_)
-                .into_iter()
-                .map(DocumentNode::Span),
-        );
+        spans.extend(self.format_type(item, &static_item.type_));
 
-        doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
-        doc_nodes.push(DocumentNode::Span(Span::operator("=")));
-        doc_nodes.push(DocumentNode::Span(Span::plain(" ")));
-        doc_nodes.push(DocumentNode::Span(Span::inline_code(&static_item.expr)));
-        doc_nodes.push(DocumentNode::Span(Span::punctuation(";")));
-        doc_nodes.push(DocumentNode::Span(Span::plain("\n")));
+        spans.push(Span::plain(" "));
+        spans.push(Span::operator("="));
+        spans.push(Span::plain(" "));
+        spans.push(Span::inline_code(&static_item.expr));
+        spans.push(Span::punctuation(";"));
 
-        doc_nodes
+        vec![DocumentNode::generated_code(spans)]
     }
 }

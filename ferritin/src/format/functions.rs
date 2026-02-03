@@ -11,10 +11,8 @@ impl Request {
         function: DocRef<'a, Function>,
     ) -> Vec<DocumentNode<'a>> {
         let name = item.name().unwrap_or("<unnamed>");
-        self.format_function_signature(item, name, function.item())
-            .into_iter()
-            .map(DocumentNode::Span)
-            .collect()
+        let signature_spans = self.format_function_signature(item, name, function.item());
+        vec![DocumentNode::generated_code(signature_spans)]
     }
 
     /// Format a function signature

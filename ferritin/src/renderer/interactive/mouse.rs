@@ -113,14 +113,14 @@ impl<'a> super::InteractiveState<'a> {
 
             if let Some(action) = action_opt {
                 self.ui.debug_message = match &action {
-                    TuiAction::Navigate(doc_ref) => format!(
+                    TuiAction::Navigate { doc_ref, url: _ } => format!(
                         "Clicked: {}",
                         doc_ref
                             .path()
                             .map(|p| p.to_string())
                             .unwrap_or_else(|| "unknown".to_string())
                     ),
-                    TuiAction::NavigateToPath(path) => format!("Clicked: {}", path),
+                    TuiAction::NavigateToPath { path, url: _ } => format!("Clicked: {}", path),
                     TuiAction::ExpandBlock(path) => format!("Clicked: {:?}", path.indices()),
                     TuiAction::OpenUrl(url) => format!("Clicked: {}", url),
                 };
@@ -147,7 +147,7 @@ impl<'a> super::InteractiveState<'a> {
                     .find(|(rect, _)| rect.contains(pos))
                 {
                     self.ui.debug_message = match action {
-                        TuiAction::Navigate(doc_ref) => {
+                        TuiAction::Navigate { doc_ref, url: _ } => {
                             if let Some(path) = doc_ref.path() {
                                 format!("Navigate: {}", path)
                             } else if let Some(name) = doc_ref.name() {
@@ -156,7 +156,7 @@ impl<'a> super::InteractiveState<'a> {
                                 "Navigate: <unknown>".to_string()
                             }
                         }
-                        TuiAction::NavigateToPath(path) => {
+                        TuiAction::NavigateToPath { path, url: _ } => {
                             format!("Go to: {}", path)
                         }
                         TuiAction::ExpandBlock(path) => {

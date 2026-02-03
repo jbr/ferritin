@@ -45,10 +45,10 @@ pub(crate) fn execute<'a>(
     all_results.sort_by(|(_, _, score_a), (_, _, score_b)| score_b.total_cmp(score_a));
 
     if all_results.is_empty() {
-        let error_doc = Document::from(vec![DocumentNode::Span(Span::plain(format!(
+        let error_doc = Document::from(vec![DocumentNode::paragraph(vec![Span::plain(format!(
             "No results found for '{}'",
             query
-        )))]);
+        ))])]);
         return (error_doc, true);
     }
 
@@ -59,17 +59,14 @@ pub(crate) fn execute<'a>(
         .map(|(_, _, score)| *score)
         .unwrap_or(0.0);
 
-    let mut nodes = vec![
-        DocumentNode::Heading {
-            level: HeadingLevel::Title,
-            spans: vec![
-                Span::plain("Search results for '"),
-                Span::plain(query.to_string()),
-                Span::plain("'"),
-            ],
-        },
-        DocumentNode::Span(Span::plain("\n")),
-    ];
+    let mut nodes = vec![DocumentNode::Heading {
+        level: HeadingLevel::Title,
+        spans: vec![
+            Span::plain("Search results for '"),
+            Span::plain(query.to_string()),
+            Span::plain("'"),
+        ],
+    }];
 
     // Display results with early stopping based on score thresholds
     let min_results = 1;
@@ -98,11 +95,11 @@ pub(crate) fn execute<'a>(
             let path = path_segments.join("::");
             let normalized_score = 100.0 * score / total_score;
 
-            let mut item_nodes = vec![DocumentNode::Span(Span::plain(format!(
+            let mut spans = vec![Span::plain(format!(
                 " ({:?}) - score: {:.1}",
                 item.kind(),
                 normalized_score
-            )))];
+            ))];
 
             // Show first few lines of docs if available
             if let Some(docs) = &item.docs {
@@ -110,17 +107,18 @@ pub(crate) fn execute<'a>(
                 if !doc_preview.is_empty() {
                     for line in doc_preview {
                         if !line.trim().is_empty() {
-                            item_nodes.push(DocumentNode::Span(Span::plain("\n    ".to_string())));
-                            item_nodes.push(DocumentNode::Span(Span::plain(line.to_string())));
+                            spans.push(Span::plain("\n    ".to_string()));
+                            spans.push(Span::plain(line.to_string()));
                         }
                     }
                 }
             }
 
-            list_items.push(ListItem::labeled(
-                vec![Span::plain(path).with_target(Some(item))],
-                item_nodes,
-            ));
+            // Prepend path label to spans
+            let mut all_spans = vec![Span::plain(path).with_target(Some(item)), Span::plain(" ")];
+            all_spans.extend(spans);
+
+            list_items.push(ListItem::new(vec![DocumentNode::paragraph(all_spans)]));
         }
     }
 

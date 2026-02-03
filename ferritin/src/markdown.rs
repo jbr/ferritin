@@ -1,5 +1,14 @@
-use crate::styled_string::{DocumentNode, HeadingLevel, LinkTarget, Span, SpanStyle};
+use crate::styled_string::{
+    DocumentNode, HeadingLevel, LinkTarget, ListItem, Span, SpanStyle, TuiAction,
+};
 use pulldown_cmark::{BrokenLink, CodeBlockKind, Event, Options, Parser, Tag, TagEnd};
+
+/// Stack item for building the document tree
+/// We need this because Lists contain ListItems (not DocumentNodes directly)
+enum StackItem<'a> {
+    Node(DocumentNode<'a>),
+    Item(ListItem<'a>),
+}
 
 pub struct MarkdownRenderer;
 
@@ -19,13 +28,15 @@ impl MarkdownRenderer {
             ))
         };
 
-        let parser =
-            Parser::new_with_broken_link_callback(markdown, Options::empty(), Some(&callback));
+        let mut options = Options::empty();
+        options.insert(Options::ENABLE_TABLES);
+        let parser = Parser::new_with_broken_link_callback(markdown, options, Some(&callback));
 
-        let mut nodes: Vec<DocumentNode<'a>> = Vec::new();
+        let mut root: Vec<DocumentNode<'a>> = Vec::new();
+        let mut stack: Vec<StackItem<'a>> = Vec::new();
         let mut current_spans: Vec<Span<'a>> = Vec::new();
 
-        // State tracking
+        // Inline style state (doesn't nest structurally)
         let mut in_code_block = false;
         let mut code_block_lang: Option<String> = None;
         let mut code_block_content = String::new();
@@ -34,12 +45,13 @@ impl MarkdownRenderer {
         let mut in_strikethrough = false;
         let mut in_heading = false;
         let mut heading_level: Option<HeadingLevel> = None;
-        let mut current_link_url: Option<(String, Option<LinkTarget<'a>>)> = None;
-        let mut link_spans: Vec<Span<'a>> = Vec::new();
-        let mut in_list = false;
-        let mut list_items: Vec<crate::styled_string::ListItem<'a>> = Vec::new();
-        let mut in_item = false;
-        let mut item_nodes: Vec<DocumentNode<'a>> = Vec::new();
+        let mut current_link_action: Option<TuiAction<'a>> = None;
+
+        // Table state
+        let mut in_table_head = false;
+        let mut table_header: Option<Vec<crate::styled_string::TableCell<'a>>> = None;
+        let mut table_rows: Vec<Vec<crate::styled_string::TableCell<'a>>> = Vec::new();
+        let mut current_row: Vec<crate::styled_string::TableCell<'a>> = Vec::new();
 
         for event in parser {
             match event {
@@ -69,10 +81,22 @@ impl MarkdownRenderer {
                         in_strikethrough = true;
                     }
                     Tag::Link { dest_url, .. } => {
-                        let resolved_url = link_resolver(dest_url.as_ref())
-                            .map(|(link, target)| (link, Some(target)))
-                            .unwrap_or_else(|| (dest_url.to_string(), None));
-                        current_link_url = Some(resolved_url);
+                        // Resolve the link and determine the action
+                        let action = if let Some((url, target)) = link_resolver(dest_url.as_ref()) {
+                            match target {
+                                LinkTarget::Resolved(doc_ref) => TuiAction::Navigate {
+                                    doc_ref,
+                                    url: Some(url.into()),
+                                },
+                                LinkTarget::Path(path) => TuiAction::NavigateToPath {
+                                    path,
+                                    url: Some(url.into()),
+                                },
+                            }
+                        } else {
+                            TuiAction::OpenUrl(dest_url.to_string().into())
+                        };
+                        current_link_action = Some(action);
                     }
                     Tag::Heading { level, .. } => {
                         in_heading = true;
@@ -83,36 +107,70 @@ impl MarkdownRenderer {
                         });
                     }
                     Tag::List(_) => {
-                        in_list = true;
-                        list_items.clear();
+                        // Flush any accumulated spans before starting a list
+                        if !current_spans.is_empty() {
+                            let para = DocumentNode::Paragraph {
+                                spans: std::mem::take(&mut current_spans),
+                            };
+                            Self::push_to_parent(&mut stack, &mut root, StackItem::Node(para));
+                        }
+                        stack.push(StackItem::Node(DocumentNode::List { items: vec![] }));
                     }
                     Tag::Item => {
-                        in_item = true;
-                        item_nodes.clear();
+                        stack.push(StackItem::Item(ListItem::new(vec![])));
                     }
-                    Tag::Paragraph | Tag::BlockQuote(_) => {
-                        // These will be handled in TagEnd
+                    Tag::BlockQuote(_) => {
+                        // Flush any accumulated spans before starting a blockquote
+                        if !current_spans.is_empty() {
+                            let para = DocumentNode::Paragraph {
+                                spans: std::mem::take(&mut current_spans),
+                            };
+                            Self::push_to_parent(&mut stack, &mut root, StackItem::Node(para));
+                        }
+                        stack.push(StackItem::Node(DocumentNode::BlockQuote { nodes: vec![] }));
+                    }
+                    Tag::Table(_) => {
+                        table_header = None;
+                        table_rows.clear();
+                    }
+                    Tag::TableHead => {
+                        in_table_head = true;
+                        current_row.clear();
+                    }
+                    Tag::TableRow => {
+                        current_row.clear();
+                    }
+                    Tag::TableCell => {
+                        // Cell content will be in current_spans
+                    }
+                    Tag::Paragraph => {
+                        // Paragraphs will be created when we hit TagEnd::Paragraph
                     }
                     _ => {}
                 },
                 Event::End(tag_end) => match tag_end {
                     TagEnd::Paragraph => {
-                        // Skip paragraph handling inside list items (handled by Item end)
-                        if !in_item {
-                            // Flush current spans and add paragraph break
-                            for span in current_spans.drain(..) {
-                                nodes.push(DocumentNode::Span(span));
-                            }
-                            nodes.push(DocumentNode::Span(Span::plain("\n\n")));
+                        // Create a paragraph node from collected spans
+                        let paragraph_spans = std::mem::take(&mut current_spans);
+                        if !paragraph_spans.is_empty() {
+                            let para = DocumentNode::Paragraph {
+                                spans: paragraph_spans,
+                            };
+                            Self::push_to_parent(&mut stack, &mut root, StackItem::Node(para));
                         }
                     }
                     TagEnd::Heading(_level) => {
                         if in_heading {
                             if let Some(level) = heading_level {
-                                nodes.push(DocumentNode::Heading {
+                                let heading = DocumentNode::Heading {
                                     level,
                                     spans: std::mem::take(&mut current_spans),
-                                });
+                                };
+                                Self::push_to_parent(
+                                    &mut stack,
+                                    &mut root,
+                                    StackItem::Node(heading),
+                                );
                             }
                             in_heading = false;
                             heading_level = None;
@@ -128,7 +186,12 @@ impl MarkdownRenderer {
                                 code_block_content.clone()
                             };
 
-                            nodes.push(DocumentNode::code_block(code_block_lang.take(), code));
+                            let code_block = DocumentNode::code_block(code_block_lang.take(), code);
+                            Self::push_to_parent(
+                                &mut stack,
+                                &mut root,
+                                StackItem::Node(code_block),
+                            );
                             in_code_block = false;
                         }
                     }
@@ -142,52 +205,69 @@ impl MarkdownRenderer {
                         in_strikethrough = false;
                     }
                     TagEnd::Link => {
-                        if let Some((url, target)) = current_link_url.take() {
-                            let link_text = std::mem::take(&mut link_spans);
-                            let link_node = DocumentNode::Link {
-                                url,
-                                text: link_text,
-                                target,
-                            };
-
-                            if in_item {
-                                // Add link to the current item's content
-                                item_nodes.push(link_node);
-                            } else {
-                                // Flush current_spans to preserve order
-                                for span in current_spans.drain(..) {
-                                    nodes.push(DocumentNode::Span(span));
-                                }
-                                nodes.push(link_node);
-                            }
-                        }
+                        // Just clear the link action - spans have already been created with it
+                        current_link_action = None;
                     }
                     TagEnd::BlockQuote(_) => {
-                        // Simplified: just treat as plain text for now
-                        for span in current_spans.drain(..) {
-                            nodes.push(DocumentNode::Span(span));
+                        // Flush any remaining spans as a paragraph before closing the blockquote
+                        if !current_spans.is_empty() {
+                            let para = DocumentNode::Paragraph {
+                                spans: std::mem::take(&mut current_spans),
+                            };
+                            Self::push_to_parent(&mut stack, &mut root, StackItem::Node(para));
+                        }
+
+                        // Pop the blockquote and push to parent
+                        if let Some(StackItem::Node(blockquote)) = stack.pop() {
+                            Self::push_to_parent(
+                                &mut stack,
+                                &mut root,
+                                StackItem::Node(blockquote),
+                            );
                         }
                     }
                     TagEnd::List(_) => {
-                        if in_list {
-                            // Flush current spans before list
-                            for span in current_spans.drain(..) {
-                                nodes.push(DocumentNode::Span(span));
-                            }
-
-                            // Create the list node
-                            let items = std::mem::take(&mut list_items);
-                            nodes.push(DocumentNode::List { items });
-                            in_list = false;
+                        // Pop the list and push to parent
+                        if let Some(StackItem::Node(list)) = stack.pop() {
+                            Self::push_to_parent(&mut stack, &mut root, StackItem::Node(list));
                         }
                     }
                     TagEnd::Item => {
-                        if in_item {
-                            // Create list item from collected nodes
-                            let nodes = std::mem::take(&mut item_nodes);
-                            list_items.push(crate::styled_string::ListItem::new(nodes));
-                            in_item = false;
+                        // Flush any remaining spans as a paragraph before closing the item
+                        if !current_spans.is_empty() {
+                            let para = DocumentNode::Paragraph {
+                                spans: std::mem::take(&mut current_spans),
+                            };
+                            Self::push_to_parent(&mut stack, &mut root, StackItem::Node(para));
                         }
+
+                        // Pop the item and push to parent list
+                        if let Some(StackItem::Item(item)) = stack.pop() {
+                            Self::push_to_parent(&mut stack, &mut root, StackItem::Item(item));
+                        }
+                    }
+                    TagEnd::TableCell => {
+                        // Create a table cell from collected spans
+                        let cell = crate::styled_string::TableCell::new(std::mem::take(
+                            &mut current_spans,
+                        ));
+                        current_row.push(cell);
+                    }
+                    TagEnd::TableHead => {
+                        table_header = Some(std::mem::take(&mut current_row));
+                        in_table_head = false;
+                    }
+                    TagEnd::TableRow => {
+                        if !in_table_head {
+                            table_rows.push(std::mem::take(&mut current_row));
+                        }
+                    }
+                    TagEnd::Table => {
+                        let table = DocumentNode::Table {
+                            header: table_header.take(),
+                            rows: std::mem::take(&mut table_rows),
+                        };
+                        Self::push_to_parent(&mut stack, &mut root, StackItem::Node(table));
                     }
                     _ => {}
                 },
@@ -208,61 +288,98 @@ impl MarkdownRenderer {
                         let span = Span {
                             text: text.to_string().into(),
                             style,
-                            action: None,
+                            action: current_link_action.clone(),
                         };
-
-                        if current_link_url.is_some() {
-                            link_spans.push(span);
-                        } else if in_item {
-                            item_nodes.push(DocumentNode::Span(span));
-                        } else {
-                            current_spans.push(span);
-                        }
+                        current_spans.push(span);
                     }
                 }
                 Event::Code(code) => {
-                    let span = Span::inline_code(code.to_string());
-                    if current_link_url.is_some() {
-                        link_spans.push(span);
-                    } else if in_item {
-                        item_nodes.push(DocumentNode::Span(span));
-                    } else {
-                        current_spans.push(span);
-                    }
+                    let mut span = Span::inline_code(code.to_string());
+                    span.action = current_link_action.clone();
+                    current_spans.push(span);
                 }
                 Event::SoftBreak => {
-                    let span = Span::plain(" ");
-                    if current_link_url.is_some() {
-                        link_spans.push(span);
-                    } else if in_item {
-                        item_nodes.push(DocumentNode::Span(span));
-                    } else {
-                        current_spans.push(span);
-                    }
+                    let mut span = Span::plain(" ");
+                    span.action = current_link_action.clone();
+                    current_spans.push(span);
                 }
                 Event::HardBreak => {
-                    let span = Span::plain("\n");
-                    if current_link_url.is_some() {
-                        link_spans.push(span);
-                    } else if in_item {
-                        item_nodes.push(DocumentNode::Span(span));
-                    } else {
-                        current_spans.push(span);
-                    }
+                    let mut span = Span::plain("\n");
+                    span.action = current_link_action.clone();
+                    current_spans.push(span);
                 }
                 Event::Rule => {
-                    nodes.push(DocumentNode::HorizontalRule);
+                    Self::push_to_parent(
+                        &mut stack,
+                        &mut root,
+                        StackItem::Node(DocumentNode::HorizontalRule),
+                    );
                 }
                 _ => {}
             }
         }
 
-        // Flush any remaining spans
-        for span in current_spans {
-            nodes.push(DocumentNode::Span(span));
+        // Flush any remaining spans as a paragraph
+        if !current_spans.is_empty() {
+            root.push(DocumentNode::paragraph(std::mem::take(&mut current_spans)));
         }
 
-        nodes
+        root
+    }
+
+    /// Push a completed StackItem to its parent container
+    fn push_to_parent<'a>(
+        stack: &mut Vec<StackItem<'a>>,
+        root: &mut Vec<DocumentNode<'a>>,
+        item: StackItem<'a>,
+    ) {
+        match stack.last_mut() {
+            Some(StackItem::Item(list_item)) => {
+                // Push DocumentNode to ListItem's content
+                match item {
+                    StackItem::Node(node) => list_item.content.push(node),
+                    StackItem::Item(_) => {
+                        panic!(
+                            "Cannot nest ListItem directly in ListItem - lists should be nested via DocumentNode::List"
+                        )
+                    }
+                }
+            }
+            Some(StackItem::Node(DocumentNode::List { items })) => {
+                // Push ListItem to List's items
+                match item {
+                    StackItem::Item(list_item) => items.push(list_item),
+                    StackItem::Node(_) => {
+                        panic!(
+                            "Cannot push DocumentNode directly to List - must be wrapped in ListItem"
+                        )
+                    }
+                }
+            }
+            Some(StackItem::Node(DocumentNode::BlockQuote { nodes })) => {
+                // Push DocumentNode to BlockQuote's nodes
+                match item {
+                    StackItem::Node(node) => nodes.push(node),
+                    StackItem::Item(_) => {
+                        panic!(
+                            "Cannot push ListItem directly to BlockQuote - lists should be nested via DocumentNode::List"
+                        )
+                    }
+                }
+            }
+            None => {
+                // Push to root
+                match item {
+                    StackItem::Node(node) => root.push(node),
+                    StackItem::Item(_) => {
+                        panic!("Cannot push ListItem to root - must be inside a List")
+                    }
+                }
+            }
+            _ => {
+                panic!("Unexpected parent type on stack")
+            }
+        }
     }
 
     /// Strip hidden lines from Rust code examples
@@ -312,8 +429,18 @@ mod tests {
         let input = "See [this link](https://example.com) for more.";
         let nodes = MarkdownRenderer::render_with_resolver(input, |_| None);
         assert!(!nodes.is_empty());
-        // Should contain a Link node
-        assert!(nodes.iter().any(|n| matches!(n, DocumentNode::Link { .. })));
+        // Should contain a Paragraph with a Span that has an action (link)
+        let has_link_span = nodes.iter().any(|n| {
+            if let DocumentNode::Paragraph { spans } = n {
+                spans.iter().any(|s| s.action.is_some())
+            } else {
+                false
+            }
+        });
+        assert!(
+            has_link_span,
+            "Should contain a paragraph with a span containing a link action"
+        );
     }
 
     #[test]
@@ -355,18 +482,24 @@ mod tests {
         if let DocumentNode::List { items } = lists[0] {
             assert_eq!(items.len(), 2, "Expected 2 list items");
 
-            // First item should contain a link
-            let first_has_link = items[0]
-                .content
-                .iter()
-                .any(|n| matches!(n, DocumentNode::Link { .. }));
+            // First item should contain a paragraph with a span containing a link
+            let first_has_link = items[0].content.iter().any(|n| {
+                if let DocumentNode::Paragraph { spans } = n {
+                    spans.iter().any(|s| s.action.is_some())
+                } else {
+                    false
+                }
+            });
             assert!(first_has_link, "First list item should contain a link");
 
-            // Second item should contain a link
-            let second_has_link = items[1]
-                .content
-                .iter()
-                .any(|n| matches!(n, DocumentNode::Link { .. }));
+            // Second item should contain a paragraph with a span containing a link
+            let second_has_link = items[1].content.iter().any(|n| {
+                if let DocumentNode::Paragraph { spans } = n {
+                    spans.iter().any(|s| s.action.is_some())
+                } else {
+                    false
+                }
+            });
             assert!(second_has_link, "Second list item should contain a link");
         } else {
             panic!("Expected a List node");

@@ -5,7 +5,7 @@ use super::history::{History, HistoryEntry};
 use super::theme::InteractiveTheme;
 use super::ui_config::UiRenderConfig;
 use super::utils::supports_cursor_shape;
-use crate::styled_string::{Document, TuiAction};
+use crate::styled_string::{Document, NodePath, TuiAction};
 use std::sync::mpsc::{Receiver, Sender};
 
 /// UI mode - makes the modal structure of the interface explicit
@@ -67,12 +67,26 @@ pub(super) struct LoadingState {
     pub frame_count: u32,
 }
 
+/// Layout state - cursor position, indentation, and viewport
+/// Reset at the start of each frame render
+#[derive(Debug)]
+pub(super) struct LayoutState {
+    pub pos: Position,
+    pub indent: u16,
+    pub node_path: NodePath,
+    pub area: Rect,
+    /// Stack of x positions where blockquote markers should be drawn
+    /// When rendering content, markers are drawn at each of these positions
+    pub blockquote_markers: Vec<u16>,
+}
+
 /// Main interactive state - composes all UI state
 #[derive(Debug)]
 pub(super) struct InteractiveState<'a> {
     pub document: DocumentState<'a>,
     pub viewport: ViewportState,
     pub render_cache: RenderCache<'a>,
+    pub layout: LayoutState,
     pub ui_mode: UiMode,
     pub ui: UiState,
     pub loading: LoadingState,
@@ -108,6 +122,13 @@ impl<'a> InteractiveState<'a> {
             },
             render_cache: RenderCache {
                 actions: Vec::new(),
+            },
+            layout: LayoutState {
+                pos: Position::default(),
+                indent: 0,
+                node_path: NodePath::new(),
+                area: Rect::default(),
+                blockquote_markers: Vec::new(),
             },
             ui_mode: UiMode::Normal,
             ui: UiState {

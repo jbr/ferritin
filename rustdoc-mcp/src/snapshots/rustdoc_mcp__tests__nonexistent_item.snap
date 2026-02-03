@@ -6,6 +6,6 @@ expression: result
 
 • `crate::TestEnum` (Enum)
 • `crate::ComplexTrait` (Trait)
+• `crate::markdown_test` (Module)
 • `crate::link_resolution_tests` (Module)
 • `crate::TestTrait` (Trait)
-• `crate::Vec` (Struct)

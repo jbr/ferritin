@@ -9,6 +9,7 @@ use ferritin_common::{
     Navigator,
     sources::{LocalSource, StdSource},
 };
+use ratatui::backend::TestBackend;
 use std::path::PathBuf;
 
 /// Get the path to our test crate (fast to build, minimal dependencies)
@@ -31,6 +32,13 @@ fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
     let render_context = RenderContext::new().with_output_mode(output_mode);
     render(&document, &render_context, &mut output).unwrap();
 
+    // Strip ANSI codes for TTY mode to make snapshots readable
+    let output = if matches!(output_mode, OutputMode::Tty) {
+        String::from_utf8(strip_ansi_escapes::strip(output.as_bytes())).unwrap_or(output)
+    } else {
+        output
+    };
+
     // Normalize the test crate path for consistent snapshots across environments
     let test_crate_path = get_test_crate_path();
     let test_crate_path_str = test_crate_path
@@ -41,141 +49,114 @@ fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
     output.replace(&test_crate_path_str, "/TEST_CRATE_ROOT")
 }
 
-#[test]
-fn test_get_crate_root_test_mode() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate"),
-        OutputMode::TestMode
-    ));
+fn render_interactive_for_tests(command: Commands) -> TestBackend {
+    use crate::renderer::render_to_test_backend;
+
+    let request = create_test_state();
+    let (document, _, _) = command.execute(&request);
+    let render_context = RenderContext::new();
+
+    render_to_test_backend(document, &render_context)
 }
 
-#[test]
-fn test_get_crate_root_tty_mode() {
-    insta::assert_snapshot!(render_for_tests(Commands::get("crate"), OutputMode::Tty));
+/// Macro to run the same test across all output modes
+macro_rules! test_all_modes {
+    ($name:ident, $cmd:expr) => {
+        paste::paste! {
+            #[test]
+            fn [<$name _test_mode>]() {
+                insta::assert_snapshot!(render_for_tests($cmd, OutputMode::TestMode));
+            }
+
+            #[test]
+            fn [<$name _tty_mode>]() {
+                insta::assert_snapshot!(render_for_tests($cmd, OutputMode::Tty));
+            }
+
+            #[test]
+            fn [<$name _plain_mode>]() {
+                insta::assert_snapshot!(render_for_tests($cmd, OutputMode::Plain));
+            }
+
+            #[test]
+            fn [<$name _interactive_mode>]() {
+                let test_crate_path = get_test_crate_path();
+                let test_crate_path_str = test_crate_path
+                    .canonicalize()
+                    .unwrap_or(test_crate_path)
+                    .to_string_lossy()
+                    .to_string();
+
+                let mut settings = insta::Settings::clone_current();
+                settings.add_filter(&test_crate_path_str, "/TEST_CRATE_ROOT");
+                // Strip trailing whitespace from lines containing the replaced path
+                // to avoid snapshot differences due to fixed-width TUI padding
+                settings.add_filter(r#"(?m)(.*TEST_CRATE_ROOT[^"]+?)\s+"$"#, r#"$1""#);
+                settings.bind(|| {
+                    insta::assert_snapshot!(render_interactive_for_tests($cmd));
+                });
+            }
+        }
+    };
 }
 
-#[test]
-fn test_get_crate_root_plain_mode() {
-    insta::assert_snapshot!(render_for_tests(Commands::get("crate"), OutputMode::Plain));
-}
+test_all_modes!(get_crate_root, Commands::get("crate"));
 
-#[test]
-fn test_get_struct_details() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::TestStruct"),
-        OutputMode::TestMode
-    ));
-}
+// Using macro to test across all modes
+test_all_modes!(get_struct_details, Commands::get("crate::TestStruct"));
 
-#[test]
-fn test_get_struct_with_source() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::TestStruct").with_source(),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(
+    get_struct_with_source,
+    Commands::get("crate::TestStruct").with_source()
+);
 
-#[test]
-fn test_get_submodule() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::submodule"),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(get_submodule, Commands::get("crate::submodule"));
 
-#[test]
-fn test_get_enum_details() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::submodule::TestEnum"),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(
+    get_enum_details,
+    Commands::get("crate::submodule::TestEnum")
+);
 
-#[test]
-fn test_get_generic_enum() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::GenericEnum"),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(get_generic_enum, Commands::get("crate::GenericEnum"));
 
-#[test]
-fn test_nonexistent_item() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::DoesNotExist"),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(nonexistent_item, Commands::get("crate::DoesNotExist"));
 
-#[test]
-fn test_recursive_module_listing() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate").recursive(),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(recursive_module_listing, Commands::get("crate").recursive());
 
-#[test]
-fn test_recursive_submodule_listing() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::submodule").recursive(),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(
+    recursive_submodule_listing,
+    Commands::get("crate::submodule").recursive()
+);
 
-#[test]
-fn test_get_item_with_normalized_crate_name() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("test-crate::TestStruct"),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(
+    get_item_with_normalized_crate_name,
+    Commands::get("test-crate::TestStruct")
+);
 
-#[test]
-fn test_list_crates() {
-    insta::assert_snapshot!(render_for_tests(Commands::list(), OutputMode::TestMode));
-}
+test_all_modes!(list_crates, Commands::list());
 
-#[test]
-fn test_search() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::search("trigger line-based truncation"),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(search, Commands::search("trigger line-based truncation"));
 
-#[test]
-fn test_search_2() {
-    insta::assert_snapshot!(render_for_tests(
-        Commands::search("generic struct"),
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(search_2, Commands::search("generic struct"));
 
-#[test]
-fn test_fuzzy_matching_typo() {
-    // Try to access a trait method with a typo - should suggest correct spelling
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::TestStruct::test_metod"), // typo: should suggest "test_method"
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(
+    fuzzy_matching_typo,
+    Commands::get("crate::TestStruct::test_metod")
+); // typo: should suggest "test_method"
 
-#[test]
-fn test_fuzzy_matching_trait_methods() {
-    // Try to access a trait method that should be available via impl
-    // This tests whether we collect trait implementation methods
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::TestStruct::cute"), // Should suggest "clone" from Clone trait
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(
+    fuzzy_matching_trait_methods,
+    Commands::get("crate::TestStruct::cute")
+); // Should suggest "clone" from Clone trait
 
-#[test]
-fn test_fuzzy_matching_suggestions() {
-    // Try to get a non-existent item that should trigger fuzzy suggestions
-    insta::assert_snapshot!(render_for_tests(
-        Commands::get("crate::TestStruct::incrementCount"), // typo: should be increment_count
-        OutputMode::TestMode
-    ));
-}
+test_all_modes!(
+    fuzzy_matching_suggestions,
+    Commands::get("crate::TestStruct::incrementCount")
+); // typo: should be increment_count
+
+test_all_modes!(get_std, Commands::get("std"));
+
+test_all_modes!(
+    get_markdown_test,
+    Commands::get("test-crate::markdown_test")
+);

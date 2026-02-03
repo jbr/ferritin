@@ -1,303 +1,285 @@
+//! Plain text renderer for non-TTY output (e.g., piping).
+//!
+//! This renderer produces readable plain text output without any terminal control codes
+//! or styling. It's used when stdout is not a TTY, making it safe for piping to files
+//! or other programs.
+//!
+//! The output is markdown-like but not necessarily compliant markdown - it prioritizes
+//! readability over strict formatting rules.
+//!
+//! # Layout Model
+//!
+//! Follows the same principles as the interactive renderer:
+//! - Blocks add newlines at the end
+//! - Containers add blank lines between consecutive children
+//! - List items are compact (no blank lines within an item)
+//! - Maintains indentation for nested content
+
 use std::fmt::{Result, Write};
 
 use crate::styled_string::{
     Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, TruncationLevel,
 };
 
+/// Plain text renderer state
+struct PlainRenderer<'w, W: Write> {
+    output: &'w mut W,
+    indent: String,
+}
+
 /// Render a document as plain text without any styling
 pub fn render(document: &Document, output: &mut impl Write) -> Result {
-    render_nodes(&document.nodes, output)
+    let mut renderer = PlainRenderer::new(output);
+    renderer.render_block_sequence(&document.nodes)
 }
 
-fn render_nodes(nodes: &[DocumentNode], output: &mut impl Write) -> Result {
-    for node in nodes {
-        render_node(node, output)?;
+impl<'w, W: Write> PlainRenderer<'w, W> {
+    fn new(output: &'w mut W) -> Self {
+        Self {
+            output,
+            indent: String::new(),
+        }
     }
-    Ok(())
-}
 
-fn render_node(node: &DocumentNode, output: &mut impl Write) -> Result {
-    match node {
-        DocumentNode::Span(span) => render_span(span, output),
-        DocumentNode::Heading { level, spans } => {
-            render_spans(spans, output)?;
-            writeln!(output)?;
-            // Add underlines for headings
-            match level {
-                HeadingLevel::Title => {
-                    for _ in 0..80 {
-                        write!(output, "=")?;
+    fn write_indent(&mut self) -> Result {
+        write!(self.output, "{}", self.indent)
+    }
+
+    /// Render a sequence of block nodes with blank lines between them
+    fn render_block_sequence(&mut self, nodes: &[DocumentNode]) -> Result {
+        for (idx, node) in nodes.iter().enumerate() {
+            if idx > 0 {
+                writeln!(self.output)?; // Blank line between consecutive blocks
+            }
+            self.render_node(node)?;
+        }
+        Ok(())
+    }
+
+    fn render_nodes(&mut self, nodes: &[DocumentNode]) -> Result {
+        for node in nodes {
+            self.render_node(node)?;
+        }
+        Ok(())
+    }
+
+    fn render_node(&mut self, node: &DocumentNode) -> Result {
+        match node {
+            DocumentNode::Paragraph { spans } => {
+                self.write_indent()?;
+                self.render_spans(spans)?;
+                writeln!(self.output)?; // Single newline
+                Ok(())
+            }
+            DocumentNode::Heading { level, spans } => {
+                self.write_indent()?;
+                self.render_spans(spans)?;
+                writeln!(self.output)?;
+                // Add underlines for headings
+                self.write_indent()?;
+                match level {
+                    HeadingLevel::Title => {
+                        for _ in 0..80 {
+                            write!(self.output, "=")?;
+                        }
+                        writeln!(self.output)?;
                     }
-                    writeln!(output)?;
-                }
-                HeadingLevel::Section => {
-                    for _ in 0..80 {
-                        write!(output, "-")?;
-                    }
-                    writeln!(output)?;
-                }
-            }
-            Ok(())
-        }
-        DocumentNode::Section { title, nodes } => {
-            if let Some(title_spans) = title {
-                render_spans(title_spans, output)?;
-                writeln!(output)?;
-            }
-            render_nodes(nodes, output)
-        }
-        DocumentNode::List { items } => {
-            for item in items {
-                render_list_item(item, output)?;
-            }
-            Ok(())
-        }
-        DocumentNode::CodeBlock { code, .. } => {
-            writeln!(output, "```\n{code}")?;
-            if !code.ends_with('\n') {
-                writeln!(output)?;
-            }
-            writeln!(output, "```\n")?;
-            Ok(())
-        }
-        DocumentNode::Link { text, .. } => {
-            // In plain mode, just render the link text
-            render_spans(text, output)
-        }
-        DocumentNode::HorizontalRule => {
-            for _ in 0..80 {
-                write!(output, "─")?;
-            }
-            writeln!(output)?;
-            Ok(())
-        }
-        DocumentNode::BlockQuote { nodes } => {
-            write!(output, "> ")?;
-            render_nodes(nodes, output)?;
-            writeln!(output)?;
-            Ok(())
-        }
-        DocumentNode::Table { header, rows } => {
-            // Placeholder for table rendering
-            let row_count = rows.len();
-            let col_count = header
-                .as_ref()
-                .map_or_else(|| rows.first().map_or(0, |r| r.len()), |h| h.len());
-            writeln!(
-                output,
-                "[Table: {} columns × {} rows]",
-                col_count, row_count
-            )?;
-            Ok(())
-        }
-        DocumentNode::TruncatedBlock { nodes, level } => {
-            match level {
-                TruncationLevel::SingleLine => {
-                    // Render until first newline
-                    let has_more = !render_until_newline(nodes, output)?;
-                    if has_more {
-                        write!(output, " [...]")?;
-                    }
-                    writeln!(output)?;
-                }
-                TruncationLevel::Brief => {
-                    // Render until first double newline (paragraph break)
-                    let remaining = render_until_paragraph_break(nodes, output)?;
-                    if remaining > 0 {
-                        writeln!(output)?;
-                        write!(output, "[+{remaining} more paragraphs]")?;
-                        writeln!(output)?;
+                    HeadingLevel::Section => {
+                        for _ in 0..80 {
+                            write!(self.output, "-")?;
+                        }
+                        writeln!(self.output)?;
                     }
                 }
-                TruncationLevel::Full => {
-                    // Render everything
-                    render_nodes(nodes, output)?;
+                Ok(())
+            }
+            DocumentNode::Section { title, nodes } => {
+                if let Some(title_spans) = title {
+                    self.write_indent()?;
+                    self.render_spans(title_spans)?;
+                    writeln!(self.output)?;
+                    writeln!(self.output)?; // Blank line after section title
                 }
+                self.render_block_sequence(nodes)
             }
-            Ok(())
-        }
-        DocumentNode::Conditional { show_when, nodes } => {
-            // Plain mode is non-interactive, so only show Always and NonInteractive content
-            let should_show = match show_when {
-                ShowWhen::Always => true,
-                ShowWhen::Interactive => false,
-                ShowWhen::NonInteractive => true,
-            };
-
-            if should_show {
-                render_nodes(nodes, output)?;
-            }
-            Ok(())
-        }
-    }
-}
-
-/// Render nodes until first newline
-/// Returns true if we rendered everything (no newline found), false if truncated
-fn render_until_newline(
-    nodes: &[DocumentNode],
-    output: &mut impl Write,
-) -> std::result::Result<bool, std::fmt::Error> {
-    for node in nodes {
-        if !render_node_until_newline(node, output)? {
-            return Ok(false); // Truncated
-        }
-    }
-    Ok(true) // Rendered everything
-}
-
-fn render_node_until_newline(
-    node: &DocumentNode,
-    output: &mut impl Write,
-) -> std::result::Result<bool, std::fmt::Error> {
-    match node {
-        DocumentNode::Span(span) => {
-            if let Some(pos) = span.text.find('\n') {
-                write!(output, "{}", &span.text[..pos])?;
-                Ok(false) // Found newline, truncated
-            } else {
-                render_span(span, output)?;
-                Ok(true) // No newline, continue
-            }
-        }
-        DocumentNode::Heading { .. } | DocumentNode::CodeBlock { .. } => {
-            // These introduce newlines, so stop here
-            Ok(false)
-        }
-        DocumentNode::Section { nodes, .. }
-        | DocumentNode::BlockQuote { nodes }
-        | DocumentNode::TruncatedBlock { nodes, .. }
-        | DocumentNode::Conditional { nodes, .. } => render_until_newline(nodes, output),
-        DocumentNode::List { .. } | DocumentNode::Table { .. } | DocumentNode::HorizontalRule => {
-            // These are multi-line structures, stop here
-            Ok(false)
-        }
-        DocumentNode::Link { text, .. } => {
-            for span in text {
-                if !render_node_until_newline(&DocumentNode::Span(span.clone()), output)? {
-                    return Ok(false);
+            DocumentNode::List { items } => {
+                for (idx, item) in items.iter().enumerate() {
+                    if idx > 0 {
+                        writeln!(self.output)?; // Blank line between list items
+                    }
+                    self.render_list_item(item)?;
                 }
+                Ok(())
             }
-            Ok(true)
-        }
-    }
-}
-
-/// Render until first paragraph break (\n\n)
-/// Returns number of remaining paragraphs
-fn render_until_paragraph_break(
-    nodes: &[DocumentNode],
-    output: &mut impl Write,
-) -> std::result::Result<usize, std::fmt::Error> {
-    let mut last_was_newline = false;
-    let mut found_break = false;
-    let mut remaining_paras = 0;
-
-    for node in nodes {
-        if found_break {
-            remaining_paras += count_paragraphs_in_node(node);
-        } else {
-            let (stop, last_newline) =
-                render_node_until_paragraph_break(node, output, last_was_newline)?;
-            if stop {
-                found_break = true;
-                remaining_paras = 1; // At least one more paragraph
+            DocumentNode::CodeBlock { code, .. } => {
+                self.write_indent()?;
+                writeln!(self.output, "```")?;
+                for line in code.lines() {
+                    self.write_indent()?;
+                    writeln!(self.output, "{line}")?;
+                }
+                if !code.ends_with('\n') && !code.is_empty() {
+                    writeln!(self.output)?;
+                }
+                self.write_indent()?;
+                writeln!(self.output, "```")?;
+                Ok(())
             }
-            last_was_newline = last_newline;
-        }
-    }
-
-    Ok(remaining_paras)
-}
-
-fn render_node_until_paragraph_break(
-    node: &DocumentNode,
-    output: &mut impl Write,
-    last_was_newline: bool,
-) -> std::result::Result<(bool, bool), std::fmt::Error> {
-    match node {
-        DocumentNode::Span(span) => {
-            // Check for \n\n pattern
-            if last_was_newline && span.text.starts_with('\n') {
-                return Ok((true, false)); // Found paragraph break
+            DocumentNode::GeneratedCode { spans } => {
+                self.write_indent()?;
+                self.render_spans(spans)?;
+                writeln!(self.output)?; // Single newline
+                Ok(())
             }
-            if span.text.contains("\n\n")
-                && let Some(pos) = span.text.find("\n\n")
-            {
-                write!(output, "{}", &span.text[..pos])?;
-                return Ok((true, false)); // Found paragraph break
+            DocumentNode::HorizontalRule => {
+                self.write_indent()?;
+                for _ in 0..80 {
+                    write!(self.output, "─")?;
+                }
+                writeln!(self.output)?;
+                Ok(())
             }
-            render_span(span, output)?;
-            Ok((false, span.text.ends_with('\n')))
+            DocumentNode::BlockQuote { nodes } => {
+                for (idx, node) in nodes.iter().enumerate() {
+                    if idx > 0 {
+                        writeln!(self.output)?; // Blank line between blocks in quote
+                    }
+                    self.write_indent()?;
+                    write!(self.output, "> ")?;
+                    // Add indentation for quote content
+                    let saved_indent = self.indent.clone();
+                    self.indent.push_str("  ");
+                    self.render_node(node)?;
+                    self.indent = saved_indent;
+                }
+                Ok(())
+            }
+            DocumentNode::Table { header, rows } => {
+                // Placeholder for table rendering
+                let row_count = rows.len();
+                let col_count = header
+                    .as_ref()
+                    .map_or_else(|| rows.first().map_or(0, |r| r.len()), |h| h.len());
+                self.write_indent()?;
+                writeln!(
+                    self.output,
+                    "[Table: {} columns × {} rows]",
+                    col_count, row_count
+                )?;
+                Ok(())
+            }
+            DocumentNode::TruncatedBlock { nodes, level } => {
+                // Transparent container - just controls truncation
+                match level {
+                    TruncationLevel::SingleLine => {
+                        // Render first node/paragraph inline
+                        if let Some(first_node) = nodes.first() {
+                            match first_node {
+                                DocumentNode::Paragraph { spans } => {
+                                    self.write_indent()?;
+                                    self.render_spans(spans)?;
+                                }
+                                DocumentNode::Heading { spans, .. } => {
+                                    self.write_indent()?;
+                                    self.render_spans(spans)?;
+                                }
+                                _ => {
+                                    self.render_node(first_node)?;
+                                }
+                            }
+                            if nodes.len() > 1 {
+                                write!(self.output, " [...]")?;
+                            }
+                        }
+                        writeln!(self.output)?; // End the line
+                    }
+                    TruncationLevel::Brief => {
+                        // Render first paragraph
+                        if let Some(first_node) = nodes.first() {
+                            self.render_node(first_node)?;
+                            if nodes.len() > 1 {
+                                self.write_indent()?;
+                                write!(self.output, "[+{} more]", nodes.len() - 1)?;
+                                writeln!(self.output)?;
+                            }
+                        }
+                    }
+                    TruncationLevel::Full => {
+                        // Render everything with spacing
+                        self.render_block_sequence(nodes)?;
+                    }
+                }
+                Ok(())
+            }
+            DocumentNode::Conditional { show_when, nodes } => {
+                // Transparent container
+                let should_show = match show_when {
+                    ShowWhen::Always => true,
+                    ShowWhen::Interactive => false,
+                    ShowWhen::NonInteractive => true,
+                };
+
+                if should_show {
+                    for (idx, node) in nodes.iter().enumerate() {
+                        if idx > 0 {
+                            writeln!(self.output)?; // Blank line between blocks
+                        }
+                        self.render_node(node)?;
+                    }
+                }
+                Ok(())
+            }
         }
-        _ => {
-            // For other nodes, just render them
-            render_node(node, output)?;
-            Ok((false, false))
+    }
+
+    fn render_spans(&mut self, spans: &[Span]) -> Result {
+        for span in spans {
+            self.render_span(span)?;
         }
+        Ok(())
     }
-}
 
-fn count_paragraphs_in_node(node: &DocumentNode) -> usize {
-    match node {
-        DocumentNode::Span(span) => span.text.matches("\n\n").count(),
-        DocumentNode::Section { nodes, .. }
-        | DocumentNode::BlockQuote { nodes }
-        | DocumentNode::TruncatedBlock { nodes, .. }
-        | DocumentNode::Conditional { nodes, .. } => {
-            nodes.iter().map(count_paragraphs_in_node).sum()
+    fn render_span(&mut self, Span { text, .. }: &Span) -> Result {
+        // Handle newlines in span text to maintain indentation
+        for (idx, line) in text.split('\n').enumerate() {
+            if idx > 0 {
+                writeln!(self.output)?;
+                self.write_indent()?;
+            }
+            write!(self.output, "{line}")?;
         }
-        DocumentNode::List { items } => items
-            .iter()
-            .map(|item| {
-                item.content
-                    .iter()
-                    .map(count_paragraphs_in_node)
-                    .sum::<usize>()
-            })
-            .sum(),
-        _ => 0,
+        Ok(())
     }
-}
 
-fn render_spans(spans: &[Span], output: &mut impl Write) -> Result {
-    for span in spans {
-        render_span(span, output)?;
+    fn render_list_item(&mut self, item: &ListItem) -> Result {
+        self.write_indent()?;
+        let bullet = crate::renderer::bullet_for_indent(self.indent.len() as u16);
+        write!(self.output, "  {} ", bullet)?;
+
+        let saved_indent = self.indent.clone();
+
+        // Render first node inline with bullet (before changing indent)
+        if let Some(first) = item.content.first() {
+            self.render_node(first)?;
+        }
+
+        // Add indentation for subsequent nodes
+        self.indent.push_str("    "); // 4 spaces to align with content after bullet
+
+        // Render remaining nodes with indentation
+        for node in item.content.iter().skip(1) {
+            self.render_node(node)?;
+        }
+
+        // Restore indent
+        self.indent = saved_indent;
+        Ok(())
     }
-    Ok(())
-}
-
-fn render_span(Span { text, .. }: &Span, output: &mut impl Write) -> Result {
-    write!(output, "{text}")?;
-    Ok(())
-}
-
-fn render_list_item(item: &ListItem, output: &mut impl Write) -> Result {
-    write!(output, "  • ")?;
-    if let Some(label) = &item.label {
-        render_spans(label, output)?;
-    }
-    render_nodes(&item.content, output)?;
-    writeln!(output)?;
-    Ok(())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_render_spans() {
-        let doc = Document::with_nodes(vec![
-            DocumentNode::Span(Span::keyword("struct")),
-            DocumentNode::Span(Span::plain(" ")),
-            DocumentNode::Span(Span::type_name("Foo")),
-        ]);
-
-        let mut output = String::new();
-        render(&doc, &mut output).unwrap();
-        assert_eq!(output, "struct Foo");
-    }
 
     #[test]
     fn test_render_heading() {
@@ -314,14 +296,15 @@ mod tests {
     #[test]
     fn test_render_list() {
         let doc = Document::with_nodes(vec![DocumentNode::list(vec![
-            ListItem::from_span(Span::plain("First")),
-            ListItem::from_span(Span::plain("Second")),
+            ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain("First")])]),
+            ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain("Second")])]),
         ])]);
 
         let mut output = String::new();
         render(&doc, &mut output).unwrap();
+        dbg!(&output);
 
-        assert!(output.contains("  • First"));
-        assert!(output.contains("  • Second"));
+        assert!(output.contains("  ◦ First"));
+        assert!(output.contains("  ◦ Second"));
     }
 }

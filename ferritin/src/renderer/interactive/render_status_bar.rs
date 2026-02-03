@@ -1,6 +1,9 @@
 use ratatui::{buffer::Buffer, layout::Rect};
 
-use super::state::{InputMode, InteractiveState, UiMode};
+use super::{
+    render_document::BASELINE_LEFT_MARGIN,
+    state::{InputMode, InteractiveState, UiMode},
+};
 
 impl<'a> InteractiveState<'a> {
     /// Render status bar at the bottom of the screen
@@ -52,9 +55,9 @@ impl<'a> InteractiveState<'a> {
             display_text = format!("{} {}", spinner_char, display_text);
         }
 
-        // Calculate space for hint text
+        // Calculate space for hint text (accounting for left margin)
         let hint_len = hint_text.as_ref().map(|h| h.len()).unwrap_or(0);
-        let available_width = area.width as usize;
+        let available_width = (area.width as usize).saturating_sub(BASELINE_LEFT_MARGIN as usize);
         let text_max_width = if hint_len > 0 {
             available_width.saturating_sub(hint_len + 2) // +2 for spacing
         } else {
@@ -68,7 +71,7 @@ impl<'a> InteractiveState<'a> {
             &display_text
         };
 
-        let mut col = 0u16;
+        let mut col = BASELINE_LEFT_MARGIN;
         for ch in truncated.chars() {
             if col >= area.width {
                 break;
@@ -80,9 +83,12 @@ impl<'a> InteractiveState<'a> {
             col += 1;
         }
 
-        // Render right-justified hint text if present
+        // Render right-justified hint text if present (within margin-adjusted area)
         if let Some(hint) = hint_text {
-            let hint_start = (area.width as usize).saturating_sub(hint.len()) as u16;
+            let hint_start = area
+                .width
+                .saturating_sub(hint.len() as u16)
+                .max(BASELINE_LEFT_MARGIN);
             let mut hint_col = hint_start;
             for ch in hint.chars() {
                 if hint_col >= area.width {

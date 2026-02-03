@@ -38,3 +38,5 @@ syntect = { version = "5.3", default-features = false, features = ["parsing", "p
 
 [dev-dependencies]
 insta = { version = "1.46.1", features = ["filters"] }
+paste = "1.0.15"
+strip-ansi-escapes = "0.2.1"

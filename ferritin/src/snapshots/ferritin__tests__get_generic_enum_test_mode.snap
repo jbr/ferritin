@@ -1,0 +1,50 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::GenericEnum\"), OutputMode :: TestMode)"
+---
+<p>
+<strong>Item:</strong> GenericEnum
+<strong>Kind:</strong> Enum
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>test_crate</type-name><punctuation>::</punctuation><type-name>GenericEnum</type-name>
+<strong>In crate:</strong> test-crate (0.1.0)</p>
+<truncated level="full"><p>
+A generic enum for testing</p>
+<p>
+See also <inline-code>crate::TestEnum</inline-code></p>
+</truncated>
+<generated-code>
+<keyword>enum</keyword> <type-name>GenericEnum</type-name><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic> <operator>=</operator> <type-name>String</type-name><punctuation>></punctuation>
+<keyword>where</keyword>
+    <generic>T</generic><punctuation>:</punctuation> <type-name>Clone</type-name> + <type-name>Send</type-name><punctuation>,</punctuation>
+    <generic>U</generic><punctuation>:</punctuation> <type-name>std::fmt::Display</type-name> <punctuation>{</punctuation>
+    <type-name>Simple</type-name><punctuation>,</punctuation>
+    <type-name>WithData</type-name><punctuation>(</punctuation><generic>T</generic><punctuation>)</punctuation><punctuation>,</punctuation>
+    <type-name>Mixed</type-name> <punctuation>{</punctuation>
+        <field-name>data</field-name><punctuation>:</punctuation> <generic>T</generic><punctuation>,</punctuation>
+        <field-name>info</field-name><punctuation>:</punctuation> <generic>U</generic><punctuation>,</punctuation>
+    <punctuation>}</punctuation><punctuation>,</punctuation>
+<punctuation>}</punctuation></generated-code>
+<section><section-title>Variants:</section-title><list>
+  <item><p>
+<type-name>Simple</type-name> </p>
+<truncated level="single-line"><p>
+Simple variant</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>WithData</type-name> </p>
+<truncated level="single-line"><p>
+Variant with generic data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>Mixed</type-name> </p>
+<truncated level="single-line"><p>
+Variant with mixed generics</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Trait Implementations</section-title><p>
+std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnwindSafe </p>
+</section>

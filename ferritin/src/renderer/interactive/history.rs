@@ -4,6 +4,7 @@ use ratatui::layout::{Position, Rect};
 use rustdoc_types::Item;
 
 use super::channels::UiCommand;
+use super::render_document::BASELINE_LEFT_MARGIN;
 use super::theme::InteractiveTheme;
 use std::borrow::Cow;
 use std::fmt::{self, Display, Formatter};
@@ -161,20 +162,22 @@ impl<'a> History<'a> {
 
         if history.is_empty() {
             let text = " 🦀  <no history>";
-            for (i, ch) in text.chars().enumerate() {
-                if i >= area.width as usize {
+            let mut col = BASELINE_LEFT_MARGIN;
+            for ch in text.chars() {
+                if col >= area.width {
                     break;
                 }
-                buf.cell_mut((i as u16, area.y))
+                buf.cell_mut((col, area.y))
                     .unwrap()
                     .set_char(ch)
                     .set_style(bg_style);
+                col += 1;
             }
             return;
         }
 
         // Build breadcrumb trail: a → b → c with current item italicized
-        let mut col = 0u16;
+        let mut col = BASELINE_LEFT_MARGIN;
 
         // Start with icon
         let icon = " 🦀  ";

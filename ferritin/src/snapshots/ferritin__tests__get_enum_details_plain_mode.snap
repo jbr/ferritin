@@ -1,0 +1,37 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::submodule::TestEnum\"), OutputMode ::\nPlain)"
+---
+Item: TestEnum
+Kind: Enum
+Visibility: Public
+Defined at: test_crate::submodule::TestEnum
+In crate: test-crate (0.1.0)
+
+An enum for testing
+
+This is like crate::GenericEnum but without the generic
+
+enum TestEnum {
+    VariantA,
+    VariantB(String),
+    VariantC {
+        name: String,
+        value: i32,
+    },
+}
+
+Variants:
+
+  ◦ VariantA 
+    Variant A (see also crate::GenericEnum)
+
+  ◦ VariantB 
+    Variant B with data
+
+  ◦ VariantC 
+    Variant C with struct data (name and value)
+
+Trait Implementations
+
+std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnwindSafe

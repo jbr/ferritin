@@ -1,0 +1,40 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::GenericEnum\"), OutputMode :: Plain)"
+---
+Item: GenericEnum
+Kind: Enum
+Visibility: Public
+Defined at: test_crate::GenericEnum
+In crate: test-crate (0.1.0)
+
+A generic enum for testing
+
+See also crate::TestEnum
+
+enum GenericEnum<T, U = String>
+where
+    T: Clone + Send,
+    U: std::fmt::Display {
+    Simple,
+    WithData(T),
+    Mixed {
+        data: T,
+        info: U,
+    },
+}
+
+Variants:
+
+  ◦ Simple 
+    Simple variant
+
+  ◦ WithData 
+    Variant with generic data
+
+  ◦ Mixed 
+    Variant with mixed generics
+
+Trait Implementations
+
+std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnwindSafe

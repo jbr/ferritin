@@ -1,0 +1,37 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::submodule\"), OutputMode :: Tty)"
+---
+Item: submodule
+Kind: Module
+Visibility: Public
+Defined at: test_crate::submodule
+In crate: test-crate (0.1.0)
+
+A module with items
+
+Structs
+
+  ◦ SubStruct 
+    A struct in a submodule
+
+Enums
+
+  ◦ TestEnum 
+    An enum for testing [...]
+
+Functions
+
+  ◦ sub_function 
+    A function in a submodule
+
+Variants
+
+  ◦ VariantA 
+    Variant A (see also crate::GenericEnum)
+
+  ◦ VariantB 
+    Variant B with data
+
+  ◦ VariantC 
+    Variant C with struct data (name and value)

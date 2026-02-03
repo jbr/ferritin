@@ -1,6 +1,10 @@
-use ratatui::{Frame, layout::Rect};
+use ratatui::{
+    Frame,
+    layout::{Position, Rect},
+};
 
 use super::{InteractiveState, UiMode};
+use crate::styled_string::NodePath;
 
 impl<'a> InteractiveState<'a> {
     pub(super) fn render_frame(&mut self, frame: &mut Frame) {
@@ -43,6 +47,12 @@ impl<'a> InteractiveState<'a> {
                         .set_style(self.theme.document_bg_style);
                 }
             }
+
+            // Reset layout state for this frame
+            self.layout.pos = Position::default();
+            self.layout.indent = 0;
+            self.layout.node_path = NodePath::new();
+            self.layout.area = main_area;
 
             // Render main document
             self.render_document(main_area, frame.buffer_mut());

@@ -1,0 +1,9 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::search(\"generic struct\"), OutputMode :: Tty)"
+---
+Search results for 'generic struct'
+================================================================================
+
+  ◦ test-crate::GenericStruct  (Struct) - score: 16.0
+        A generic struct for testing multi-paragraph documentation.

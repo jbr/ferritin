@@ -1,140 +1,168 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate\"), OutputMode::TestMode)"
+expression: "render_for_tests(Commands::get(\"crate\"), OutputMode :: TestMode)"
 ---
-  Item: test_crate
-Kind: Module
-Visibility: Public
-Defined at: <type-name>test_crate</type-name>
-In crate: test-crate (0.1.0)
-
-<truncated level="full">A minimal test crate for rustdoc JSON testing
-
+<p>
+<strong>Item:</strong> test_crate
+<strong>Kind:</strong> Module
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>test_crate</type-name>
+<strong>In crate:</strong> test-crate (0.1.0)</p>
+<truncated level="full"><p>
+A minimal test crate for rustdoc JSON testing</p>
 </truncated>
-
 <section><section-title>Modules</section-title><list>
-  <item><label><type-name>link_resolution_tests</type-name></label>
-<truncated level="single-line">Module for testing intra-doc link resolution
-
+  <item><p>
+<type-name>link_resolution_tests</type-name> </p>
+<truncated level="single-line"><p>
+Module for testing intra-doc link resolution</p>
 </truncated>
 </item>
-  <item><label><type-name>reexport_mod</type-name></label></item>
-  <item><label><type-name>submodule</type-name></label>
-<truncated level="single-line">A module with items
-
+  <item><p>
+<type-name>markdown_test</type-name> </p>
+<truncated level="single-line"><title>Markdown: Syntax</title>
+ <elided chars="8712"/></truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod</type-name> </p>
+</item>
+  <item><p>
+<type-name>submodule</type-name> </p>
+<truncated level="single-line"><p>
+A module with items</p>
 </truncated>
 </item>
 </list>
 </section><section><section-title>Structs</section-title><list>
-  <item><label><type-name>GenericStruct</type-name></label>
-<truncated level="single-line">A generic struct for testing multi-paragraph documentation.
-
-This struct <elided chars="409"/></truncated>
+  <item><p>
+<type-name>GenericStruct</type-name> </p>
+<truncated level="single-line"><p>
+A generic struct for testing multi-paragraph documentation.</p>
+This struct and provides a <elided chars="401"/></truncated>
 </item>
-  <item><label><type-name>SubStruct</type-name></label>
-<truncated level="single-line">A struct in a submodule
-
+  <item><p>
+<type-name>SubStruct</type-name> </p>
+<truncated level="single-line"><p>
+A struct in a submodule</p>
 </truncated>
 </item>
-  <item><label><type-name>TestStruct</type-name></label>
-<truncated level="single-line">A simple struct for testing basic functionality.
-
-This struct demonstrates <elided chars="220"/></truncated>
+  <item><p>
+<type-name>TestStruct</type-name> </p>
+<truncated level="single-line"><p>
+A simple struct for testing basic functionality.</p>
+This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>
 </item>
-  <item><label><type-name>TupleStruct</type-name></label>
-<truncated level="single-line">A tuple struct for testing
-
+  <item><p>
+<type-name>TupleStruct</type-name> </p>
+<truncated level="single-line"><p>
+A tuple struct for testing</p>
 </truncated>
 </item>
-  <item><label><type-name>UnitStruct</type-name></label>
-<truncated level="single-line">A unit struct for testing
-
+  <item><p>
+<type-name>UnitStruct</type-name> </p>
+<truncated level="single-line"><p>
+A unit struct for testing</p>
 </truncated>
 </item>
-  <item><label><type-name>Vec</type-name></label>
-<truncated level="single-line">A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.
-
- <elided chars="8635"/></truncated>
+  <item><p>
+<type-name>Vec</type-name> </p>
+<truncated level="single-line"><p>
+A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.</p>
+<title>Examples</title>
+ <elided chars="8583"/></truncated>
 </item>
 </list>
 </section><section><section-title>Enums</section-title><list>
-  <item><label><type-name>GenericEnum</type-name></label>
-<truncated level="single-line">A generic enum for testing
-
-See also <link href="https://docs.rs/test-crate/0.1.0/test-crate/submodule/enum.TestEnum.html"><inline-code>crate::TestEnum</inline-code></link>
-
+  <item><p>
+<type-name>GenericEnum</type-name> </p>
+<truncated level="single-line"><p>
+A generic enum for testing</p>
+<p>
+See also <inline-code>crate::TestEnum</inline-code></p>
 </truncated>
 </item>
-  <item><label><type-name>TestEnum</type-name></label>
-<truncated level="single-line">An enum for testing
-
-This is like <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html"><inline-code>crate::GenericEnum</inline-code></link> but without the generic
-
+  <item><p>
+<type-name>TestEnum</type-name> </p>
+<truncated level="single-line"><p>
+An enum for testing</p>
+<p>
+This is like <inline-code>crate::GenericEnum</inline-code> but without the generic</p>
 </truncated>
 </item>
 </list>
 </section><section><section-title>Traits</section-title><list>
-  <item><label><type-name>ComplexTrait</type-name></label>
-<truncated level="single-line">A more complex trait demonstrating various features
-
+  <item><p>
+<type-name>ComplexTrait</type-name> </p>
+<truncated level="single-line"><p>
+A more complex trait demonstrating various features</p>
 </truncated>
 </item>
-  <item><label><type-name>TestTrait</type-name></label>
-<truncated level="single-line">A trait for testing extremely long documentation that exceeds line limits.
-
-This <elided chars="1265"/></truncated>
+  <item><p>
+<type-name>TestTrait</type-name> </p>
+<truncated level="single-line"><p>
+A trait for testing extremely long documentation that exceeds line limits.</p>
+This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
 </item>
 </list>
 </section><section><section-title>Functions</section-title><list>
-  <item><label><type-name>async_function</type-name></label>
-<truncated level="single-line">An async function
-
+  <item><p>
+<type-name>async_function</type-name> </p>
+<truncated level="single-line"><p>
+An async function</p>
 </truncated>
 </item>
-  <item><label><type-name>generic_function</type-name></label>
-<truncated level="single-line">A generic function
-
+  <item><p>
+<type-name>generic_function</type-name> </p>
+<truncated level="single-line"><p>
+A generic function</p>
 </truncated>
 </item>
-  <item><label><type-name>sub_function</type-name></label>
-<truncated level="single-line">A function in a submodule
-
+  <item><p>
+<type-name>sub_function</type-name> </p>
+<truncated level="single-line"><p>
+A function in a submodule</p>
 </truncated>
 </item>
-  <item><label><type-name>test_function</type-name></label>
-<truncated level="single-line">A public function
-
+  <item><p>
+<type-name>test_function</type-name> </p>
+<truncated level="single-line"><p>
+A public function</p>
 </truncated>
 </item>
 </list>
 </section><section><section-title>Constants</section-title><list>
-  <item><label><type-name>TEST_CONSTANT</type-name></label>
-<truncated level="single-line">A const for testing
-
+  <item><p>
+<type-name>TEST_CONSTANT</type-name> </p>
+<truncated level="single-line"><p>
+A const for testing</p>
 </truncated>
 </item>
 </list>
 </section><section><section-title>Statics</section-title><list>
-  <item><label><type-name>TEST_STATIC</type-name></label>
-<truncated level="single-line">A static for testing
-
+  <item><p>
+<type-name>TEST_STATIC</type-name> </p>
+<truncated level="single-line"><p>
+A static for testing</p>
 </truncated>
 </item>
 </list>
 </section><section><section-title>Variants</section-title><list>
-  <item><label><type-name>VariantA</type-name></label>
-<truncated level="single-line">Variant A (see also <link href="https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html"><inline-code>crate::GenericEnum</inline-code></link>)
-
+  <item><p>
+<type-name>VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
 </truncated>
 </item>
-  <item><label><type-name>VariantB</type-name></label>
-<truncated level="single-line">Variant B with data
-
+  <item><p>
+<type-name>VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
 </truncated>
 </item>
-  <item><label><type-name>VariantC</type-name></label>
-<truncated level="single-line">Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)
-
+  <item><p>
+<type-name>VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
 </truncated>
 </item>
 </list>

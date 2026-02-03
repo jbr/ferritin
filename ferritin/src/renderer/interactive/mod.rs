@@ -1,3 +1,74 @@
+//! Interactive terminal UI renderer for Rust documentation.
+//!
+//! This module implements a TUI (Terminal User Interface) for browsing Rust documentation
+//! with scrolling, hover tracking, and interactive navigation.
+//!
+//! # Architecture
+//!
+//! The renderer uses a two-thread architecture:
+//! - **UI thread**: Handles terminal rendering and user input
+//! - **Request thread**: Executes commands and formats documentation
+//!
+//! Communication between threads uses channels to pass documents and commands.
+//!
+//! # Layout Model
+//!
+//! The layout system follows a simple, principled model for positioning block elements:
+//!
+//! ## Block Element Conventions
+//!
+//! Each block element (Paragraph, Heading, CodeBlock, etc.) follows these rules:
+//!
+//! 1. **Start**: Unconditionally set `pos.x = indent` at the beginning
+//!    - Assumes it's starting on a fresh line
+//!    - No need to check previous state
+//!
+//! 2. **End**: Increment `pos.y` when done rendering
+//!    - Moves to the next line
+//!    - Leaves `pos.x` wherever content ended (next element will reset it)
+//!
+//! ## Container Spacing
+//!
+//! Containers that render multiple child blocks add blank lines between them:
+//!
+//! ```rust,ignore
+//! for (idx, child) in children.iter().enumerate() {
+//!     if idx > 0 {
+//!         self.layout.pos.y += 1;  // Blank line between consecutive blocks
+//!     }
+//!     self.render_node(child, buf);
+//! }
+//! ```
+//!
+//! This applies to:
+//! - Top-level document nodes (`render_document`)
+//! - Section content
+//! - BlockQuote content
+//! - TruncatedBlock content (when not truncated)
+//! - Conditional content
+//!
+//! ## Special Cases
+//!
+//! - **List items**: Add blank lines *between* items, but not within an item's content
+//!   - Keeps labels visually connected to their descriptions
+//!
+//! - **Transparent containers** (TruncatedBlock, Conditional): Don't add their own spacing
+//!   - Just control which children to render
+//!   - Children handle their own positioning
+//!
+//! - **TruncatedBlock borders**: Outdented by 2 columns so content doesn't shift when expanding
+//!   - Border at `indent - 2`, content at `indent`
+//!
+//! ## Layout State
+//!
+//! Layout state is centralized in `LayoutState`:
+//! - `pos`: Current cursor position (x, y)
+//! - `indent`: Current indentation level for block elements
+//! - `node_path`: Path to current node in document tree (for expand/collapse tracking)
+//! - `area`: Visible rendering area
+//!
+//! The layout state is saved and restored when rendering children at different indentation levels.
+
 mod channels;
 mod events;
 mod history;
@@ -27,6 +98,9 @@ use events::handle_action;
 use theme::InteractiveTheme;
 
 pub use history::HistoryEntry;
+
+#[cfg(test)]
+use crate::styled_string::Document;
 use utils::set_cursor_shape;
 
 use crate::{
@@ -179,4 +253,25 @@ fn ui_thread_loop<'a>(
     terminal.show_cursor()?;
 
     result
+}
+
+#[cfg(test)]
+pub fn render_to_test_backend(
+    document: Document<'_>,
+    render_context: &RenderContext,
+) -> ratatui::backend::TestBackend {
+    use ratatui::{Terminal, backend::TestBackend};
+    use std::sync::mpsc::channel;
+
+    let (cmd_tx, _cmd_rx) = channel();
+    let (_resp_tx, resp_rx) = channel();
+    let ui_config = UiRenderConfig::from_render_context(render_context);
+    let theme = InteractiveTheme::from_render_context(render_context);
+
+    let mut state = state::InteractiveState::new(document, None, cmd_tx, resp_rx, ui_config, theme);
+    let backend = TestBackend::new(80, 200); // Tall virtual terminal to capture all content
+    let mut terminal = Terminal::new(backend).unwrap();
+
+    terminal.draw(|frame| state.render_frame(frame)).unwrap();
+    terminal.backend().clone()
 }

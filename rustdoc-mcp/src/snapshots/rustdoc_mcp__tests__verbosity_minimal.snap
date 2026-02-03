@@ -9,6 +9,7 @@ Defined at: test_crate
 
 Modules:
 link_resolution_tests
+markdown_test
 reexport_mod
 submodule
 

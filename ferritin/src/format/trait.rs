@@ -1,5 +1,5 @@
 use super::*;
-use crate::styled_string::{DocumentNode, Span};
+use crate::styled_string::{DocumentNode, ListItem, Span};
 
 impl Request {
     /// Format a trait
@@ -10,184 +10,167 @@ impl Request {
     ) -> Vec<DocumentNode<'a>> {
         let trait_name = item.name().unwrap_or("<unnamed>");
 
-        // Build trait signature
-        let mut nodes = vec![
-            DocumentNode::Span(Span::plain("\n")),
-            DocumentNode::Span(Span::keyword("trait")),
-            DocumentNode::Span(Span::plain(" ")),
-            DocumentNode::Span(Span::type_name(trait_name)),
+        // Build concise trait signature
+        let mut signature_spans = vec![
+            Span::keyword("trait"),
+            Span::plain(" "),
+            Span::type_name(trait_name),
         ];
 
         if !trait_data.generics.params.is_empty() {
-            nodes.extend(
-                self.format_generics(item, &trait_data.item().generics)
-                    .into_iter()
-                    .map(DocumentNode::Span),
-            );
+            signature_spans.extend(self.format_generics(item, &trait_data.item().generics));
         }
 
         if !trait_data.generics.where_predicates.is_empty() {
-            nodes.extend(
-                self.format_where_clause(item, &trait_data.item().generics.where_predicates)
-                    .into_iter()
-                    .map(DocumentNode::Span),
+            signature_spans.extend(
+                self.format_where_clause(item, &trait_data.item().generics.where_predicates),
             );
         }
 
-        nodes.push(DocumentNode::Span(Span::plain(" ")));
-        nodes.push(DocumentNode::Span(Span::punctuation("{")));
-        nodes.push(DocumentNode::Span(Span::plain("\n")));
+        signature_spans.push(Span::plain(" "));
+        signature_spans.push(Span::punctuation("{"));
+        signature_spans.push(Span::plain(" ... "));
+        signature_spans.push(Span::punctuation("}"));
 
-        // Add trait members
+        let mut nodes: Vec<DocumentNode> = vec![DocumentNode::generated_code(signature_spans)];
+
+        // Build list of trait members
+        let mut member_items = vec![];
+
         for trait_item in item.id_iter(&trait_data.item().items) {
-            // Add documentation
-            if let Some(docs) = self.docs_to_show(trait_item, TruncationLevel::SingleLine) {
-                nodes.push(DocumentNode::Span(Span::plain("    ")));
-                nodes.extend(docs);
-                nodes.push(DocumentNode::Span(Span::plain("\n")));
-            }
-
             let item_name = trait_item.name().unwrap_or("<unnamed>");
 
-            match &trait_item.item().inner {
+            let signature_spans = match &trait_item.item().inner {
                 ItemEnum::Function(f) => {
-                    self.format_trait_function(trait_item, &mut nodes, f, item_name)
+                    self.format_trait_method_signature(trait_item, f, item_name)
                 }
                 ItemEnum::AssocType {
                     generics,
                     bounds,
                     type_,
-                } => self.format_assoc_type(
+                } => self.format_trait_assoc_type_signature(
                     item,
-                    &mut nodes,
                     generics,
                     bounds,
                     type_.as_ref(),
                     item_name,
                 ),
                 ItemEnum::AssocConst { type_, value } => {
-                    self.format_assoc_const(item, &mut nodes, type_, value, item_name)
+                    self.format_trait_assoc_const_signature(item, type_, value, item_name)
                 }
                 _ => {
-                    nodes.push(DocumentNode::Span(Span::plain("    ")));
-                    nodes.push(DocumentNode::Span(Span::comment(format!(
+                    // Fallback for unknown item types
+                    vec![Span::comment(format!(
                         "// {}: {:?}",
                         item_name, trait_item.inner
-                    ))));
-                    nodes.push(DocumentNode::Span(Span::plain("\n")));
+                    ))]
                 }
+            };
+
+            // Prepend signature as a paragraph
+            let mut item_content = vec![DocumentNode::paragraph({
+                let mut sig = signature_spans;
+                sig.push(Span::plain(" "));
+                sig
+            })];
+
+            // Add docs if available
+            if let Some(docs) = self.docs_to_show(trait_item, TruncationLevel::SingleLine) {
+                item_content.extend(docs);
             }
+
+            member_items.push(ListItem::new(item_content));
         }
 
-        nodes.push(DocumentNode::Span(Span::punctuation("}")));
-        nodes.push(DocumentNode::Span(Span::plain("\n")));
+        if !member_items.is_empty() {
+            nodes.push(DocumentNode::list(member_items));
+        }
 
         nodes
     }
 
-    fn format_assoc_const<'a>(
+    fn format_trait_assoc_const_signature<'a>(
         &self,
         item: DocRef<'a, Item>,
-        nodes: &mut Vec<DocumentNode<'a>>,
         type_: &'a Type,
         value: &'a Option<String>,
         const_name: &'a str,
-    ) {
-        nodes.push(DocumentNode::Span(Span::plain("    ")));
-        nodes.push(DocumentNode::Span(Span::keyword("const")));
-        nodes.push(DocumentNode::Span(Span::plain(" ")));
-        nodes.push(DocumentNode::Span(Span::plain(const_name)));
-        nodes.push(DocumentNode::Span(Span::punctuation(":")));
-        nodes.push(DocumentNode::Span(Span::plain(" ")));
-        nodes.extend(
-            self.format_type(item, type_)
-                .into_iter()
-                .map(DocumentNode::Span),
-        );
+    ) -> Vec<Span<'a>> {
+        let mut spans = vec![
+            Span::keyword("const"),
+            Span::plain(" "),
+            Span::plain(const_name),
+            Span::punctuation(":"),
+            Span::plain(" "),
+        ];
+
+        spans.extend(self.format_type(item, type_));
 
         if let Some(default_val) = value {
-            nodes.push(DocumentNode::Span(Span::plain(" ")));
-            nodes.push(DocumentNode::Span(Span::operator("=")));
-            nodes.push(DocumentNode::Span(Span::plain(" ")));
-            nodes.push(DocumentNode::Span(Span::inline_rust_code(default_val)));
+            spans.push(Span::plain(" "));
+            spans.push(Span::operator("="));
+            spans.push(Span::plain(" "));
+            spans.push(Span::inline_rust_code(default_val));
         }
 
-        nodes.push(DocumentNode::Span(Span::punctuation(";")));
-        nodes.push(DocumentNode::Span(Span::plain("\n")));
+        spans.push(Span::punctuation(";"));
+        spans
     }
 
-    fn format_assoc_type<'a>(
+    fn format_trait_assoc_type_signature<'a>(
         &self,
         item: DocRef<'a, Item>,
-        nodes: &mut Vec<DocumentNode<'a>>,
         generics: &'a Generics,
         bounds: &'a [GenericBound],
         type_: Option<&'a Type>,
         type_name: &'a str,
-    ) {
-        nodes.push(DocumentNode::Span(Span::plain("    ")));
-        nodes.push(DocumentNode::Span(Span::keyword("type")));
-        nodes.push(DocumentNode::Span(Span::plain(" ")));
-        nodes.push(DocumentNode::Span(Span::type_name(type_name)));
+    ) -> Vec<Span<'a>> {
+        let mut spans = vec![
+            Span::keyword("type"),
+            Span::plain(" "),
+            Span::type_name(type_name),
+        ];
 
         if !generics.params.is_empty() {
-            nodes.extend(
-                self.format_generics(item, generics)
-                    .into_iter()
-                    .map(DocumentNode::Span),
-            );
+            spans.extend(self.format_generics(item, generics));
         }
 
         if !bounds.is_empty() {
-            nodes.push(DocumentNode::Span(Span::punctuation(":")));
-            nodes.push(DocumentNode::Span(Span::plain(" ")));
-            nodes.extend(
-                self.format_generic_bounds(item, bounds)
-                    .into_iter()
-                    .map(DocumentNode::Span),
-            );
+            spans.push(Span::punctuation(":"));
+            spans.push(Span::plain(" "));
+            spans.extend(self.format_generic_bounds(item, bounds));
         }
 
         if let Some(default_type) = type_ {
-            nodes.push(DocumentNode::Span(Span::plain(" ")));
-            nodes.push(DocumentNode::Span(Span::operator("=")));
-            nodes.push(DocumentNode::Span(Span::plain(" ")));
-            nodes.extend(
-                self.format_type(item, default_type)
-                    .into_iter()
-                    .map(DocumentNode::Span),
-            );
+            spans.push(Span::plain(" "));
+            spans.push(Span::operator("="));
+            spans.push(Span::plain(" "));
+            spans.extend(self.format_type(item, default_type));
         }
 
-        nodes.push(DocumentNode::Span(Span::punctuation(";")));
-        nodes.push(DocumentNode::Span(Span::plain("\n")));
+        spans.push(Span::punctuation(";"));
+        spans
     }
 
-    fn format_trait_function<'a>(
+    fn format_trait_method_signature<'a>(
         &self,
         item: DocRef<'a, Item>,
-        nodes: &mut Vec<DocumentNode<'a>>,
         f: &'a Function,
         method_name: &'a str,
-    ) {
+    ) -> Vec<Span<'a>> {
         let has_default = f.has_body;
 
-        nodes.push(DocumentNode::Span(Span::plain("    ")));
-        nodes.extend(
-            self.format_function_signature(item, method_name, f)
-                .into_iter()
-                .map(DocumentNode::Span),
-        );
+        let mut spans = self.format_function_signature(item, method_name, f);
 
         if has_default {
-            nodes.push(DocumentNode::Span(Span::plain(" ")));
-            nodes.push(DocumentNode::Span(Span::punctuation("{")));
-            nodes.push(DocumentNode::Span(Span::plain(" ... ")));
-            nodes.push(DocumentNode::Span(Span::punctuation("}")));
+            spans.push(Span::plain(" "));
+            spans.push(Span::punctuation("{"));
+            spans.push(Span::plain(" ... "));
+            spans.push(Span::punctuation("}"));
         } else {
-            nodes.push(DocumentNode::Span(Span::punctuation(";")));
+            spans.push(Span::punctuation(";"));
         }
 
-        nodes.push(DocumentNode::Span(Span::plain("\n")));
+        spans
     }
 }

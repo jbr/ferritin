@@ -54,11 +54,9 @@ impl Request {
     /// Format collected flat items with grouping by type
     fn format_grouped_flat_items<'a>(&'a self, items: &[FlatItem<'a>]) -> Vec<DocumentNode<'a>> {
         if items.is_empty() {
-            return vec![
-                DocumentNode::Span(Span::plain("\n")),
-                DocumentNode::Span(Span::plain("No items match the current filters.")),
-                DocumentNode::Span(Span::plain("\n")),
-            ];
+            return vec![DocumentNode::paragraph(vec![Span::plain(
+                "No items match the current filters.",
+            )])];
         }
 
         // Group items by filter type
@@ -109,18 +107,18 @@ impl Request {
 
     /// Format a single flat item as a ListItem
     fn format_flat_item<'a>(&'a self, flat_item: &FlatItem<'a>) -> ListItem<'a> {
-        let mut nodes = vec![];
+        // Prepend item name as a paragraph
+        let mut content = vec![DocumentNode::paragraph(vec![
+            Span::type_name(flat_item.path.clone()).with_target(Some(flat_item.item)),
+            Span::plain(" "),
+        ])];
 
         // Add brief documentation if available
         if let Some(docs) = self.docs_to_show(flat_item.item, TruncationLevel::SingleLine) {
-            nodes.push(DocumentNode::Span(Span::plain("\n")));
-            nodes.extend(docs);
+            content.extend(docs);
         }
 
-        ListItem::labeled(
-            vec![Span::type_name(flat_item.path.clone()).with_target(Some(flat_item.item))],
-            nodes,
-        )
+        ListItem::new(content)
     }
 
     /// Format a module

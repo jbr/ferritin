@@ -1,0 +1,61 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::TestStruct\").with_source(), OutputMode\n:: Tty)"
+---
+Item: TestStruct
+Kind: Struct
+Visibility: Public
+Defined at: test_crate::TestStruct
+In crate: test-crate (0.1.0)
+
+A simple struct for testing basic functionality.
+
+This struct demonstrates basic usage patterns and should show completely since
+it only has one paragraph of documentation.
+
+It uses Vector for testing intra-doc link resolution with renamed imports. Also
+tests HashMap which is a non-renamed import.
+
+struct TestStruct {
+    pub field: String,
+    pub count: u32,
+}
+
+Fields:
+
+  ◦ field: String
+    A public field
+
+  ◦ count: u32
+    Another public field
+
+Associated Types
+
+  ◦ pub const ASSOCIATED_CONST
+    This is an associated constant for a struct
+
+  ◦ pub fn new(field: String, count: u32) -> Self
+    Create a new TestStruct
+
+  ◦ pub fn get_field(&self) -> &str
+    Get the field value
+
+  ◦ pub fn increment_count(&mut self)
+    Update the count
+
+Trait Implementations
+
+std traits: Any Borrow BorrowMut Clone CloneToUninit Debug Freeze From Into 
+RefUnwindSafe Send Sync TestTrait ToOwned TryFrom TryInto Unpin UnwindSafe 
+
+Source: /TEST_CRATE_ROOT/src/lib.rs
+
+#[derive(Debug, Clone)]
+pub struct TestStruct {
+    /// A public field
+    pub field: String,
+    /// Another public field
+    pub count: u32,
+    /// A private field
+    private_field: bool,
+}

@@ -18,7 +18,12 @@ fn render_nodes(nodes: &[DocumentNode], output: &mut impl Write) -> Result {
 
 fn render_node(node: &DocumentNode, output: &mut impl Write) -> Result {
     match node {
-        DocumentNode::Span(span) => render_span(span, output),
+        DocumentNode::Paragraph { spans } => {
+            writeln!(output, "<p>")?;
+            render_spans(spans, output)?;
+            writeln!(output, "</p>")?;
+            Ok(())
+        }
         DocumentNode::Heading { level, spans } => {
             let tag = match level {
                 HeadingLevel::Title => "title",
@@ -61,10 +66,10 @@ fn render_node(node: &DocumentNode, output: &mut impl Write) -> Result {
             writeln!(output, "</code-block>")?;
             Ok(())
         }
-        DocumentNode::Link { url, text, .. } => {
-            write!(output, "<link href=\"{}\">", url)?;
-            render_spans(text, output)?;
-            write!(output, "</link>")?;
+        DocumentNode::GeneratedCode { spans } => {
+            writeln!(output, "<generated-code>")?;
+            render_spans(spans, output)?;
+            writeln!(output, "</generated-code>")?;
             Ok(())
         }
         DocumentNode::HorizontalRule => {
@@ -189,11 +194,6 @@ fn render_span(span: &Span, output: &mut impl Write) -> Result {
 
 fn render_list_item(item: &ListItem, output: &mut impl Write) -> Result {
     write!(output, "  <item>")?;
-    if let Some(label) = &item.label {
-        write!(output, "<label>")?;
-        render_spans(label, output)?;
-        write!(output, "</label>")?;
-    }
     render_nodes(&item.content, output)?;
     writeln!(output, "</item>")?;
     Ok(())
@@ -206,7 +206,7 @@ fn count_chars_in_nodes(nodes: &[DocumentNode]) -> usize {
 
 fn count_chars_in_node(node: &DocumentNode) -> usize {
     match node {
-        DocumentNode::Span(span) => span.text.len(),
+        DocumentNode::Paragraph { spans } => spans.iter().map(|s| s.text.len()).sum(),
         DocumentNode::Heading { spans, .. } => spans.iter().map(|s| s.text.len()).sum(),
         DocumentNode::Section { title, nodes } => {
             let title_len = title
@@ -216,16 +216,10 @@ fn count_chars_in_node(node: &DocumentNode) -> usize {
         }
         DocumentNode::List { items } => items
             .iter()
-            .map(|item| {
-                let label_len = item
-                    .label
-                    .as_ref()
-                    .map_or(0, |l| l.iter().map(|s| s.text.len()).sum());
-                label_len + count_chars_in_nodes(&item.content)
-            })
+            .map(|item| count_chars_in_nodes(&item.content))
             .sum(),
         DocumentNode::CodeBlock { code, .. } => code.len(),
-        DocumentNode::Link { text, .. } => text.iter().map(|s| s.text.len()).sum(),
+        DocumentNode::GeneratedCode { spans } => spans.iter().map(|s| s.text.len()).sum(),
         DocumentNode::HorizontalRule => 3, // "---"
         DocumentNode::BlockQuote { nodes } => count_chars_in_nodes(nodes),
         DocumentNode::Table { header, rows } => {
@@ -284,18 +278,20 @@ fn render_node_partial(
     // Simplified: for now, just render whole node if it fits partially
     // A full implementation would truncate within spans at word boundaries
     match node {
-        DocumentNode::Span(span) => {
-            if span.text.len() <= remaining_chars {
-                render_span(span, output)?;
-            } else {
-                // Truncate at word boundary
-                let truncated = truncate_at_word_boundary(&span.text, remaining_chars);
-                let truncated_span = Span {
-                    text: truncated.into(),
-                    style: span.style,
-                    action: None,
-                };
-                render_span(&truncated_span, output)?;
+        DocumentNode::Paragraph { spans } => {
+            for span in spans {
+                if span.text.len() <= remaining_chars {
+                    render_span(span, output)?;
+                } else {
+                    // Truncate at word boundary
+                    let truncated = truncate_at_word_boundary(&span.text, remaining_chars);
+                    let truncated_span = Span {
+                        text: truncated.into(),
+                        style: span.style,
+                        action: None,
+                    };
+                    render_span(&truncated_span, output)?;
+                }
             }
             Ok(())
         }
@@ -324,19 +320,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_render_spans() {
-        let doc = Document::with_nodes(vec![
-            DocumentNode::Span(Span::keyword("struct")),
-            DocumentNode::Span(Span::plain(" ")),
-            DocumentNode::Span(Span::type_name("Foo")),
-        ]);
+    fn test_render_paragraph() {
+        let doc = Document::with_nodes(vec![DocumentNode::paragraph(vec![
+            Span::keyword("struct"),
+            Span::plain(" "),
+            Span::type_name("Foo"),
+        ])]);
 
         let mut output = String::new();
         render(&doc, &mut output).unwrap();
-        assert_eq!(
-            output,
-            "<keyword>struct</keyword> <type-name>Foo</type-name>"
-        );
+        assert!(output.contains("<keyword>struct</keyword>"));
+        assert!(output.contains("<type-name>Foo</type-name>"));
     }
 
     #[test]

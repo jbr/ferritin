@@ -1,8 +1,8 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate\"), OutputMode::Plain)"
+expression: "render_for_tests(Commands::get(\"crate\"), OutputMode :: Plain)"
 ---
-  Item: test_crate
+Item: test_crate
 Kind: Module
 Visibility: Public
 Defined at: test_crate
@@ -10,75 +10,86 @@ In crate: test-crate (0.1.0)
 
 A minimal test crate for rustdoc JSON testing
 
-
 Modules
-  • link_resolution_tests
-Module for testing intra-doc link resolution [...]
 
-  • reexport_mod
-  • submodule
-A module with items [...]
+  ◦ link_resolution_tests 
+    Module for testing intra-doc link resolution
+
+  ◦ markdown_test 
+    Markdown: Syntax [...]
+
+  ◦ reexport_mod 
+
+  ◦ submodule 
+    A module with items
 
 Structs
-  • GenericStruct
-A generic struct for testing multi-paragraph documentation. [...]
 
-  • SubStruct
-A struct in a submodule [...]
+  ◦ GenericStruct 
+    A generic struct for testing multi-paragraph documentation. [...]
 
-  • TestStruct
-A simple struct for testing basic functionality. [...]
+  ◦ SubStruct 
+    A struct in a submodule
 
-  • TupleStruct
-A tuple struct for testing [...]
+  ◦ TestStruct 
+    A simple struct for testing basic functionality. [...]
 
-  • UnitStruct
-A unit struct for testing [...]
+  ◦ TupleStruct 
+    A tuple struct for testing
 
-  • Vec
-A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
+  ◦ UnitStruct 
+    A unit struct for testing
+
+  ◦ Vec 
+    A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
 
 Enums
-  • GenericEnum
-A generic enum for testing [...]
 
-  • TestEnum
-An enum for testing [...]
+  ◦ GenericEnum 
+    A generic enum for testing [...]
+
+  ◦ TestEnum 
+    An enum for testing [...]
 
 Traits
-  • ComplexTrait
-A more complex trait demonstrating various features [...]
 
-  • TestTrait
-A trait for testing extremely long documentation that exceeds line limits. [...]
+  ◦ ComplexTrait 
+    A more complex trait demonstrating various features
+
+  ◦ TestTrait 
+    A trait for testing extremely long documentation that exceeds line limits. [...]
 
 Functions
-  • async_function
-An async function [...]
 
-  • generic_function
-A generic function [...]
+  ◦ async_function 
+    An async function
 
-  • sub_function
-A function in a submodule [...]
+  ◦ generic_function 
+    A generic function
 
-  • test_function
-A public function [...]
+  ◦ sub_function 
+    A function in a submodule
+
+  ◦ test_function 
+    A public function
 
 Constants
-  • TEST_CONSTANT
-A const for testing [...]
+
+  ◦ TEST_CONSTANT 
+    A const for testing
 
 Statics
-  • TEST_STATIC
-A static for testing [...]
+
+  ◦ TEST_STATIC 
+    A static for testing
 
 Variants
-  • VariantA
-Variant A (see also crate::GenericEnum) [...]
 
-  • VariantB
-Variant B with data [...]
+  ◦ VariantA 
+    Variant A (see also crate::GenericEnum)
 
-  • VariantC
-Variant C with struct data (name and value) [...]
+  ◦ VariantB 
+    Variant B with data
+
+  ◦ VariantC 
+    Variant C with struct data (name and value)

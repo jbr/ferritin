@@ -25,12 +25,27 @@ impl<'a> InteractiveState<'a> {
                 break; // Past right edge
             }
 
-            if let Some(cell) = buf.cell_mut((current_col, screen_row)) {
-                cell.set_char(ch);
-                cell.set_style(style);
+            // Handle tabs: replace with spaces to avoid column counting mismatches
+            // Tabs display as multiple spaces in terminals but count as 1 character
+            if ch == '\t' {
+                // Write 4 spaces for each tab (Rust convention)
+                for _ in 0..4 {
+                    if current_col >= area.width {
+                        break;
+                    }
+                    if let Some(cell) = buf.cell_mut((current_col, screen_row)) {
+                        cell.set_char(' ');
+                        cell.set_style(style);
+                    }
+                    current_col += 1;
+                }
+            } else {
+                if let Some(cell) = buf.cell_mut((current_col, screen_row)) {
+                    cell.set_char(ch);
+                    cell.set_style(style);
+                }
+                current_col += 1;
             }
-
-            current_col += 1;
         }
     }
 }

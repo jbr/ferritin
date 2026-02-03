@@ -66,73 +66,26 @@ pub(super) fn find_node_at_path_mut<'a, 'b>(
 /// Find the best truncation point for Brief mode at second paragraph break
 /// Returns the node index to stop at, or None to fall back to line-based truncation
 pub(super) fn find_paragraph_truncation_point(
-    nodes: &[DocumentNode],
-    max_lines: u16,
-    screen_width: u16,
+    _nodes: &[DocumentNode],
+    _max_lines: u16,
+    _screen_width: u16,
 ) -> Option<usize> {
-    let mut paragraph_breaks = 0;
-    let mut estimated_lines = 0u16;
-    let mut consecutive_newlines = 0;
-
-    for (idx, node) in nodes.iter().enumerate() {
-        // Estimate lines this node will take
-        estimated_lines += estimate_node_lines(node, screen_width);
-
-        // Track newlines across span boundaries
-        if let DocumentNode::Span(span) = node {
-            // Count newlines at the start of this span
-            for ch in span.text.chars() {
-                if ch == '\n' {
-                    consecutive_newlines += 1;
-                    // Two or more consecutive newlines = paragraph break
-                    if consecutive_newlines >= 2 {
-                        paragraph_breaks += 1;
-
-                        // Found second paragraph break - truncate here if within line limit
-                        if paragraph_breaks >= 2 {
-                            if estimated_lines <= max_lines {
-                                return Some(idx);
-                            } else {
-                                // Second paragraph is too long, fall back to line limit
-                                return None;
-                            }
-                        }
-
-                        // Reset counter after detecting a break
-                        consecutive_newlines = 0;
-                    }
-                } else if !ch.is_whitespace() {
-                    // Non-whitespace resets the counter
-                    consecutive_newlines = 0;
-                }
-            }
-        } else {
-            // Non-span nodes reset newline tracking
-            consecutive_newlines = 0;
-        }
-    }
-
-    // Didn't find second paragraph break
+    // Paragraph break detection was removed since Span nodes no longer exist
+    // All inline content is now in Paragraph nodes
     None
 }
 
 /// Estimate how many lines a node will consume when rendered
-pub(super) fn estimate_node_lines(node: &DocumentNode, screen_width: u16) -> u16 {
+pub(super) fn estimate_node_lines(node: &DocumentNode, _screen_width: u16) -> u16 {
     match node {
-        DocumentNode::Span(span) => {
-            // Count explicit newlines + word wrapping
-            let text_len = span.text.len() as u16;
-            let newline_count = span.text.matches('\n').count() as u16;
-            let wrapped_lines = if screen_width > 0 {
-                text_len.div_ceil(screen_width) // Ceiling division
-            } else {
-                1
-            };
-            newline_count.max(1) + wrapped_lines.saturating_sub(1)
-        }
         DocumentNode::Heading { .. } => 3, // Title + underline + spacing
         DocumentNode::CodeBlock { code, .. } => {
             code.lines().count() as u16 + 2 // Lines + spacing
+        }
+        DocumentNode::GeneratedCode { spans } => {
+            // Count newlines in the spans
+            let newlines = spans.iter().filter(|s| s.text.contains('\n')).count() as u16;
+            newlines.max(1) + 1 // At least 1 line + spacing
         }
         DocumentNode::HorizontalRule => 1,
         DocumentNode::List { items } => items.len() as u16, // Rough estimate

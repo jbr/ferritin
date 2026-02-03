@@ -1,0 +1,606 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"std\"), OutputMode :: TestMode)"
+---
+<p>
+<strong>Item:</strong> std
+<strong>Kind:</strong> Module
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>std</type-name>
+<strong>In crate:</strong> std (1.95.0-nightly	(f889772d6	2026-02-05))</p>
+<truncated level="full"><title>The Rust Standard Library</title>
+<p>
+The Rust Standard Library is the foundation of portable Rust software, a set of minimal and battle-tested shared abstractions for the broader Rust ecosystem. It offers core types, like <inline-code>Vec<T></inline-code> and <inline-code>Option<T></inline-code>, library-defined operations on language primitives, standard macros, I/O and multithreading, among many other things.</p>
+<p>
+<inline-code>std</inline-code> is available to all Rust crates by default. Therefore, the standard library can be accessed in <inline-code>use</inline-code> statements through the path <inline-code>std</inline-code>, as in <inline-code>use std::env</inline-code>.</p>
+<title>How to read this documentation</title>
+<p>
+If you already know the name of what you are looking for, the fastest way to find it is to use the search button at the top of the page.</p>
+<p>
+Otherwise, you may want to jump to one of these useful sections:</p>
+<list>
+  <item><p>
+<inline-code>std::*</inline-code> modules</p>
+</item>
+  <item><p>
+Primitive types</p>
+</item>
+  <item><p>
+Standard macros</p>
+</item>
+  <item><p>
+The Rust Prelude</p>
+</item>
+</list>
+<p>
+If this is your first time, the documentation for the standard library is written to be casually perused. Clicking on interesting things should generally lead you to interesting places. Still, there are important bits you don't want to miss, so read on for a tour of the standard library and its documentation!</p>
+<p>
+Once you are familiar with the contents of the standard library you may begin to find the verbosity of the prose distracting. At this stage in your development you may want to press the " Summary" button near the top of the page to collapse it into a more skimmable view.</p>
+<p>
+While you are looking at the top of the page, also notice the "Source" link. Rust's API documentation comes with the source code and you are encouraged to read it. The standard library source is generally high quality and a peek behind the curtains is often enlightening.</p>
+<title>What is in the standard library documentation?</title>
+<p>
+First of all, The Rust Standard Library is divided into a number of focused modules, all listed further down this page. These modules are the bedrock upon which all of Rust is forged, and they have mighty names like <inline-code>std::slice</inline-code> and <inline-code>std::cmp</inline-code>. Modules' documentation typically includes an overview of the module along with examples, and are a smart place to start familiarizing yourself with the library.</p>
+<p>
+Second, implicit methods on primitive types are documented here. This can be a source of confusion for two reasons:</p>
+<list>
+  <item><p>
+While primitives are implemented by the compiler, the standard library implements methods directly on the primitive types (and it is the only library that does so), which are documented in the section on primitives.</p>
+</item>
+  <item><p>
+The standard library exports many modules <emphasis>with the same name as</emphasis> <emphasis>primitive types</emphasis>. These define additional items related to the primitive type, but not the all-important methods.</p>
+</item>
+</list>
+<p>
+So for example there is a page for the primitive type <inline-code>char</inline-code> that lists all the methods that can be called on characters (very useful), and there is a page for the module <inline-code>std::char</inline-code> that documents iterator and error types created by these methods (rarely useful).</p>
+<p>
+Note the documentation for the primitives <inline-code>str</inline-code> and <inline-code>[T]</inline-code> (also called 'slice'). Many method calls on <inline-code>String</inline-code> and <inline-code>Vec<T></inline-code> are actually calls to methods on <inline-code>str</inline-code> and <inline-code>[T]</inline-code> respectively, via deref coercions.</p>
+<p>
+Third, the standard library defines The Rust Prelude, a small collection of items - mostly traits - that are imported into every module of every crate. The traits in the prelude are pervasive, making the prelude documentation a good entry point to learning about the library.</p>
+<p>
+And finally, the standard library exports a number of standard macros, and lists them on this page (technically, not all of the standard macros are defined by the standard library - some are defined by the compiler - but they are documented here the same). Like the prelude, the standard macros are imported by default into all crates.</p>
+<title>Contributing changes to the documentation</title>
+<p>
+Check out the Rust contribution guidelines here. The source for this documentation can be found on GitHub in the 'library/std/' directory. To contribute changes, make sure you read the guidelines first, then submit pull-requests for your suggested changes.</p>
+<p>
+Contributions are appreciated! If you see a part of the docs that can be improved, submit a PR, or chat with us first on Zulip #docs.</p>
+<title>A Tour of The Rust Standard Library</title>
+<p>
+The rest of this crate documentation is dedicated to pointing out notable features of The Rust Standard Library.</p>
+<section-heading>Containers and collections</section-heading>
+<p>
+The <inline-code>option</inline-code> and <inline-code>result</inline-code> modules define optional and error-handling types, <inline-code>Option<T></inline-code> and <inline-code>Result<T, E></inline-code>. The <inline-code>iter</inline-code> module defines Rust's iterator trait, <inline-code>Iterator</inline-code>, which works with the <inline-code>for</inline-code> loop to access collections.</p>
+<p>
+The standard library exposes three common ways to deal with contiguous regions of memory:</p>
+<list>
+  <item><p>
+<inline-code>Vec<T></inline-code> - A heap-allocated <emphasis>vector</emphasis> that is resizable at runtime.</p>
+</item>
+  <item><p>
+<inline-code>[T; N]</inline-code> - An inline <emphasis>array</emphasis> with a fixed size at compile time.</p>
+</item>
+  <item><p>
+<inline-code>[T]</inline-code> - A dynamically sized <emphasis>slice</emphasis> into any other kind of contiguous storage, whether heap-allocated or not.</p>
+</item>
+</list>
+<p>
+Slices can only be handled through some kind of <emphasis>pointer</emphasis>, and as such come in many flavors such as:</p>
+<list>
+  <item><p>
+<inline-code>&[T]</inline-code> - <emphasis>shared slice</emphasis></p>
+</item>
+  <item><p>
+<inline-code>&mut [T]</inline-code> - <emphasis>mutable slice</emphasis></p>
+</item>
+  <item><p>
+<inline-code>Box<[T]></inline-code> - <emphasis>owned slice</emphasis></p>
+</item>
+</list>
+<p>
+<inline-code>str</inline-code>, a UTF-8 string slice, is a primitive type, and the standard library defines many methods for it. Rust <inline-code>str</inline-code>s are typically accessed as immutable references: <inline-code>&str</inline-code>. Use the owned <inline-code>String</inline-code> for building and mutating strings.</p>
+<p>
+For converting to strings use the <inline-code>format!</inline-code> macro, and for converting from strings use the <inline-code>FromStr</inline-code> trait.</p>
+<p>
+Data may be shared by placing it in a reference-counted box or the <inline-code>Rc</inline-code> type, and if further contained in a <inline-code>Cell</inline-code> or <inline-code>RefCell</inline-code>, may be mutated as well as shared. Likewise, in a concurrent setting it is common to pair an atomically-reference-counted box, <inline-code>Arc</inline-code>, with a <inline-code>Mutex</inline-code> to get the same effect.</p>
+<p>
+The <inline-code>collections</inline-code> module defines maps, sets, linked lists and other typical collection types, including the common <inline-code>HashMap<K, V></inline-code>.</p>
+<section-heading>Platform abstractions and I/O</section-heading>
+<p>
+Besides basic data types, the standard library is largely concerned with abstracting over differences in common platforms, most notably Windows and Unix derivatives.</p>
+<p>
+Common types of I/O, including files, TCP, and UDP, are defined in the <inline-code>io</inline-code>, <inline-code>fs</inline-code>, and <inline-code>net</inline-code> modules.</p>
+<p>
+The <inline-code>thread</inline-code> module contains Rust's threading abstractions. <inline-code>sync</inline-code> contains further primitive shared memory types, including <inline-code>atomic</inline-code>, <inline-code>mpmc</inline-code> and <inline-code>mpsc</inline-code>, which contains the channel types for message passing.</p>
+<title>Use before and after <inline-code>main()</inline-code></title>
+<p>
+Many parts of the standard library are expected to work before and after <inline-code>main()</inline-code>; but this is not guaranteed or ensured by tests. It is recommended that you write your own tests and run them on each platform you wish to support. This means that use of <inline-code>std</inline-code> before/after main, especially of features that interact with the OS or global state, is exempted from stability and portability guarantees and instead only provided on a best-effort basis. Nevertheless bug reports are appreciated.</p>
+<p>
+On the other hand <inline-code>core</inline-code> and <inline-code>alloc</inline-code> are most likely to work in such environments with the caveat that any hookable behavior such as panics, oom handling or allocators will also depend on the compatibility of the hooks.</p>
+<p>
+Some features may also behave differently outside main, e.g. stdio could become unbuffered, some panics might turn into aborts, backtraces might not get symbolicated or similar.</p>
+<p>
+Non-exhaustive list of known limitations:</p>
+<list>
+  <item><p>
+after-main use of thread-locals, which also affects additional features:</p>
+<list>
+  <item><p>
+<inline-code>thread::current()</inline-code></p>
+</item>
+</list>
+</item>
+  <item><p>
+under UNIX, before main, file descriptors 0, 1, and 2 may be unchanged (they are guaranteed to be open during main, and are opened to /dev/null O_RDWR if they weren't open on program start)</p>
+</item>
+</list>
+</truncated>
+<section><section-title>Modules</section-title><list>
+  <item><p>
+<type-name>alloc</type-name> </p>
+<truncated level="single-line"><p>
+Memory allocation APIs.</p>
+In a given program, the standard library has one that is used for example by <inline-code>Box<T></inline-code> and <inline-code>Vec<T></inline-code>. <elided chars="1529"/></truncated>
+</item>
+  <item><p>
+<type-name>any</type-name> </p>
+<truncated level="single-line"><p>
+Utilities for dynamic typing or type reflection.</p>
+<title><inline-code>Any</inline-code> and <inline-code>TypeId</inline-code></title>
+<inline-code>Any</inline-code> itself can be<inline-code>TypeId</inline-code>, and has more as a trait<inline-code>&dyn Any</inline-code> (a borrowed<inline-code>is</inline-code> and <inline-code>downcast_ref</inline-code> methods, to test and to get a<inline-code>&mut dyn Any</inline-code>, there is also the <inline-code>downcast_mut</inline-code> method, for inner value. <inline-code>Box<dyn Any></inline-code> adds the <inline-code>downcast</inline-code> method, which convert to a <inline-code>Box<T></inline-code>. See the <inline-code>Box</inline-code> documentation <elided chars="2639"/></truncated>
+</item>
+  <item><p>
+<type-name>arch</type-name> </p>
+<truncated level="single-line"><p>
+SIMD and vendor intrinsics module.</p>
+This module is intended to be the gateway to intrinsic functions, typically related to architecture that Rust compiles to may means that this is not a portable module! If library take care when using these APIs! <elided chars="10878"/></truncated>
+</item>
+  <item><p>
+<type-name>array</type-name> </p>
+<truncated level="single-line"><p>
+Utilities for the array primitive type.</p>
+<p>
+<emphasis>See also the array primitive type</emphasis><emphasis>.</emphasis></p>
+</truncated>
+</item>
+  <item><p>
+<type-name>ascii</type-name> </p>
+<truncated level="single-line"><p>
+Operations on ASCII strings and characters.</p>
+Most string operations in Rust act makes more sense to only consider operation. <elided chars="372"/></truncated>
+</item>
+  <item><p>
+<type-name>async_iter</type-name> </p>
+<truncated level="single-line"><p>
+Composable asynchronous iteration.</p>
+If you've found yourself with an asynchronous and needed to perform an operation on the you'll quickly run into 'async iterators'. idiomatic asynchronous Rust code, so it's <elided chars="3798"/></truncated>
+</item>
+  <item><p>
+<type-name>autodiff</type-name> </p>
+<truncated level="single-line"><p>
+This module provides support for automatic differentiation.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>backtrace</type-name> </p>
+<truncated level="single-line"><p>
+Support for capturing a stack backtrace of an OS thread</p>
+This module contains the running OS thread from<inline-code>Backtrace</inline-code> type supports capturing a stack trace<inline-code>Backtrace::capture</inline-code> and <inline-code>Backtrace::force_capture</inline-code> functions. <elided chars="2527"/></truncated>
+</item>
+  <item><p>
+<type-name>borrow</type-name> </p>
+<truncated level="single-line"><p>
+A module for working with borrowed data.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>boxed</type-name> </p>
+<truncated level="single-line"><p>
+The <inline-code>Box<T></inline-code> type for heap allocation.</p>
+<inline-code>Box<T></inline-code>, casually referred to as a 'box', provides heap allocation in Rust. Boxes provide drop their contents when they go out of never allocate more than <inline-code>isize::MAX</inline-code> bytes. <elided chars="5817"/></truncated>
+</item>
+  <item><p>
+<type-name>bstr</type-name> </p>
+<truncated level="single-line"><p>
+The <inline-code>ByteStr</inline-code> and <inline-code>ByteString</inline-code> types and trait implementations.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>cell</type-name> </p>
+<truncated level="single-line"><p>
+Shareable mutable containers.</p>
+Rust memory safety is based on this rule: Given an<inline-code>T</inline-code>, it is only possible to have one of the following: <elided chars="8916"/></truncated>
+</item>
+  <item><p>
+<type-name>char</type-name> </p>
+<truncated level="single-line"><p>
+Utilities for the <inline-code>char</inline-code> primitive type.</p>
+<p>
+<emphasis>See also the </emphasis><inline-code>char</inline-code><emphasis> primitive type</emphasis><emphasis>.</emphasis></p>
+The <inline-code>char</inline-code> type 'characte<inline-code>char</inline-code> is a 'Unicode scalar', whichUnicode point'. <elided chars="524"/></truncated>
+</item>
+  <item><p>
+<type-name>clone</type-name> </p>
+<truncated level="single-line"><p>
+The <inline-code>Clone</inline-code> trait for types that cannot be 'implicitly copied'.</p>
+In Rust, some assign them or leaving the allocation to copy contain owned<inline-code>Drop</inline-code>), so the compiler them cheap and explicitly, by<inline-code>Clone</inline-code> trait and calling the <inline-code>clone</inline-code> method. <elided chars="897"/></truncated>
+</item>
+  <item><p>
+<type-name>cmp</type-name> </p>
+<truncated level="single-line"><p>
+Utilities for comparing and ordering values.</p>
+This module contains various tools summary: <elided chars="854"/></truncated>
+</item>
+  <item><p>
+<type-name>collections</type-name> </p>
+<truncated level="single-line"><p>
+Collection types.</p>
+Rust's standard collection library provides efficient most common general purpose programming data structures. By standard implementations, it should be possible for two communicate without significant data conversion. <elided chars="15364"/></truncated>
+</item>
+  <item><p>
+<type-name>convert</type-name> </p>
+<truncated level="single-line"><p>
+Traits for conversions between types.</p>
+The traits in this module provide a way to Each trait serves a different purpose: <elided chars="1460"/></truncated>
+</item>
+  <item><p>
+<type-name>default</type-name> </p>
+<truncated level="single-line"><p>
+The <inline-code>Default</inline-code> trait for types with a default value.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>env</type-name> </p>
+<truncated level="single-line"><p>
+Inspection and manipulation of the process's environment.</p>
+This module contains environment variables, other important <elided chars="323"/></truncated>
+</item>
+  <item><p>
+<type-name>error</type-name> </p>
+<truncated level="single-line"><p>
+Interfaces for working with Errors.</p>
+<title>Error Handling In Rust</title>
+The Rust language representing, These responsibilities components of the commonly used to components of the<inline-code>Result</inline-code>, the error traits, defined types, are your program. <elided chars="4878"/></truncated>
+</item>
+  <item><p>
+<type-name>f128</type-name> </p>
+<truncated level="single-line"><p>
+Constants for the <inline-code>f128</inline-code> quadruple-precision floating point type.</p>
+<emphasis>See also the </emphasis><inline-code>f128</inline-code><emphasis> primitive type</emphasis><emphasis>.</emphasis> <elided chars="89"/></truncated>
+</item>
+  <item><p>
+<type-name>f16</type-name> </p>
+<truncated level="single-line"><p>
+Constants for the <inline-code>f16</inline-code> half-precision floating point type.</p>
+<emphasis>See also the </emphasis><inline-code>f16</inline-code><emphasis> primitive type</emphasis><emphasis>.</emphasis> <elided chars="82"/></truncated>
+</item>
+  <item><p>
+<type-name>f32</type-name> </p>
+<truncated level="single-line"><p>
+Constants for the <inline-code>f32</inline-code> single-precision floating point type.</p>
+<emphasis>See also the </emphasis><inline-code>f32</inline-code><emphasis> primitive type</emphasis><emphasis>.</emphasis> <elided chars="279"/></truncated>
+</item>
+  <item><p>
+<type-name>f64</type-name> </p>
+<truncated level="single-line"><p>
+Constants for the <inline-code>f64</inline-code> double-precision floating point type.</p>
+<emphasis>See also the </emphasis><inline-code>f64</inline-code><emphasis> primitive type</emphasis><emphasis>.</emphasis> <elided chars="279"/></truncated>
+</item>
+  <item><p>
+<type-name>ffi</type-name> </p>
+<truncated level="single-line"><p>
+Utilities related to FFI bindings.</p>
+This module provides utilities to handle data interfaces, like other programming languages operating system. It is mainly of use for FFI Interface) bindings and code that needs to with other languages. <elided chars="5972"/></truncated>
+</item>
+  <item><p>
+<type-name>fmt</type-name> </p>
+<truncated level="single-line"><p>
+Utilities for formatting and printing <inline-code>String</inline-code>s.</p>
+This module contains the runtime<inline-code>format!</inline-code> syntax extension. This macro is implemented in the order to format arguments at <elided chars="20000"/></truncated>
+</item>
+  <item><p>
+<type-name>from</type-name> </p>
+<truncated level="single-line"><p>
+Unstable module containing the unstable <inline-code>From</inline-code> derive macro.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>fs</type-name> </p>
+<truncated level="single-line"><p>
+Filesystem manipulation operations.</p>
+This module contains basic methods to filesystem. All methods in this module operations. Extra platform-specific extension traits of <inline-code>std::os::$platform</inline-code>. <elided chars="1364"/></truncated>
+</item>
+  <item><p>
+<type-name>future</type-name> </p>
+<truncated level="single-line"><p>
+Asynchronous basic functionality.</p>
+Please see the fundamental <inline-code>async</inline-code> and <inline-code>await</inline-code> keywords and the async book for more information on asynchronous <elided chars="81"/></truncated>
+</item>
+  <item><p>
+<type-name>hash</type-name> </p>
+<truncated level="single-line"><p>
+Generic hashing support.</p>
+This module provides a generic way to compute the hash of a value. Hashes are most commonly used with <inline-code>HashMap</inline-code> and <inline-code>HashSet</inline-code>. <elided chars="1346"/></truncated>
+</item>
+  <item><p>
+<type-name>hint</type-name> </p>
+<truncated level="single-line"><p>
+Hints to compiler that affects how code should be emitted or optimized.</p>
+Hints <elided chars="28"/></truncated>
+</item>
+  <item><p>
+<type-name>i128</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>i128</inline-code> primitive type.</p>
+New code should use the <elided chars="51"/></truncated>
+</item>
+  <item><p>
+<type-name>i16</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>i16</inline-code> primitive type.</p>
+New code should use the <elided chars="50"/></truncated>
+</item>
+  <item><p>
+<type-name>i32</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>i32</inline-code> primitive type.</p>
+New code should use the <elided chars="50"/></truncated>
+</item>
+  <item><p>
+<type-name>i64</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>i64</inline-code> primitive type.</p>
+New code should use the <elided chars="50"/></truncated>
+</item>
+  <item><p>
+<type-name>i8</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>i8</inline-code> primitive type.</p>
+New code should use the <elided chars="49"/></truncated>
+</item>
+  <item><p>
+<type-name>intrinsics</type-name> </p>
+<truncated level="single-line"><p>
+Compiler intrinsics.</p>
+The functions in this module are implementation details of <inline-code>core</inline-code> and should not be used outside of the standard library. We generally intrinsics via stable wrapper functions. Use these instead. <elided chars="2235"/></truncated>
+</item>
+  <item><p>
+<type-name>io</type-name> </p>
+<truncated level="single-line"><p>
+Traits, helpers, and type definitions for core I/O functionality.</p>
+The <inline-code>std::io</inline-code> module when doing the <inline-code>Read</inline-code> and <inline-code>Write</inline-code> traits, which most general <elided chars="8722"/></truncated>
+</item>
+  <item><p>
+<type-name>isize</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>isize</inline-code> primitive type.</p>
+New code should use the <elided chars="52"/></truncated>
+</item>
+  <item><p>
+<type-name>iter</type-name> </p>
+<truncated level="single-line"><p>
+Composable external iteration.</p>
+If you've found yourself with a collection of perform an operation on the elements of said into 'iterators'. Iterators are heavily used in it's worth becoming familiar with them. <elided chars="9380"/></truncated>
+</item>
+  <item><p>
+<type-name>marker</type-name> </p>
+<truncated level="single-line"><p>
+Primitive traits and types representing basic properties of types.</p>
+Rust types their as traits. <elided chars="127"/></truncated>
+</item>
+  <item><p>
+<type-name>mem</type-name> </p>
+<truncated level="single-line"><p>
+Basic functions for dealing with memory.</p>
+This module contains functions for types, initializing and manipulating <elided chars="74"/></truncated>
+</item>
+  <item><p>
+<type-name>net</type-name> </p>
+<truncated level="single-line"><p>
+Networking primitives for TCP/UDP communication.</p>
+This module provides networking Datagram Protocols, as well as to network properties. <elided chars="987"/></truncated>
+</item>
+  <item><p>
+<type-name>num</type-name> </p>
+<truncated level="single-line"><p>
+Additional functionality for numerics.</p>
+This module provides some extra types work. See the individual documentation <elided chars="108"/></truncated>
+</item>
+  <item><p>
+<type-name>ops</type-name> </p>
+<truncated level="single-line"><p>
+Overloadable operators.</p>
+Implementing these traits allows you to overload certain <elided chars="3850"/></truncated>
+</item>
+  <item><p>
+<type-name>option</type-name> </p>
+<truncated level="single-line"><p>
+Optional values.</p>
+Type <inline-code>Option</inline-code> represents an optional value: every <inline-code>Option</inline-code> is either <inline-code>Some</inline-code> and contains a value, or <inline-code>None</inline-code>, and does not. <inline-code>Option</inline-code> types are very common in Rust code, as they have a number of uses: <elided chars="15067"/></truncated>
+</item>
+  <item><p>
+<type-name>os</type-name> </p>
+<truncated level="single-line"><p>
+OS-specific functionality.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>panic</type-name> </p>
+<truncated level="single-line"><p>
+Panic support in the standard library.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>pat</type-name> </p>
+<truncated level="single-line"><p>
+Helper module for exporting the <inline-code>pattern_type</inline-code> macro</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>path</type-name> </p>
+<truncated level="single-line"><p>
+Cross-platform path manipulation.</p>
+This module provides two types, <inline-code>PathBuf</inline-code> and <inline-code>Path</inline-code> (akin to <inline-code>String</inline-code> and <inline-code>str</inline-code>), for working with paths abstractly. These around <inline-code>OsString</inline-code> and <inline-code>OsStr</inline-code> respectively, meaning that they work directly on strings according to the local platform's <elided chars="1769"/></truncated>
+</item>
+  <item><p>
+<type-name>pin</type-name> </p>
+<truncated level="single-line"><p>
+Types that pin data to a location in memory.</p>
+It is sometimes useful to be able<emphasis>move</emphasis>, in the sense that its address in are one or more <emphasis>pointers</emphasis> pointing at that value. The guarantee that the value a pointer is pointing at (its <strong>pointee</strong>) will <elided chars="41313"/></truncated>
+</item>
+  <item><p>
+<type-name>prelude</type-name> </p>
+<truncated level="single-line"><title>The Rust Prelude</title>
+Rust comes with a variety of things in its standard library. you had to manually import every single thing that you used, it very verbose. But importing a lot of things that a program good either. A balance needs to be struck. <elided chars="3107"/></truncated>
+</item>
+  <item><p>
+<type-name>process</type-name> </p>
+<truncated level="single-line"><p>
+A module for working with processes.</p>
+This module is mostly concerned with processes, but it also provides <inline-code>abort</inline-code> and <inline-code>exit</inline-code> for terminating the current process. <elided chars="4496"/></truncated>
+</item>
+  <item><p>
+<type-name>ptr</type-name> </p>
+<truncated level="single-line"><p>
+Manually manage memory through raw pointers.</p>
+<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="19801"/></truncated>
+</item>
+  <item><p>
+<type-name>random</type-name> </p>
+<truncated level="single-line"><p>
+Random value generation.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>range</type-name> </p>
+<truncated level="single-line"><title>Experimental replacement range types</title>
+The types within this module are meant to <inline-code>Range</inline-code>, <inline-code>RangeInclusive</inline-code>, and <inline-code>RangeFrom</inline-code> types in a future edition. <elided chars="567"/></truncated>
+</item>
+  <item><p>
+<type-name>rc</type-name> </p>
+<truncated level="single-line">Single-threaded reference-counting pointers. 'Rc' stands for 'Reference Counted'. <elided chars="7806"/></truncated>
+</item>
+  <item><p>
+<type-name>result</type-name> </p>
+<truncated level="single-line"><p>
+Error handling with the <inline-code>Result</inline-code> type.</p>
+<inline-code>Result<T, E></inline-code> is the type used for returning and errors. It is an enum with the variants, <inline-code>Ok(T)</inline-code>, representing success and containing a value, and <inline-code>Err(E)</inline-code>, representing error and containing an error value. <elided chars="13755"/></truncated>
+</item>
+  <item><p>
+<type-name>simd</type-name> </p>
+<truncated level="single-line"><p>
+Portable SIMD module.</p>
+This module offers a portable abstraction for SIMD that is not bound to any particular hardware architecture. <elided chars="1904"/></truncated>
+</item>
+  <item><p>
+<type-name>slice</type-name> </p>
+<truncated level="single-line"><p>
+Utilities for the slice primitive type.</p>
+<p>
+<emphasis>See also the slice primitive type</emphasis><emphasis>.</emphasis></p>
+Most using<inline-code>slice.i</inline-code><inline-code>Iter</inline-code>. <elided chars="232"/></truncated>
+</item>
+  <item><p>
+<type-name>str</type-name> </p>
+<truncated level="single-line"><p>
+Utilities for the <inline-code>str</inline-code> primitive type.</p>
+<p>
+<emphasis>See also the </emphasis><inline-code>str</inline-code><emphasis> primitive type</emphasis><emphasis>.</emphasis></p>
+</truncated>
+</item>
+  <item><p>
+<type-name>string</type-name> </p>
+<truncated level="single-line"><p>
+A UTF-8–encoded, growable string.</p>
+This module contains the <inline-code>String</inline-code> type, the <inline-code>ToString</inline-code> trait for converting to strings, and several error working with <inline-code>String</inline-code>s. <elided chars="799"/></truncated>
+</item>
+  <item><p>
+<type-name>sync</type-name> </p>
+<truncated level="single-line"><p>
+Useful synchronization primitives.</p>
+<section-heading>The need for synchronization</section-heading>
+Conceptually, a be executed on a program is <elided chars="5253"/></truncated>
+</item>
+  <item><p>
+<type-name>task</type-name> </p>
+<truncated level="single-line"><p>
+Types and Traits for working with asynchronous tasks.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>thread</type-name> </p>
+<truncated level="single-line"><p>
+Native threads.</p>
+<section-heading>The threading model</section-heading>
+An executing Rust program consists of a each with their own stack and local state. provide some built-in support for low-level <elided chars="5082"/></truncated>
+</item>
+  <item><p>
+<type-name>time</type-name> </p>
+<truncated level="single-line"><p>
+Temporal quantification.</p>
+<title>Examples</title>
+There are multiple ways to create a new <inline-code>Duration</inline-code>: <elided chars="653"/></truncated>
+</item>
+  <item><p>
+<type-name>u128</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>u128</inline-code> primitive type.</p>
+New code should use the <elided chars="51"/></truncated>
+</item>
+  <item><p>
+<type-name>u16</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>u16</inline-code> primitive type.</p>
+New code should use the <elided chars="50"/></truncated>
+</item>
+  <item><p>
+<type-name>u32</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>u32</inline-code> primitive type.</p>
+New code should use the <elided chars="50"/></truncated>
+</item>
+  <item><p>
+<type-name>u64</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>u64</inline-code> primitive type.</p>
+New code should use the <elided chars="50"/></truncated>
+</item>
+  <item><p>
+<type-name>u8</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>u8</inline-code> primitive type.</p>
+New code should use the <elided chars="49"/></truncated>
+</item>
+  <item><p>
+<type-name>unsafe_binder</type-name> </p>
+<truncated level="single-line"><p>
+Operators used to turn types into unsafe binders and back.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>usize</type-name> </p>
+<truncated level="single-line"><p>
+Redundant constants module for the <inline-code>usize</inline-code> primitive type.</p>
+New code should use the <elided chars="52"/></truncated>
+</item>
+  <item><p>
+<type-name>vec</type-name> </p>
+<truncated level="single-line"><p>
+A contiguous growable array type with heap-allocated contents, written <inline-code>Vec<T></inline-code>.</p>
+Ve<emphasis>O</emphasis>(1<emphasis>O</emphasis>(1 <emphasis>O</emphasis>(1 <elided chars="1654"/></truncated>
+</item>
+  <item><p>
+<type-name>vec</type-name> </p>
+<truncated level="single-line"><p>
+A contiguous growable array type with heap-allocated contents, written <inline-code>Vec<T></inline-code>.</p>
+Ve<emphasis>O</emphasis>(1<emphasis>O</emphasis>(1 <emphasis>O</emphasis>(1 <elided chars="1654"/></truncated>
+</item>
+</list>
+</section><section><section-title>Macros</section-title><list>
+  <item><p>
+<type-name>format</type-name> </p>
+<truncated level="single-line"><p>
+Creates a <inline-code>String</inline-code> using interpolation of runtime expressions.</p>
+The first argument <inline-code>format!</inline-code> receives is a literal. The power<inline-code>{}</inline-code>s contained. Additional<inline-code>format!</inline-code> replace the <inline-code>{}</inline-code>s within the formatting string are used. <elided chars="1206"/></truncated>
+</item>
+</list>
+</section>

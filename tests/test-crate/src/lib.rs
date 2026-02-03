@@ -320,3 +320,8 @@ pub use submodule::*;
 pub mod reexport_mod {
     pub use super::submodule::*;
 }
+
+
+pub mod markdown_test {
+    #![doc=include_str!("./markdown_test.md")]
+}

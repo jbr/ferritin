@@ -24,19 +24,19 @@ pub(crate) fn execute<'a>(
             (Document::from(doc_nodes), false, Some(item))
         }
         None => {
-            let mut nodes = vec![DocumentNode::Span(Span::plain(format!(
+            let mut nodes = vec![DocumentNode::paragraph(vec![Span::plain(format!(
                 "Could not find '{path}'",
-            )))];
+            ))])];
 
             if !suggestions.is_empty() {
-                nodes.push(DocumentNode::Span(Span::plain("\n\nDid you mean:\n")));
+                nodes.push(DocumentNode::paragraph(vec![Span::plain("Did you mean:")]));
                 let items = suggestions
                     .iter()
                     .take(5)
                     .map(|s| {
-                        ListItem::from_span(
+                        ListItem::new(vec![DocumentNode::paragraph(vec![
                             Span::plain(s.path().to_string()).with_target(s.item().copied()),
-                        )
+                        ])])
                     })
                     .collect();
 

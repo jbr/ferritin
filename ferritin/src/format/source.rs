@@ -39,12 +39,10 @@ pub(crate) fn format_source_code<'a>(request: &'a Request, span: &Span) -> Vec<D
 
     // Build document nodes
     vec![
-        DocumentNode::Span(StyledSpan::plain("\n")),
-        DocumentNode::Span(StyledSpan::plain(format!(
-            "Source: {}\n",
+        DocumentNode::paragraph(vec![StyledSpan::plain(format!(
+            "Source: {}",
             file_path.display()
-        ))),
+        ))]),
         DocumentNode::code_block(Some("rust"), code),
-        DocumentNode::Span(StyledSpan::plain("\n")),
     ]
 }

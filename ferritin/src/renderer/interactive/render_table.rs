@@ -1,7 +1,6 @@
 use ratatui::{
     buffer::Buffer,
-    layout::{Position, Rect},
-    style::{Color, Modifier, Style},
+    style::{Modifier, Style},
 };
 
 use super::state::InteractiveState;
@@ -13,15 +12,13 @@ impl<'a> InteractiveState<'a> {
         &mut self,
         header: Option<&[TableCell<'a>]>,
         rows: &[Vec<TableCell<'a>>],
-        area: Rect,
         buf: &mut Buffer,
-        pos: &mut Position,
     ) {
         if rows.is_empty() && header.is_none() {
             return;
         }
 
-        let border_style = Style::default().fg(Color::Rgb(60, 60, 70));
+        let border_style = self.theme.muted_style;
 
         // Calculate column widths based on content
         let num_cols = header
@@ -59,35 +56,71 @@ impl<'a> InteractiveState<'a> {
             *width = (*width).min(max_col_width);
         }
 
-        // Top border: ┌─────┬─────┐
-        if pos.y >= self.viewport.scroll_offset && pos.y < self.viewport.scroll_offset + area.height
+        // Top border: ┏━━━━━┳━━━━━┓
+        if self.layout.pos.y >= self.viewport.scroll_offset
+            && self.layout.pos.y < self.viewport.scroll_offset + self.layout.area.height
         {
-            let mut col_pos = 0u16;
-            self.write_text(buf, pos.y, col_pos, "┌", area, border_style);
+            let mut col_pos = self.layout.indent;
+            self.write_text(
+                buf,
+                self.layout.pos.y,
+                col_pos,
+                "┏",
+                self.layout.area,
+                border_style,
+            );
             col_pos += 1;
 
             for (idx, &width) in col_widths.iter().enumerate() {
                 for _ in 0..width {
-                    self.write_text(buf, pos.y, col_pos, "─", area, border_style);
+                    self.write_text(
+                        buf,
+                        self.layout.pos.y,
+                        col_pos,
+                        "━",
+                        self.layout.area,
+                        border_style,
+                    );
                     col_pos += 1;
                 }
                 if idx < col_widths.len() - 1 {
-                    self.write_text(buf, pos.y, col_pos, "┬", area, border_style);
+                    self.write_text(
+                        buf,
+                        self.layout.pos.y,
+                        col_pos,
+                        "┳",
+                        self.layout.area,
+                        border_style,
+                    );
                     col_pos += 1;
                 }
             }
 
-            self.write_text(buf, pos.y, col_pos, "┐", area, border_style);
+            self.write_text(
+                buf,
+                self.layout.pos.y,
+                col_pos,
+                "┓",
+                self.layout.area,
+                border_style,
+            );
         }
-        pos.y += 1;
+        self.layout.pos.y += 1;
 
         // Render header if present
         if let Some(header_cells) = header {
-            if pos.y >= self.viewport.scroll_offset
-                && pos.y < self.viewport.scroll_offset + area.height
+            if self.layout.pos.y >= self.viewport.scroll_offset
+                && self.layout.pos.y < self.viewport.scroll_offset + self.layout.area.height
             {
-                let mut col_pos = 0u16;
-                self.write_text(buf, pos.y, col_pos, "│", area, border_style);
+                let mut col_pos = self.layout.indent;
+                self.write_text(
+                    buf,
+                    self.layout.pos.y,
+                    col_pos,
+                    "┃",
+                    self.layout.area,
+                    border_style,
+                );
                 col_pos += 1;
 
                 for (col_idx, cell) in header_cells.iter().enumerate() {
@@ -103,54 +136,110 @@ impl<'a> InteractiveState<'a> {
                         let mut style = self.style(span.style);
                         style = style.add_modifier(Modifier::BOLD);
 
-                        self.write_text(buf, pos.y, cell_col, span_text, area, style);
+                        self.write_text(
+                            buf,
+                            self.layout.pos.y,
+                            cell_col,
+                            span_text,
+                            self.layout.area,
+                            style,
+                        );
                         cell_col += span_text.len() as u16;
                     }
 
                     // Pad to column width
                     while cell_col < col_pos + col_widths[col_idx] as u16 {
-                        self.write_text(buf, pos.y, cell_col, " ", area, Style::default());
+                        self.write_text(
+                            buf,
+                            self.layout.pos.y,
+                            cell_col,
+                            " ",
+                            self.layout.area,
+                            Style::default(),
+                        );
                         cell_col += 1;
                     }
 
                     col_pos = cell_col;
-                    self.write_text(buf, pos.y, col_pos, "│", area, border_style);
+                    self.write_text(
+                        buf,
+                        self.layout.pos.y,
+                        col_pos,
+                        "┃",
+                        self.layout.area,
+                        border_style,
+                    );
                     col_pos += 1;
                 }
             }
-            pos.y += 1;
+            self.layout.pos.y += 1;
 
-            // Header separator: ├─────┼─────┤
-            if pos.y >= self.viewport.scroll_offset
-                && pos.y < self.viewport.scroll_offset + area.height
+            // Header separator: ┣━━━━━╋━━━━━┫
+            if self.layout.pos.y >= self.viewport.scroll_offset
+                && self.layout.pos.y < self.viewport.scroll_offset + self.layout.area.height
             {
-                let mut col_pos = 0u16;
-                self.write_text(buf, pos.y, col_pos, "├", area, border_style);
+                let mut col_pos = self.layout.indent;
+                self.write_text(
+                    buf,
+                    self.layout.pos.y,
+                    col_pos,
+                    "┣",
+                    self.layout.area,
+                    border_style,
+                );
                 col_pos += 1;
 
                 for (idx, &width) in col_widths.iter().enumerate() {
                     for _ in 0..width {
-                        self.write_text(buf, pos.y, col_pos, "─", area, border_style);
+                        self.write_text(
+                            buf,
+                            self.layout.pos.y,
+                            col_pos,
+                            "━",
+                            self.layout.area,
+                            border_style,
+                        );
                         col_pos += 1;
                     }
                     if idx < col_widths.len() - 1 {
-                        self.write_text(buf, pos.y, col_pos, "┼", area, border_style);
+                        self.write_text(
+                            buf,
+                            self.layout.pos.y,
+                            col_pos,
+                            "╋",
+                            self.layout.area,
+                            border_style,
+                        );
                         col_pos += 1;
                     }
                 }
 
-                self.write_text(buf, pos.y, col_pos, "┤", area, border_style);
+                self.write_text(
+                    buf,
+                    self.layout.pos.y,
+                    col_pos,
+                    "┫",
+                    self.layout.area,
+                    border_style,
+                );
             }
-            pos.y += 1;
+            self.layout.pos.y += 1;
         }
 
         // Render rows
         for row_cells in rows.iter() {
-            if pos.y >= self.viewport.scroll_offset
-                && pos.y < self.viewport.scroll_offset + area.height
+            if self.layout.pos.y >= self.viewport.scroll_offset
+                && self.layout.pos.y < self.viewport.scroll_offset + self.layout.area.height
             {
-                let mut col_pos = 0u16;
-                self.write_text(buf, pos.y, col_pos, "│", area, border_style);
+                let mut col_pos = self.layout.indent;
+                self.write_text(
+                    buf,
+                    self.layout.pos.y,
+                    col_pos,
+                    "┃",
+                    self.layout.area,
+                    border_style,
+                );
                 col_pos += 1;
 
                 for (col_idx, cell) in row_cells.iter().enumerate() {
@@ -168,43 +257,93 @@ impl<'a> InteractiveState<'a> {
                         };
 
                         let style = self.style(span.style);
-                        self.write_text(buf, pos.y, cell_col, span_text, area, style);
+                        self.write_text(
+                            buf,
+                            self.layout.pos.y,
+                            cell_col,
+                            span_text,
+                            self.layout.area,
+                            style,
+                        );
                         cell_col += span_text.len() as u16;
                     }
 
                     // Pad to column width
                     while cell_col < col_pos + col_widths[col_idx] as u16 {
-                        self.write_text(buf, pos.y, cell_col, " ", area, Style::default());
+                        self.write_text(
+                            buf,
+                            self.layout.pos.y,
+                            cell_col,
+                            " ",
+                            self.layout.area,
+                            Style::default(),
+                        );
                         cell_col += 1;
                     }
 
                     col_pos = cell_col;
-                    self.write_text(buf, pos.y, col_pos, "│", area, border_style);
+                    self.write_text(
+                        buf,
+                        self.layout.pos.y,
+                        col_pos,
+                        "┃",
+                        self.layout.area,
+                        border_style,
+                    );
                     col_pos += 1;
                 }
             }
-            pos.y += 1;
+            self.layout.pos.y += 1;
         }
 
-        // Bottom border: └─────┴─────┘
-        if pos.y >= self.viewport.scroll_offset && pos.y < self.viewport.scroll_offset + area.height
+        // Bottom border: ┗━━━━━┻━━━━━┛
+        if self.layout.pos.y >= self.viewport.scroll_offset
+            && self.layout.pos.y < self.viewport.scroll_offset + self.layout.area.height
         {
-            let mut col_pos = 0u16;
-            self.write_text(buf, pos.y, col_pos, "└", area, border_style);
+            let mut col_pos = self.layout.indent;
+            self.write_text(
+                buf,
+                self.layout.pos.y,
+                col_pos,
+                "┗",
+                self.layout.area,
+                border_style,
+            );
             col_pos += 1;
 
             for (idx, &width) in col_widths.iter().enumerate() {
                 for _ in 0..width {
-                    self.write_text(buf, pos.y, col_pos, "─", area, border_style);
+                    self.write_text(
+                        buf,
+                        self.layout.pos.y,
+                        col_pos,
+                        "━",
+                        self.layout.area,
+                        border_style,
+                    );
                     col_pos += 1;
                 }
                 if idx < col_widths.len() - 1 {
-                    self.write_text(buf, pos.y, col_pos, "┴", area, border_style);
+                    self.write_text(
+                        buf,
+                        self.layout.pos.y,
+                        col_pos,
+                        "┻",
+                        self.layout.area,
+                        border_style,
+                    );
                     col_pos += 1;
                 }
             }
 
-            self.write_text(buf, pos.y, col_pos, "┘", area, border_style);
+            self.write_text(
+                buf,
+                self.layout.pos.y,
+                col_pos,
+                "┛",
+                self.layout.area,
+                border_style,
+            );
         }
     }
 }

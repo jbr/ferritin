@@ -1,0 +1,77 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::TestStruct\").with_source(), OutputMode\n:: TestMode)"
+---
+<p>
+<strong>Item:</strong> TestStruct
+<strong>Kind:</strong> Struct
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>test_crate</type-name><punctuation>::</punctuation><type-name>TestStruct</type-name>
+<strong>In crate:</strong> test-crate (0.1.0)</p>
+<truncated level="full"><p>
+A simple struct for testing basic functionality.</p>
+<p>
+This struct demonstrates basic usage patterns and should show completely since it only has one paragraph of documentation.</p>
+<p>
+It uses <inline-code>Vector</inline-code> for testing intra-doc link resolution with renamed imports. Also tests <inline-code>HashMap</inline-code> which is a non-renamed import.</p>
+</truncated>
+<generated-code>
+<keyword>struct</keyword> <type-name>TestStruct</type-name> <punctuation>{</punctuation>
+    <keyword>pub</keyword> <field-name>field</field-name><punctuation>:</punctuation> <type-name>String</type-name><punctuation>,</punctuation>
+    <keyword>pub</keyword> <field-name>count</field-name><punctuation>:</punctuation> <type-name>u32</type-name><punctuation>,</punctuation>
+<punctuation>}</punctuation></generated-code>
+<section><section-title>Fields:</section-title><list>
+  <item><generated-code>
+<field-name>field</field-name><punctuation>:</punctuation> <type-name>String</type-name></generated-code>
+<truncated level="single-line"><p>
+A public field</p>
+</truncated>
+</item>
+  <item><generated-code>
+<field-name>count</field-name><punctuation>:</punctuation> <type-name>u32</type-name></generated-code>
+<truncated level="single-line"><p>
+Another public field</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Associated Types</section-title><list>
+  <item><generated-code>
+<keyword>pub</keyword> <keyword>const</keyword> ASSOCIATED_CONST</generated-code>
+<truncated level="single-line"><p>
+This is an associated constant for a struct</p>
+</truncated>
+</item>
+  <item><generated-code>
+<keyword>pub</keyword> <keyword>fn</keyword> new<punctuation>(</punctuation>field<punctuation>:</punctuation> <type-name>String</type-name><punctuation>,</punctuation> count<punctuation>:</punctuation> <type-name>u32</type-name><punctuation>)</punctuation> <operator>-></operator> <generic>Self</generic></generated-code>
+<truncated level="single-line"><p>
+Create a new TestStruct</p>
+</truncated>
+</item>
+  <item><generated-code>
+<keyword>pub</keyword> <keyword>fn</keyword> get_field<punctuation>(</punctuation><punctuation>&</punctuation>self<punctuation>)</punctuation> <operator>-></operator> <operator>&</operator><type-name>str</type-name></generated-code>
+<truncated level="single-line"><p>
+Get the field value</p>
+</truncated>
+</item>
+  <item><generated-code>
+<keyword>pub</keyword> <keyword>fn</keyword> increment_count<punctuation>(</punctuation><punctuation>&</punctuation><keyword>mut</keyword> self<punctuation>)</punctuation></generated-code>
+<truncated level="single-line"><p>
+Update the count</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Trait Implementations</section-title><p>
+std traits: Any Borrow BorrowMut Clone CloneToUninit Debug Freeze From Into RefUnwindSafe Send Sync TestTrait ToOwned TryFrom TryInto Unpin UnwindSafe </p>
+</section><p>
+Source: /TEST_CRATE_ROOT/src/lib.rs</p>
+<code-block lang="rust">
+#[derive(Debug, Clone)]
+pub struct TestStruct {
+    /// A public field
+    pub field: String,
+    /// Another public field
+    pub count: u32,
+    /// A private field
+    private_field: bool,
+}
+</code-block>

@@ -11,6 +11,24 @@ mod tty;
 
 pub use interactive::{HistoryEntry, render_interactive};
 
+/// Bullet characters for list items at different nesting levels
+/// Cycles through these as lists nest deeper
+const LIST_BULLETS: &[char] = &['◦', '▪', '•', '‣', '⁃'];
+
+/// Get the bullet character for a given indentation level
+///
+/// The indent is the column position, with each nesting level typically
+/// adding 4 columns (2 spaces + bullet + space)
+pub(crate) fn bullet_for_indent(indent: u16) -> char {
+    // Each list level adds approximately 4 columns of indent
+    // (though blockquotes also add indent, we use this as a rough proxy)
+    let nesting_level = (indent / 4) as usize;
+    LIST_BULLETS[nesting_level % LIST_BULLETS.len()]
+}
+
+#[cfg(test)]
+pub use interactive::render_to_test_backend;
+
 /// Output mode for rendering documents
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OutputMode {
@@ -60,7 +78,7 @@ mod tests {
                 HeadingLevel::Title,
                 vec![Span::plain("Test"), Span::keyword("struct")],
             ),
-            DocumentNode::Span(Span::type_name("Foo")),
+            DocumentNode::paragraph(vec![Span::type_name("Foo")]),
         ]);
 
         let mut tty_output = String::new();

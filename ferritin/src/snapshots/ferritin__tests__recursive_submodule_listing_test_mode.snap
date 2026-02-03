@@ -1,0 +1,96 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::submodule\").recursive(), OutputMode ::\nTestMode)"
+---
+<p>
+<strong>Item:</strong> submodule
+<strong>Kind:</strong> Module
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>test_crate</type-name><punctuation>::</punctuation><type-name>submodule</type-name>
+<strong>In crate:</strong> test-crate (0.1.0)</p>
+<truncated level="full"><p>
+A module with items</p>
+</truncated>
+<section><section-title>Structs</section-title><list>
+  <item><p>
+<type-name>SubStruct</type-name> </p>
+<truncated level="single-line"><p>
+A struct in a submodule</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Enums</section-title><list>
+  <item><p>
+<type-name>TestEnum</type-name> </p>
+<truncated level="single-line"><p>
+An enum for testing</p>
+<p>
+This is like <inline-code>crate::GenericEnum</inline-code> but without the generic</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Functions</section-title><list>
+  <item><p>
+<type-name>SubStruct::double</type-name> </p>
+<truncated level="single-line"><p>
+Double the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>SubStruct::get_value</type-name> </p>
+<truncated level="single-line"><p>
+Get the value</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>SubStruct::new</type-name> </p>
+<truncated level="single-line"><p>
+Create a new SubStruct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>sub_function</type-name> </p>
+<truncated level="single-line"><p>
+A function in a submodule</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Variants</section-title><list>
+  <item><p>
+<type-name>TestEnum::VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestEnum::VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestEnum::VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+</list>
+</section>

@@ -24,11 +24,11 @@ pub(super) fn handle_action<'a>(
             }
             None // No command needed, just mutated in place
         }
-        TuiAction::Navigate(doc_ref) => {
+        TuiAction::Navigate { doc_ref, url: _ } => {
             // Return Navigate command - caller will send it and wait for response
             Some(UiCommand::Navigate(doc_ref))
         }
-        TuiAction::NavigateToPath(path) => {
+        TuiAction::NavigateToPath { path, url: _ } => {
             // Return NavigateToPath command - caller will send it and wait for response
             Some(UiCommand::NavigateToPath(path))
         }

@@ -12,6 +12,7 @@ A minimal test crate for rustdoc JSON testing
 
 Modules:
 link_resolution_tests // Module for testing intra-doc link resolution
+markdown_test // # Markdown: Syntax [+332 more lines]
 reexport_mod
 submodule // A module with items
 

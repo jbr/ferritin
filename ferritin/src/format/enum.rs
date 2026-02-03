@@ -100,11 +100,8 @@ impl Request {
         // Build document nodes
         let mut doc_nodes = vec![];
 
-        // Add signature as spans
-        for span in code_spans {
-            doc_nodes.push(DocumentNode::Span(span));
-        }
-        doc_nodes.push(DocumentNode::Span(Span::plain("\n\n")));
+        // Add signature as generated code block
+        doc_nodes.push(DocumentNode::generated_code(code_spans));
 
         // Build variants section with List (collect documented variants)
         let variant_items: Vec<ListItem> = item
@@ -114,12 +111,13 @@ impl Request {
                     && let Some(docs) = self.docs_to_show(variant, TruncationLevel::SingleLine)
                 {
                     let variant_name = variant.name().unwrap_or("<unnamed>");
-                    let mut item_nodes = vec![
-                        DocumentNode::Span(Span::type_name(variant_name)),
-                        DocumentNode::Span(Span::plain("\n")),
-                    ];
-                    item_nodes.extend(docs);
-                    return Some(ListItem::new(item_nodes));
+                    // Prepend label paragraph before docs
+                    let mut content = vec![DocumentNode::paragraph(vec![
+                        Span::type_name(variant_name),
+                        Span::plain(" "),
+                    ])];
+                    content.extend(docs);
+                    return Some(ListItem::new(content));
                 }
                 None
             })

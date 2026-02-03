@@ -1,0 +1,25 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::DoesNotExist\"), OutputMode :: TestMode)"
+---
+<p>
+Could not find 'crate::DoesNotExist'</p>
+<p>
+Did you mean:</p>
+<list>
+  <item><p>
+crate::submodule</p>
+</item>
+  <item><p>
+crate::link_resolution_tests</p>
+</item>
+  <item><p>
+crate::reexport_mod</p>
+</item>
+  <item><p>
+crate::markdown_test</p>
+</item>
+  <item><p>
+crate::TestStruct</p>
+</item>
+</list>

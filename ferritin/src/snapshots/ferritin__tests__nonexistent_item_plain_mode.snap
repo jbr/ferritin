@@ -1,0 +1,17 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::DoesNotExist\"), OutputMode :: Plain)"
+---
+Could not find 'crate::DoesNotExist'
+
+Did you mean:
+
+  ◦ crate::submodule
+
+  ◦ crate::link_resolution_tests
+
+  ◦ crate::reexport_mod
+
+  ◦ crate::markdown_test
+
+  ◦ crate::TestStruct
