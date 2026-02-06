@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0](https://github.com/jbr/ferritin/compare/ferritin-v0.1.2...ferritin-v0.2.0) - 2026-02-06
+
+### Added
+
+- add theme picker
+- small improvement to interactive theme selection
+- improve color scheme scopes
+- improved theming support
+
+### Fixed
+
+- tests
+
+### Other
+
+- Merge pull request #58 from jbr/fix-some-more-typos
+- fix some more embarrassing typos
+- fmt
+- fix build and improve error message
+
 ## [0.1.2](https://github.com/jbr/ferritin/compare/ferritin-v0.1.1...ferritin-v0.1.2) - 2026-02-01
 
 ### Other
