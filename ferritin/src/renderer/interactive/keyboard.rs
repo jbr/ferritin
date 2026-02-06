@@ -7,6 +7,7 @@ use crossterm::{
 use ratatui::{Terminal, prelude::Backend};
 
 use super::{InputMode, InteractiveState, UiMode, channels::UiCommand};
+use crate::render_context::RenderContext;
 
 impl<'a> InteractiveState<'a> {
     pub(crate) fn handle_key_event(
@@ -22,6 +23,18 @@ impl<'a> InteractiveState<'a> {
                 }
                 UiMode::Input(_) => {
                     self.ui_mode = UiMode::Normal;
+                    self.ui.debug_message =
+                        "ferritin - q:quit ?:help ←/→:history g:go s:search l:list c:code"
+                            .to_string();
+                }
+                UiMode::ThemePicker {
+                    ref saved_theme_name,
+                    ..
+                } => {
+                    // Revert to saved theme on cancel
+                    let theme_name = saved_theme_name.clone();
+                    self.ui_mode = UiMode::Normal;
+                    let _ = self.apply_theme(&theme_name);
                     self.ui.debug_message =
                         "ferritin - q:quit ?:help ←/→:history g:go s:search l:list c:code"
                             .to_string();
@@ -86,6 +99,47 @@ impl<'a> InteractiveState<'a> {
                         self.loading.pending_request = true;
                     }
                     self.ui_mode = UiMode::Normal;
+                }
+                _ => {}
+            }
+        } else if let UiMode::ThemePicker {
+            ref mut selected_index,
+            ..
+        } = self.ui_mode
+        {
+            // Theme picker mode keybindings
+            let themes = RenderContext::available_themes();
+            let theme_count = themes.len();
+
+            match key.code {
+                KeyCode::Up | KeyCode::Char('k') => {
+                    // Move selection up
+                    if *selected_index > 0 {
+                        *selected_index -= 1;
+                        // Apply theme immediately for preview
+                        if let Some(theme_name) = themes.get(*selected_index) {
+                            let _ = self.apply_theme(theme_name);
+                        }
+                    }
+                }
+                KeyCode::Down | KeyCode::Char('j') => {
+                    // Move selection down
+                    if *selected_index + 1 < theme_count {
+                        *selected_index += 1;
+                        // Apply theme immediately for preview
+                        if let Some(theme_name) = themes.get(*selected_index) {
+                            let _ = self.apply_theme(theme_name);
+                        }
+                    }
+                }
+                KeyCode::Enter => {
+                    // Save current theme and exit
+                    let theme_name = self
+                        .current_theme_name
+                        .clone()
+                        .unwrap_or_else(|| "default".to_string());
+                    self.ui_mode = UiMode::Normal;
+                    self.ui.debug_message = format!("Theme saved: {}", theme_name);
                 }
                 _ => {}
             }
@@ -187,6 +241,26 @@ impl<'a> InteractiveState<'a> {
                     } else {
                         "Source code display disabled".to_string()
                     };
+                }
+
+                // Enter theme picker mode
+                (KeyCode::Char('t'), _) => {
+                    let themes = RenderContext::available_themes();
+                    let current_theme = self
+                        .current_theme_name
+                        .clone()
+                        .or_else(|| themes.first().cloned())
+                        .unwrap_or_else(|| "default".to_string());
+
+                    let selected_index =
+                        themes.iter().position(|t| t == &current_theme).unwrap_or(0);
+
+                    self.ui_mode = UiMode::ThemePicker {
+                        selected_index,
+                        saved_theme_name: current_theme,
+                    };
+                    self.ui.debug_message =
+                        "Select theme (↑/↓ to navigate, Enter to save, Esc to cancel)".to_string();
                 }
 
                 // Show help

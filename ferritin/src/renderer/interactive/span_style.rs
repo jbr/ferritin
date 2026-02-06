@@ -9,7 +9,7 @@ impl<'a> InteractiveState<'a> {
     pub(super) fn style(&self, span_style: SpanStyle) -> Style {
         match span_style {
             SpanStyle::Plain => {
-                let fg = self.ui_config.color_scheme().default_foreground();
+                let fg = self.render_context.color_scheme().default_foreground();
                 Style::default().fg(Color::Rgb(fg.r, fg.g, fg.b))
             }
             SpanStyle::Punctuation => Style::default(),
@@ -17,11 +17,11 @@ impl<'a> InteractiveState<'a> {
             SpanStyle::Emphasis => Style::default().add_modifier(Modifier::ITALIC),
             SpanStyle::Strikethrough => Style::default().add_modifier(Modifier::CROSSED_OUT),
             SpanStyle::InlineCode | SpanStyle::InlineRustCode => {
-                let color = self.ui_config.color_scheme().color_for(span_style);
+                let color = self.render_context.color_scheme().color_for(span_style);
                 Style::default().fg(Color::Rgb(color.r, color.g, color.b))
             }
             _ => {
-                let color = self.ui_config.color_scheme().color_for(span_style);
+                let color = self.render_context.color_scheme().color_for(span_style);
                 Style::default().fg(Color::Rgb(color.r, color.g, color.b))
             }
         }

@@ -29,6 +29,12 @@ impl<'a> super::InteractiveState<'a> {
                     return;
                 };
 
+                // In ThemePicker mode, use absolute screen coordinates (no scroll offset)
+                if matches!(self.ui_mode, super::UiMode::ThemePicker { .. }) {
+                    self.viewport.cursor_pos = Some(Position::new(column, row));
+                    return;
+                }
+
                 let terminal_height = size.height;
                 let content_height = terminal_height.saturating_sub(2); // Exclude 2 status lines
                 let breadcrumb_row = terminal_height.saturating_sub(2);
@@ -112,6 +118,27 @@ impl<'a> super::InteractiveState<'a> {
                 .map(|(_, action)| action.clone());
 
             if let Some(action) = action_opt {
+                // Handle SelectTheme specially (doesn't go through request thread)
+                if let TuiAction::SelectTheme(theme_name) = &action {
+                    // Apply theme immediately
+                    let _ = self.apply_theme(theme_name);
+
+                    // Update selected index in ThemePicker mode
+                    if let super::UiMode::ThemePicker {
+                        ref mut selected_index,
+                        ..
+                    } = self.ui_mode
+                    {
+                        let themes = crate::render_context::RenderContext::available_themes();
+                        if let Some(idx) = themes.iter().position(|t| t == theme_name.as_ref()) {
+                            *selected_index = idx;
+                        }
+                    }
+
+                    self.ui.debug_message = format!("Selected theme: {}", theme_name);
+                    return;
+                }
+
                 self.ui.debug_message = match &action {
                     TuiAction::Navigate { doc_ref, url: _ } => format!(
                         "Clicked: {}",
@@ -123,6 +150,7 @@ impl<'a> super::InteractiveState<'a> {
                     TuiAction::NavigateToPath { path, url: _ } => format!("Clicked: {}", path),
                     TuiAction::ExpandBlock(path) => format!("Clicked: {:?}", path.indices()),
                     TuiAction::OpenUrl(url) => format!("Clicked: {}", url),
+                    TuiAction::SelectTheme(_) => unreachable!(), // Handled above
                 };
 
                 // Handle the action - may return a command to send
@@ -164,6 +192,9 @@ impl<'a> super::InteractiveState<'a> {
                         }
                         TuiAction::OpenUrl(url) => {
                             format!("Open: {}", url)
+                        }
+                        TuiAction::SelectTheme(theme_name) => {
+                            format!("Preview theme: {}", theme_name)
                         }
                     };
                 } else {

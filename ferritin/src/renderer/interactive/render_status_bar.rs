@@ -48,6 +48,10 @@ impl<'a> InteractiveState<'a> {
                     Some("[tab] toggle scope"),
                 )
             }
+            UiMode::ThemePicker { .. } => {
+                // Use debug_message to show hover feedback
+                (self.ui.debug_message.clone(), None)
+            }
         };
 
         // Prepend spinner if loading

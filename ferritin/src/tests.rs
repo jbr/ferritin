@@ -56,7 +56,7 @@ fn render_interactive_for_tests(command: Commands) -> TestBackend {
     let (document, _, _) = command.execute(&request);
     let render_context = RenderContext::new();
 
-    render_to_test_backend(document, &render_context)
+    render_to_test_backend(document, render_context)
 }
 
 /// Macro to run the same test across all output modes

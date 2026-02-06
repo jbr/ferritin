@@ -16,10 +16,9 @@ fn create_test_state<'a>() -> InteractiveState<'a> {
         }])],
     };
     let render_context = RenderContext::new();
-    let ui_config = UiRenderConfig::from_render_context(&render_context);
     let theme = InteractiveTheme::from_render_context(&render_context);
 
-    InteractiveState::new(document, None, cmd_tx, resp_rx, ui_config, theme)
+    InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme)
 }
 
 #[test]
@@ -180,10 +179,9 @@ fn test_brief_truncation_with_code_block() {
     };
 
     let render_context = RenderContext::new();
-    let ui_config = UiRenderConfig::from_render_context(&render_context);
     let theme = InteractiveTheme::from_render_context(&render_context);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, ui_config, theme);
+    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
     let backend = TestBackend::new(80, 24);
     let mut terminal = Terminal::new(backend).unwrap();
 
@@ -247,10 +245,9 @@ fn test_brief_with_short_code_block() {
     };
 
     let render_context = RenderContext::new();
-    let ui_config = UiRenderConfig::from_render_context(&render_context);
     let theme = InteractiveTheme::from_render_context(&render_context);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, ui_config, theme);
+    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
     let backend = TestBackend::new(80, 24);
     let mut terminal = Terminal::new(backend).unwrap();
 
@@ -316,10 +313,9 @@ fn test_truncated_block_border_on_wrapped_lines() {
     };
 
     let render_context = RenderContext::new();
-    let ui_config = UiRenderConfig::from_render_context(&render_context);
     let theme = InteractiveTheme::from_render_context(&render_context);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, ui_config, theme);
+    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
     let backend = TestBackend::new(60, 24); // Narrow width to force wrapping
     let mut terminal = Terminal::new(backend).unwrap();
 
@@ -413,10 +409,9 @@ fn test_std_module_spacing() {
     };
 
     let render_context = RenderContext::new();
-    let ui_config = UiRenderConfig::from_render_context(&render_context);
     let theme = InteractiveTheme::from_render_context(&render_context);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, ui_config, theme);
+    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
     let backend = TestBackend::new(80, 30);
     let mut terminal = Terminal::new(backend).unwrap();
 
@@ -457,10 +452,9 @@ fn test_code_block_spacing() {
     };
 
     let render_context = RenderContext::new();
-    let ui_config = UiRenderConfig::from_render_context(&render_context);
     let theme = InteractiveTheme::from_render_context(&render_context);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, ui_config, theme);
+    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
     let backend = TestBackend::new(60, 20);
     let mut terminal = Terminal::new(backend).unwrap();
 
