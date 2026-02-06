@@ -3,8 +3,8 @@ use ratatui::layout::{Position, Rect};
 use super::channels::{RequestResponse, UiCommand};
 use super::history::{History, HistoryEntry};
 use super::theme::InteractiveTheme;
-use super::ui_config::UiRenderConfig;
 use super::utils::supports_cursor_shape;
+use crate::render_context::{RenderContext, ThemeError};
 use crate::styled_string::{Document, NodePath, TuiAction};
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -17,6 +17,13 @@ pub(super) enum UiMode {
     Help,
     /// Input mode (go-to or search)
     Input(InputMode),
+    /// Theme picker modal
+    ThemePicker {
+        /// Index of currently selected theme
+        selected_index: usize,
+        /// Theme name to restore on cancel
+        saved_theme_name: String,
+    },
 }
 
 /// Input mode with mode-specific state
@@ -95,9 +102,10 @@ pub(super) struct InteractiveState<'a> {
     pub cmd_tx: Sender<UiCommand<'a>>,
     pub resp_rx: Receiver<RequestResponse<'a>>,
 
-    // Immutable config
-    pub ui_config: UiRenderConfig,
+    // Rendering config
+    pub render_context: RenderContext,
     pub theme: InteractiveTheme,
+    pub current_theme_name: Option<String>,
 }
 
 impl<'a> InteractiveState<'a> {
@@ -107,9 +115,13 @@ impl<'a> InteractiveState<'a> {
         initial_entry: Option<HistoryEntry<'a>>,
         cmd_tx: Sender<UiCommand<'a>>,
         resp_rx: Receiver<RequestResponse<'a>>,
-        ui_config: UiRenderConfig,
+        render_context: RenderContext,
         theme: InteractiveTheme,
     ) -> Self {
+        let current_theme_name = render_context
+            .current_theme_name()
+            .as_ref()
+            .map(|s| s.to_string());
         Self {
             document: DocumentState {
                 document: initial_document,
@@ -147,8 +159,17 @@ impl<'a> InteractiveState<'a> {
             },
             cmd_tx,
             resp_rx,
-            ui_config,
+            render_context,
             theme,
+            current_theme_name,
         }
+    }
+
+    /// Apply a theme by name, rebuilding the interactive theme
+    pub(super) fn apply_theme(&mut self, theme_name: &str) -> Result<(), ThemeError> {
+        self.render_context.set_theme_name(theme_name)?;
+        self.theme = InteractiveTheme::from_render_context(&self.render_context);
+        self.current_theme_name = Some(theme_name.to_string());
+        Ok(())
     }
 }

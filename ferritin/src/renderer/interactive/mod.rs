@@ -82,12 +82,12 @@ mod render_node;
 mod render_span;
 mod render_status_bar;
 mod render_table;
+mod render_theme_picker;
 mod request_thread;
 mod response;
 mod span_style;
 mod state;
 mod theme;
-mod ui_config;
 mod utils;
 mod write_text;
 
@@ -124,7 +124,6 @@ use std::{
 
 use channels::{RequestResponse, UiCommand};
 use request_thread::request_thread_loop;
-use ui_config::UiRenderConfig;
 
 /// Render a document in interactive mode with scrolling and hover tracking
 pub fn render_interactive(
@@ -142,8 +141,7 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
     render_context: RenderContext,
     initial_command: Option<Commands>,
 ) -> io::Result<()> {
-    // Extract rendering config for UI thread (not the full RenderContext)
-    let ui_config = UiRenderConfig::from_render_context(&render_context);
+    // Build interactive theme from render context
     let interactive_theme = InteractiveTheme::from_render_context(&render_context);
 
     // Create channels for communication between UI and request threads
@@ -153,7 +151,7 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
     // Spawn UI thread - it only renders and handles input
     // UI thread starts without a document - will receive initial document via channel
     let ui_handle = scope.spawn(|| -> io::Result<()> {
-        ui_thread_loop(ui_config, interactive_theme, cmd_tx, resp_rx)
+        ui_thread_loop(render_context, interactive_theme, cmd_tx, resp_rx)
     });
 
     // Main thread becomes request thread - owns Request and does all formatting
@@ -178,7 +176,7 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
 
 /// UI thread loop - handles terminal rendering and input events only
 fn ui_thread_loop<'a>(
-    ui_config: UiRenderConfig,
+    render_context: RenderContext,
     interactive_theme: InteractiveTheme,
     cmd_tx: Sender<UiCommand<'a>>,
     resp_rx: Receiver<RequestResponse<'a>>,
@@ -205,7 +203,7 @@ fn ui_thread_loop<'a>(
         initial_entry,
         cmd_tx,
         resp_rx,
-        ui_config,
+        render_context,
         interactive_theme,
     );
 
@@ -258,17 +256,17 @@ fn ui_thread_loop<'a>(
 #[cfg(test)]
 pub fn render_to_test_backend(
     document: Document<'_>,
-    render_context: &RenderContext,
+    render_context: RenderContext,
 ) -> ratatui::backend::TestBackend {
     use ratatui::{Terminal, backend::TestBackend};
     use std::sync::mpsc::channel;
 
     let (cmd_tx, _cmd_rx) = channel();
     let (_resp_tx, resp_rx) = channel();
-    let ui_config = UiRenderConfig::from_render_context(render_context);
-    let theme = InteractiveTheme::from_render_context(render_context);
+    let theme = InteractiveTheme::from_render_context(&render_context);
 
-    let mut state = state::InteractiveState::new(document, None, cmd_tx, resp_rx, ui_config, theme);
+    let mut state =
+        state::InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
     let backend = TestBackend::new(80, 200); // Tall virtual terminal to capture all content
     let mut terminal = Terminal::new(backend).unwrap();
 

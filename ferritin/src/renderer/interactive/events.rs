@@ -39,5 +39,10 @@ pub(super) fn handle_action<'a>(
             }
             None // No command needed
         }
+        TuiAction::SelectTheme(_) => {
+            // SelectTheme is handled specially in mouse.rs handle_click()
+            // It should never reach this function, but we need the match to be exhaustive
+            None
+        }
     }
 }

@@ -117,11 +117,11 @@ impl<'a> InteractiveState<'a> {
 
         // Render code content with side borders (no background color)
         if let Some(syntax) = self
-            .ui_config
+            .render_context
             .syntax_set()
             .find_syntax_by_token(lang_display)
         {
-            let theme = self.ui_config.theme();
+            let theme = self.render_context.theme();
             let mut highlighter = HighlightLines::new(syntax, theme);
 
             for line in LinesWithEndings::from(code) {
@@ -141,7 +141,7 @@ impl<'a> InteractiveState<'a> {
                     let mut col = content_col;
 
                     if let Ok(ranges) =
-                        highlighter.highlight_line(line, self.ui_config.syntax_set())
+                        highlighter.highlight_line(line, self.render_context.syntax_set())
                     {
                         for (style, text) in ranges {
                             let fg = style.foreground;

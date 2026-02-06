@@ -39,6 +39,8 @@ pub(crate) struct RenderContext {
     syntax_set: SyntaxSet,
     /// The loaded theme for syntax highlighting
     theme: Theme,
+    /// The name of the currently loaded theme
+    current_theme_name: Option<String>,
 }
 
 impl RenderContext {
@@ -66,6 +68,7 @@ impl RenderContext {
 
             self.color_scheme = ColorScheme::from_syntect_theme(&theme);
             self.theme = theme;
+            self.current_theme_name = Some(theme_name_or_path.to_string());
             return Ok(self);
         }
 
@@ -73,6 +76,7 @@ impl RenderContext {
         if let Some(theme) = themes::load_theme(theme_name_or_path) {
             self.color_scheme = ColorScheme::from_syntect_theme(&theme);
             self.theme = theme;
+            self.current_theme_name = Some(theme_name_or_path.to_string());
             Ok(self)
         } else {
             Err(ThemeError::ThemeNotFound(
@@ -84,8 +88,9 @@ impl RenderContext {
 
     pub(crate) fn new() -> Self {
         // Load a default theme (first available theme)
-        let default_theme = themes::load_theme(themes::THEME_NAMES[0])
-            .expect("At least one theme should be available");
+        let default_theme_name = themes::THEME_NAMES[0];
+        let default_theme =
+            themes::load_theme(default_theme_name).expect("At least one theme should be available");
 
         Self {
             color_scheme: ColorScheme::default(),
@@ -94,6 +99,7 @@ impl RenderContext {
             interactive: false,
             syntax_set: SyntaxSet::load_defaults_newlines(),
             theme: default_theme,
+            current_theme_name: Some(default_theme_name.to_string()),
         }
     }
 }

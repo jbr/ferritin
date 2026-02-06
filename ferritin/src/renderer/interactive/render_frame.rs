@@ -64,6 +64,12 @@ impl<'a> InteractiveState<'a> {
 
             // Render status bar
             self.render_status_bar(frame.buffer_mut(), status_area);
+
+            // Render theme picker overlay if in theme picker mode
+            if let UiMode::ThemePicker { selected_index, .. } = self.ui_mode {
+                let area = frame.area();
+                self.render_theme_picker(frame.buffer_mut(), area, selected_index);
+            }
         }
     }
 }

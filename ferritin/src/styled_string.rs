@@ -22,6 +22,8 @@ pub enum TuiAction<'a> {
     ExpandBlock(NodePath),
     /// Open an external URL in browser
     OpenUrl(Cow<'a, str>),
+    /// Select a theme (interactive mode only)
+    SelectTheme(Cow<'a, str>),
 }
 
 impl<'a> TuiAction<'a> {
@@ -31,6 +33,7 @@ impl<'a> TuiAction<'a> {
             TuiAction::NavigateToPath { url, .. } => url.as_deref(),
             TuiAction::ExpandBlock(_) => None,
             TuiAction::OpenUrl(cow) => Some(cow),
+            TuiAction::SelectTheme(_) => None,
         }
     }
 }

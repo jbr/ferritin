@@ -41,6 +41,7 @@ impl<'a> InteractiveState<'a> {
             ),
             ("  l", "List available crates", key_style),
             ("  c", "Toggle source code display", key_style),
+            ("  t", "Select theme", key_style),
             ("  Esc", "Cancel input mode / Exit help / Quit", key_style),
             ("", "", bg_style),
             ("Mouse:", "", title_style),
