@@ -5,48 +5,48 @@ expression: "render_for_tests(Commands::get(\"test-crate::markdown_test\"), Outp
 Item: markdown_test
 Kind: Module
 Visibility: Public
-Defined at: test_crate::markdown_test
+Defined at: [test_crate](https://docs.rs/test-crate/0.1.0/test-crate/index.html)::[markdown_test](https://docs.rs/test-crate/0.1.0/test-crate/markdown_test/index.html)
 In crate: test-crate (0.1.0)
 
 Markdown: Syntax
 ================================================================================
 
-  ◦ Overview
-      ▪ Philosophy
+  ◦ [Overview](#overview)
+      ▪ [Philosophy](#philosophy)
     
-      ▪ Inline HTML
+      ▪ [Inline HTML](#html)
     
-      ▪ Automatic Escaping for Special Characters
+      ▪ [Automatic Escaping for Special Characters](#autoescape)
 
-  ◦ Block Elements
-      ▪ Paragraphs and Line Breaks
+  ◦ [Block Elements](#block)
+      ▪ [Paragraphs and Line Breaks](#p)
     
-      ▪ Headers
+      ▪ [Headers](#header)
     
-      ▪ Blockquotes
+      ▪ [Blockquotes](#blockquote)
     
-      ▪ Lists
+      ▪ [Lists](#list)
     
-      ▪ Code Blocks
+      ▪ [Code Blocks](#precode)
     
-      ▪ Horizontal Rules
+      ▪ [Horizontal Rules](#hr)
 
-  ◦ Span Elements
-      ▪ Links
+  ◦ [Span Elements](#span)
+      ▪ [Links](#link)
     
-      ▪ Emphasis
+      ▪ [Emphasis](#em)
     
-      ▪ Code
+      ▪ [Code](#code)
     
-      ▪ Images
+      ▪ [Images](#img)
 
-  ◦ Miscellaneous
-      ▪ Backslash Escapes
+  ◦ [Miscellaneous](#misc)
+      ▪ [Backslash Escapes](#backslash)
     
-      ▪ Automatic Links
+      ▪ [Automatic Links](#autolink)
 
-Note: This document is itself written using Markdown; you can see the source
-for it by adding '.text' to the URL.
+Note: This document is itself written using Markdown; you can [see the source](/projects/markdown/syntax.text)
+[for it by adding '.text' to the URL](/projects/markdown/syntax.text).
 
 ────────────────────────────────────────────────────────────────────────────────
 
@@ -61,8 +61,8 @@ Markdown is intended to be as easy-to-read and easy-to-write as is feasible.
 Readability, however, is emphasized above all else. A Markdown-formatted 
 document should be publishable as-is, as plain text, without looking like it's
 been marked up with tags or formatting instructions. While Markdown's syntax
-has been influenced by several existing text-to-HTML filters -- including Setext
-, atx, Textile, reStructuredText, Grutatext, and EtText -- the single biggest
+has been influenced by several existing text-to-HTML filters -- including [Setext](http://docutils.sourceforge.net/mirror/setext.html)
+, [atx](http://www.aaronsw.com/2002/atx/), [Textile](http://textism.com/tools/textile/), [reStructuredText](http://docutils.sourceforge.net/rst.html), [Grutatext](http://www.triptico.com/software/grutatxt.html), and [EtText](http://ettext.taint.org/doc/) -- the single biggest
 source of inspiration for Markdown's syntax is the format of plain text email.
 
 Block Elements
@@ -88,7 +88,7 @@ with two or more spaces, then type return.
 Headers
 --------------------------------------------------------------------------------
 
-Markdown supports two styles of headers, Setext 1 and atx 2.
+Markdown supports two styles of headers, [Setext](https://docs.rs/test-crate/latest/test-crate/index.html?search=test%2Dcrate%3A%3ASetext) [1](https://docs.rs/test-crate/latest/test-crate/index.html?search=test%2Dcrate%3A%3A1) and [atx](https://docs.rs/test-crate/latest/test-crate/index.html?search=test%2Dcrate%3A%3Aatx) [2](https://docs.rs/test-crate/latest/test-crate/index.html?search=test%2Dcrate%3A%3A2).
 
 Optionally, you may "close" atx-style headers. This is purely cosmetic -- you
 can use this if you think it looks better. The closing hashes don't even need
@@ -316,16 +316,16 @@ Links
 
 Markdown supports two style of links: inline and reference.
 
-In both styles, the link text is delimited by square brackets.
+In both styles, the link text is delimited by [square brackets](https://docs.rs/test-crate/latest/test-crate/index.html?search=test%2Dcrate%3A%3Asquare%20brackets).
 
 To create an inline link, use a set of regular parentheses immediately after
 the link text's closing square bracket. Inside the parentheses, put the URL
 where you want the link to point, along with an optional title for the link,
 surrounded in quotes. For example:
 
-This is an example inline link.
+This is [an example](http://example.com/) inline link.
 
-This link has no title attribute.
+[This link](http://example.net/) has no title attribute.
 
 Emphasis
 --------------------------------------------------------------------------------

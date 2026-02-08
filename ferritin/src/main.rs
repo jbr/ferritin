@@ -35,6 +35,9 @@ mod tests;
 mod traits;
 mod verbosity;
 
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 /// A friendly CLI for browsing Rust documentation
 #[derive(Parser, Debug)]
 #[command(name = "ferritin")]
@@ -141,7 +144,9 @@ fn main() -> ExitCode {
             return ExitCode::FAILURE;
         }
 
-        if let Err(e) = renderer::render_interactive(&request, render_context, cli.command, log_reader) {
+        if let Err(e) =
+            renderer::render_interactive(&request, render_context, cli.command, log_reader)
+        {
             eprintln!("Interactive mode error: {}", e);
             return ExitCode::FAILURE;
         }

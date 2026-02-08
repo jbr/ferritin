@@ -33,7 +33,9 @@ impl<'a> InteractiveState<'a> {
 
         // Determine what to display based on UI mode
         let (mut display_text, hint_text) = match &self.ui_mode {
-            UiMode::Normal | UiMode::Help | UiMode::DevLog { .. } => (self.ui.debug_message.clone(), None),
+            UiMode::Normal | UiMode::Help | UiMode::DevLog { .. } => {
+                (self.ui.debug_message.clone(), None)
+            }
             UiMode::Input(InputMode::GoTo { buffer }) => (format!("Go to: {}", buffer), None),
             UiMode::Input(InputMode::Search { buffer, all_crates }) => {
                 let scope = if *all_crates {

@@ -25,6 +25,16 @@ fn create_test_state() -> Request {
     Request::new(navigator, FormatContext::new())
 }
 
+/// Convert OSC8 hyperlinks to markdown-style [text](url) before stripping ANSI
+fn convert_osc8_to_markdown(text: &str) -> String {
+    use regex::Regex;
+
+    // OSC8 format: ESC]8;;URL ESC\TEXT ESC]8;; ESC\
+    let re = Regex::new("\x1B\\]8;;([^\x1B]*)\x1B\\\\(.*?)\x1B\\]8;;\x1B\\\\").unwrap();
+
+    re.replace_all(text, "[$2]($1)").to_string()
+}
+
 fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
     let request = create_test_state();
     let (document, _, _) = command.execute(&request);
@@ -32,9 +42,11 @@ fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
     let render_context = RenderContext::new().with_output_mode(output_mode);
     render(&document, &render_context, &mut output).unwrap();
 
-    // Strip ANSI codes for TTY mode to make snapshots readable
+    // For TTY mode: convert OSC8 links to markdown, then strip remaining ANSI codes
     let output = if matches!(output_mode, OutputMode::Tty) {
-        String::from_utf8(strip_ansi_escapes::strip(output.as_bytes())).unwrap_or(output)
+        let with_markdown_links = convert_osc8_to_markdown(&output);
+        String::from_utf8(strip_ansi_escapes::strip(with_markdown_links.as_bytes()))
+            .unwrap_or(with_markdown_links)
     } else {
         output
     };

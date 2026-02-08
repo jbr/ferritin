@@ -5,7 +5,7 @@ expression: "render_for_tests(Commands::get(\"crate::TestStruct\"), OutputMode :
 Item: TestStruct
 Kind: Struct
 Visibility: Public
-Defined at: test_crate::TestStruct
+Defined at: [test_crate](https://docs.rs/test-crate/0.1.0/test-crate/index.html)::[TestStruct](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html)
 In crate: test-crate (0.1.0)
 
 A simple struct for testing basic functionality.
@@ -13,17 +13,17 @@ A simple struct for testing basic functionality.
 This struct demonstrates basic usage patterns and should show completely since
 it only has one paragraph of documentation.
 
-It uses Vector for testing intra-doc link resolution with renamed imports. Also
-tests HashMap which is a non-renamed import.
+It uses [Vector](https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec) for testing intra-doc link resolution with renamed imports. Also
+tests [HashMap](https://doc.rust-lang.org/nightly/std/collections/hash/map/index.html?search=std%3A%3Acollections%3A%3Ahash%3A%3Amap%3A%3AHashMap) which is a non-renamed import.
 
 struct TestStruct {
-    pub field: String,
+    pub field: [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html),
     pub count: u32,
 }
 
 Fields:
 
-  ◦ field: String
+  ◦ field: [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)
     A public field
 
   ◦ count: u32
@@ -34,16 +34,16 @@ Associated Types
   ◦ pub const ASSOCIATED_CONST
     This is an associated constant for a struct
 
-  ◦ pub fn new(field: String, count: u32) -> Self
+  ◦ pub fn [new](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html#method.new)(field: [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html), count: u32) -> Self
     Create a new TestStruct
 
-  ◦ pub fn get_field(&self) -> &str
+  ◦ pub fn [get_field](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html#method.get_field)(&self) -> &str
     Get the field value
 
-  ◦ pub fn increment_count(&mut self)
+  ◦ pub fn [increment_count](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html#method.increment_count)(&mut self)
     Update the count
 
 Trait Implementations
 
-std traits: Any Borrow BorrowMut Clone CloneToUninit Debug Freeze From Into 
-RefUnwindSafe Send Sync TestTrait ToOwned TryFrom TryInto Unpin UnwindSafe
+std traits: [Any](https://doc.rust-lang.org/nightly/core/any/index.html?search=core%3A%3Aany%3A%3AAny) [Borrow](https://doc.rust-lang.org/nightly/core/borrow/index.html?search=core%3A%3Aborrow%3A%3ABorrow) [BorrowMut](https://doc.rust-lang.org/nightly/core/borrow/index.html?search=core%3A%3Aborrow%3A%3ABorrowMut) [Clone](https://doc.rust-lang.org/nightly/core/clone/index.html?search=core%3A%3Aclone%3A%3AClone) [CloneToUninit](https://doc.rust-lang.org/nightly/core/clone/index.html?search=core%3A%3Aclone%3A%3ACloneToUninit) [Debug](https://doc.rust-lang.org/nightly/core/fmt/index.html?search=core%3A%3Afmt%3A%3ADebug) [Freeze](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AFreeze) [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom) [Into](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AInto) 
+[RefUnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3ARefUnwindSafe) [Send](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASend) [Sync](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASync) [TestTrait](https://docs.rs/test_crate/latest/test_crate/index.html?search=test%5Fcrate%3A%3ATestTrait) [ToOwned](https://doc.rust-lang.org/nightly/alloc/borrow/index.html?search=alloc%3A%3Aborrow%3A%3AToOwned) [TryFrom](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3ATryFrom) [TryInto](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3ATryInto) [Unpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnpin) [UnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3AUnwindSafe)

@@ -5,33 +5,33 @@ expression: "render_for_tests(Commands::get(\"crate::submodule\"), OutputMode ::
 Item: submodule
 Kind: Module
 Visibility: Public
-Defined at: test_crate::submodule
+Defined at: [test_crate](https://docs.rs/test-crate/0.1.0/test-crate/index.html)::[submodule](https://docs.rs/test-crate/0.1.0/test-crate/submodule/index.html)
 In crate: test-crate (0.1.0)
 
 A module with items
 
 Structs
 
-  ◦ SubStruct 
+  ◦ [SubStruct](https://docs.rs/test-crate/0.1.0/test-crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
 Enums
 
-  ◦ TestEnum 
+  ◦ [TestEnum](https://docs.rs/test-crate/0.1.0/test-crate/submodule/enum.TestEnum.html) 
     An enum for testing [...]
 
 Functions
 
-  ◦ sub_function 
+  ◦ [sub_function](https://docs.rs/test-crate/0.1.0/test-crate/submodule/fn.sub_function.html) 
     A function in a submodule
 
 Variants
 
-  ◦ VariantA 
-    Variant A (see also crate::GenericEnum)
+  ◦ [VariantA](https://docs.rs/test-crate/0.1.0/test-crate/) 
+    Variant A (see also [crate::GenericEnum](https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html))
 
-  ◦ VariantB 
+  ◦ [VariantB](https://docs.rs/test-crate/0.1.0/test-crate/) 
     Variant B with data
 
-  ◦ VariantC 
+  ◦ [VariantC](https://docs.rs/test-crate/0.1.0/test-crate/) 
     Variant C with struct data (name and value)

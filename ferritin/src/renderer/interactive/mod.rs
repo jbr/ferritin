@@ -331,7 +331,7 @@ pub fn render_to_test_backend(
     let theme = InteractiveTheme::from_render_context(&render_context);
 
     // Create a dummy log reader for tests
-    let (log_backend, log_reader) = crate::logging::StatusLogBackend::new(100);
+    let (_, log_reader) = crate::logging::StatusLogBackend::new(100);
     // Don't install it globally for tests, just pass the reader
 
     let mut state = state::InteractiveState::new(

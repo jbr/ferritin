@@ -22,7 +22,6 @@ mcplease = "0.2.3"
 rustdoc-types.workspace = true
 schemars = { version = "1.2.0", features = ["derive"] }
 serde.workspace = true
-serde_json.workspace = true
 shellexpand.workspace = true
 strum = { version = "0.27.2", features = ["derive"] }
 semver = "1.0.27"

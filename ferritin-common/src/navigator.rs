@@ -121,6 +121,7 @@ impl Navigator {
         name: &str,
         version: &VersionReq,
     ) -> Option<Cow<'a, CrateInfo>> {
+        log::info!("Resolving {name:?}, version {version}");
         self.std_source()
             .and_then(|s| s.lookup(name, version))
             .or_else(|| self.local_source().and_then(|s| s.lookup(name, version)))
@@ -138,9 +139,13 @@ impl Navigator {
     /// This is the primary string entrypoint for any user-generated crate or type specification
     pub fn resolve_path<'a>(
         &'a self,
-        path: &str,
+        mut path: &str,
         suggestions: &mut Vec<Suggestion<'a>>,
     ) -> Option<DocRef<'a, Item>> {
+        if let Some("::") = path.get(0..2) {
+            path = &path[2..];
+        }
+
         let (crate_name, index) = if let Some(index) = path.find("::") {
             (&path[..index], Some(index + 2))
         } else {
@@ -198,6 +203,7 @@ impl Navigator {
 
         let (resolved_name, resolved_version, provenance_hint) =
             if let Some(external_crate) = self.external_crate_names.get(&crate_name) {
+                log::debug!("Found {crate_name} in external_crates");
                 (
                     external_crate.name.to_string(),
                     Some(external_crate.version.clone()),
@@ -214,14 +220,14 @@ impl Navigator {
 
         // Try loading from the appropriate source based on provenance
         if let Some(rv) = resolved_version.as_ref() {
-            log::debug!("Loading {resolved_name}@{rv}",);
+            log::debug!("Resolved {resolved_name}@{rv}");
         } else {
-            log::debug!("Loading {resolved_name}");
+            log::debug!("Resolved {resolved_name}");
         }
         let start = std::time::Instant::now();
         let result = self.load(&resolved_name, resolved_version.as_ref(), provenance_hint);
         let elapsed = start.elapsed();
-        log::info!("⏱️ Total load time for {}: {:?}", resolved_name, elapsed);
+        log::debug!("⏱️ Total load time for {}: {:?}", resolved_name, elapsed);
 
         match result {
             Some(data) => {
@@ -250,22 +256,31 @@ impl Navigator {
         provenance_hint: Option<CrateProvenance>,
     ) -> Option<RustdocData> {
         match provenance_hint {
-            Some(CrateProvenance::Std) => self.std_source()?.load(crate_name, version),
+            Some(CrateProvenance::Std) => {
+                log::debug!("loading from std");
+                self.std_source()?.load(crate_name, version)
+            }
             Some(CrateProvenance::Workspace | CrateProvenance::LocalDependency) => {
+                log::debug!("loading from local");
                 self.local_source()?.load(crate_name, version)
             }
-            Some(CrateProvenance::DocsRs) => self.docsrs_source()?.load(crate_name, version),
-            None => self
-                .std_source()
-                .and_then(|s| s.load(crate_name, version))
-                .or_else(|| {
-                    self.local_source()
-                        .and_then(|s| s.load(crate_name, version))
-                })
-                .or_else(|| {
-                    self.docsrs_source()
-                        .and_then(|s| s.load(crate_name, version))
-                }),
+            Some(CrateProvenance::DocsRs) => {
+                log::debug!("loading from docs.rs");
+                self.docsrs_source()?.load(crate_name, version)
+            }
+            None => {
+                log::debug!("No provenance hint available, cascading lookup for {crate_name}");
+                self.std_source()
+                    .and_then(|s| s.load(crate_name, version))
+                    .or_else(|| {
+                        self.local_source()
+                            .and_then(|s| s.load(crate_name, version))
+                    })
+                    .or_else(|| {
+                        self.docsrs_source()
+                            .and_then(|s| s.load(crate_name, version))
+                    })
+            }
         }
     }
 
@@ -277,13 +292,7 @@ impl Navigator {
                 && let Some((real_name, version)) = parse_docsrs_url(url)
                 && let Ok(version) = Version::parse(version)
             {
-                log::debug!(
-                    "  {} (internal: {}) -> {}@{}",
-                    real_name,
-                    external.name,
-                    real_name,
-                    version
-                );
+                log::trace!("{}@{}", real_name, version);
                 let info = ExternalCrateInfo {
                     name: real_name.to_string(),
                     version,

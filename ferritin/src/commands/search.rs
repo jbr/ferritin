@@ -12,6 +12,8 @@ pub(crate) fn execute<'a>(
     // Collect search results from all crates
     let mut all_results = vec![];
 
+    log::info!("Searching for {query}");
+
     let crates = match crate_ {
         Some(crate_) => Box::new(std::iter::once(crate_.to_string())),
         None => request
@@ -25,11 +27,16 @@ pub(crate) fn execute<'a>(
     };
 
     for crate_name in crates {
+        log::info!("Building or loading index for {crate_name}");
+
         // Try to load/build the search index for this crate
         match SearchIndex::load_or_build(request, &crate_name) {
             Ok(index) => {
+                log::info!("Searching {crate_name} for {query}");
+
                 // Search and collect results with crate name
                 let results = index.search(query);
+
                 for (id_path, score) in results {
                     all_results.push((crate_name.to_string(), id_path.to_vec(), score));
                 }

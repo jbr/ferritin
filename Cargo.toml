@@ -16,7 +16,6 @@ elsa = "1.11.2"
 rustc-hash = { version = "2.1.1", features = ["nightly"] }
 rustdoc-types = { version = "0.57.0", features = ["rustc-hash"] }
 serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.149"
 shellexpand = "3.1.1"
 strsim = "0.11.1"
 walkdir = "2.5.0"

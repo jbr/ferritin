@@ -1,7 +1,10 @@
 use super::*;
-use crate::styled_string::{Document, DocumentNode, Span, SpanStyle};
+use crate::{
+    logging::StatusLogBackend,
+    styled_string::{Document, DocumentNode, Span, SpanStyle},
+};
+use crossbeam_channel::unbounded as channel;
 use ratatui::{Terminal, backend::TestBackend};
-use std::sync::mpsc::channel;
 
 /// Helper to create a minimal test state
 fn create_test_state<'a>() -> InteractiveState<'a> {
@@ -17,8 +20,17 @@ fn create_test_state<'a>() -> InteractiveState<'a> {
     };
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
+    let (_, log_reader) = StatusLogBackend::new(100);
 
-    InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme)
+    InteractiveState::new(
+        document,
+        None,
+        cmd_tx,
+        resp_rx,
+        render_context,
+        theme,
+        log_reader,
+    )
 }
 
 #[test]
@@ -180,8 +192,17 @@ fn test_brief_truncation_with_code_block() {
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
+    let (_, log_reader) = StatusLogBackend::new(100);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
+    let mut state = InteractiveState::new(
+        document,
+        None,
+        cmd_tx,
+        resp_rx,
+        render_context,
+        theme,
+        log_reader,
+    );
     let backend = TestBackend::new(80, 24);
     let mut terminal = Terminal::new(backend).unwrap();
 
@@ -246,8 +267,17 @@ fn test_brief_with_short_code_block() {
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
+    let (_, log_reader) = StatusLogBackend::new(100);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
+    let mut state = InteractiveState::new(
+        document,
+        None,
+        cmd_tx,
+        resp_rx,
+        render_context,
+        theme,
+        log_reader,
+    );
     let backend = TestBackend::new(80, 24);
     let mut terminal = Terminal::new(backend).unwrap();
 
@@ -314,8 +344,17 @@ fn test_truncated_block_border_on_wrapped_lines() {
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
+    let (_, log_reader) = StatusLogBackend::new(100);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
+    let mut state = InteractiveState::new(
+        document,
+        None,
+        cmd_tx,
+        resp_rx,
+        render_context,
+        theme,
+        log_reader,
+    );
     let backend = TestBackend::new(60, 24); // Narrow width to force wrapping
     let mut terminal = Terminal::new(backend).unwrap();
 
@@ -410,8 +449,17 @@ fn test_std_module_spacing() {
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
+    let (_, log_reader) = StatusLogBackend::new(100);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
+    let mut state = InteractiveState::new(
+        document,
+        None,
+        cmd_tx,
+        resp_rx,
+        render_context,
+        theme,
+        log_reader,
+    );
     let backend = TestBackend::new(80, 30);
     let mut terminal = Terminal::new(backend).unwrap();
 
@@ -453,8 +501,17 @@ fn test_code_block_spacing() {
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
+    let (_, log_reader) = StatusLogBackend::new(100);
 
-    let mut state = InteractiveState::new(document, None, cmd_tx, resp_rx, render_context, theme);
+    let mut state = InteractiveState::new(
+        document,
+        None,
+        cmd_tx,
+        resp_rx,
+        render_context,
+        theme,
+        log_reader,
+    );
     let backend = TestBackend::new(60, 20);
     let mut terminal = Terminal::new(backend).unwrap();
 

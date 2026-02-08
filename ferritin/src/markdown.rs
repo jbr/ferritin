@@ -15,11 +15,12 @@ pub struct MarkdownRenderer;
 impl MarkdownRenderer {
     /// Render markdown with an optional link resolver
     ///
-    /// The link_resolver should return (url, link_target) for intra-doc links.
-    /// The link_target can be either a resolved DocRef or an unresolved path.
+    /// The link_resolver returns a LinkTarget for intra-doc links, which can be
+    /// either a resolved DocRef or an unresolved path. URL generation is deferred
+    /// to the renderer that needs it.
     pub fn render_with_resolver<'a, F>(markdown: &str, link_resolver: F) -> Vec<DocumentNode<'a>>
     where
-        F: Fn(&str) -> Option<(String, LinkTarget<'a>)>,
+        F: Fn(&str) -> Option<LinkTarget<'a>>,
     {
         let callback = |broken_link: BrokenLink| {
             Some((
@@ -82,15 +83,15 @@ impl MarkdownRenderer {
                     }
                     Tag::Link { dest_url, .. } => {
                         // Resolve the link and determine the action
-                        let action = if let Some((url, target)) = link_resolver(dest_url.as_ref()) {
+                        let action = if let Some(target) = link_resolver(dest_url.as_ref()) {
                             match target {
                                 LinkTarget::Resolved(doc_ref) => TuiAction::Navigate {
                                     doc_ref,
-                                    url: Some(url.into()),
+                                    url: None, // URL generation deferred to renderer
                                 },
                                 LinkTarget::Path(path) => TuiAction::NavigateToPath {
                                     path,
-                                    url: Some(url.into()),
+                                    url: None, // URL generation deferred to renderer
                                 },
                             }
                         } else {

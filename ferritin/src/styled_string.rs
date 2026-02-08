@@ -1,4 +1,5 @@
 use ferritin_common::DocRef;
+use percent_encoding::{NON_ALPHANUMERIC, utf8_percent_encode};
 use rustdoc_types::Item;
 use std::borrow::Cow;
 
@@ -27,15 +28,73 @@ pub enum TuiAction<'a> {
 }
 
 impl<'a> TuiAction<'a> {
-    pub fn url(&self) -> Option<&str> {
+    /// Get or generate the URL for this action.
+    /// URLs are generated lazily for Navigate/NavigateToPath actions.
+    /// Returns Cow to avoid allocations when URL is already borrowed.
+    pub fn url(&self) -> Option<Cow<'a, str>> {
         match self {
-            TuiAction::Navigate { url, .. } => url.as_deref(),
-            TuiAction::NavigateToPath { url, .. } => url.as_deref(),
+            TuiAction::Navigate { doc_ref, url } => {
+                url.clone().or_else(|| {
+                    // Generate URL from DocRef
+                    Some(Cow::Owned(crate::generate_docsrs_url::generate_docsrs_url(
+                        *doc_ref,
+                    )))
+                })
+            }
+            TuiAction::NavigateToPath { path, url } => {
+                url.clone().or_else(|| {
+                    // Generate a heuristic URL from the path
+                    Some(Cow::Owned(generate_url_from_path(path)))
+                })
+            }
             TuiAction::ExpandBlock(_) => None,
-            TuiAction::OpenUrl(cow) => Some(cow),
+            TuiAction::OpenUrl(cow) => Some(cow.clone()),
             TuiAction::SelectTheme(_) => None,
         }
     }
+}
+
+/// Generate a heuristic docs.rs URL from a path string
+/// Since we don't know the item kind, we generate a search URL
+fn generate_url_from_path(path: &str) -> String {
+    let parts: Vec<&str> = path.split("::").collect();
+    if parts.is_empty() {
+        return String::new();
+    }
+
+    let crate_name = parts[0];
+    let is_std = matches!(crate_name, "std" | "core" | "alloc" | "proc_macro");
+
+    let base = if is_std {
+        "https://doc.rust-lang.org/nightly".to_string()
+    } else {
+        format!("https://docs.rs/{}/latest", crate_name)
+    };
+
+    if parts.len() == 1 {
+        // Just the crate name
+        return format!("{}/{}/index.html", base, crate_name);
+    }
+
+    // Generate search URL for the full path
+    let module_path = if parts.len() > 2 {
+        parts[1..parts.len() - 1].join("/")
+    } else {
+        String::new()
+    };
+
+    let index_path = if module_path.is_empty() {
+        format!("{}/{}/index.html", base, crate_name)
+    } else {
+        format!("{}/{}/{}/index.html", base, crate_name, module_path)
+    };
+
+    // Add search query for the full path
+    format!(
+        "{}?search={}",
+        index_path,
+        utf8_percent_encode(path, NON_ALPHANUMERIC)
+    )
 }
 
 /// Path to a node in the document tree using indices
@@ -188,7 +247,7 @@ pub struct Span<'a> {
 }
 
 impl<'a> Span<'a> {
-    pub fn url(&self) -> Option<&str> {
+    pub fn url(&self) -> Option<Cow<'a, str>> {
         self.action.as_ref()?.url()
     }
 }

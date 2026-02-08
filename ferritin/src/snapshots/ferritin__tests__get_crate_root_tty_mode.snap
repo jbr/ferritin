@@ -5,91 +5,91 @@ expression: "render_for_tests(Commands::get(\"crate\"), OutputMode :: Tty)"
 Item: test_crate
 Kind: Module
 Visibility: Public
-Defined at: test_crate
+Defined at: [test_crate](https://docs.rs/test-crate/0.1.0/test-crate/index.html)
 In crate: test-crate (0.1.0)
 
 A minimal test crate for rustdoc JSON testing
 
 Modules
 
-  ◦ link_resolution_tests 
+  ◦ [link_resolution_tests](https://docs.rs/test-crate/0.1.0/test-crate/link_resolution_tests/index.html) 
     Module for testing intra-doc link resolution
 
-  ◦ markdown_test 
+  ◦ [markdown_test](https://docs.rs/test-crate/0.1.0/test-crate/markdown_test/index.html) 
     Markdown: Syntax [...]
 
-  ◦ reexport_mod 
+  ◦ [reexport_mod](https://docs.rs/test-crate/0.1.0/test-crate/reexport_mod/index.html) 
 
-  ◦ submodule 
+  ◦ [submodule](https://docs.rs/test-crate/0.1.0/test-crate/submodule/index.html) 
     A module with items
 
 Structs
 
-  ◦ GenericStruct 
+  ◦ [GenericStruct](https://docs.rs/test-crate/0.1.0/test-crate/struct.GenericStruct.html) 
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ SubStruct 
+  ◦ [SubStruct](https://docs.rs/test-crate/0.1.0/test-crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
-  ◦ TestStruct 
+  ◦ [TestStruct](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html) 
     A simple struct for testing basic functionality. [...]
 
-  ◦ TupleStruct 
+  ◦ [TupleStruct](https://docs.rs/test-crate/0.1.0/test-crate/struct.TupleStruct.html) 
     A tuple struct for testing
 
-  ◦ UnitStruct 
+  ◦ [UnitStruct](https://docs.rs/test-crate/0.1.0/test-crate/struct.UnitStruct.html) 
     A unit struct for testing
 
-  ◦ Vec 
+  ◦ [Vec](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html) 
     A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
 
 Enums
 
-  ◦ GenericEnum 
+  ◦ [GenericEnum](https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html) 
     A generic enum for testing [...]
 
-  ◦ TestEnum 
+  ◦ [TestEnum](https://docs.rs/test-crate/0.1.0/test-crate/submodule/enum.TestEnum.html) 
     An enum for testing [...]
 
 Traits
 
-  ◦ ComplexTrait 
+  ◦ [ComplexTrait](https://docs.rs/test-crate/0.1.0/test-crate/trait.ComplexTrait.html) 
     A more complex trait demonstrating various features
 
-  ◦ TestTrait 
+  ◦ [TestTrait](https://docs.rs/test-crate/0.1.0/test-crate/trait.TestTrait.html) 
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
 Functions
 
-  ◦ async_function 
+  ◦ [async_function](https://docs.rs/test-crate/0.1.0/test-crate/fn.async_function.html) 
     An async function
 
-  ◦ generic_function 
+  ◦ [generic_function](https://docs.rs/test-crate/0.1.0/test-crate/fn.generic_function.html) 
     A generic function
 
-  ◦ sub_function 
+  ◦ [sub_function](https://docs.rs/test-crate/0.1.0/test-crate/submodule/fn.sub_function.html) 
     A function in a submodule
 
-  ◦ test_function 
+  ◦ [test_function](https://docs.rs/test-crate/0.1.0/test-crate/fn.test_function.html) 
     A public function
 
 Constants
 
-  ◦ TEST_CONSTANT 
+  ◦ [TEST_CONSTANT](https://docs.rs/test-crate/0.1.0/test-crate/constant.TEST_CONSTANT.html) 
     A const for testing
 
 Statics
 
-  ◦ TEST_STATIC 
+  ◦ [TEST_STATIC](https://docs.rs/test-crate/0.1.0/test-crate/static.TEST_STATIC.html) 
     A static for testing
 
 Variants
 
-  ◦ VariantA 
-    Variant A (see also crate::GenericEnum)
+  ◦ [VariantA](https://docs.rs/test-crate/0.1.0/test-crate/) 
+    Variant A (see also [crate::GenericEnum](https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html))
 
-  ◦ VariantB 
+  ◦ [VariantB](https://docs.rs/test-crate/0.1.0/test-crate/) 
     Variant B with data
 
-  ◦ VariantC 
+  ◦ [VariantC](https://docs.rs/test-crate/0.1.0/test-crate/) 
     Variant C with struct data (name and value)

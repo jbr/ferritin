@@ -1,6 +1,9 @@
+use std::borrow::Cow;
+
 use super::*;
+use crate::markdown::MarkdownRenderer;
 use crate::styled_string::{DocumentNode, LinkTarget, TruncationLevel};
-use crate::{generate_docsrs_url::generate_docsrs_url, markdown::MarkdownRenderer};
+use rustdoc_types::ItemKind;
 
 /// Information about documentation text with truncation details
 #[derive(Debug, Clone, Default)]
@@ -38,22 +41,21 @@ impl Request {
         item: DocRef<'a, Item>,
         markdown: &str,
     ) -> Vec<DocumentNode<'a>> {
-        // Create a link resolver that extracts link targets without loading external crates
-        let link_resolver =
-            |url: &str| -> Option<(String, LinkTarget<'a>)> { self.extract_link_target(item, url) };
-
-        MarkdownRenderer::render_with_resolver(markdown, link_resolver)
+        MarkdownRenderer::render_with_resolver(markdown, |url| -> Option<LinkTarget<'a>> {
+            self.extract_link_target(item, url)
+        })
     }
 
     /// Extract the link target from an intra-doc link without loading external crates
     ///
     /// Returns either a resolved DocRef (for same-crate items) or an unresolved path string
     /// (for external items), avoiding the need to load external crates just for rendering.
+    /// URL generation is deferred to the renderer that needs it.
     fn extract_link_target<'a>(
         &'a self,
         origin: DocRef<'a, Item>,
         url: &str,
-    ) -> Option<(String, LinkTarget<'a>)> {
+    ) -> Option<LinkTarget<'a>> {
         // Handle fragment-only links
         if url.starts_with('#') {
             return None; // Keep as-is
@@ -74,17 +76,8 @@ impl Request {
 
             // Try to extract the item path from the HTML filename for navigation
             if let Some(item_path) = self.parse_html_path_to_item_path(origin, path) {
-                // Convert to absolute docs.rs URL
-                let absolute_url = self.make_relative_url_absolute(origin, path);
-                log::trace!(
-                    "  → Extracted item path: '{}', URL: '{}'",
-                    item_path,
-                    absolute_url
-                );
-                return Some((
-                    absolute_url,
-                    LinkTarget::Path(std::borrow::Cow::Owned(item_path)),
-                ));
+                log::trace!("  → Extracted item path: '{}'", item_path);
+                return Some(LinkTarget::Path(Cow::Owned(item_path)));
             } else {
                 // Can't parse to an item path - return None to keep as external URL
                 log::trace!("  → Could not extract item path, keeping as external URL");
@@ -106,15 +99,12 @@ impl Request {
             log::trace!("  ✓ Found in origin.links with ID {:?}", link_id);
             // Check if it's in the same crate (fast path - no external loading)
             if let Some(item) = origin.get(link_id) {
-                // Generate accurate URL and return resolved DocRef
-                let url = generate_docsrs_url(item);
                 log::trace!(
-                    "  → Same-crate item: path='{}', kind={:?}, URL='{}'",
+                    "  → Same-crate item: path='{}', kind={:?}",
                     self.get_item_full_path(item),
-                    item.kind(),
-                    url
+                    item.kind()
                 );
-                return Some((url, LinkTarget::Resolved(item)));
+                return Some(LinkTarget::Resolved(item));
             }
 
             log::trace!("  → Not in same crate index, checking external paths");
@@ -126,30 +116,7 @@ impl Request {
                     item_summary.kind
                 );
                 let full_path = item_summary.path.join("::");
-
-                // Try to get the html_root_url from the external crate
-                let url = if let Some(external_crate) = origin
-                    .crate_docs()
-                    .external_crates
-                    .get(&item_summary.crate_id)
-                {
-                    if let Some(html_root) = &external_crate.html_root_url {
-                        // Use the exact documentation URL from the external crate
-                        self.generate_url_from_html_root(
-                            html_root,
-                            &item_summary.path,
-                            item_summary.kind,
-                        )
-                    } else {
-                        // Fallback to heuristic generation
-                        self.generate_url_from_path_and_kind(&full_path, item_summary.kind)
-                    }
-                } else {
-                    // No external crate info, use heuristic
-                    self.generate_url_from_path_and_kind(&full_path, item_summary.kind)
-                };
-
-                return Some((url, LinkTarget::Path(std::borrow::Cow::Owned(full_path))));
+                return Some(LinkTarget::Path(Cow::Owned(full_path)));
             }
         }
 
@@ -166,16 +133,8 @@ impl Request {
             format!("{}::{}", origin.crate_docs().name(), path)
         };
 
-        // Generate a search URL since we don't know the actual item kind
-        log::trace!(
-            "  → Qualified path: '{}', generating search URL",
-            qualified_path
-        );
-        let url = self.generate_search_url(&qualified_path);
-        Some((
-            url,
-            LinkTarget::Path(std::borrow::Cow::Owned(qualified_path)),
-        ))
+        log::trace!("  → Qualified path: '{}'", qualified_path);
+        Some(LinkTarget::Path(Cow::Owned(qualified_path)))
     }
 
     /// Parse a relative HTML path to an item path for navigation
@@ -300,7 +259,6 @@ impl Request {
         };
 
         // Generate URL based on the actual item kind
-        use rustdoc_types::ItemKind;
         match kind {
             ItemKind::Module => {
                 // Modules use the full path with index.html

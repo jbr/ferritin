@@ -6,12 +6,12 @@ Could not find 'crate::TestStruct::incrementCount'
 
 Did you mean:
 
-  ◦ crate::TestStruct::ASSOCIATED_CONST
+  ◦ [crate::TestStruct::ASSOCIATED_CONST](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html#associatedconstant.ASSOCIATED_CONST)
 
-  ◦ crate::TestStruct::new
+  ◦ [crate::TestStruct::new](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html#method.new)
 
-  ◦ crate::TestStruct::get_field
+  ◦ [crate::TestStruct::get_field](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html#method.get_field)
 
-  ◦ crate::TestStruct::increment_count
+  ◦ [crate::TestStruct::increment_count](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html#method.increment_count)
 
-  ◦ crate::submodule
+  ◦ [crate::submodule](https://docs.rs/test-crate/0.1.0/test-crate/submodule/index.html)

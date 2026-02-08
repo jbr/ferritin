@@ -9,7 +9,14 @@ pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool) {
 
     let mut list_items = vec![];
 
+    log::info!("Listing available crates");
+
     let mut available_crates = request.list_available_crates().collect::<Vec<_>>();
+
+    log::info!(
+        "Listing available crates ({} found)",
+        available_crates.len()
+    );
 
     available_crates.sort_by(|a, b| a.name().cmp(b.name()));
 

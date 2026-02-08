@@ -173,11 +173,11 @@ impl LocalSource {
                 });
 
             if !needs_rebuild
-                && let Ok(content) = std::fs::read_to_string(&json_path)
-                && let Ok(RustdocVersion { format_version, .. }) = serde_json::from_str(&content)
-                && format_version == FORMAT_VERSION
+                && let Ok(content) = std::fs::read(&json_path)
+                && let Ok(format_version) = sonic_rs::get_from_slice(&content, &["format_version"])
+                && let Ok(FORMAT_VERSION) = format_version.as_raw_str().parse()
             {
-                let crate_data: Crate = serde_json::from_str(&content).ok()?;
+                let crate_data: Crate = sonic_rs::serde::from_slice(&content).ok()?;
                 let version = crate_data
                     .crate_version
                     .as_ref()
@@ -220,15 +220,15 @@ impl LocalSource {
         let mut tried_rebuilding = false;
 
         loop {
-            if let Ok(content) = std::fs::read_to_string(json_path)
+            if let Ok(content) = std::fs::read(json_path)
                 && let Ok(RustdocVersion {
                     format_version,
                     crate_version,
-                }) = serde_json::from_str(&content)
+                }) = sonic_rs::serde::from_slice(&content)
                 && format_version == FORMAT_VERSION
                 && crate_version.as_ref() == version
             {
-                let crate_data: Crate = serde_json::from_str(&content).ok()?;
+                let crate_data: Crate = sonic_rs::serde::from_slice(&content).ok()?;
                 let version = crate_data
                     .crate_version
                     .as_ref()

@@ -5,18 +5,18 @@ expression: "render_for_tests(Commands::get(\"crate::submodule::TestEnum\"), Out
 Item: TestEnum
 Kind: Enum
 Visibility: Public
-Defined at: test_crate::submodule::TestEnum
+Defined at: [test_crate](https://docs.rs/test-crate/0.1.0/test-crate/index.html)::[submodule](https://docs.rs/test-crate/0.1.0/test-crate/submodule/index.html)::[TestEnum](https://docs.rs/test-crate/0.1.0/test-crate/submodule/enum.TestEnum.html)
 In crate: test-crate (0.1.0)
 
 An enum for testing
 
-This is like crate::GenericEnum but without the generic
+This is like [crate::GenericEnum](https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html) but without the generic
 
 enum TestEnum {
     VariantA,
-    VariantB(String),
+    VariantB([String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)),
     VariantC {
-        name: String,
+        name: [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html),
         value: i32,
     },
 }
@@ -24,7 +24,7 @@ enum TestEnum {
 Variants:
 
   ◦ VariantA 
-    Variant A (see also crate::GenericEnum)
+    Variant A (see also [crate::GenericEnum](https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html))
 
   ◦ VariantB 
     Variant B with data
@@ -34,5 +34,5 @@ Variants:
 
 Trait Implementations
 
-std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync Try
-From TryInto Unpin UnwindSafe
+std traits: [Any](https://doc.rust-lang.org/nightly/core/any/index.html?search=core%3A%3Aany%3A%3AAny) [Borrow](https://doc.rust-lang.org/nightly/core/borrow/index.html?search=core%3A%3Aborrow%3A%3ABorrow) [BorrowMut](https://doc.rust-lang.org/nightly/core/borrow/index.html?search=core%3A%3Aborrow%3A%3ABorrowMut) [Freeze](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AFreeze) [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom) [Into](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AInto) [RefUnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3ARefUnwindSafe) [Send](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASend) [Sync](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASync) [Try](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3ATryFrom)
+[From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3ATryFrom) [TryInto](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3ATryInto) [Unpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnpin) [UnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3AUnwindSafe)

@@ -6,12 +6,12 @@ Could not find 'crate::DoesNotExist'
 
 Did you mean:
 
-  ◦ crate::submodule
+  ◦ [crate::submodule](https://docs.rs/test-crate/0.1.0/test-crate/submodule/index.html)
 
-  ◦ crate::link_resolution_tests
+  ◦ [crate::link_resolution_tests](https://docs.rs/test-crate/0.1.0/test-crate/link_resolution_tests/index.html)
 
-  ◦ crate::reexport_mod
+  ◦ [crate::reexport_mod](https://docs.rs/test-crate/0.1.0/test-crate/reexport_mod/index.html)
 
-  ◦ crate::markdown_test
+  ◦ [crate::markdown_test](https://docs.rs/test-crate/0.1.0/test-crate/markdown_test/index.html)
 
-  ◦ crate::TestStruct
+  ◦ [crate::TestStruct](https://docs.rs/test-crate/0.1.0/test-crate/struct.TestStruct.html)

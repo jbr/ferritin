@@ -5,20 +5,20 @@ expression: "render_for_tests(Commands::get(\"std\"), OutputMode :: Tty)"
 Item: std
 Kind: Module
 Visibility: Public
-Defined at: std
+Defined at: [std](http://docs.rust-lang.org/nightly/std/index.html)
 In crate: std (1.95.0-nightly(f889772d62026-02-05))
 
 The Rust Standard Library
 ================================================================================
 
 The Rust Standard Library is the foundation of portable Rust software, a set of
-minimal and battle-tested shared abstractions for the broader Rust ecosystem.
-It offers core types, like Vec<T> and Option<T>, library-defined operations on
-language primitives, standard macros, I/O and multithreading, among many other
-things.
+minimal and battle-tested shared abstractions for the [broader Rust](https://crates.io)[ ](https://crates.io)[ecosystem](https://crates.io).
+It offers core types, like [Vec<T>](https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec) and [Option<T>](https://doc.rust-lang.org/nightly/core/option/index.html?search=core%3A%3Aoption%3A%3AOption), library-defined [operations on](#primitives)
+[language](#primitives)[ ](#primitives)[primitives](#primitives), [standard macros](#macros), [I/O](http://docs.rust-lang.org/nightly/std/io/index.html) and [multithreading](http://docs.rust-lang.org/nightly/std/thread/index.html), among [many other](#what-is-in-the-standard-library-documentation)
+[things](#what-is-in-the-standard-library-documentation).
 
 std is available to all Rust crates by default. Therefore, the standard library
-can be accessed in use statements through the path std, as in use std::env.
+can be accessed in [use](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch07%2D02%2Ddefining%2Dmodules%2Dto%2Dcontrol%2Dscope%2Dand%2Dprivacy) statements through the path std, as in [use std::env](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3Aenv).
 
 How to read this documentation
 ================================================================================
@@ -28,13 +28,13 @@ find it is to use the search button at the top of the page.
 
 Otherwise, you may want to jump to one of these useful sections:
 
-  ◦ std::* modules
+  ◦ [std::*](#modules)[ modules](#modules)
 
-  ◦ Primitive types
+  ◦ [Primitive types](#primitives)
 
-  ◦ Standard macros
+  ◦ [Standard macros](#macros)
 
-  ◦ The Rust Prelude
+  ◦ [The Rust Prelude](http://docs.rust-lang.org/nightly/std/prelude/index.html)
 
 If this is your first time, the documentation for the standard library is 
 written to be casually perused. Clicking on interesting things should generally
@@ -55,39 +55,39 @@ What is in the standard library documentation?
 ================================================================================
 
 First of all, The Rust Standard Library is divided into a number of focused 
-modules, all listed further down this page. These modules are the bedrock upon
-which all of Rust is forged, and they have mighty names like std::slice and 
-std::cmp. Modules' documentation typically includes an overview of the module
+modules, [all listed further down this page](#modules). These modules are the bedrock upon
+which all of Rust is forged, and they have mighty names like [std::slice](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aslice) and 
+[std::cmp](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Acmp). Modules' documentation typically includes an overview of the module
 along with examples, and are a smart place to start familiarizing yourself with
 the library.
 
-Second, implicit methods on primitive types are documented here. This can be a
+Second, implicit methods on [primitive types](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch03%2D02%2Ddata%2Dtypes) are documented here. This can be a
 source of confusion for two reasons:
 
   ◦ While primitives are implemented by the compiler, the standard library 
     implements methods directly on the primitive types (and it is the only 
-    library that does so), which are documented in the section on primitives.
+    library that does so), which are [documented in the section on](#primitives)[ ](#primitives)[primitives](#primitives).
 
   ◦ The standard library exports many modules with the same name as primitive
     types. These define additional items related to the primitive type, but not
     the all-important methods.
 
-So for example there is a page for the primitive type char that lists all the
-methods that can be called on characters (very useful), and there is a page for
-the module std::char that documents iterator and error types created by these
+So for example there is a [page for the primitive type](http://docs.rust-lang.org/nightly/std/primitive.char.html)[ ](http://docs.rust-lang.org/nightly/std/primitive.char.html)[char](http://docs.rust-lang.org/nightly/std/primitive.char.html) that lists all the
+methods that can be called on characters (very useful), and there is a [page for](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar)
+[the module](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar)[ ](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar)[std::char](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar) that documents iterator and error types created by these
 methods (rarely useful).
 
-Note the documentation for the primitives str and [T] (also called 'slice').
-Many method calls on String and Vec<T> are actually calls to methods on str and 
-[T] respectively, via deref coercions.
+Note the documentation for the primitives [str](http://docs.rust-lang.org/nightly/std/primitive.str.html) and [[T]](http://docs.rust-lang.org/nightly/std/primitive.slice.html) (also called 'slice').
+Many method calls on [String](https://doc.rust-lang.org/nightly/alloc/string/index.html?search=alloc%3A%3Astring%3A%3AString) and [Vec<T>](https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec) are actually calls to methods on [str](http://docs.rust-lang.org/nightly/std/primitive.str.html) and 
+[[T]](http://docs.rust-lang.org/nightly/std/primitive.slice.html) respectively, via [deref](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch15%2D02%2Dderef)[ ](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch15%2D02%2Dderef)[coercions](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch15%2D02%2Dderef).
 
-Third, the standard library defines The Rust Prelude, a small collection of
+Third, the standard library defines [The Rust Prelude](http://docs.rust-lang.org/nightly/std/prelude/index.html), a small collection of
 items - mostly traits - that are imported into every module of every crate. The
 traits in the prelude are pervasive, making the prelude documentation a good
 entry point to learning about the library.
 
-And finally, the standard library exports a number of standard macros, and lists
-them on this page (technically, not all of the standard macros are defined by
+And finally, the standard library exports a number of standard macros, and [lists](#macros)
+[them on this page](#macros) (technically, not all of the standard macros are defined by
 the standard library - some are defined by the compiler - but they are
 documented here the same). Like the prelude, the standard macros are imported
 by default into all crates.
@@ -95,13 +95,13 @@ by default into all crates.
 Contributing changes to the documentation
 ================================================================================
 
-Check out the Rust contribution guidelines here. The source for this
-documentation can be found on GitHub in the 'library/std/' directory. To
+Check out the Rust contribution guidelines [here](https://rustc-dev-guide.rust-lang.org/contributing.html#writing-documentation). The source for this
+documentation can be found on [GitHub](https://github.com/rust-lang/rust) in the 'library/std/' directory. To
 contribute changes, make sure you read the guidelines first, then submit 
 pull-requests for your suggested changes.
 
 Contributions are appreciated! If you see a part of the docs that can be 
-improved, submit a PR, or chat with us first on Zulip #docs.
+improved, submit a PR, or chat with us first on [Zulip](https://rust-lang.zulipchat.com/) #docs.
 
 A Tour of The Rust Standard Library
 ================================================================================
@@ -112,18 +112,18 @@ features of The Rust Standard Library.
 Containers and collections
 --------------------------------------------------------------------------------
 
-The option and result modules define optional and error-handling types, 
-Option<T> and Result<T, E>. The iter module defines Rust's iterator trait, 
-Iterator, which works with the for loop to access collections.
+The [option](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Aoption) and [result](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Aresult) modules define optional and error-handling types, 
+[Option<T>](https://doc.rust-lang.org/nightly/core/option/index.html?search=core%3A%3Aoption%3A%3AOption) and [Result<T, E>](https://doc.rust-lang.org/nightly/core/result/index.html?search=core%3A%3Aresult%3A%3AResult). The [iter](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Aiter) module defines Rust's iterator trait, 
+[Iterator](https://doc.rust-lang.org/nightly/core/iter/traits/iterator/index.html?search=core%3A%3Aiter%3A%3Atraits%3A%3Aiterator%3A%3AIterator), which works with the [for](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch03%2D05%2Dcontrol%2Dflow) loop to access collections.
 
 The standard library exposes three common ways to deal with contiguous regions
 of memory:
 
-  ◦ Vec<T> - A heap-allocated vector that is resizable at runtime.
+  ◦ [Vec<T>](https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec) - A heap-allocated vector that is resizable at runtime.
 
-  ◦ [T; N] - An inline array with a fixed size at compile time.
+  ◦ [[T; N]](http://docs.rust-lang.org/nightly/std/primitive.array.html) - An inline array with a fixed size at compile time.
 
-  ◦ [T] - A dynamically sized slice into any other kind of contiguous storage,
+  ◦ [[T]](http://docs.rust-lang.org/nightly/std/primitive.slice.html) - A dynamically sized slice into any other kind of contiguous storage,
     whether heap-allocated or not.
 
 Slices can only be handled through some kind of pointer, and as such come in
@@ -133,22 +133,22 @@ many flavors such as:
 
   ◦ &mut [T] - mutable slice
 
-  ◦ Box<[T]> - owned slice
+  ◦ [Box<[T]>](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aboxed) - owned slice
 
-str, a UTF-8 string slice, is a primitive type, and the standard library defines
-many methods for it. Rust strs are typically accessed as immutable references: 
-&str. Use the owned String for building and mutating strings.
+[str](http://docs.rust-lang.org/nightly/std/primitive.str.html), a UTF-8 string slice, is a primitive type, and the standard library defines
+many methods for it. Rust [str](http://docs.rust-lang.org/nightly/std/primitive.str.html)s are typically accessed as immutable references: 
+&str. Use the owned [String](https://doc.rust-lang.org/nightly/alloc/string/index.html?search=alloc%3A%3Astring%3A%3AString) for building and mutating strings.
 
-For converting to strings use the format! macro, and for converting from strings
-use the FromStr trait.
+For converting to strings use the [format!](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aformat) macro, and for converting from strings
+use the [FromStr](https://doc.rust-lang.org/nightly/core/str/traits/index.html?search=core%3A%3Astr%3A%3Atraits%3A%3AFromStr) trait.
 
-Data may be shared by placing it in a reference-counted box or the Rc type, and
-if further contained in a Cell or RefCell, may be mutated as well as shared.
+Data may be shared by placing it in a reference-counted box or the [Rc](https://doc.rust-lang.org/nightly/alloc/rc/index.html?search=alloc%3A%3Arc%3A%3ARc) type, and
+if further contained in a [Cell](https://doc.rust-lang.org/nightly/core/cell/index.html?search=core%3A%3Acell%3A%3ACell) or [RefCell](https://doc.rust-lang.org/nightly/core/cell/index.html?search=core%3A%3Acell%3A%3ARefCell), may be mutated as well as shared.
 Likewise, in a concurrent setting it is common to pair an 
-atomically-reference-counted box, Arc, with a Mutex to get the same effect.
+atomically-reference-counted box, [Arc](https://doc.rust-lang.org/nightly/alloc/sync/index.html?search=alloc%3A%3Async%3A%3AArc), with a [Mutex](http://docs.rust-lang.org/nightly/std/sync/poison/mutex/struct.Mutex.html) to get the same effect.
 
-The collections module defines maps, sets, linked lists and other typical
-collection types, including the common HashMap<K, V>.
+The [collections](http://docs.rust-lang.org/nightly/std/collections/index.html) module defines maps, sets, linked lists and other typical
+collection types, including the common [HashMap<K, V>](http://docs.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html).
 
 Platform abstractions and I/O
 --------------------------------------------------------------------------------
@@ -157,11 +157,11 @@ Besides basic data types, the standard library is largely concerned with
 abstracting over differences in common platforms, most notably Windows and Unix
 derivatives.
 
-Common types of I/O, including files, TCP, and UDP, are defined in the io, fs,
-and net modules.
+Common types of I/O, including [files](http://docs.rust-lang.org/nightly/std/fs/struct.File.html), [TCP](http://docs.rust-lang.org/nightly/std/net/tcp/struct.TcpStream.html), and [UDP](http://docs.rust-lang.org/nightly/std/net/udp/struct.UdpSocket.html), are defined in the [io](http://docs.rust-lang.org/nightly/std/io/index.html), [fs](http://docs.rust-lang.org/nightly/std/fs/index.html),
+and [net](http://docs.rust-lang.org/nightly/std/net/index.html) modules.
 
-The thread module contains Rust's threading abstractions. sync contains further
-primitive shared memory types, including atomic, mpmc and mpsc, which contains
+The [thread](http://docs.rust-lang.org/nightly/std/thread/index.html) module contains Rust's threading abstractions. [sync](http://docs.rust-lang.org/nightly/std/sync/index.html) contains further
+primitive shared memory types, including [atomic](https://doc.rust-lang.org/nightly/core/sync/index.html?search=core%3A%3Async%3A%3Aatomic), [mpmc](http://docs.rust-lang.org/nightly/std/sync/mpmc/index.html) and [mpsc](http://docs.rust-lang.org/nightly/std/sync/mpsc/index.html), which contains
 the channel types for message passing.
 
 Use before and after main()
@@ -186,7 +186,7 @@ symbolicated or similar.
 Non-exhaustive list of known limitations:
 
   ◦ after-main use of thread-locals, which also affects additional features:
-      ▪ thread::current()
+      ▪ [thread::current()](http://docs.rust-lang.org/nightly/std/thread/current/fn.current.html)
 
   ◦ under UNIX, before main, file descriptors 0, 1, and 2 may be unchanged (they
     are guaranteed to be open during main, and are opened to /dev/null O_RDWR
@@ -194,233 +194,233 @@ Non-exhaustive list of known limitations:
 
 Modules
 
-  ◦ alloc 
+  ◦ [alloc](http://docs.rust-lang.org/nightly/std/alloc/index.html) 
     Memory allocation APIs. [...]
 
-  ◦ any 
+  ◦ [any](http://docs.rust-lang.org/nightly/core/any/index.html) 
     Utilities for dynamic typing or type reflection. [...]
 
-  ◦ arch 
+  ◦ [arch](http://docs.rust-lang.org/nightly/std/arch/index.html) 
     SIMD and vendor intrinsics module. [...]
 
-  ◦ array 
+  ◦ [array](http://docs.rust-lang.org/nightly/core/array/index.html) 
     Utilities for the array primitive type. [...]
 
-  ◦ ascii 
+  ◦ [ascii](http://docs.rust-lang.org/nightly/std/ascii/index.html) 
     Operations on ASCII strings and characters. [...]
 
-  ◦ async_iter 
+  ◦ [async_iter](http://docs.rust-lang.org/nightly/core/async_iter/index.html) 
     Composable asynchronous iteration. [...]
 
-  ◦ autodiff 
+  ◦ [autodiff](http://docs.rust-lang.org/nightly/std/autodiff/index.html) 
     This module provides support for automatic differentiation.
 
-  ◦ backtrace 
+  ◦ [backtrace](http://docs.rust-lang.org/nightly/std/backtrace/index.html) 
     Support for capturing a stack backtrace of an OS thread [...]
 
-  ◦ borrow 
+  ◦ [borrow](http://docs.rust-lang.org/nightly/alloc/borrow/index.html) 
     A module for working with borrowed data.
 
-  ◦ boxed 
+  ◦ [boxed](http://docs.rust-lang.org/nightly/alloc/boxed/index.html) 
     The Box<T> type for heap allocation. [...]
 
-  ◦ bstr 
+  ◦ [bstr](http://docs.rust-lang.org/nightly/std/bstr/index.html) 
     The ByteStr and ByteString types and trait implementations.
 
-  ◦ cell 
+  ◦ [cell](http://docs.rust-lang.org/nightly/core/cell/index.html) 
     Shareable mutable containers. [...]
 
-  ◦ char 
+  ◦ [char](http://docs.rust-lang.org/nightly/core/char/index.html) 
     Utilities for the char primitive type. [...]
 
-  ◦ clone 
+  ◦ [clone](http://docs.rust-lang.org/nightly/core/clone/index.html) 
     The Clone trait for types that cannot be 'implicitly copied'. [...]
 
-  ◦ cmp 
+  ◦ [cmp](http://docs.rust-lang.org/nightly/core/cmp/index.html) 
     Utilities for comparing and ordering values. [...]
 
-  ◦ collections 
+  ◦ [collections](http://docs.rust-lang.org/nightly/std/collections/index.html) 
     Collection types. [...]
 
-  ◦ convert 
+  ◦ [convert](http://docs.rust-lang.org/nightly/core/convert/index.html) 
     Traits for conversions between types. [...]
 
-  ◦ default 
+  ◦ [default](http://docs.rust-lang.org/nightly/core/default/index.html) 
     The Default trait for types with a default value.
 
-  ◦ env 
+  ◦ [env](http://docs.rust-lang.org/nightly/std/env/index.html) 
     Inspection and manipulation of the process's environment. [...]
 
-  ◦ error 
+  ◦ [error](http://docs.rust-lang.org/nightly/std/error/index.html) 
     Interfaces for working with Errors. [...]
 
-  ◦ f128 
+  ◦ [f128](http://docs.rust-lang.org/nightly/std/f128/index.html) 
     Constants for the f128 quadruple-precision floating point type. [...]
 
-  ◦ f16 
+  ◦ [f16](http://docs.rust-lang.org/nightly/std/f16/index.html) 
     Constants for the f16 half-precision floating point type. [...]
 
-  ◦ f32 
+  ◦ [f32](http://docs.rust-lang.org/nightly/std/f32/index.html) 
     Constants for the f32 single-precision floating point type. [...]
 
-  ◦ f64 
+  ◦ [f64](http://docs.rust-lang.org/nightly/std/f64/index.html) 
     Constants for the f64 double-precision floating point type. [...]
 
-  ◦ ffi 
+  ◦ [ffi](http://docs.rust-lang.org/nightly/std/ffi/index.html) 
     Utilities related to FFI bindings. [...]
 
-  ◦ fmt 
+  ◦ [fmt](http://docs.rust-lang.org/nightly/alloc/fmt/index.html) 
     Utilities for formatting and printing Strings. [...]
 
-  ◦ from 
+  ◦ [from](http://docs.rust-lang.org/nightly/std/from/index.html) 
     Unstable module containing the unstable From derive macro.
 
-  ◦ fs 
+  ◦ [fs](http://docs.rust-lang.org/nightly/std/fs/index.html) 
     Filesystem manipulation operations. [...]
 
-  ◦ future 
+  ◦ [future](http://docs.rust-lang.org/nightly/core/future/index.html) 
     Asynchronous basic functionality. [...]
 
-  ◦ hash 
+  ◦ [hash](http://docs.rust-lang.org/nightly/std/hash/index.html) 
     Generic hashing support. [...]
 
-  ◦ hint 
+  ◦ [hint](http://docs.rust-lang.org/nightly/core/hint/index.html) 
     Hints to compiler that affects how code should be emitted or optimized. [...]
 
-  ◦ i128 
-    Redundant constants module for the i128 primitive type. [...]
+  ◦ [i128](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [i128](http://docs.rust-lang.org/nightly/core/primitive.i128.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i128.html). [...]
 
-  ◦ i16 
-    Redundant constants module for the i16 primitive type. [...]
+  ◦ [i16](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [i16](http://docs.rust-lang.org/nightly/core/primitive.i16.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i16.html). [...]
 
-  ◦ i32 
-    Redundant constants module for the i32 primitive type. [...]
+  ◦ [i32](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [i32](http://docs.rust-lang.org/nightly/core/primitive.i32.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i32.html). [...]
 
-  ◦ i64 
-    Redundant constants module for the i64 primitive type. [...]
+  ◦ [i64](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [i64](http://docs.rust-lang.org/nightly/core/primitive.i64.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i64.html). [...]
 
-  ◦ i8 
-    Redundant constants module for the i8 primitive type. [...]
+  ◦ [i8](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [i8](http://docs.rust-lang.org/nightly/core/primitive.i8.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i8.html). [...]
 
-  ◦ intrinsics 
+  ◦ [intrinsics](http://docs.rust-lang.org/nightly/core/intrinsics/index.html) 
     Compiler intrinsics. [...]
 
-  ◦ io 
+  ◦ [io](http://docs.rust-lang.org/nightly/std/io/index.html) 
     Traits, helpers, and type definitions for core I/O functionality. [...]
 
-  ◦ isize 
-    Redundant constants module for the isize primitive type. [...]
+  ◦ [isize](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [isize](http://docs.rust-lang.org/nightly/core/primitive.isize.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.isize.html). [...]
 
-  ◦ iter 
+  ◦ [iter](http://docs.rust-lang.org/nightly/core/iter/index.html) 
     Composable external iteration. [...]
 
-  ◦ marker 
+  ◦ [marker](http://docs.rust-lang.org/nightly/core/marker/index.html) 
     Primitive traits and types representing basic properties of types. [...]
 
-  ◦ mem 
+  ◦ [mem](http://docs.rust-lang.org/nightly/core/mem/index.html) 
     Basic functions for dealing with memory. [...]
 
-  ◦ net 
+  ◦ [net](http://docs.rust-lang.org/nightly/std/net/index.html) 
     Networking primitives for TCP/UDP communication. [...]
 
-  ◦ num 
+  ◦ [num](http://docs.rust-lang.org/nightly/std/num/index.html) 
     Additional functionality for numerics. [...]
 
-  ◦ ops 
+  ◦ [ops](http://docs.rust-lang.org/nightly/core/ops/index.html) 
     Overloadable operators. [...]
 
-  ◦ option 
+  ◦ [option](http://docs.rust-lang.org/nightly/core/option/index.html) 
     Optional values. [...]
 
-  ◦ os 
+  ◦ [os](http://docs.rust-lang.org/nightly/std/os/index.html) 
     OS-specific functionality.
 
-  ◦ panic 
+  ◦ [panic](http://docs.rust-lang.org/nightly/std/panic/index.html) 
     Panic support in the standard library.
 
-  ◦ pat 
+  ◦ [pat](http://docs.rust-lang.org/nightly/std/pat/index.html) 
     Helper module for exporting the pattern_type macro
 
-  ◦ path 
+  ◦ [path](http://docs.rust-lang.org/nightly/std/path/index.html) 
     Cross-platform path manipulation. [...]
 
-  ◦ pin 
+  ◦ [pin](http://docs.rust-lang.org/nightly/core/pin/index.html) 
     Types that pin data to a location in memory. [...]
 
-  ◦ prelude 
+  ◦ [prelude](http://docs.rust-lang.org/nightly/std/prelude/index.html) 
     The Rust Prelude [...]
 
-  ◦ process 
+  ◦ [process](http://docs.rust-lang.org/nightly/std/process/index.html) 
     A module for working with processes. [...]
 
-  ◦ ptr 
+  ◦ [ptr](http://docs.rust-lang.org/nightly/core/ptr/index.html) 
     Manually manage memory through raw pointers. [...]
 
-  ◦ random 
+  ◦ [random](http://docs.rust-lang.org/nightly/std/random/index.html) 
     Random value generation.
 
-  ◦ range 
+  ◦ [range](http://docs.rust-lang.org/nightly/core/range/index.html) 
     Experimental replacement range types [...]
 
-  ◦ rc 
+  ◦ [rc](http://docs.rust-lang.org/nightly/alloc/rc/index.html) 
     Single-threaded reference-counting pointers. 'Rc' stands for 'Reference 
     Counted'. [...]
 
-  ◦ result 
+  ◦ [result](http://docs.rust-lang.org/nightly/core/result/index.html) 
     Error handling with the Result type. [...]
 
-  ◦ simd 
+  ◦ [simd](http://docs.rust-lang.org/nightly/std/simd/index.html) 
     Portable SIMD module. [...]
 
-  ◦ slice 
+  ◦ [slice](http://docs.rust-lang.org/nightly/alloc/slice/index.html) 
     Utilities for the slice primitive type. [...]
 
-  ◦ str 
+  ◦ [str](http://docs.rust-lang.org/nightly/alloc/str/index.html) 
     Utilities for the str primitive type. [...]
 
-  ◦ string 
+  ◦ [string](http://docs.rust-lang.org/nightly/alloc/string/index.html) 
     A UTF-8–encoded, growable string. [...]
 
-  ◦ sync 
+  ◦ [sync](http://docs.rust-lang.org/nightly/std/sync/index.html) 
     Useful synchronization primitives. [...]
 
-  ◦ task 
+  ◦ [task](http://docs.rust-lang.org/nightly/std/task/index.html) 
     Types and Traits for working with asynchronous tasks.
 
-  ◦ thread 
+  ◦ [thread](http://docs.rust-lang.org/nightly/std/thread/index.html) 
     Native threads. [...]
 
-  ◦ time 
+  ◦ [time](http://docs.rust-lang.org/nightly/std/time/index.html) 
     Temporal quantification. [...]
 
-  ◦ u128 
-    Redundant constants module for the u128 primitive type. [...]
+  ◦ [u128](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [u128](http://docs.rust-lang.org/nightly/core/primitive.u128.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u128.html). [...]
 
-  ◦ u16 
-    Redundant constants module for the u16 primitive type. [...]
+  ◦ [u16](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [u16](http://docs.rust-lang.org/nightly/core/primitive.u16.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u16.html). [...]
 
-  ◦ u32 
-    Redundant constants module for the u32 primitive type. [...]
+  ◦ [u32](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [u32](http://docs.rust-lang.org/nightly/core/primitive.u32.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u32.html). [...]
 
-  ◦ u64 
-    Redundant constants module for the u64 primitive type. [...]
+  ◦ [u64](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [u64](http://docs.rust-lang.org/nightly/core/primitive.u64.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u64.html). [...]
 
-  ◦ u8 
-    Redundant constants module for the u8 primitive type. [...]
+  ◦ [u8](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [u8](http://docs.rust-lang.org/nightly/core/primitive.u8.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u8.html). [...]
 
-  ◦ unsafe_binder 
+  ◦ [unsafe_binder](http://docs.rust-lang.org/nightly/core/unsafe_binder/index.html) 
     Operators used to turn types into unsafe binders and back.
 
-  ◦ usize 
-    Redundant constants module for the usize primitive type. [...]
+  ◦ [usize](https://doc.rust-lang.org/nightly/core/) 
+    Redundant constants module for the [usize](http://docs.rust-lang.org/nightly/core/primitive.usize.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.usize.html). [...]
 
-  ◦ vec 
+  ◦ [vec](http://docs.rust-lang.org/nightly/alloc/vec/index.html) 
     A contiguous growable array type with heap-allocated contents, written Vec<T>. [...]
 
-  ◦ vec 
+  ◦ [vec](http://docs.rust-lang.org/nightly/alloc/vec/index.html) 
     A contiguous growable array type with heap-allocated contents, written Vec<T>. [...]
 
 Macros
 
-  ◦ format 
+  ◦ [format](http://docs.rust-lang.org/nightly/alloc/macro.format.html) 
     Creates a String using interpolation of runtime expressions. [...]

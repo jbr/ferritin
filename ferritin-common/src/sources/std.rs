@@ -2,7 +2,6 @@ use crate::CrateName;
 use crate::RustdocData;
 use crate::navigator::CrateInfo;
 use crate::sources::CrateProvenance;
-use crate::sources::RustdocVersion;
 use crate::sources::Source;
 use fieldwork::Fieldwork;
 use rustc_hash::FxHashMap;
@@ -109,13 +108,17 @@ impl Source for StdSource {
     fn load(&self, crate_name: &str, _version: Option<&Version>) -> Option<RustdocData> {
         let crate_info = self.lookup(crate_name, &VersionReq::STAR)?;
         let json_path = crate_info.json_path.as_ref()?.to_owned();
-        let content = std::fs::read_to_string(&json_path).ok()?;
+        let content = std::fs::read(&json_path).ok()?;
 
-        let RustdocVersion { format_version, .. } = serde_json::from_str(&content).ok()?;
-        if format_version != FORMAT_VERSION {
+        let Ok(FORMAT_VERSION) = sonic_rs::get_from_slice(&content, &["format_version"])
+            .ok()?
+            .as_raw_str()
+            .parse()
+        else {
             return None;
-        }
-        let crate_data: Crate = serde_json::from_str(&content).ok()?;
+        };
+
+        let crate_data: Crate = sonic_rs::serde::from_slice(&content).ok()?;
         Some(RustdocData {
             crate_data,
             name: crate_name.to_string(),
