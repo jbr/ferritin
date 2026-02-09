@@ -6,7 +6,7 @@ Item: std
 Kind: Module
 Visibility: Public
 Defined at: [std](http://docs.rust-lang.org/nightly/std/index.html)
-In crate: std (1.95.0-nightly(f889772d62026-02-05))
+In crate: std (RUST_VERSION)
 
 The Rust Standard Library
 ================================================================================

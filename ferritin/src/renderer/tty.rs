@@ -400,7 +400,8 @@ fn build_node_lines<'a>(
                                     if next_space <= available_width {
                                         // Word fits on current line, write it
                                         let (chunk, rest) = remaining.split_at(next_space);
-                                        let span_to_add = RatatuiSpan::styled(make_text(chunk), style);
+                                        let span_to_add =
+                                            RatatuiSpan::styled(make_text(chunk), style);
                                         if lines.len() == start_idx {
                                             lines.push(Line::from(vec![span_to_add]));
                                         } else if current_line_len == indent {
@@ -419,7 +420,8 @@ fn build_node_lines<'a>(
                                     // No whitespace at all in remaining text
                                     // If it fits, write it; otherwise we need to hard-break
                                     if remaining.len() <= available_width {
-                                        let span_to_add = RatatuiSpan::styled(make_text(remaining), style);
+                                        let span_to_add =
+                                            RatatuiSpan::styled(make_text(remaining), style);
                                         if lines.len() == start_idx {
                                             lines.push(Line::from(vec![span_to_add]));
                                         } else if current_line_len == indent {
@@ -438,7 +440,8 @@ fn build_node_lines<'a>(
                                                 terminal_width.saturating_sub(indent).max(1);
                                             let (chunk, rest) =
                                                 remaining.split_at(max_fit.min(remaining.len()));
-                                            let span_to_add = RatatuiSpan::styled(make_text(chunk), style);
+                                            let span_to_add =
+                                                RatatuiSpan::styled(make_text(chunk), style);
                                             lines.push(Line::from(vec![span_to_add]));
                                             current_line_len = indent;
                                             remaining = rest;
@@ -941,7 +944,6 @@ fn render_code_block<'a>(
 /// Convert our Span to ratatui Span, wrapping with OSC8 links if needed
 fn convert_span<'a>(span: &'a Span, render_context: &RenderContext) -> RatatuiSpan<'a> {
     let text = if let Some(url) = span.url() {
-
         wrap_with_osc8(span.text.as_ref(), &url)
     } else {
         span.text.to_string()

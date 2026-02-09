@@ -58,7 +58,13 @@ fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
         .unwrap_or(test_crate_path)
         .to_string_lossy()
         .to_string();
-    output.replace(&test_crate_path_str, "/TEST_CRATE_ROOT")
+    let output = output.replace(&test_crate_path_str, "/TEST_CRATE_ROOT");
+
+    // Normalize Rust version info to avoid daily breakage with nightly updates
+    // Matches patterns like: 1.95.0-nightly	(f889772d6	2026-02-05)
+    let re =
+        regex::Regex::new(r"\d+\.\d+\.\d+-[a-z]+\s+\([a-f0-9]+\s+\d{4}-\d{2}-\d{2}\)").unwrap();
+    re.replace_all(&output, "RUST_VERSION").to_string()
 }
 
 fn render_interactive_for_tests(command: Commands) -> TestBackend {
@@ -104,6 +110,9 @@ macro_rules! test_all_modes {
                 // Strip trailing whitespace from lines containing the replaced path
                 // to avoid snapshot differences due to fixed-width TUI padding
                 settings.add_filter(r#"(?m)(.*TEST_CRATE_ROOT[^"]+?)\s+"$"#, r#"$1""#);
+                // Normalize Rust version info to avoid daily breakage with nightly updates
+                // Matches patterns like: 1.95.0-nightly	(f889772d6	2026-02-05)
+                settings.add_filter(r"\d+\.\d+\.\d+-[a-z]+\s+\([a-f0-9]+\s+\d{4}-\d{2}-\d{2}\)", "RUST_VERSION");
                 settings.bind(|| {
                     insta::assert_snapshot!(render_interactive_for_tests($cmd));
                 });

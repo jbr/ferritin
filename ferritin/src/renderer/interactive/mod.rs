@@ -100,8 +100,6 @@ use theme::InteractiveTheme;
 
 pub use history::HistoryEntry;
 
-#[cfg(test)]
-use crate::styled_string::Document;
 use utils::set_cursor_shape;
 
 use crate::{

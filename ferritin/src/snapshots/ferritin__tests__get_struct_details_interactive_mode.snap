@@ -201,4 +201,4 @@ expression: "render_interactive_for_tests(Commands::get(\"crate::TestStruct\"))"
 "                                                                                "
 "                                                                                "
 "    🦀 <no history>                                                             " Hidden by multi-width symbols: [(5, " ")]
-"   ferritin - q:quit ?:help ←/→:history g:go s:search l:list c:code             "
+"   ⠋ ferritin - q:quit ?:help ←/→:history g:go s:search l:list c:code           "
