@@ -57,10 +57,16 @@ impl<'a> InteractiveState<'a> {
             // Render main document
             self.render_document(main_area, frame.buffer_mut());
 
-            // Render breadcrumb bar with full history
-            self.document
-                .history
-                .render(frame.buffer_mut(), breadcrumb_area, &self.theme);
+            // Render breadcrumb bar or loading animation
+            if self.loading.pending_request {
+                // Show loading animation in breadcrumb area
+                self.render_loading_bar(frame.buffer_mut(), breadcrumb_area);
+            } else {
+                // Show normal breadcrumb/history bar
+                self.document
+                    .history
+                    .render(frame.buffer_mut(), breadcrumb_area, &self.theme);
+            }
 
             // Render status bar
             self.render_status_bar(frame.buffer_mut(), status_area);

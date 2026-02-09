@@ -17,6 +17,10 @@ pub(super) struct InteractiveTheme {
     pub status_style: Style,
     /// Status bar - hint text (dimmed)
     pub status_hint_style: Style,
+    /// Status bar - background color for loading animation (contrasting color)
+    pub status_loading_bg: RatatuiColor,
+    /// Status bar - foreground color that contrasts with loading_bg
+    pub status_loading_fg: RatatuiColor,
 
     /// Help screen - background
     pub help_bg_style: Style,
@@ -49,6 +53,8 @@ impl InteractiveTheme {
         let (breadcrumb_bg, breadcrumb_fg) =
             derive_breadcrumb_colors(settings, default_fg, default_bg);
         let (status_bg, status_fg) = derive_status_colors(settings, default_fg, default_bg);
+        let status_loading_bg = derive_status_loading_bg(settings, status_bg);
+        let status_loading_fg = derive_contrasting_fg(status_loading_bg, status_fg);
         let muted_fg = derive_muted_fg(settings, default_fg);
         let accent_fg = derive_accent_fg(settings, default_fg);
         let secondary_accent_fg = derive_secondary_accent_fg(settings, accent_fg);
@@ -73,6 +79,8 @@ impl InteractiveTheme {
             status_hint_style: Style::default()
                 .bg(to_ratatui(status_bg))
                 .fg(to_ratatui(muted_fg)),
+            status_loading_bg: to_ratatui(status_loading_bg),
+            status_loading_fg: to_ratatui(status_loading_fg),
 
             help_bg_style: Style::default()
                 .bg(to_ratatui(default_bg))
@@ -201,6 +209,52 @@ fn derive_status_colors(
     let fallback_fg = default_fg;
 
     try_color_pairs(&pairs, fallback_bg, fallback_fg)
+}
+
+/// Derive a contrasting background color for status bar loading animation
+fn derive_status_loading_bg(settings: &ThemeSettings, status_bg: Color) -> Color {
+    // Try to use selection color (usually quite different from status bar)
+    settings
+        .selection
+        .or(settings.line_highlight)
+        .or(settings.accent)
+        .unwrap_or_else(|| {
+            // Fallback: pick brighter or dimmer based on current brightness
+            let lum = luminance(status_bg);
+            if lum < 0.5 {
+                brighten_color(status_bg, 0.3)
+            } else {
+                dim_color(status_bg, 0.7)
+            }
+        })
+}
+
+/// Derive a foreground color that contrasts well with the given background
+fn derive_contrasting_fg(bg: Color, fallback_fg: Color) -> Color {
+    // If the fallback already has good contrast, use it
+    if has_good_contrast(fallback_fg, bg) {
+        return fallback_fg;
+    }
+
+    // Otherwise, pick white or black based on background luminance
+    let lum = luminance(bg);
+    if lum < 0.5 {
+        // Dark background - use light foreground
+        Color {
+            r: 230,
+            g: 230,
+            b: 230,
+            a: 255,
+        }
+    } else {
+        // Light background - use dark foreground
+        Color {
+            r: 30,
+            g: 30,
+            b: 30,
+            a: 255,
+        }
+    }
 }
 
 /// Derive muted/dimmed foreground color

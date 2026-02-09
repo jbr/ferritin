@@ -201,6 +201,8 @@ impl Navigator {
             return data.as_ref();
         }
 
+        log::info!("Loading {name}@{version_req}");
+
         let (resolved_name, resolved_version, provenance_hint) =
             if let Some(external_crate) = self.external_crate_names.get(&crate_name) {
                 log::debug!("Found {crate_name} in external_crates");
@@ -220,9 +222,9 @@ impl Navigator {
 
         // Try loading from the appropriate source based on provenance
         if let Some(rv) = resolved_version.as_ref() {
-            log::debug!("Resolved {resolved_name}@{rv}");
+            log::info!("Resolved {resolved_name}@{rv}");
         } else {
-            log::debug!("Resolved {resolved_name}");
+            log::info!("Resolved {resolved_name}");
         }
         let start = std::time::Instant::now();
         let result = self.load(&resolved_name, resolved_version.as_ref(), provenance_hint);

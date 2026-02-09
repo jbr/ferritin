@@ -3,7 +3,8 @@
 //! Provides a log backend that captures logs from ferritin-common and makes them
 //! available for display in the TUI status bar and dev log screen.
 
-use log::{Level, LevelFilter, Log, Metadata, Record};
+use crossbeam_channel::{Receiver, Sender, TryRecvError};
+use log::{Level, LevelFilter, Log, Metadata, Record, SetLoggerError};
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
@@ -37,7 +38,7 @@ pub struct StatusLogBackend {
 
     /// Optional notification channel for reactive updates
     /// If Some, sends a non-blocking notification when logs arrive
-    notify_tx: Option<crossbeam_channel::Sender<()>>,
+    notify_tx: Option<Sender<()>>,
 }
 
 impl StatusLogBackend {
@@ -50,7 +51,7 @@ impl StatusLogBackend {
             history: VecDeque::new(),
             max_history,
             max_level: LevelFilter::Debug,
-            max_status_level: LevelFilter::Debug,
+            max_status_level: LevelFilter::Info,
         }));
 
         // Bounded channel with capacity 1 - we only care that "something changed"
@@ -68,7 +69,7 @@ impl StatusLogBackend {
     }
 
     /// Install this backend as the global logger
-    pub fn install(self) -> Result<(), log::SetLoggerError> {
+    pub fn install(self) -> Result<(), SetLoggerError> {
         log::set_max_level(self.state.lock().unwrap().max_level);
         log::set_boxed_logger(Box::new(self))?;
         Ok(())
@@ -117,7 +118,7 @@ impl Log for StatusLogBackend {
 #[derive(Debug)]
 pub struct LogReader {
     state: Arc<Mutex<LogState>>,
-    notify_rx: crossbeam_channel::Receiver<()>,
+    notify_rx: Receiver<()>,
 }
 
 impl LogReader {
@@ -135,13 +136,13 @@ impl LogReader {
 
     /// Get notification receiver for reactive updates
     /// UI thread can use this in event::poll or select! to be notified of new logs
-    pub fn notify_receiver(&self) -> &crossbeam_channel::Receiver<()> {
+    pub fn notify_receiver(&self) -> &Receiver<()> {
         &self.notify_rx
     }
 
     /// Try to receive a notification (non-blocking)
     /// Returns Ok(()) if there are new logs, Err if no notification pending
-    pub fn try_recv_notification(&self) -> Result<(), crossbeam_channel::TryRecvError> {
+    pub fn try_recv_notification(&self) -> Result<(), TryRecvError> {
         self.notify_rx.try_recv()
     }
 }

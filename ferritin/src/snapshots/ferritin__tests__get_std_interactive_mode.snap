@@ -200,5 +200,5 @@ expression: "render_interactive_for_tests(Commands::get(\"std\"))"
 "     │ Memory allocation APIs.                                                  "
 "     │                                                                          "
 "     │ In a given program, the standard library has one “global” memory         "
-"    🦀 <no history>                                                             " Hidden by multi-width symbols: [(5, " ")]
-"   ⠋ ferritin - q:quit ?:help ←/→:history g:go s:search l:list c:code           "
+"▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂"
+"   ferritin - q:quit ?:help ←/→:history g:go s:search l:list c:code             "

@@ -8,36 +8,23 @@ use super::{
 impl<'a> InteractiveState<'a> {
     /// Render status bar at the bottom of the screen
     pub(super) fn render_status_bar(&mut self, buf: &mut Buffer, area: Rect) {
-        // Get current crate name for search scope display
-        let current_crate = self
-            .document
-            .history
-            .current()
-            .and_then(|entry| entry.crate_name());
         let style = self.theme.status_style;
         let hint_style = self.theme.status_hint_style;
 
-        // Clear the status line
+        // Clear the status line with static background
         for x in 0..area.width {
             buf.cell_mut((x, area.y)).unwrap().reset();
             buf.cell_mut((x, area.y)).unwrap().set_style(style);
         }
 
-        // Spinner characters that cycle
-        const SPINNER: &[char] = &['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
-        let spinner_char = if self.loading.pending_request {
-            let elapsed_ms = self.loading.started_at.elapsed().as_millis();
-            let frame_index = (elapsed_ms / 80) as usize % SPINNER.len(); // ~80ms per frame
-            SPINNER[frame_index]
-        } else {
-            ' '
-        };
-
         // Determine what to display based on UI mode
-        let (mut display_text, hint_text) = match &self.ui_mode {
-            UiMode::Normal | UiMode::Help | UiMode::DevLog { .. } => {
+        let (display_text, hint_text) = match &self.ui_mode {
+            UiMode::Normal | UiMode::Help | UiMode::DevLog { .. } | UiMode::ThemePicker { .. } => {
                 (self.ui.debug_message.clone(), None)
             }
+
+            _ if self.loading.pending_request => (self.ui.debug_message.clone(), None),
+
             UiMode::Input(InputMode::GoTo { buffer }) => {
                 (format!("Go to: {}", buffer).into(), None)
             }
@@ -45,6 +32,12 @@ impl<'a> InteractiveState<'a> {
                 let scope = if *all_crates {
                     "all crates".to_string()
                 } else {
+                    // Get current crate name for search scope display
+                    let current_crate = self
+                        .document
+                        .history
+                        .current()
+                        .and_then(|entry| entry.crate_name());
                     current_crate
                         .map(|c| c.to_string())
                         .unwrap_or_else(|| "current crate".to_string())
@@ -54,16 +47,7 @@ impl<'a> InteractiveState<'a> {
                     Some("[tab] toggle scope"),
                 )
             }
-            UiMode::ThemePicker { .. } => {
-                // Use debug_message to show hover feedback
-                (self.ui.debug_message.clone(), None)
-            }
         };
-
-        // Prepend spinner if loading
-        if self.loading.pending_request {
-            display_text = format!("{} {}", spinner_char, display_text).into();
-        }
 
         // Calculate space for hint text (accounting for left margin)
         let hint_len = hint_text.as_ref().map(|h| h.len()).unwrap_or(0);
