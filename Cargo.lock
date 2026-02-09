@@ -959,7 +959,7 @@ dependencies = [
 
 [[package]]
 name = "ferritin"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -989,7 +989,7 @@ dependencies = [
 
 [[package]]
 name = "ferritin-common"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-fs",
@@ -2530,7 +2530,7 @@ dependencies = [
 
 [[package]]
 name = "rustdoc-mcp"
-version = "0.1.8"
+version = "0.1.9"
 dependencies = [
  "anyhow",
  "clap",

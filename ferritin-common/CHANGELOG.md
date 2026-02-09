@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.2.0...ferritin-common-v0.3.0) - 2026-02-09
+
+### Added
+
+- loading bar
+
+### Fixed
+
+- multiple performance improvements and bugfixes
+
+### Other
+
+- improve ttfp for interactive mode by lazily populating Navigator
+
 ## [0.2.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.1.0...ferritin-common-v0.2.0) - 2026-01-31
 
 ### Added

@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0](https://github.com/jbr/ferritin/compare/ferritin-v0.2.0...ferritin-v0.3.0) - 2026-02-09
+
+### Added
+
+- loading bar
+- add logs to the status line to indicate what's happening
+
+### Fixed
+
+- loading spinner updates even when there are no events
+- no longer include rust sha in snapshots
+- multiple performance improvements and bugfixes
+
+### Other
+
+- improve ttfp for interactive mode by lazily populating Navigator
+
 ## [0.2.0](https://github.com/jbr/ferritin/compare/ferritin-v0.1.2...ferritin-v0.2.0) - 2026-02-06
 
 ### Added
