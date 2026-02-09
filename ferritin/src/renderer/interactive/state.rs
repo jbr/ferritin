@@ -162,7 +162,7 @@ impl<'a> InteractiveState<'a> {
                 include_source: false,
             },
             loading: LoadingState {
-                pending_request: false,
+                pending_request: true,
                 was_loading: false,
                 frame_count: 0,
             },

@@ -1,6 +1,7 @@
 use super::{CrateProvenance, Source};
 use crate::{CrateInfo, RustdocData};
 use anyhow::Result;
+use fieldwork::Fieldwork;
 use semver::{Version, VersionReq};
 use std::{borrow::Cow, path::PathBuf};
 use trillium_smol::async_io::block_on;
@@ -9,8 +10,9 @@ mod client;
 use client::{DocsRsClient, ResolvedMetadata};
 
 /// Source for docs.rs documentation
-#[derive(Debug)]
+#[derive(Debug, Fieldwork)]
 pub struct DocsRsSource {
+    #[field(get)]
     client: DocsRsClient,
 }
 

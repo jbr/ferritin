@@ -110,6 +110,7 @@ use crate::{
     render_context::RenderContext,
     renderer::interactive::state::{InputMode, InteractiveState, UiMode},
     request::Request,
+    styled_string::{Document, DocumentNode, HeadingLevel, Span},
 };
 use crossbeam_channel::select;
 use crossterm::{
@@ -126,16 +127,35 @@ use std::{
 use channels::{RequestResponse, UiCommand};
 use request_thread::request_thread_loop;
 
+/// Create a static loading document to show while sources are being loaded
+fn initial_document() -> Document<'static> {
+    Document::from(vec![
+        DocumentNode::Heading {
+            level: HeadingLevel::Title,
+            spans: vec![Span::plain("Loading...")],
+        },
+        DocumentNode::paragraph(vec![Span::plain(
+            "Loading documentation sources, please wait...",
+        )]),
+    ])
+}
+
 /// Render a document in interactive mode with scrolling and hover tracking
 pub fn render_interactive(
-    request: &Request,
+    manifest_path: std::path::PathBuf,
     render_context: RenderContext,
     initial_command: Option<Commands>,
     log_reader: LogReader,
 ) -> io::Result<()> {
+    use crate::format_context::FormatContext;
+
+    // Create lazy Request - exists immediately but Navigator not built yet
+    let format_context = FormatContext::new();
+    let request = Request::lazy(manifest_path, format_context);
+
     // Use scoped threads so request can be borrowed by both threads
     thread::scope(|scope| {
-        render_interactive_impl(scope, request, render_context, initial_command, log_reader)
+        render_interactive_impl(scope, &request, render_context, initial_command, log_reader)
     })
 }
 
@@ -165,8 +185,11 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
         )
     });
 
-    // Main thread becomes request thread - owns Request and does all formatting
-    // Send initial document via channel
+    // Main thread becomes request thread - populate Navigator and do all formatting
+    // This is where the slow source loading happens (after UI thread is running)
+    request.populate();
+
+    // Execute initial command and send to UI
     let (document, _is_error, initial_entry) = initial_command
         .unwrap_or_else(Commands::list)
         .execute(request);
@@ -201,18 +224,10 @@ fn ui_thread_loop<'a>(
     let mut terminal = Terminal::new(backend)?;
     terminal.clear()?;
 
-    // Wait for initial document from request thread
-    let (initial_document, initial_entry) = match resp_rx.recv() {
-        Ok(RequestResponse::Document { doc, entry }) => (doc, entry),
-        _ => {
-            return Err(io::Error::other("Failed to receive initial document"));
-        }
-    };
-
-    // Create interactive state
+    // Create interactive state with static loading document - don't wait for sources
     let mut state = InteractiveState::new(
-        initial_document,
-        initial_entry,
+        initial_document(),
+        None, // No history entry for loading screen
         cmd_tx,
         resp_rx,
         render_context,
@@ -223,15 +238,10 @@ fn ui_thread_loop<'a>(
     // Spawn event reader thread that blocks on crossterm events
     let (event_tx, event_rx) = crossbeam_channel::unbounded();
     let _event_reader = thread::spawn(move || {
-        loop {
-            match event::read() {
-                Ok(evt) => {
-                    if event_tx.send(evt).is_err() {
-                        // UI thread dropped receiver, exit
-                        break;
-                    }
-                }
-                Err(_) => break,
+        while let Ok(evt) = event::read() {
+            if event_tx.send(evt).is_err() {
+                // UI thread dropped receiver, exit
+                break;
             }
         }
     });

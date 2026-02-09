@@ -1,6 +1,7 @@
 use crate::sources::CrateProvenance;
 use crate::{RustdocData, sources::RustdocVersion};
 use anyhow::{Context, Result, anyhow};
+use fieldwork::Fieldwork;
 use rustdoc_types::FORMAT_VERSION;
 use semver::{Version, VersionReq};
 use serde::Deserialize;
@@ -33,9 +34,10 @@ struct CrateVersion {
 const MIN_FORMAT_VERSION: u32 = 55;
 
 /// Client for fetching rustdoc JSON from docs.rs
-#[derive(Debug)]
+#[derive(Debug, Fieldwork)]
 pub struct DocsRsClient {
     http_client: Client,
+    #[field(get)]
     cache_dir: PathBuf,
     format_version: u32,
 }

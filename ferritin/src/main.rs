@@ -102,23 +102,6 @@ fn main() -> ExitCode {
         .manifest_path
         .unwrap_or_else(|| std::env::current_dir().unwrap());
 
-    let local_source = LocalSource::load(&path);
-
-    if !cli.interactive
-        && let Err(error) = local_source
-    {
-        eprintln!("could not load rust project at {}", path.display());
-        log::error!("{error:?}");
-        return ExitCode::FAILURE;
-    }
-
-    let navigator = Navigator::default()
-        .with_std_source(StdSource::from_rustup())
-        .with_local_source(LocalSource::load(&path).ok())
-        .with_docsrs_source(DocsRsSource::from_default_cache());
-
-    let format_context = FormatContext::new();
-
     let mut render_context = RenderContext::new()
         .with_output_mode(OutputMode::detect())
         .with_terminal_width(
@@ -133,8 +116,6 @@ fn main() -> ExitCode {
         return ExitCode::FAILURE;
     };
 
-    let request = Request::new(navigator, format_context);
-
     if cli.interactive {
         // Interactive mode with scrolling and navigation
         // Install custom log backend that captures logs for status bar
@@ -145,13 +126,33 @@ fn main() -> ExitCode {
         }
 
         if let Err(e) =
-            renderer::render_interactive(&request, render_context, cli.command, log_reader)
+            renderer::render_interactive(path, render_context, cli.command, log_reader)
         {
             eprintln!("Interactive mode error: {}", e);
             return ExitCode::FAILURE;
         }
         return ExitCode::SUCCESS;
     }
+
+    // Non-interactive mode: build sources eagerly and handle errors upfront
+    let local_source = LocalSource::load(&path);
+
+    if let Err(error) = &local_source {
+        eprintln!("could not load rust project at {}", path.display());
+        log::error!("{error:?}");
+        return ExitCode::FAILURE;
+    }
+
+    let std_source = StdSource::from_rustup();
+    let docsrs_source = DocsRsSource::from_default_cache();
+
+    let navigator = Navigator::default()
+        .with_std_source(std_source)
+        .with_local_source(local_source.ok())
+        .with_docsrs_source(docsrs_source);
+
+    let format_context = FormatContext::new();
+    let request = Request::new(navigator, format_context);
 
     // One-shot mode: execute command and render to stdout
     // Use env_logger for CLI mode
