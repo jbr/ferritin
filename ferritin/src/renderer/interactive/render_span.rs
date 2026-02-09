@@ -29,7 +29,7 @@ impl<'a> InteractiveState<'a> {
                 |cursor| {
                     cursor.y == self.layout.pos.y
                         && cursor.x >= self.layout.pos.x
-                        && cursor.x < self.layout.pos.x + span.text.len() as u16
+                        && cursor.x < self.layout.pos.x + display_width(&span.text) as u16
                 },
             )
         } else {
@@ -66,7 +66,7 @@ impl<'a> InteractiveState<'a> {
                     continue;
                 }
 
-                if remaining.len() <= available_width as usize {
+                if display_width(remaining) <= available_width as usize {
                     // Fits on current line
                     self.write_text(
                         buf,
@@ -76,7 +76,7 @@ impl<'a> InteractiveState<'a> {
                         self.layout.area,
                         style,
                     );
-                    self.layout.pos.x += remaining.len() as u16;
+                    self.layout.pos.x += display_width(remaining) as u16;
                     break;
                 } else {
                     // Need to wrap - find best break point
@@ -106,7 +106,8 @@ impl<'a> InteractiveState<'a> {
                         // This creates ragged right margins but avoids splitting words
                         if let Some(next_space) = remaining.find(char::is_whitespace) {
                             // Check if the word will fit on the current line
-                            if next_space <= available_width as usize {
+                            let word_width = display_width(&remaining[..next_space]);
+                            if word_width <= available_width as usize {
                                 // Word fits on current line, write it
                                 let (chunk, rest) = remaining.split_at(next_space);
                                 self.write_text(
@@ -133,7 +134,7 @@ impl<'a> InteractiveState<'a> {
                         } else {
                             // No whitespace at all in remaining text
                             // If it fits, write it; otherwise wrap first
-                            if remaining.len() <= available_width as usize {
+                            if display_width(remaining) <= available_width as usize {
                                 self.write_text(
                                     buf,
                                     self.layout.pos.y,
@@ -142,7 +143,7 @@ impl<'a> InteractiveState<'a> {
                                     self.layout.area,
                                     style,
                                 );
-                                self.layout.pos.x += remaining.len() as u16;
+                                self.layout.pos.x += display_width(remaining) as u16;
                                 break;
                             } else {
                                 // Doesn't fit, wrap to next line
@@ -180,6 +181,13 @@ impl<'a> InteractiveState<'a> {
     }
 }
 
+/// Calculate the display width of text, accounting for tabs rendered as 4 spaces
+fn display_width(text: &str) -> usize {
+    text.chars()
+        .map(|ch| if ch == '\t' { 4 } else { 1 })
+        .sum()
+}
+
 /// Find the best position to wrap text within a given width
 /// Returns the position after which to break, or None if no good break point exists
 fn find_wrap_position(text: &str, max_width: usize) -> Option<usize> {
@@ -187,25 +195,34 @@ fn find_wrap_position(text: &str, max_width: usize) -> Option<usize> {
         return None;
     }
 
-    // Find the byte position that corresponds to max_width characters (char-boundary-safe)
-    let search_end = text
-        .char_indices()
-        .take(max_width)
-        .last()
-        .map(|(idx, ch)| idx + ch.len_utf8())
-        .unwrap_or(0);
+    // Find the byte position that corresponds to max_width display columns (accounting for tabs)
+    let mut display_cols = 0;
+    let mut search_end = 0;
+    for (idx, ch) in text.char_indices() {
+        let char_width = if ch == '\t' { 4 } else { 1 };
+        if display_cols + char_width > max_width {
+            break;
+        }
+        display_cols += char_width;
+        search_end = idx + ch.len_utf8();
+    }
+
+    if search_end == 0 {
+        return None;
+    }
 
     let search_range = &text[..search_end];
 
     // First priority: break at whitespace
     if let Some(pos) = search_range.rfind(char::is_whitespace) {
-        // Avoid breaking if it would leave a very short word (< 3 chars) on next line
+        // Avoid breaking if it would leave a very short word (< 3 display cols) on next line
         // This prevents orphans like "a" or "is" at the start of a line
-        if pos > 0 && text.len() - pos > 3 {
+        let remaining_width = display_width(&text[pos..]);
+        if pos > 0 && remaining_width > 3 {
             return Some(pos);
         }
         // If the remaining part is short enough, it's ok to break here
-        if text.len() - pos <= max_width / 2 {
+        if remaining_width <= max_width / 2 {
             return Some(pos);
         }
     }

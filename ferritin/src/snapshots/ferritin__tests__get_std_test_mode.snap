@@ -7,7 +7,7 @@ expression: "render_for_tests(Commands::get(\"std\"), OutputMode :: TestMode)"
 <strong>Kind:</strong> Module
 <strong>Visibility:</strong> Public
 <strong>Defined at:</strong> <type-name>std</type-name>
-<strong>In crate:</strong> std (1.95.0-nightly	(f889772d6	2026-02-05))</p>
+<strong>In crate:</strong> std (RUST_VERSION)</p>
 <truncated level="full"><title>The Rust Standard Library</title>
 <p>
 The Rust Standard Library is the foundation of portable Rust software, a set of minimal and battle-tested shared abstractions for the broader Rust ecosystem. It offers core types, like <inline-code>Vec<T></inline-code> and <inline-code>Option<T></inline-code>, library-defined operations on language primitives, standard macros, I/O and multithreading, among many other things.</p>

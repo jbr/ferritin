@@ -167,7 +167,9 @@ impl Request {
             spans.push(StyledSpan::plain(item_crate.name()));
             if let Some(version) = item_crate.crate_version.as_deref() {
                 spans.push(StyledSpan::plain(" ("));
-                spans.push(StyledSpan::plain(version));
+                // Replace tabs with spaces for consistent rendering across output modes
+                let version_normalized = version.replace('\t', " ");
+                spans.push(StyledSpan::plain(version_normalized));
                 spans.push(StyledSpan::plain(")"));
             }
         }
@@ -222,7 +224,9 @@ impl Request {
         ];
         if let Some(version) = item_crate.crate_version.as_deref() {
             crate_info_spans.push(StyledSpan::plain(" ("));
-            crate_info_spans.push(StyledSpan::plain(version));
+            // Replace tabs with spaces for consistent rendering across output modes
+            let version_normalized = version.replace('\t', " ");
+            crate_info_spans.push(StyledSpan::plain(version_normalized));
             crate_info_spans.push(StyledSpan::plain(")"));
         }
 

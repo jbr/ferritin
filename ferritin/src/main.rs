@@ -125,8 +125,7 @@ fn main() -> ExitCode {
             return ExitCode::FAILURE;
         }
 
-        if let Err(e) =
-            renderer::render_interactive(path, render_context, cli.command, log_reader)
+        if let Err(e) = renderer::render_interactive(path, render_context, cli.command, log_reader)
         {
             eprintln!("Interactive mode error: {}", e);
             return ExitCode::FAILURE;
