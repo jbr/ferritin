@@ -11,7 +11,6 @@ license = "MIT OR Apache-2.0"
 [workspace.dependencies]
 anyhow = "1.0.101"
 cargo_metadata = "0.23.1"
-cargo_toml = "0.22.3"
 elsa = "1.11.2"
 rustc-hash = { version = "2.1.1", features = ["nightly"] }
 rustdoc-types = { version = "0.57.0", features = ["rustc-hash"] }
