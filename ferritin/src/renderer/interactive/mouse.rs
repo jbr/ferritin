@@ -4,9 +4,12 @@ use crossterm::event::{MouseEvent, MouseEventKind};
 use ratatui::{Terminal, layout::Position, prelude::Backend};
 
 use crate::{
+    render_context::RenderContext,
     renderer::interactive::{handle_action, set_cursor_shape},
     styled_string::TuiAction,
 };
+
+use super::UiMode;
 
 impl<'a> super::InteractiveState<'a> {
     pub(super) fn handle_mouse_event(
@@ -98,10 +101,7 @@ impl<'a> super::InteractiveState<'a> {
                     {
                         // Send command from history entry (non-blocking)
                         let _ = self.cmd_tx.send(entry.to_command());
-
                         self.loading.start();
-                        self.ui.debug_message =
-                            format!("Loading: {}...", entry.display_name()).into();
                     }
                 }
             }
@@ -126,50 +126,31 @@ impl<'a> super::InteractiveState<'a> {
                     let _ = self.apply_theme(theme_name);
 
                     // Update selected index in ThemePicker mode
-                    if let super::UiMode::ThemePicker {
+                    if let UiMode::ThemePicker {
                         ref mut selected_index,
                         ..
                     } = self.ui_mode
                     {
-                        let themes = crate::render_context::RenderContext::available_themes();
+                        let themes = RenderContext::available_themes();
                         if let Some(idx) = themes.iter().position(|t| t == theme_name.as_ref()) {
                             *selected_index = idx;
                         }
                     }
 
                     self.ui.debug_message = format!("Selected theme: {theme_name}").into();
-                    return;
-                }
-
-                self.ui.debug_message = match &action {
-                    TuiAction::Navigate { doc_ref, url: _ } => format!(
-                        "Clicked: {}",
-                        doc_ref
-                            .path()
-                            .map(|p| p.to_string())
-                            .unwrap_or_else(|| "unknown".to_string())
-                    )
-                    .into(),
-                    TuiAction::NavigateToPath { path, url: _ } => {
-                        format!("Clicked: {}", path).into()
-                    }
-                    TuiAction::ExpandBlock(path) => format!("Clicked: {:?}", path.indices()).into(),
-                    TuiAction::OpenUrl(url) => format!("Clicked: {}", url).into(),
-                    TuiAction::SelectTheme(_) => unreachable!(), // Handled above
-                };
-
-                // Handle the action - may return a command to send
-                if let Some(command) = handle_action(&mut self.document.document, action) {
+                } else if let Some(command) = handle_action(&mut self.document.document, action) {
                     // Send command to request thread (non-blocking)
                     let _ = self.cmd_tx.send(command);
                     self.loading.start();
-                    self.ui.debug_message = "Loading...".into();
                 }
             }
         }
     }
 
     pub(super) fn handle_hover(&mut self) {
+        if self.loading.pending_request {
+            return;
+        }
         // Update debug message with hover info
         if self.ui.mouse_enabled {
             if let Some(pos) = self.viewport.cursor_pos {

@@ -31,9 +31,6 @@ impl<'a> InteractiveState<'a> {
                 // Add to history if we got an entry
                 if let Some(new_entry) = entry {
                     self.document.history.push(new_entry);
-                    if let Some(history_entry) = self.document.history.current() {
-                        self.ui.debug_message = format!("Loaded: {history_entry}").into();
-                    }
                 }
                 false
             }

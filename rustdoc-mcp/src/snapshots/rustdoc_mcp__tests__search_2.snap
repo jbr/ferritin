@@ -4,5 +4,11 @@ expression: result
 ---
 Search results for 'generic struct' in crate 'test-crate':
 
-• test-crate::GenericStruct (Struct) - score: 16
+• test-crate::GenericStruct (Struct) - score: 12
     A generic struct for testing multi-paragraph documentation. [+14 more lines]
+• test-crate::generic_function (Function) - score: 7
+    A generic function
+• test-crate::GenericEnum (Enum) - score: 7
+    A generic enum for testing [+2 more lines]
+• test-crate::submodule::TestEnum (Enum) - score: 6
+    An enum for testing [+2 more lines]

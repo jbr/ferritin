@@ -4,5 +4,5 @@ expression: result
 ---
 Search results for 'trigger line-based truncation' in crate 'test-crate':
 
-• test-crate::TestTrait (Trait) - score: 53
+• test-crate::TestTrait (Trait) - score: 75
     A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]

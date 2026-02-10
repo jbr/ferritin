@@ -1,8 +1,10 @@
 use fieldwork::Fieldwork;
+use rkyv::rancor::Error;
 use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize};
 use rustc_hash::FxHashMap;
 use rustc_hash::FxHasher;
 use rustdoc_types::{Item, ItemEnum, StructKind, Trait};
+use std::cmp::Reverse;
 use std::collections::BTreeMap;
 use std::fs::File;
 use std::fs::OpenOptions;
@@ -15,62 +17,135 @@ use crate::{
     doc_ref::DocRef,
     navigator::{Navigator, Suggestion},
 };
+use std::collections::HashMap;
+
+// Newtypes for clarity
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Archive,
+    RkyvSerialize,
+    RkyvDeserialize,
+)]
+#[rkyv(derive(PartialEq, Eq, PartialOrd, Ord))]
+#[repr(transparent)]
+struct TermHash(u64);
+
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Archive,
+    RkyvSerialize,
+    RkyvDeserialize,
+)]
+#[repr(transparent)]
+struct DocumentId(usize);
+
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Archive, RkyvSerialize, RkyvDeserialize,
+)]
+#[repr(transparent)]
+struct DocumentTermCount(usize);
+
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Archive, RkyvSerialize, RkyvDeserialize,
+)]
+#[repr(transparent)]
+struct DocumentLength(usize);
+
+#[derive(Debug, Clone, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize)]
+struct ItemPath(Vec<u32>);
+
+#[derive(Debug, Clone, Copy, Archive, RkyvSerialize, RkyvDeserialize)]
+struct Posting {
+    document: DocumentId,
+    count: DocumentTermCount,
+}
+
+#[derive(Debug, Clone, Archive, RkyvSerialize, RkyvDeserialize)]
+struct DocumentInfo {
+    path: ItemPath,
+    length: DocumentLength,
+}
 
 #[derive(Default, Debug, Clone)]
 struct Terms<'a> {
-    term_docs: BTreeMap<u64, BTreeMap<(u64, u32), f32>>,
+    term_docs: BTreeMap<TermHash, BTreeMap<(u64, u32), DocumentTermCount>>,
     shortest_paths: BTreeMap<(u64, u32), Vec<u32>>,
-    crate_hashes: FxHashMap<&'a str, u64>,
+    document_lengths: BTreeMap<(u64, u32), DocumentLength>,
+    crate_hashes: FxHashMap<&'a str, TermHash>,
 }
 
 impl<'a> Terms<'a> {
-    fn add(&mut self, word: &str, tf_score: f32, id: (u64, u32)) {
+    fn add(&mut self, word: &str, count: DocumentTermCount, id: (u64, u32)) {
         let term_hash = hash_term(word);
-        *self
+        let entry = self
             .term_docs
             .entry(term_hash)
             .or_default()
             .entry(id)
-            .or_default() += tf_score;
+            .or_insert(DocumentTermCount(0));
+        entry.0 += count.0;
     }
 
     fn finalize(self) -> SearchableTerms {
-        let total_docs = self.shortest_paths.len() as f32;
-        let mut ids = vec![];
-
+        let mut documents = vec![];
         let mut id_set = BTreeMap::new();
+        let mut total_document_length = 0;
 
         for (id, id_path) in self.shortest_paths {
-            id_set.insert(id, ids.len());
-            ids.push(id_path);
+            let doc_length = self
+                .document_lengths
+                .get(&id)
+                .copied()
+                .unwrap_or(DocumentLength(0));
+            total_document_length += doc_length.0;
+            id_set.insert(id, documents.len());
+            documents.push(DocumentInfo {
+                path: ItemPath(id_path),
+                length: doc_length,
+            });
         }
 
         let terms = self
             .term_docs
             .into_iter()
-            .map(|(term_hash, doc_scores)| {
-                // Calculate IDF for this term
-                let doc_freq = doc_scores.len() as f32;
-                let idf = (total_docs / doc_freq).ln();
-
-                // Apply TF-IDF scoring
-                let mut tf_idf_scores: Vec<_> = doc_scores
+            .map(|(term_hash, doc_counts)| {
+                // Store raw counts, not TF-IDF
+                let mut postings: Vec<_> = doc_counts
                     .into_iter()
-                    .filter_map(|(doc_id, tf_score)| {
-                        id_set
-                            .get(&doc_id)
-                            .map(|id| (*id, (1.0 + tf_score.ln()) * idf))
+                    .filter_map(|(doc_id, count)| {
+                        id_set.get(&doc_id).map(|&id| Posting {
+                            document: DocumentId(id),
+                            count,
+                        })
                     })
                     .collect();
 
-                // Sort by TF-IDF score (descending)
-                tf_idf_scores.sort_by(|(_, a), (_, b)| b.total_cmp(a));
+                // Sort by count (descending) for faster retrieval of top results
+                postings.sort_by_key(|b| Reverse(b.count.0));
 
-                (term_hash, tf_idf_scores)
+                (term_hash, postings)
             })
             .collect();
 
-        SearchableTerms { terms, ids }
+        SearchableTerms {
+            terms,
+            documents,
+            total_document_length,
+        }
     }
 
     fn recurse(&mut self, item: DocRef<'a, Item>, ids: &[u32], add_id: bool) {
@@ -80,12 +155,12 @@ impl<'a> Terms<'a> {
         }
         let crate_name = item.crate_docs().name();
 
-        let crate_hash = *self
+        let crate_hash = self
             .crate_hashes
             .entry(crate_name)
             .or_insert_with(|| hash_term(crate_name));
 
-        let id = (crate_hash, *ids.last().unwrap_or(&item.id.0));
+        let id = (crate_hash.0, *ids.last().unwrap_or(&item.id.0));
 
         if let Some(existing_path) = self.shortest_paths.get_mut(&id) {
             if ids.len() < existing_path.len() {
@@ -126,17 +201,22 @@ impl<'a> Terms<'a> {
     }
 
     fn add_for_item(&mut self, item: DocRef<'a, Item>, id: (u64, u32)) {
+        let mut doc_length = 0;
+
         if let Some(name) = item.name() {
-            self.add_terms(name, id, 2.0);
+            doc_length += self.add_terms(name, id, 2);
         }
 
         if let Some(docs) = &item.docs {
-            self.add_terms(docs, id, 1.0);
+            doc_length += self.add_terms(docs, id, 1);
         }
+
+        self.document_lengths.insert(id, DocumentLength(doc_length));
     }
 
-    fn add_terms(&mut self, text: &str, id: (u64, u32), base_score: f32) {
+    fn add_terms(&mut self, text: &str, id: (u64, u32), weight: usize) -> usize {
         let words = tokenize(text);
+        let doc_length = words.len();
 
         // Count word frequencies in this document
         let mut word_counts: BTreeMap<&str, usize> = BTreeMap::new();
@@ -144,20 +224,21 @@ impl<'a> Terms<'a> {
             *word_counts.entry(word).or_insert(0) += 1;
         }
 
-        // Add each unique word to the index
+        // Add each unique word to the index with weighted count
         for (word, count) in word_counts {
-            // Simple relevance scoring: term frequency / document length * base score
-            let tf_score = (count as f32) * base_score;
-
-            self.add(word, tf_score, id);
+            let weighted_count = count * weight;
+            self.add(word, DocumentTermCount(weighted_count), id);
         }
+
+        doc_length
     }
 }
 
-#[derive(Debug, Clone, Archive, RkyvSerialize, RkyvDeserialize, Fieldwork)]
+#[derive(Debug, Clone, Archive, RkyvSerialize, RkyvDeserialize)]
 struct SearchableTerms {
-    terms: BTreeMap<u64, Vec<(usize, f32)>>,
-    ids: Vec<Vec<u32>>,
+    terms: BTreeMap<TermHash, Vec<Posting>>,
+    documents: Vec<DocumentInfo>,
+    total_document_length: usize,
 }
 
 /// A search index for a single crate
@@ -169,21 +250,63 @@ pub struct SearchIndex {
 }
 
 impl SearchableTerms {
-    fn search(&self, term: &str) -> impl Iterator<Item = (&[u32], f32)> {
-        let mut results = BTreeMap::<usize, f32>::new();
-        for term in tokenize(term)
-            .into_iter()
-            .map(hash_term)
-            .filter_map(|term| self.terms.get(&term))
-        {
-            for (id, score) in term {
-                *results.entry(*id).or_default() += score;
+    fn search<'a>(&self, query: &'a str) -> SearchResults<'a> {
+        let tokens = tokenize(query);
+
+        // Build lookup from hash to original token
+        let token_map: HashMap<TermHash, &'a str> = tokens
+            .iter()
+            .map(|&token| (hash_term(token), token))
+            .collect();
+
+        // Collect posting lists for each query term
+        let mut term_postings: HashMap<TermHash, &Vec<Posting>> = HashMap::new();
+        for &token in &tokens {
+            let term_hash = hash_term(token);
+            if let Some(postings) = self.terms.get(&term_hash) {
+                term_postings.insert(term_hash, postings);
             }
         }
 
-        results
+        // Build document frequency map (in borrowed strings for public API)
+        let term_doc_freqs: HashMap<&'a str, usize> = term_postings
+            .iter()
+            .map(|(term_hash, postings)| {
+                let term_str = token_map.get(term_hash).unwrap();
+                (*term_str, postings.len())
+            })
+            .collect();
+
+        // Collect all matching documents and aggregate term counts
+        let mut doc_term_counts: BTreeMap<DocumentId, HashMap<&'a str, usize>> = BTreeMap::new();
+        for (term_hash, postings) in term_postings {
+            let term_str = token_map.get(&term_hash).unwrap();
+            for posting in postings.iter() {
+                doc_term_counts
+                    .entry(posting.document)
+                    .or_default()
+                    .insert(term_str, posting.count.0);
+            }
+        }
+
+        // Convert to results vec
+        let results: Vec<SearchResult<'a>> = doc_term_counts
             .into_iter()
-            .filter_map(|(id, score)| self.ids.get(id).map(|id| (&id[..], score)))
+            .filter_map(|(doc_id, term_counts)| {
+                self.documents.get(doc_id.0).map(|doc_info| SearchResult {
+                    id_path: doc_info.path.0.clone(),
+                    doc_length: doc_info.length.0,
+                    term_counts,
+                })
+            })
+            .collect();
+
+        SearchResults {
+            total_docs: self.documents.len(),
+            total_doc_length: self.total_document_length,
+            term_doc_freqs,
+            results,
+        }
     }
 }
 
@@ -211,11 +334,14 @@ impl SearchIndex {
         path.set_extension("index");
 
         if let Some(terms) = Self::load(&path, mtime) {
+            log::debug!("Loaded cached index from disk for {crate_name}");
             Ok(Self { crate_name, terms })
         } else {
+            log::debug!("Building new index for {crate_name}");
             let mut terms = Terms::default();
             terms.recurse(item, &[], false);
             let terms = terms.finalize();
+            log::debug!("Finished building index for {crate_name}");
             Self::store(&terms, &path);
             Ok(Self { terms, crate_name })
         }
@@ -223,7 +349,7 @@ impl SearchIndex {
 
     fn store(terms: &SearchableTerms, path: &Path) {
         if let Ok(mut file) = OpenOptions::new().create_new(true).write(true).open(path) {
-            match rkyv::to_bytes::<rkyv::rancor::Error>(terms) {
+            match rkyv::to_bytes::<Error>(terms) {
                 Ok(bytes) => {
                     if file.write_all(&bytes).is_err() {
                         let _ = std::fs::remove_file(path);
@@ -244,7 +370,7 @@ impl SearchIndex {
         if index_mtime.duration_since(mtime).is_ok() {
             let mut bytes = Vec::new();
             file.read_to_end(&mut bytes).ok()?;
-            match rkyv::from_bytes::<SearchableTerms, rkyv::rancor::Error>(&bytes) {
+            match rkyv::from_bytes::<SearchableTerms, Error>(&bytes) {
                 Ok(terms) => Some(terms),
                 Err(_) => {
                     let _ = std::fs::remove_file(path);
@@ -257,38 +383,171 @@ impl SearchIndex {
         }
     }
 
-    // /// Build a search index from rustdoc data
-    // pub(crate) fn build<'a>(
-    //     request: &'a Request,
-    //     crate_name: &str,
-    // ) -> Result<Self, Vec<Suggestion<'a>>> {
-    //     let mut terms = Terms::default();
-    //     let mut suggestions = vec![];
+    pub fn len(&self) -> usize {
+        self.terms.documents.len()
+    }
 
-    //     let item = request
-    //         .resolve_path(crate_name, &mut suggestions)
-    //         .ok_or(suggestions)?;
-
-    //     let crate_name = item.crate_docs().name().to_string();
-    //     terms.recurse(item, &[], false);
-
-    //     let terms = terms.finalize();
-
-    //     Ok(Self { terms, crate_name })
-    // }
+    pub fn is_empty(&self) -> bool {
+        self.terms.documents.is_empty()
+    }
 
     /// Search for items containing the given term
-    pub fn search(&self, term: &str) -> impl Iterator<Item = (&[u32], f32)> {
-        self.terms.search(term)
+    /// Returns components needed for BM25 scoring across multiple crates
+    pub fn search<'a>(&self, query: &'a str) -> SearchResults<'a> {
+        self.terms.search(query)
+    }
+}
+
+// Public API types for BM25 scoring
+
+/// Results from searching a single crate
+pub struct SearchResults<'a> {
+    /// Total number of documents in this crate's index
+    pub total_docs: usize,
+    /// Sum of all document lengths (for calculating average)
+    pub total_doc_length: usize,
+    /// How many documents contain each query term
+    pub term_doc_freqs: HashMap<&'a str, usize>,
+    /// Matching documents with their term counts
+    pub results: Vec<SearchResult<'a>>,
+}
+
+/// A single document that matches the search query
+pub struct SearchResult<'a> {
+    /// Path to the item (rustdoc IDs)
+    pub id_path: Vec<u32>,
+    /// Length of this document in tokens
+    pub doc_length: usize,
+    /// Which query terms matched and their weighted counts
+    pub term_counts: HashMap<&'a str, usize>,
+}
+
+/// A scored search result from BM25 scoring
+pub struct ScoredResult<'a> {
+    /// Which crate this result is from
+    pub crate_name: &'a str,
+    /// Path to the item (rustdoc IDs)
+    pub id_path: Vec<u32>,
+    /// BM25 score
+    pub score: f32,
+}
+
+/// BM25 scorer for combining results from multiple crates
+pub struct BM25Scorer<'a> {
+    k1: f32,
+    b: f32,
+    crate_results: Vec<(&'a str, SearchResults<'a>)>,
+}
+
+impl<'a> BM25Scorer<'a> {
+    /// Create a new BM25 scorer with default parameters
+    pub fn new() -> Self {
+        Self {
+            k1: 1.2,
+            b: 0.75,
+            crate_results: Vec::new(),
+        }
+    }
+
+    /// Add search results from a crate
+    pub fn add(&mut self, crate_name: &'a str, results: SearchResults<'a>) {
+        self.crate_results.push((crate_name, results));
+    }
+
+    /// Compute BM25 scores for all results and return them sorted by score
+    pub fn score(self) -> Vec<ScoredResult<'a>> {
+        log::debug!("Computing global statistics");
+
+        // Aggregate global statistics
+        let global_total_docs: usize = self.crate_results.iter().map(|(_, r)| r.total_docs).sum();
+        let global_total_length: usize = self
+            .crate_results
+            .iter()
+            .map(|(_, r)| r.total_doc_length)
+            .sum();
+
+        if global_total_docs == 0 {
+            return vec![];
+        }
+
+        let avgdl = global_total_length as f32 / global_total_docs as f32;
+
+        // Aggregate document frequencies across all crates
+        let mut global_term_doc_freqs: HashMap<&str, usize> = HashMap::new();
+        for (_, results) in &self.crate_results {
+            for (term, doc_freq) in &results.term_doc_freqs {
+                *global_term_doc_freqs.entry(term).or_default() += doc_freq;
+            }
+        }
+
+        log::debug!(
+            "Computing global IDF for {} terms",
+            global_term_doc_freqs.len()
+        );
+
+        // Calculate global IDF for each term
+        let global_idf: HashMap<&str, f32> = global_term_doc_freqs
+            .iter()
+            .map(|(term, doc_freq)| {
+                // BM25 IDF formula
+                let idf = ((global_total_docs as f32 - *doc_freq as f32 + 0.5)
+                    / (*doc_freq as f32 + 0.5))
+                    .ln();
+                (*term, idf)
+            })
+            .collect();
+
+        // Count total results to score
+        let total_results: usize = self
+            .crate_results
+            .iter()
+            .map(|(_, r)| r.results.len())
+            .sum();
+        log::debug!("Scoring {} results", total_results);
+
+        // Score all results
+        let mut scored: Vec<ScoredResult<'a>> = Vec::new();
+        for (crate_name, results) in self.crate_results {
+            for result in results.results {
+                let doc_len_norm = result.doc_length as f32 / avgdl;
+
+                let score: f32 = result
+                    .term_counts
+                    .iter()
+                    .map(|(term, count)| {
+                        let idf = global_idf.get(term).copied().unwrap_or(0.0);
+                        let tf = *count as f32;
+                        let numerator = tf * (self.k1 + 1.0);
+                        let denominator = tf + self.k1 * (1.0 - self.b + self.b * doc_len_norm);
+                        idf * (numerator / denominator)
+                    })
+                    .sum();
+
+                scored.push(ScoredResult {
+                    crate_name,
+                    id_path: result.id_path,
+                    score,
+                });
+            }
+        }
+
+        log::debug!("Sorting {} scored results", scored.len());
+
+        // Sort by score descending
+        scored.sort_by(|a, b| b.score.total_cmp(&a.score));
+
+        scored
+    }
+}
+
+impl<'a> Default for BM25Scorer<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
 fn add_token<'a>(token: &'a str, tokens: &mut Vec<&'a str>) {
-    if let Some(token) = token.strip_suffix('s') {
-        tokens.push(token);
-    } else {
-        tokens.push(token);
-    }
+    tokens.push(token);
 }
 
 /// Simple tokenizer: split on whitespace and punctuation, lowercase, filter short words
@@ -355,11 +614,16 @@ fn tokenize(text: &str) -> Vec<&str> {
     tokens
 }
 
-/// Hash a term for use as a map key
-fn hash_term(term: &str) -> u64 {
+/// Hash a term for use as a map key (case-insensitive)
+fn hash_term(term: &str) -> TermHash {
     let mut hasher = FxHasher::default();
-    term.to_lowercase().hash(&mut hasher);
-    hasher.finish()
+    // Hash lowercased chars without allocating
+    for c in term.chars() {
+        for lower_c in c.to_lowercase() {
+            lower_c.hash(&mut hasher);
+        }
+    }
+    TermHash(hasher.finish())
 }
 
 #[cfg(test)]
@@ -369,11 +633,11 @@ mod tests {
     #[test]
     fn test_tokenize() {
         assert_eq!(
-            tokenize("Hello, worlds! This is a test. CamelCases hyphenate-words snake_words"),
+            tokenize("Hello, world! This is a test. CamelCase hyphenate-word snake_word"),
             vec![
                 "Hello",
                 "world",
-                "Thi",
+                "This",
                 "test",
                 "Camel",
                 "Case",

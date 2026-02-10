@@ -5,5 +5,5 @@ expression: "render_for_tests(Commands::search(\"trigger line-based truncation\"
 Search results for 'trigger line-based truncation'
 ================================================================================
 
-  ◦ test-crate::TestTrait  (Trait) - score: 53.4
-    A trait for testing extremely long documentation that exceeds line limits.
+  ◦ test-crate::TestTrait  (Trait) - score: 1.3
+    A trait for testing extremely long documentation that exceeds line limits. [...]

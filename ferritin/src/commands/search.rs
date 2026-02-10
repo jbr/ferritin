@@ -1,7 +1,7 @@
 use crate::request::Request;
-use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span};
-use ferritin_common::search::indexer::SearchIndex;
-use ferritin_common::sources::Source;
+use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span, TruncationLevel};
+use ferritin_common::search::indexer::{BM25Scorer, SearchIndex};
+use rayon::prelude::*;
 
 pub(crate) fn execute<'a>(
     request: &'a Request,
@@ -9,49 +9,67 @@ pub(crate) fn execute<'a>(
     limit: usize,
     crate_: Option<&str>,
 ) -> (Document<'a>, bool) {
-    // Collect search results from all crates
-    let mut all_results = vec![];
-
     log::info!("Searching for {query}");
 
-    let crates = match crate_ {
-        Some(crate_) => Box::new(std::iter::once(crate_.to_string())),
+    let crate_names = match crate_ {
+        Some(crate_) => vec![crate_.to_string()],
         None => request
-            .local_source()
-            .map(|ls| ls.list_available())
-            .or_else(|| request.std_source().map(|s| s.list_available()))
-            .map(|s| {
-                Box::new(s.map(|ci| ci.name().to_string())) as Box<dyn Iterator<Item = String>>
-            })
-            .unwrap_or(Box::new(std::iter::empty())),
+            .list_available_crates()
+            .map(|ci| ci.name().to_string())
+            .collect(),
     };
 
-    for crate_name in crates {
-        log::info!("Building or loading index for {crate_name}");
+    // Search each crate in parallel and collect results
+    let crate_results: Vec<_> = crate_names
+        .par_iter()
+        .filter_map(|crate_name| {
+            log::debug!("Starting index load for {crate_name}");
 
-        // Try to load/build the search index for this crate
-        match SearchIndex::load_or_build(request, &crate_name) {
-            Ok(index) => {
-                log::info!("Searching {crate_name} for {query}");
+            // Try to load/build the search index for this crate
+            match SearchIndex::load_or_build(request, crate_name) {
+                Ok(index) => {
+                    let len = index.len();
+                    log::debug!("Loaded index for {crate_name} ({len} items)");
 
-                // Search and collect results with crate name
-                let results = index.search(query);
-
-                for (id_path, score) in results {
-                    all_results.push((crate_name.to_string(), id_path.to_vec(), score));
+                    // Search and collect results paired with crate name
+                    let results = index.search(query);
+                    log::debug!("Searched {crate_name}: {} results", results.results.len());
+                    Some((crate_name.as_str(), results, len))
+                }
+                Err(_) => {
+                    log::debug!("Failed to load index for {crate_name}");
+                    None
                 }
             }
-            Err(_) => {
-                // Silently skip crates that can't be indexed (e.g., not found)
-                continue;
-            }
-        }
+        })
+        .collect();
+
+    let total_items: usize = crate_results.iter().map(|(_, _, len)| len).sum();
+
+    log::debug!(
+        "Starting BM25 scoring across {} crates",
+        crate_results.len()
+    );
+
+    // Use BM25 scorer to aggregate results across crates
+    let mut scorer = BM25Scorer::new();
+    for (crate_name, results, _) in crate_results {
+        scorer.add(crate_name, results);
     }
 
-    // Sort all results by score (descending)
-    all_results.sort_by(|(_, _, score_a), (_, _, score_b)| score_b.total_cmp(score_a));
+    // Get scored results
+    let scored_results = scorer.score();
+    log::debug!(
+        "BM25 scoring complete: {} total results",
+        scored_results.len()
+    );
 
-    if all_results.is_empty() {
+    log::info!(
+        "Found {} matching items out of {total_items}",
+        scored_results.len()
+    );
+
+    if scored_results.is_empty() {
         let error_doc = Document::from(vec![DocumentNode::paragraph(vec![Span::plain(format!(
             "No results found for '{}'",
             query
@@ -60,11 +78,8 @@ pub(crate) fn execute<'a>(
     }
 
     // Calculate total score for normalization
-    let total_score: f32 = all_results.iter().map(|(_, _, score)| score).sum();
-    let top_score = all_results
-        .first()
-        .map(|(_, _, score)| *score)
-        .unwrap_or(0.0);
+    let total_score: f32 = scored_results.iter().map(|r| r.score).sum();
+    let top_score = scored_results.first().map(|r| r.score).unwrap_or(0.0);
 
     let mut nodes = vec![DocumentNode::Heading {
         level: HeadingLevel::Title,
@@ -81,51 +96,44 @@ pub(crate) fn execute<'a>(
     let mut prev_score = top_score;
     let mut list_items = vec![];
 
-    for (i, (crate_name, id_path, score)) in all_results.into_iter().enumerate() {
+    for (i, result) in scored_results.into_iter().enumerate() {
         // Early stopping: stop if we've shown enough results and scores are dropping significantly
         if i >= min_results && i >= limit {
             break;
         }
 
         if i >= min_results
-            && (score / top_score < 0.05
-                || score / prev_score < 0.5
+            && (result.score / top_score < 0.05
+                || result.score / prev_score < 0.5
                 || cumulative_score / total_score > 0.3)
         {
             break;
         }
 
-        if let Some((item, path_segments)) = request.get_item_from_id_path(&crate_name, &id_path) {
-            cumulative_score += score;
-            prev_score = score;
+        if let Some((item, path_segments)) =
+            request.get_item_from_id_path(result.crate_name, &result.id_path)
+        {
+            cumulative_score += result.score;
+            prev_score = result.score;
 
             let path = path_segments.join("::");
-            let normalized_score = 100.0 * score / total_score;
+            let normalized_score = 100.0 * result.score / total_score;
 
-            let mut spans = vec![Span::plain(format!(
-                " ({:?}) - score: {:.1}",
-                item.kind(),
-                normalized_score
-            ))];
+            let mut content = vec![DocumentNode::paragraph(vec![
+                Span::plain(path).with_target(Some(item)),
+                Span::plain(" "),
+                Span::plain(format!(
+                    " ({:?}) - score: {:.1}",
+                    item.kind(),
+                    normalized_score
+                )),
+            ])];
 
-            // Show first few lines of docs if available
-            if let Some(docs) = &item.docs {
-                let doc_preview: Vec<_> = docs.lines().take(2).collect();
-                if !doc_preview.is_empty() {
-                    for line in doc_preview {
-                        if !line.trim().is_empty() {
-                            spans.push(Span::plain("\n    ".to_string()));
-                            spans.push(Span::plain(line.to_string()));
-                        }
-                    }
-                }
+            if let Some(docs) = request.docs_to_show(item, TruncationLevel::SingleLine) {
+                content.extend(docs);
             }
 
-            // Prepend path label to spans
-            let mut all_spans = vec![Span::plain(path).with_target(Some(item)), Span::plain(" ")];
-            all_spans.extend(spans);
-
-            list_items.push(ListItem::new(vec![DocumentNode::paragraph(all_spans)]));
+            list_items.push(ListItem::new(content));
         }
     }
 

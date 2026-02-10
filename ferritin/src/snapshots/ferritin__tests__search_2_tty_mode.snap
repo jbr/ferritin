@@ -5,5 +5,32 @@ expression: "render_for_tests(Commands::search(\"generic struct\"), OutputMode :
 Search results for 'generic struct'
 ================================================================================
 
-  ◦ [test-crate::GenericStruct](https://docs.rs/test-crate/0.1.0/test-crate/struct.GenericStruct.html)  (Struct) - score: 16.0
-        A generic struct for testing multi-paragraph documentation.
+  ◦ [test-crate::GenericStruct](https://docs.rs/test-crate/0.1.0/test-crate/struct.GenericStruct.html)  (Struct) - score: 0.5
+    A generic struct for testing multi-paragraph documentation. [...]
+
+  ◦ [core::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 0.5
+    Used for immutable dereferencing operations, like *v. [...]
+
+  ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 0.5
+    Used for immutable dereferencing operations, like *v. [...]
+
+  ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 0.4
+    A trait for borrowing data. [...]
+
+  ◦ [core::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 0.4
+    A trait for borrowing data. [...]
+
+  ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 0.4
+    A trait for borrowing data. [...]
+
+  ◦ [core::convert::Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)  (Trait) - score: 0.4
+    A value-to-value conversion that consumes the input value. The opposite of [From](http://docs.rust-lang.org/nightly/core/convert/trait.From.html). [...]
+
+  ◦ [std::convert::Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)  (Trait) - score: 0.4
+    A value-to-value conversion that consumes the input value. The opposite of [From](http://docs.rust-lang.org/nightly/core/convert/trait.From.html). [...]
+
+  ◦ [core::convert::AsMut](http://docs.rust-lang.org/nightly/core/convert/trait.AsMut.html)  (Trait) - score: 0.4
+    Used to do a cheap mutable-to-mutable reference conversion. [...]
+
+  ◦ [std::convert::AsMut](http://docs.rust-lang.org/nightly/core/convert/trait.AsMut.html)  (Trait) - score: 0.4
+    Used to do a cheap mutable-to-mutable reference conversion. [...]

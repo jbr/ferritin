@@ -257,14 +257,11 @@ fn ui_thread_loop<'a>(
         select! {
             // Log notifications from request thread
             recv(state.log_reader.notify_receiver()) -> _ => {
-                // Only show log messages while loading (don't override "Loaded: ..." message)
-                if state.loading.pending_request {
-                    // We already received the notification in select!, so directly peek
-                    if let Some(latest) = state.log_reader.peek_latest() {
-                        // Only update if we're in normal mode (don't override input prompts)
-                        if matches!(state.ui_mode, UiMode::Normal) {
-                            state.ui.debug_message = latest.into();
-                        }
+                // We already received the notification in select!, so directly peek
+                if let Some(latest) = state.log_reader.peek_latest() {
+                    // Only update if we're in normal mode (don't override input prompts)
+                    if matches!(state.ui_mode, UiMode::Normal) {
+                        state.ui.debug_message = latest.into();
                     }
                 }
             }

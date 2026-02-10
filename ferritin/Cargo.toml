@@ -21,13 +21,13 @@ path = "src/main.rs"
 ferritin-common = { path = "../ferritin-common", version = "0.3.0" }
 
 anyhow.workspace = true
-clap = { version = "4.5.56", features = ["derive", "cargo", "env"] }
+clap = { version = "4.5.57", features = ["derive", "cargo", "env"] }
 crossbeam-channel = "0.5"
 crossterm = "0.29"
 fieldwork = "0.4.6"
 log = "0.4.29"
+rayon = "1.11"
 env_logger = "0.11.8"
-owo-colors = { version = "4.2.3", features = ["supports-colors"] }
 pulldown-cmark = "0.13"
 ratatui = "0.30"
 regex = "1.12"
@@ -36,7 +36,7 @@ syntect = { version = "5.3", default-features = false, features = ["parsing", "d
 terminal_size = "0.4"
 thiserror = "2"
 unicode-width = "0.2.2"
-webbrowser = "1.0.6"
+webbrowser = "1.1.0"
 semver = "1.0.27"
 percent-encoding = "2.3"
 mimalloc = "0.1.48"
@@ -45,6 +45,6 @@ mimalloc = "0.1.48"
 syntect = { version = "5.3", default-features = false, features = ["parsing", "plist-load", "dump-load", "dump-create", "regex-onig"] }
 
 [dev-dependencies]
-insta = { version = "1.46.1", features = ["filters"] }
+insta = { version = "1.46.3", features = ["filters"] }
 paste = "1.0.15"
 strip-ansi-escapes = "0.2.1"

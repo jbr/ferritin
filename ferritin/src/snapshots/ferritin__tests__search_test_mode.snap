@@ -5,7 +5,9 @@ expression: "render_for_tests(Commands::search(\"trigger line-based truncation\"
 <title>Search results for 'trigger line-based truncation'</title>
 <list>
   <item><p>
-test-crate::TestTrait  (Trait) - score: 53.4
-    A trait for testing extremely long documentation that exceeds line limits.</p>
+test-crate::TestTrait  (Trait) - score: 1.3</p>
+<truncated level="single-line"><p>
+A trait for testing extremely long documentation that exceeds line limits.</p>
+This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
 </item>
 </list>

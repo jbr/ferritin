@@ -183,6 +183,12 @@ impl<'a> InteractiveState<'a> {
         }
     }
 
+    pub(super) fn set_debug_message(&mut self, message: impl Into<Cow<'static, str>>) {
+        if !self.loading.pending_request {
+            self.ui.debug_message = message.into();
+        }
+    }
+
     /// Apply a theme by name, rebuilding the interactive theme
     pub(super) fn apply_theme(&mut self, theme_name: &str) -> Result<(), ThemeError> {
         self.render_context.set_theme_name(theme_name)?;

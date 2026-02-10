@@ -5,5 +5,32 @@ expression: "render_for_tests(Commands::search(\"generic struct\"), OutputMode :
 Search results for 'generic struct'
 ================================================================================
 
-  ◦ test-crate::GenericStruct  (Struct) - score: 16.0
-    A generic struct for testing multi-paragraph documentation.
+  ◦ test-crate::GenericStruct  (Struct) - score: 0.5
+    A generic struct for testing multi-paragraph documentation. [...]
+
+  ◦ core::ops::Deref  (Trait) - score: 0.5
+    Used for immutable dereferencing operations, like *v. [...]
+
+  ◦ std::ops::Deref  (Trait) - score: 0.5
+    Used for immutable dereferencing operations, like *v. [...]
+
+  ◦ alloc::borrow::Borrow  (Trait) - score: 0.4
+    A trait for borrowing data. [...]
+
+  ◦ core::borrow::Borrow  (Trait) - score: 0.4
+    A trait for borrowing data. [...]
+
+  ◦ std::borrow::Borrow  (Trait) - score: 0.4
+    A trait for borrowing data. [...]
+
+  ◦ core::convert::Into  (Trait) - score: 0.4
+    A value-to-value conversion that consumes the input value. The opposite of From. [...]
+
+  ◦ std::convert::Into  (Trait) - score: 0.4
+    A value-to-value conversion that consumes the input value. The opposite of From. [...]
+
+  ◦ core::convert::AsMut  (Trait) - score: 0.4
+    Used to do a cheap mutable-to-mutable reference conversion. [...]
+
+  ◦ std::convert::AsMut  (Trait) - score: 0.4
+    Used to do a cheap mutable-to-mutable reference conversion. [...]

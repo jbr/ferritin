@@ -4,7 +4,7 @@ use crate::request::Request;
 use crate::state::RustdocTools;
 use crate::traits::WriteFmt;
 use anyhow::Result;
-use ferritin_common::search::indexer::SearchIndex;
+use ferritin_common::search::indexer::{BM25Scorer, SearchIndex};
 use mcplease::traits::{Tool, WithExamples};
 use mcplease::types::Example;
 use serde::{Deserialize, Serialize};
@@ -74,10 +74,12 @@ impl Tool<RustdocTools> for Search {
             }
         };
 
-        // Perform search
+        // Perform search with BM25 scoring
         let limit = self.limit.unwrap_or(10);
-        let mut results = index.search(&self.query).collect::<Vec<_>>();
-        results.sort_by(|(_, a), (_, b)| b.total_cmp(a));
+        let search_results = index.search(&self.query);
+        let mut scorer = BM25Scorer::new();
+        scorer.add(&self.crate_name, search_results);
+        let results = scorer.score();
 
         // Format results
         let mut output = String::new();
@@ -90,27 +92,29 @@ impl Tool<RustdocTools> for Search {
         if results.is_empty() {
             output.push_str("No results found.\n");
         } else {
-            let total_score: f32 = results.iter().map(|(_, score)| score).sum();
+            let total_score: f32 = results.iter().map(|r| r.score).sum();
             let mut cumulative_score = 0.0;
             let min_results = 1;
 
-            let top_score = results.first().map(|(_, score)| *score).unwrap_or(0.0);
+            let top_score = results.first().map(|r| r.score).unwrap_or(0.0);
             let mut prev_score = top_score;
 
-            for (i, (id, score)) in results.into_iter().take(limit).enumerate() {
+            for (i, result) in results.into_iter().take(limit).enumerate() {
                 if i >= min_results
-                    && (score / top_score < 0.05
-                        || score / prev_score < 0.5
+                    && (result.score / top_score < 0.05
+                        || result.score / prev_score < 0.5
                         || cumulative_score / total_score > 0.3)
                 {
                     break;
                 }
 
-                if let Some((item, path)) = request.get_item_from_id_path(&self.crate_name, id) {
-                    cumulative_score += score;
-                    prev_score = score;
+                if let Some((item, path)) =
+                    request.get_item_from_id_path(&self.crate_name, &result.id_path)
+                {
+                    cumulative_score += result.score;
+                    prev_score = result.score;
                     let path = path.join("::");
-                    let normalized_score = 100.0 * score / total_score;
+                    let normalized_score = 100.0 * result.score / total_score;
                     output.write_fmt(format_args!(
                         "• {path} ({:?}) - score: {normalized_score:.0}\n",
                         item.kind()
