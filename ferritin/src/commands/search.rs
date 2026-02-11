@@ -97,13 +97,12 @@ pub(crate) fn execute<'a>(
         .map(|r| r.score)
         .unwrap_or(1.0)
         .max(1.0);
-    let total_score: f32 = scored_results.iter().map(|r| r.score).sum();
 
     let mut nodes = vec![DocumentNode::Heading {
         level: HeadingLevel::Title,
         spans: vec![
             Span::plain("Search results for '"),
-            Span::plain(query.to_string()),
+            Span::emphasis(query.to_string()),
             Span::plain("'"),
         ],
     }];

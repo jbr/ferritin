@@ -2,12 +2,67 @@
 source: ferritin/src/tests.rs
 expression: "render_for_tests(Commands::search(\"trigger line-based truncation\"), OutputMode\n:: TestMode)"
 ---
-<title>Search results for 'trigger line-based truncation'</title>
+<title>Search results for '<emphasis>trigger line-based truncation</emphasis>'</title>
 <list>
   <item><p>
 test-crate::TestTrait  (Trait) - score: 100.0</p>
 <truncated level="single-line"><p>
 A trait for testing extremely long documentation that exceeds line limits.</p>
 This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
+</item>
+  <item><p>
+core::line  (Macro) - score: 35.2</p>
+<truncated level="single-line"><p>
+Expands to the line number on which it was invoked.</p>
+With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
+</item>
+  <item><p>
+std::line  (Macro) - score: 35.2</p>
+<truncated level="single-line"><p>
+Expands to the line number on which it was invoked.</p>
+With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
+</item>
+  <item><p>
+std::io  (Module) - score: 32.7</p>
+<truncated level="single-line"><p>
+Traits, helpers, and type definitions for core I/O functionality.</p>
+The <inline-code>std::io</inline-code> module when doing the <inline-code>Read</inline-code> and <inline-code>Write</inline-code> traits, which most general <elided chars="8722"/></truncated>
+</item>
+  <item><p>
+core::arch::x86::_mm_prefetch  (Function) - score: 30.1</p>
+<truncated level="single-line"><p>
+Fetch the cache line that contains address <inline-code>p</inline-code> using the given <inline-code>STRATEGY</inline-code>.</p>
+The <inline-code>STRATEGY</inline-code> must be <elided chars="1362"/></truncated>
+</item>
+  <item><p>
+std::arch::x86::_mm_prefetch  (Function) - score: 30.1</p>
+<truncated level="single-line"><p>
+Fetch the cache line that contains address <inline-code>p</inline-code> using the given <inline-code>STRATEGY</inline-code>.</p>
+The <inline-code>STRATEGY</inline-code> must be <elided chars="1362"/></truncated>
+</item>
+  <item><p>
+std::sync::Mutex  (Struct) - score: 28.7</p>
+<truncated level="single-line"><p>
+A mutual exclusion primitive useful for protecting shared data</p>
+This mutex will mutex can be<inline-code>new</inline-code> constructor. which represents through the RAII<inline-code>lock</inline-code> and <inline-code>try_lock</inline-code>, which guarantees that <elided chars="7197"/></truncated>
+</item>
+  <item><p>
+core::column  (Macro) - score: 28.6</p>
+<truncated level="single-line"><p>
+Expands to the column number at which it was invoked.</p>
+With <inline-code>line!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="885"/></truncated>
+</item>
+  <item><p>
+std::column  (Macro) - score: 28.6</p>
+<truncated level="single-line"><p>
+Expands to the column number at which it was invoked.</p>
+With <inline-code>line!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="885"/></truncated>
+</item>
+  <item><p>
+std::sync  (Module) - score: 27.4</p>
+<truncated level="single-line"><p>
+Useful synchronization primitives.</p>
+<section-heading>The need for synchronization</section-heading>
+Conceptually, a be executed on a program is <elided chars="5253"/></truncated>
 </item>
 </list>

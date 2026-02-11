@@ -194,7 +194,7 @@ Search indices are built lazily on first search and cached as `.index` files (rk
 
 ### Tokenization & Scoring
 
-Tokenization handles CamelCase, snake_case, and kebab-case splitting. Scoring uses standard TF-IDF with additive combination for multi-term queries.
+Tokenization handles CamelCase, snake_case, and kebab-case splitting. Scoring uses BM25 with global statistics aggregated across all searched crates for consistent ranking.
 
 ## Item Traversal - Transparent Re-export Handling
 
@@ -348,27 +348,13 @@ Lists available crates from all sources:
 
 ### search
 
-Multi-crate search with score-based ranking:
+Multi-crate search with BM25 scoring:
 
-1. **Determine crates to search:**
-   - If `--crate` specified: search single crate
-   - Otherwise: all crates from local/std sources
-
-2. **Build result set:**
-   - For each crate: `SearchIndex::load_or_build` (skips on failure)
-   - Search each index: returns `(id_path, score)`
-   - Collect all results as `(crate_name, id_path, score)` tuples
-
-3. **Global ranking:**
-   - Sort all results by score descending across all crates
-   - This enables finding the best match regardless of which crate it's in
-
-4. **Early stopping:**
-   - Results are filtered by score drop-off thresholds to show only relevant matches
-
-5. **Resolve items:**
-   - Use `Navigator::get_item_from_id_path` to get `DocRef`
-   - Show doc preview (first 2 lines)
+1. Determines crates to search (single crate if specified, or all from local/std sources)
+2. Calls `Navigator::search()` which parallelizes index loading and searching
+3. BM25 scorer aggregates global statistics (document frequencies, average document length) across all crates for consistent cross-crate ranking
+4. Results sorted by BM25 score descending, with early stopping thresholds
+5. Resolves items via `Navigator::get_item_from_id_path` and shows doc preview
 
 ## Markdown Rendering
 

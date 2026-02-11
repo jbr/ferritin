@@ -7,3 +7,30 @@ Search results for 'trigger line-based truncation'
 
   ◦ [test-crate::TestTrait](https://docs.rs/test-crate/0.1.0/test-crate/trait.TestTrait.html)  (Trait) - score: 100.0
     A trait for testing extremely long documentation that exceeds line limits. [...]
+
+  ◦ [core::line](http://docs.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 35.2
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ [std::line](http://docs.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 35.2
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ [std::io](http://docs.rust-lang.org/nightly/std/io/index.html)  (Module) - score: 32.7
+    Traits, helpers, and type definitions for core I/O functionality. [...]
+
+  ◦ [core::arch::x86::_mm_prefetch](http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.1
+    Fetch the cache line that contains address p using the given STRATEGY. [...]
+
+  ◦ [std::arch::x86::_mm_prefetch](http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.1
+    Fetch the cache line that contains address p using the given STRATEGY. [...]
+
+  ◦ [std::sync::Mutex](http://docs.rust-lang.org/nightly/std/sync/poison/mutex/struct.Mutex.html)  (Struct) - score: 28.7
+    A mutual exclusion primitive useful for protecting shared data [...]
+
+  ◦ [core::column](http://docs.rust-lang.org/nightly/core/macro.column.html)  (Macro) - score: 28.6
+    Expands to the column number at which it was invoked. [...]
+
+  ◦ [std::column](http://docs.rust-lang.org/nightly/core/macro.column.html)  (Macro) - score: 28.6
+    Expands to the column number at which it was invoked. [...]
+
+  ◦ [std::sync](http://docs.rust-lang.org/nightly/std/sync/index.html)  (Module) - score: 27.4
+    Useful synchronization primitives. [...]

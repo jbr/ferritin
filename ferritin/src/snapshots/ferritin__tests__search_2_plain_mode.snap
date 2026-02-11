@@ -8,29 +8,29 @@ Search results for 'generic struct'
   ◦ test-crate::GenericStruct  (Struct) - score: 100.0
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ core::ops::Deref  (Trait) - score: 95.1
+  ◦ core::borrow::Borrow  (Trait) - score: 87.0
+    A trait for borrowing data. [...]
+
+  ◦ std::borrow::Borrow  (Trait) - score: 87.0
+    A trait for borrowing data. [...]
+
+  ◦ alloc::borrow::Borrow  (Trait) - score: 87.0
+    A trait for borrowing data. [...]
+
+  ◦ core::clone::Clone  (Trait) - score: 83.2
+    A common trait that allows explicit creation of a duplicate value. [...]
+
+  ◦ std::clone::Clone  (Trait) - score: 83.2
+    A common trait that allows explicit creation of a duplicate value. [...]
+
+  ◦ core::hash  (Module) - score: 80.0
+    Generic hashing support. [...]
+
+  ◦ std::hash  (Module) - score: 80.0
+    Generic hashing support. [...]
+
+  ◦ core::ops::Deref  (Trait) - score: 80.0
     Used for immutable dereferencing operations, like *v. [...]
 
-  ◦ std::ops::Deref  (Trait) - score: 95.1
+  ◦ std::ops::Deref  (Trait) - score: 80.0
     Used for immutable dereferencing operations, like *v. [...]
-
-  ◦ core::borrow::Borrow  (Trait) - score: 92.8
-    A trait for borrowing data. [...]
-
-  ◦ std::borrow::Borrow  (Trait) - score: 92.8
-    A trait for borrowing data. [...]
-
-  ◦ alloc::borrow::Borrow  (Trait) - score: 92.8
-    A trait for borrowing data. [...]
-
-  ◦ core::convert::Into  (Trait) - score: 91.5
-    A value-to-value conversion that consumes the input value. The opposite of From. [...]
-
-  ◦ std::convert::Into  (Trait) - score: 91.5
-    A value-to-value conversion that consumes the input value. The opposite of From. [...]
-
-  ◦ core::convert::AsMut  (Trait) - score: 90.7
-    Used to do a cheap mutable-to-mutable reference conversion. [...]
-
-  ◦ std::convert::AsMut  (Trait) - score: 90.7
-    Used to do a cheap mutable-to-mutable reference conversion. [...]
