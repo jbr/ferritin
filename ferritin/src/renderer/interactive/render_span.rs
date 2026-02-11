@@ -19,6 +19,11 @@ impl<'a> InteractiveState<'a> {
         let mut style = self.style(span.style);
         style = style.add_modifier(modifier);
 
+        // Underline clickable spans to make them discoverable
+        if span.action.is_some() {
+            style = style.add_modifier(Modifier::UNDERLINED);
+        }
+
         let start_col = self.layout.pos.x;
         let start_row = self.layout.pos.y;
 
