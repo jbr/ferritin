@@ -23,12 +23,6 @@ Used for immutable dereferencing operations, like <inline-code>*v</inline-code>.
 In addition to being used (unary) <inline-code>*</inline-code> operator in immutable<inline-code>Deref</inline-code> is also used implicitly by the compiler in many "<inline-code>Deref</inline-code> coercion". In mutable contexts, <inline-code>DerefMut</inline-code> is used and mutable deref coercion <elided chars="4481"/></truncated>
 </item>
   <item><p>
-alloc::borrow::Borrow  (Trait) - score: 92.8</p>
-<truncated level="single-line"><p>
-A trait for borrowing data.</p>
-In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
-</item>
-  <item><p>
 core::borrow::Borrow  (Trait) - score: 92.8</p>
 <truncated level="single-line"><p>
 A trait for borrowing data.</p>
@@ -36,6 +30,12 @@ In Rust, it is common to provide different different use cases. For instance, st
 </item>
   <item><p>
 std::borrow::Borrow  (Trait) - score: 92.8</p>
+<truncated level="single-line"><p>
+A trait for borrowing data.</p>
+In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
+</item>
+  <item><p>
+alloc::borrow::Borrow  (Trait) - score: 92.8</p>
 <truncated level="single-line"><p>
 A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>

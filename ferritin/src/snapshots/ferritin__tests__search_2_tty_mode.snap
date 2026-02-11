@@ -14,13 +14,13 @@ Search results for 'generic struct'
   ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 95.1
     Used for immutable dereferencing operations, like *v. [...]
 
-  ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 92.8
-    A trait for borrowing data. [...]
-
   ◦ [core::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 92.8
     A trait for borrowing data. [...]
 
   ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 92.8
+    A trait for borrowing data. [...]
+
+  ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 92.8
     A trait for borrowing data. [...]
 
   ◦ [core::convert::Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)  (Trait) - score: 91.5

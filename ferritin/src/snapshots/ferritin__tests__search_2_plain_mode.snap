@@ -14,13 +14,13 @@ Search results for 'generic struct'
   ◦ std::ops::Deref  (Trait) - score: 95.1
     Used for immutable dereferencing operations, like *v. [...]
 
-  ◦ alloc::borrow::Borrow  (Trait) - score: 92.8
-    A trait for borrowing data. [...]
-
   ◦ core::borrow::Borrow  (Trait) - score: 92.8
     A trait for borrowing data. [...]
 
   ◦ std::borrow::Borrow  (Trait) - score: 92.8
+    A trait for borrowing data. [...]
+
+  ◦ alloc::borrow::Borrow  (Trait) - score: 92.8
     A trait for borrowing data. [...]
 
   ◦ core::convert::Into  (Trait) - score: 91.5
