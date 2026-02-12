@@ -154,14 +154,19 @@ impl<'a> InteractiveState<'a> {
                     return true;
                 }
 
-                // Scroll down
+                // Navigate down / scroll down
                 (KeyCode::Char('j'), _) | (KeyCode::Down, _) => {
-                    self.set_scroll_offset(self.viewport.scroll_offset.saturating_add(1));
+                    self.handle_navigate_down();
                 }
 
-                // Scroll up
+                // Navigate up / scroll up
                 (KeyCode::Char('k'), _) | (KeyCode::Up, _) => {
-                    self.set_scroll_offset(self.viewport.scroll_offset.saturating_sub(1));
+                    self.handle_navigate_up();
+                }
+
+                // Activate focused link
+                (KeyCode::Enter, _) | (KeyCode::Char(' '), _) => {
+                    self.handle_activate_focused_link();
                 }
 
                 // Page down
@@ -338,5 +343,217 @@ impl<'a> InteractiveState<'a> {
             }
         }
         false
+    }
+
+    /// Handle j/↓ key: navigate to next link or scroll down
+    ///
+    /// Implements seamless transition between link navigation and scrolling:
+    /// - When no link is focused (VirtualTop): Focus first visible link, or scroll if none
+    /// - When a link is focused and visible: Move to next visible link, or scroll to reveal more
+    /// - When scrolling reveals new links below: Automatically focus them (auto-focus behavior)
+    /// - When focused link is off-screen above (scrolled past): Re-enter by focusing first visible
+    /// - When focused link is off-screen below: Scroll towards it, focusing links as they appear
+    /// - When at bottom with no more links: Enter VirtualBottom state
+    ///
+    /// The auto-focus behavior ensures continuous j/k presses smoothly navigate through
+    /// all links in the document without the user needing to manually focus each new link.
+    fn handle_navigate_down(&mut self) {
+        use super::state::KeyboardCursor;
+
+        match self.viewport.keyboard_cursor {
+            KeyboardCursor::VirtualTop => {
+                // Try to focus first visible link
+                if let Some(first_idx) = self.first_visible_link() {
+                    self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                        action_index: first_idx,
+                    };
+                } else {
+                    // No visible links, just scroll down
+                    let new_offset = self.viewport.scroll_offset.saturating_add(1);
+                    self.set_scroll_offset(new_offset);
+                }
+            }
+            KeyboardCursor::Focused { action_index } => {
+                // Check if focused link is off-screen
+                if let Some(is_above) = self.is_link_off_screen(action_index) {
+                    if is_above {
+                        // Focused link is above viewport - re-enter from top
+                        // Moving away from focus, so immediately select first visible
+                        if let Some(first_idx) = self.first_visible_link() {
+                            self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                                action_index: first_idx,
+                            };
+                        }
+                    } else {
+                        // Focused link is below viewport - scroll down towards it
+                        // Moving towards focus, so scroll and focus new links if they appear
+                        self.set_scroll_offset(self.viewport.scroll_offset.saturating_add(1));
+                        // Focus first visible link (moving towards the off-screen focus)
+                        if let Some(first_idx) = self.first_visible_link() {
+                            self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                                action_index: first_idx,
+                            };
+                        }
+                    }
+                } else {
+                    // Focused link is visible - try to move to next visible link
+                    if let Some(next_idx) = self.next_visible_link(action_index) {
+                        self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                            action_index: next_idx,
+                        };
+                    } else {
+                        // No more visible links below - scroll down and watch for new links
+                        let old_offset = self.viewport.scroll_offset;
+                        self.set_scroll_offset(old_offset.saturating_add(1));
+
+                        // If we actually scrolled, check if a new link appeared
+                        if self.viewport.scroll_offset > old_offset {
+                            // Check if there's now a next visible link
+                            if let Some(next_idx) = self.next_visible_link(action_index) {
+                                // Auto-focus the newly visible link
+                                self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                                    action_index: next_idx,
+                                };
+                            }
+                            // Otherwise keep current focus (will scroll off-screen eventually)
+                        } else {
+                            // Couldn't scroll (at bottom) - enter virtual bottom state
+                            self.viewport.keyboard_cursor = KeyboardCursor::VirtualBottom;
+                        }
+                    }
+                }
+            }
+            KeyboardCursor::VirtualBottom => {
+                // Can't go further down
+            }
+        }
+    }
+
+    /// Handle k/↑ key: navigate to previous link or scroll up
+    ///
+    /// Mirror of handle_navigate_down, moving upward through the document:
+    /// - When no link is focused (VirtualTop): Do nothing (can't go above virtual top)
+    /// - When a link is focused and visible: Move to previous visible link, or scroll to reveal more
+    /// - When scrolling reveals new links above: Automatically focus them (auto-focus behavior)
+    /// - When focused link is off-screen below (scrolled past): Re-enter by focusing last visible
+    /// - When focused link is off-screen above: Scroll towards it, focusing links as they appear
+    /// - When at top with no more links: Enter VirtualTop state
+    /// - From VirtualBottom: Focus last visible link, or scroll if none
+    fn handle_navigate_up(&mut self) {
+        use super::state::KeyboardCursor;
+
+        match self.viewport.keyboard_cursor {
+            KeyboardCursor::VirtualTop => {
+                // Can't go higher than virtual top
+            }
+            KeyboardCursor::Focused { action_index } => {
+                // Check if focused link is off-screen
+                if let Some(is_above) = self.is_link_off_screen(action_index) {
+                    if is_above {
+                        // Focused link is above viewport - scroll up towards it
+                        // Moving towards focus, so scroll and focus new links if they appear
+                        self.set_scroll_offset(self.viewport.scroll_offset.saturating_sub(1));
+                        // Focus last visible link (moving towards the off-screen focus)
+                        if let Some(last_idx) = self.last_visible_link() {
+                            self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                                action_index: last_idx,
+                            };
+                        }
+                    } else {
+                        // Focused link is below viewport - re-enter from bottom
+                        // Moving away from focus, so immediately select last visible
+                        if let Some(last_idx) = self.last_visible_link() {
+                            self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                                action_index: last_idx,
+                            };
+                        }
+                    }
+                } else {
+                    // Focused link is visible - try to move to previous visible link
+                    if let Some(prev_idx) = self.prev_visible_link(action_index) {
+                        self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                            action_index: prev_idx,
+                        };
+                    } else {
+                        // No more visible links above - scroll up and watch for new links
+                        let old_offset = self.viewport.scroll_offset;
+                        self.set_scroll_offset(old_offset.saturating_sub(1));
+
+                        // If we actually scrolled, check if a new link appeared
+                        if self.viewport.scroll_offset < old_offset {
+                            // Check if there's now a prev visible link
+                            if let Some(prev_idx) = self.prev_visible_link(action_index) {
+                                // Auto-focus the newly visible link
+                                self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                                    action_index: prev_idx,
+                                };
+                            }
+                            // Otherwise keep current focus (will scroll off-screen eventually)
+                        } else {
+                            // Couldn't scroll (at top) - enter virtual top state
+                            self.viewport.keyboard_cursor = KeyboardCursor::VirtualTop;
+                        }
+                    }
+                }
+            }
+            KeyboardCursor::VirtualBottom => {
+                // Re-enter from bottom - focus last visible link
+                if let Some(last_idx) = self.last_visible_link() {
+                    self.viewport.keyboard_cursor = KeyboardCursor::Focused {
+                        action_index: last_idx,
+                    };
+                } else {
+                    // No visible links, just scroll up
+                    let new_offset = self.viewport.scroll_offset.saturating_sub(1);
+                    self.set_scroll_offset(new_offset);
+                }
+            }
+        }
+    }
+
+    /// Handle Enter/Space: activate the focused link
+    ///
+    /// Activates the currently focused link (if any), triggering the same action
+    /// as clicking it with the mouse. Navigation actions send a command to the
+    /// request thread and reset keyboard focus to VirtualTop for the new document.
+    /// ExpandBlock actions mutate the document in place and preserve focus.
+    /// Does nothing when in VirtualTop or VirtualBottom states.
+    fn handle_activate_focused_link(&mut self) {
+        use super::state::KeyboardCursor;
+
+        if let KeyboardCursor::Focused { action_index } = self.viewport.keyboard_cursor {
+            if let Some((_, action)) = self.render_cache.actions.get(action_index) {
+                let action = action.clone();
+
+                // Handle SelectTheme specially (same as mouse click)
+                if let crate::styled_string::TuiAction::SelectTheme(theme_name) = &action {
+                    let _ = self.apply_theme(theme_name);
+                    if let super::UiMode::ThemePicker {
+                        ref mut selected_index,
+                        ..
+                    } = self.ui_mode
+                    {
+                        let themes = crate::render_context::RenderContext::available_themes();
+                        if let Some(idx) = themes.iter().position(|t| t == theme_name.as_ref()) {
+                            *selected_index = idx;
+                        }
+                    }
+                    self.ui.debug_message = format!("Selected theme: {theme_name}").into();
+                } else {
+                    match super::events::handle_action(&mut self.document.document, action) {
+                        Some(command) => {
+                            let _ = self.cmd_tx.send(command);
+                            self.loading.start();
+                            // Reset keyboard cursor on navigation
+                            self.viewport.keyboard_cursor = KeyboardCursor::VirtualTop;
+                        }
+                        None => {
+                            // Action mutated document in place (e.g., ExpandBlock)
+                            self.viewport.cached_layout = None;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

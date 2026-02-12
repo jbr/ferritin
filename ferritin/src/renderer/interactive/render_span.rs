@@ -27,22 +27,33 @@ impl<'a> InteractiveState<'a> {
         let start_col = self.layout.pos.x;
         let start_row = self.layout.pos.y;
 
-        // Check if this span is hovered
-        let is_hovered = if span.action.is_some() {
-            self.viewport.cursor_pos.map_or_else(
+        // Determine if this span should be highlighted (by mouse or keyboard)
+        let should_highlight = if span.action.is_some() {
+            // Check mouse hover
+            let mouse_hover = self.viewport.cursor_pos.map_or_else(
                 || false,
                 |cursor| {
                     cursor.y == self.layout.pos.y
                         && cursor.x >= self.layout.pos.x
                         && cursor.x < self.layout.pos.x + display_width(&span.text) as u16
                 },
-            )
+            );
+
+            // Check keyboard focus - this action is about to be pushed, so its index will be actions.len()
+            let keyboard_focus = match self.viewport.keyboard_cursor {
+                super::state::KeyboardCursor::Focused { action_index } => {
+                    action_index == self.render_cache.actions.len()
+                }
+                _ => false,
+            };
+
+            mouse_hover || keyboard_focus
         } else {
             false
         };
 
-        // If hovered, invert colors
-        if is_hovered {
+        // If hovered or focused, invert colors
+        if should_highlight {
             style = style.add_modifier(Modifier::REVERSED);
         }
 

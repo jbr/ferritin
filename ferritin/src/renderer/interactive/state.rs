@@ -58,6 +58,35 @@ pub(super) struct DocumentLayoutCache {
     pub document_height: u16,
 }
 
+/// Keyboard cursor state for link navigation
+///
+/// Models the cursor as always being in one of three positions:
+/// - **VirtualTop**: Conceptually above all content (initial state, or scrolled up past first link)
+/// - **Focused**: On a specific link (which may be visible or off-screen due to mouse scrolling)
+/// - **VirtualBottom**: Conceptually below all content (scrolled down past last link)
+///
+/// The cursor position is preserved across scrolling (mouse/Page Up/Down) and only
+/// resets to VirtualTop when navigating to a new document.
+///
+/// Navigation keys (j/k) move through this state machine:
+/// - From VirtualTop: j focuses first visible link (if any)
+/// - From Focused: j/k move to adjacent links or scroll to reveal more
+/// - From VirtualBottom: k focuses last visible link (if any)
+///
+/// When focus is off-screen (scrolled away via mouse), navigation "re-enters" from
+/// the appropriate edge: moving away from off-screen focus jumps to nearest visible link,
+/// while moving towards it scrolls and focuses newly revealed links.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum KeyboardCursor {
+    /// Positioned conceptually above the document (initial state)
+    VirtualTop,
+    /// Focused on a specific link (index into render_cache.actions)
+    /// The link may be visible or scrolled off-screen
+    Focused { action_index: usize },
+    /// Positioned conceptually below the document
+    VirtualBottom,
+}
+
 /// Viewport and scroll tracking
 #[derive(Debug)]
 pub(super) struct ViewportState {
@@ -70,6 +99,8 @@ pub(super) struct ViewportState {
     /// Scrollbar hover/drag state
     pub scrollbar_hovered: bool,
     pub scrollbar_dragging: bool,
+    /// Keyboard navigation cursor
+    pub keyboard_cursor: KeyboardCursor,
 }
 
 /// Rendering state computed each frame
@@ -166,6 +197,7 @@ impl<'a> InteractiveState<'a> {
                 last_viewport_height: 0,
                 scrollbar_hovered: false,
                 scrollbar_dragging: false,
+                keyboard_cursor: KeyboardCursor::VirtualTop,
             },
             render_cache: RenderCache {
                 actions: Vec::new(),
@@ -238,5 +270,107 @@ impl<'a> InteractiveState<'a> {
             .cached_layout
             .map(|cache| cache.document_height > self.viewport.last_viewport_height)
             .unwrap_or(false)
+    }
+
+    /// Check if a link (by action index) is visible in the current viewport
+    ///
+    /// Used to determine whether keyboard-focused links need special handling
+    /// (off-screen links trigger re-entry logic when navigated to).
+    pub(super) fn is_link_visible(&self, action_index: usize) -> Option<bool> {
+        let (rect, _) = self.render_cache.actions.get(action_index)?;
+        let viewport_top = self.viewport.scroll_offset;
+        let viewport_bottom = viewport_top + self.viewport.last_viewport_height;
+
+        // Link is visible if its rect overlaps with the viewport
+        Some(rect.y < viewport_bottom && rect.bottom() > viewport_top)
+    }
+
+    /// Determine if a focused link is above or below the viewport
+    ///
+    /// Returns Some(true) if above, Some(false) if below, None if visible or invalid index.
+    /// Used to implement "re-entry" behavior: when navigating while focus is off-screen,
+    /// the cursor conceptually "snaps to the edge" before processing the navigation key.
+    pub(super) fn is_link_off_screen(&self, action_index: usize) -> Option<bool> {
+        let (rect, _) = self.render_cache.actions.get(action_index)?;
+        let viewport_top = self.viewport.scroll_offset;
+        let viewport_bottom = viewport_top + self.viewport.last_viewport_height;
+
+        if rect.bottom() <= viewport_top {
+            Some(true) // Above viewport
+        } else if rect.y >= viewport_bottom {
+            Some(false) // Below viewport
+        } else {
+            None // Visible
+        }
+    }
+
+    /// Find the first visible link index
+    ///
+    /// Used for re-entry from VirtualTop or when focused link is off-screen above.
+    pub(super) fn first_visible_link(&self) -> Option<usize> {
+        let viewport_top = self.viewport.scroll_offset;
+        let viewport_bottom = viewport_top + self.viewport.last_viewport_height;
+
+        self.render_cache
+            .actions
+            .iter()
+            .enumerate()
+            .find(|(_, (rect, _))| rect.y >= viewport_top && rect.y < viewport_bottom)
+            .map(|(idx, _)| idx)
+    }
+
+    /// Find the last visible link index
+    ///
+    /// Used for re-entry from VirtualBottom or when focused link is off-screen below.
+    pub(super) fn last_visible_link(&self) -> Option<usize> {
+        let viewport_top = self.viewport.scroll_offset;
+        let viewport_bottom = viewport_top + self.viewport.last_viewport_height;
+
+        self.render_cache
+            .actions
+            .iter()
+            .enumerate()
+            .rev()
+            .find(|(_, (rect, _))| rect.y >= viewport_top && rect.y < viewport_bottom)
+            .map(|(idx, _)| idx)
+    }
+
+    /// Find the next visible link below the current one
+    ///
+    /// Used for j/k navigation and auto-focus: when scrolling down reveals a link
+    /// below the current focus, we automatically focus it for seamless navigation.
+    pub(super) fn next_visible_link(&self, current_index: usize) -> Option<usize> {
+        let viewport_top = self.viewport.scroll_offset;
+        let viewport_bottom = viewport_top + self.viewport.last_viewport_height;
+
+        self.render_cache
+            .actions
+            .iter()
+            .enumerate()
+            .skip(current_index + 1)
+            .find(|(_, (rect, _))| rect.y >= viewport_top && rect.y < viewport_bottom)
+            .map(|(idx, _)| idx)
+    }
+
+    /// Find the previous visible link above the current one
+    ///
+    /// Mirror of next_visible_link for upward navigation and auto-focus.
+    pub(super) fn prev_visible_link(&self, current_index: usize) -> Option<usize> {
+        let viewport_top = self.viewport.scroll_offset;
+        let viewport_bottom = viewport_top + self.viewport.last_viewport_height;
+
+        self.render_cache
+            .actions
+            .iter()
+            .enumerate()
+            .take(current_index)
+            .rev()
+            .find(|(_, (rect, _))| rect.y >= viewport_top && rect.y < viewport_bottom)
+            .map(|(idx, _)| idx)
+    }
+
+    /// Reset keyboard cursor (called on navigation to new document)
+    pub(super) fn reset_keyboard_cursor(&mut self) {
+        self.viewport.keyboard_cursor = KeyboardCursor::VirtualTop;
     }
 }

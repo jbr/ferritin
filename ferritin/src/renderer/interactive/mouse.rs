@@ -196,7 +196,44 @@ impl<'a> super::InteractiveState<'a> {
         if self.loading.pending_request {
             return;
         }
-        // Update debug message with hover info
+
+        use super::state::KeyboardCursor;
+
+        // Check keyboard focus first (takes priority per spec)
+        match self.viewport.keyboard_cursor {
+            KeyboardCursor::Focused { action_index } => {
+                if let Some((_, action)) = self.render_cache.actions.get(action_index) {
+                    self.ui.debug_message = match action {
+                        TuiAction::Navigate { doc_ref, url: _ } => {
+                            if let Some(path) = doc_ref.path() {
+                                format!("Navigate: {path} (⏎ to activate)").into()
+                            } else if let Some(name) = doc_ref.name() {
+                                format!("Navigate: {name} (⏎ to activate)").into()
+                            } else {
+                                "Navigate: <unknown> (⏎ to activate)".into()
+                            }
+                        }
+                        TuiAction::NavigateToPath { path, url: _ } => {
+                            format!("Go to: {} (⏎ to activate)", path).into()
+                        }
+                        TuiAction::ExpandBlock(path) => {
+                            format!("Expand: {:?} (⏎ to activate)", path.indices()).into()
+                        }
+                        TuiAction::OpenUrl(url) => format!("Open: {} (⏎ to activate)", url).into(),
+                        TuiAction::SelectTheme(theme_name) => {
+                            format!("Preview theme: {} (⏎ to activate)", theme_name).into()
+                        }
+                    };
+                    return; // Keyboard focus takes priority
+                }
+                // Focused on invalid action_index - fall through to mouse hover
+            }
+            KeyboardCursor::VirtualTop | KeyboardCursor::VirtualBottom => {
+                // Not focused on any link - fall through to mouse hover
+            }
+        }
+
+        // No keyboard focus (or invalid focus) - show mouse hover or default message
         if self.ui.mouse_enabled {
             if let Some(pos) = self.viewport.cursor_pos {
                 if let Some((_, action)) = self

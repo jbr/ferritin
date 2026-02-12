@@ -29,6 +29,8 @@ impl<'a> InteractiveState<'a> {
                 self.set_scroll_offset(0);
                 // Invalidate layout cache when document changes
                 self.viewport.cached_layout = None;
+                // Reset keyboard cursor to virtual top when navigating to new document
+                self.reset_keyboard_cursor();
 
                 // Add to history if we got an entry
                 if let Some(new_entry) = entry {
