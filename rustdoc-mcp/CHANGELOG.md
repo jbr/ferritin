@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.3.0...rustdoc-mcp-v0.4.0) - 2026-02-12
+
+### Added
+
+- add a notion of authority based on inbound link count to search
+
+### Other
+
+- update architecture doc to reflect search algorithm
+- cache a working set of search indexes in memory on Navigator
+
 ## [0.3.0](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.2.0...rustdoc-mcp-v0.3.0) - 2026-02-10
 
 ### Added

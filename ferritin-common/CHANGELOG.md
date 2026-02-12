@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.4.0...ferritin-common-v0.5.0) - 2026-02-12
+
+### Added
+
+- add a notion of authority based on inbound link count to search
+
+### Fixed
+
+- tune search because searching std for vec wasn't finding std::vec::Vec
+
+### Other
+
+- cache a working set of search indexes in memory on Navigator
+
 ## [0.4.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.3.0...ferritin-common-v0.4.0) - 2026-02-10
 
 ### Added

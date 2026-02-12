@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0](https://github.com/jbr/ferritin/compare/ferritin-v0.5.0...ferritin-v0.6.0) - 2026-02-12
+
+### Added
+
+- add a notion of authority based on inbound link count to search
+
+### Fixed
+
+- use .0 precision for display because there's a strange fp discrepancy in ci
+- use .0 precision because there's a strange floating point difference in CI
+- drop early-stopping logic from search
+- update nightly snapshots
+- always underline links
+
+### Other
+
+- update architecture doc to reflect search algorithm
+- cache a working set of search indexes in memory on Navigator
+
 ## [0.5.0](https://github.com/jbr/ferritin/compare/ferritin-v0.4.0...ferritin-v0.5.0) - 2026-02-10
 
 ### Added
