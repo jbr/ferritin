@@ -5,32 +5,32 @@ expression: "render_for_tests(Commands::search(\"generic struct\"), OutputMode :
 Search results for 'generic struct'
 ================================================================================
 
-  ◦ test-crate::GenericStruct  (Struct) - score: 100.0
+  ◦ test-crate::GenericStruct  (Struct) - score: 100
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ core::borrow::Borrow  (Trait) - score: 87.0
+  ◦ core::borrow::Borrow  (Trait) - score: 87
     A trait for borrowing data. [...]
 
-  ◦ std::borrow::Borrow  (Trait) - score: 87.0
+  ◦ std::borrow::Borrow  (Trait) - score: 87
     A trait for borrowing data. [...]
 
-  ◦ alloc::borrow::Borrow  (Trait) - score: 87.0
+  ◦ alloc::borrow::Borrow  (Trait) - score: 87
     A trait for borrowing data. [...]
 
-  ◦ core::clone::Clone  (Trait) - score: 83.2
+  ◦ core::clone::Clone  (Trait) - score: 83
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ std::clone::Clone  (Trait) - score: 83.2
+  ◦ std::clone::Clone  (Trait) - score: 83
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ core::hash  (Module) - score: 80.0
+  ◦ core::hash  (Module) - score: 80
     Generic hashing support. [...]
 
-  ◦ std::hash  (Module) - score: 80.0
+  ◦ std::hash  (Module) - score: 80
     Generic hashing support. [...]
 
-  ◦ core::ops::Deref  (Trait) - score: 80.0
+  ◦ core::ops::Deref  (Trait) - score: 80
     Used for immutable dereferencing operations, like *v. [...]
 
-  ◦ std::ops::Deref  (Trait) - score: 80.0
+  ◦ std::ops::Deref  (Trait) - score: 80
     Used for immutable dereferencing operations, like *v. [...]

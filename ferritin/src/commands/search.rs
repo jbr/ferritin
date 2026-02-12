@@ -125,7 +125,7 @@ pub(crate) fn execute<'a>(
                 Span::plain(path).with_target(Some(item)),
                 Span::plain(" "),
                 Span::plain(format!(
-                    " ({:?}) - score: {:.1}",
+                    " ({:?}) - score: {:.0}",
                     item.kind(),
                     normalized_score
                 )),
