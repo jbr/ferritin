@@ -91,12 +91,24 @@ pub(crate) fn execute<'a>(
         }
     }
 
-    // Get top score for normalization (so best result = 100)
+    // Get top values for normalization (so best result = 100 in each metric)
     let top_score = scored_results
         .first()
         .map(|r| r.score)
         .unwrap_or(1.0)
         .max(1.0);
+
+    let top_relevance = scored_results
+        .iter()
+        .map(|r| r.relevance)
+        .fold(0.0f32, |a, b| a.max(b))
+        .max(1.0);
+
+    let top_authority = scored_results
+        .iter()
+        .map(|r| r.authority)
+        .fold(0.0f32, |a, b| a.max(b))
+        .max(0.01); // Avoid division by zero
 
     let mut nodes = vec![DocumentNode::Heading {
         level: HeadingLevel::Title,
@@ -120,14 +132,18 @@ pub(crate) fn execute<'a>(
         {
             let path = path_segments.join("::");
             let normalized_score = 100.0 * result.score / top_score;
+            let normalized_relevance = 100.0 * result.relevance / top_relevance;
+            let normalized_authority = 100.0 * result.authority / top_authority;
 
             let mut content = vec![DocumentNode::paragraph(vec![
                 Span::plain(path).with_target(Some(item)),
                 Span::plain(" "),
                 Span::plain(format!(
-                    " ({:?}) - score: {:.0}",
+                    " ({:?}) - score: {:.0} (relevance: {:.0}, authority: {:.0})",
                     item.kind(),
-                    normalized_score
+                    normalized_score,
+                    normalized_relevance,
+                    normalized_authority
                 )),
             ])];
 

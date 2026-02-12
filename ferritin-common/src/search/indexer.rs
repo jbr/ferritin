@@ -3,21 +3,108 @@ use rkyv::rancor::Error;
 use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize};
 use rustc_hash::FxHashMap;
 use rustc_hash::FxHasher;
-use rustdoc_types::{Item, ItemEnum, StructKind, Trait};
+use rustdoc_types::{Item, ItemEnum, ItemSummary, StructKind, Trait};
 use std::cmp::Reverse;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::hash::{Hash, Hasher};
 use std::io::{Read, Write};
+use std::ops::AddAssign;
 use std::path::Path;
 use std::time::SystemTime;
 
 use crate::{
+    crate_name::CrateName,
     doc_ref::DocRef,
     navigator::{Navigator, Suggestion},
 };
 use std::collections::HashMap;
+
+/// Represents either a resolved Item or an unresolved ItemSummary for link counting
+#[derive(Clone, Copy, Debug)]
+enum ItemOrSummary<'a> {
+    Item(DocRef<'a, Item>),
+    Summary(DocRef<'a, ItemSummary>),
+}
+
+impl<'a> ItemOrSummary<'a> {
+    /// Try to convert to a resolved Item, filtering by visited crates.
+    /// Returns None if the item's crate is not in the visited set.
+    fn try_to_item(self, visited_crates: &HashSet<CrateName>) -> Option<DocRef<'a, Item>> {
+        match self {
+            ItemOrSummary::Item(item) => {
+                let crate_name: CrateName = item.crate_docs().name().into();
+                if visited_crates.contains(&crate_name) {
+                    Some(item)
+                } else {
+                    None
+                }
+            }
+            ItemOrSummary::Summary(summary) => {
+                // Get crate name without loading
+                let crate_name: &str = if let Some(external) = summary.external_crate() {
+                    external.crate_name()
+                } else {
+                    summary.crate_docs().name()
+                };
+
+                // Check if we're indexing this crate
+                let crate_name: CrateName = crate_name.into();
+                if !visited_crates.contains(&crate_name) {
+                    return None;
+                }
+
+                // Now safe to load and resolve
+                let target_crate = if let Some(external) = summary.external_crate() {
+                    external.load().unwrap_or(summary.crate_docs())
+                } else {
+                    summary.crate_docs()
+                };
+
+                target_crate
+                    .root_item(summary.navigator())
+                    .find_by_path(summary.path.iter().skip(1))
+            }
+        }
+    }
+}
+
+impl PartialEq for ItemOrSummary<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (ItemOrSummary::Item(a), ItemOrSummary::Item(b)) => {
+                a.crate_docs().name() == b.crate_docs().name() && a.id == b.id
+            }
+            (ItemOrSummary::Summary(a), ItemOrSummary::Summary(b)) => {
+                a.crate_docs().name() == b.crate_docs().name()
+                    && a.crate_id == b.crate_id
+                    && a.path == b.path
+            }
+            _ => false,
+        }
+    }
+}
+
+impl Eq for ItemOrSummary<'_> {}
+
+impl std::hash::Hash for ItemOrSummary<'_> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        match self {
+            ItemOrSummary::Item(item) => {
+                0.hash(state); // discriminant
+                item.crate_docs().name().hash(state);
+                item.id.hash(state);
+            }
+            ItemOrSummary::Summary(summary) => {
+                1.hash(state); // discriminant
+                summary.crate_docs().name().hash(state);
+                summary.crate_id.hash(state);
+                summary.path.hash(state);
+            }
+        }
+    }
+}
 
 // Newtypes for clarity
 #[derive(
@@ -54,7 +141,17 @@ struct TermHash(u64);
 struct DocumentId(usize);
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Archive, RkyvSerialize, RkyvDeserialize,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Archive,
+    RkyvSerialize,
+    RkyvDeserialize,
+    Default,
 )]
 #[repr(transparent)]
 struct DocumentTermCount(usize);
@@ -86,25 +183,72 @@ struct Terms<'a> {
     shortest_paths: BTreeMap<(u64, u32), Vec<u32>>,
     document_lengths: BTreeMap<(u64, u32), DocumentLength>,
     crate_hashes: FxHashMap<&'a str, TermHash>,
+    // Authority scoring fields
+    visited_crates: HashSet<CrateName<'a>>,
+    link_counts: HashMap<ItemOrSummary<'a>, usize>,
+    docref_by_id: HashMap<(u64, u32), DocRef<'a, Item>>,
+}
+
+impl AddAssign for DocumentTermCount {
+    fn add_assign(&mut self, rhs: Self) {
+        self.0 += rhs.0
+    }
 }
 
 impl<'a> Terms<'a> {
     fn add(&mut self, word: &str, count: DocumentTermCount, id: (u64, u32)) {
-        let term_hash = hash_term(word);
-        let entry = self
-            .term_docs
-            .entry(term_hash)
+        self.term_docs
+            .entry(hash_term(word))
             .or_default()
             .entry(id)
-            .or_insert(DocumentTermCount(0));
-        entry.0 += count.0;
+            .or_default()
+            .add_assign(count);
     }
 
     fn finalize(self) -> SearchableTerms {
+        log::debug!("Filtering link counts to visited crates only");
+        log::debug!("Visited crates: {:?}", self.visited_crates);
+        log::debug!(
+            "Total link targets before filtering: {}",
+            self.link_counts.len()
+        );
+
+        // Two-pass: filter link_counts to only items in visited crates
+        let mut filtered_count = 0;
+        let mut skipped_count = 0;
+        let filtered_link_counts: HashMap<DocRef<Item>, usize> = self
+            .link_counts
+            .into_iter()
+            .filter_map(|(target, count)| {
+                if let Some(item) = target.try_to_item(&self.visited_crates) {
+                    filtered_count += 1;
+                    Some((item, count))
+                } else {
+                    skipped_count += 1;
+                    if skipped_count <= 5 {
+                        log::debug!("Skipped target: {:?}", target);
+                    }
+                    None
+                }
+            })
+            .collect();
+
+        log::debug!(
+            "Filtered: {} kept, {} skipped",
+            filtered_count,
+            skipped_count
+        );
+
+        log::debug!(
+            "Authority: {} unique items with incoming links after filtering",
+            filtered_link_counts.len()
+        );
+
         let mut documents = vec![];
         let mut id_set = BTreeMap::new();
         let mut total_document_length = 0;
 
+        // Build document list and mapping
         for (id, id_path) in self.shortest_paths {
             let doc_length = self
                 .document_lengths
@@ -118,6 +262,29 @@ impl<'a> Terms<'a> {
                 length: doc_length,
             });
         }
+
+        // Build authority scores vector aligned with documents
+        let mut authority_scores = vec![0; documents.len()];
+        let mut max_authority = 0;
+        let mut authority_count = 0;
+
+        for ((crate_hash, item_id), &doc_idx) in &id_set {
+            // Look up the DocRef for this document and then its link count
+            if let Some(docref) = self.docref_by_id.get(&(*crate_hash, *item_id)) {
+                if let Some(&count) = filtered_link_counts.get(docref) {
+                    authority_scores[doc_idx] = count;
+                    max_authority = max_authority.max(count);
+                    authority_count += 1;
+                }
+            }
+        }
+
+        log::debug!(
+            "Authority: max={}, assigned to {} of {} documents",
+            max_authority,
+            authority_count,
+            documents.len()
+        );
 
         let terms = self
             .term_docs
@@ -145,6 +312,8 @@ impl<'a> Terms<'a> {
             terms,
             documents,
             total_document_length,
+            authority_scores,
+            max_authority,
         }
     }
 
@@ -168,6 +337,12 @@ impl<'a> Terms<'a> {
             }
             return;
         }
+
+        // Track visited crate
+        self.visited_crates.insert(crate_name.into());
+
+        // Store DocRef for later authority score lookup
+        self.docref_by_id.insert(id, item);
 
         self.add_for_item(item, id);
 
@@ -221,6 +396,29 @@ impl<'a> Terms<'a> {
         }
 
         self.document_lengths.insert(id, DocumentLength(doc_length));
+
+        // Count outgoing links for authority scoring
+        for link_id in item.links.values() {
+            let target = if let Some(item) = item.get(link_id) {
+                // Same-crate item
+                ItemOrSummary::Item(item)
+            } else if let Some(summary) = item.crate_docs().paths.get(link_id) {
+                // External item summary
+                ItemOrSummary::Summary(item.build_ref(summary))
+            } else {
+                // Missing link (methods/assoc items) - skip
+                continue;
+            };
+
+            *self.link_counts.entry(target).or_insert(0) += 1;
+        }
+
+        log::trace!(
+            "Counted {} links from {} in crate {}",
+            item.links.len(),
+            item.name().unwrap_or("<unnamed>"),
+            item.crate_docs().name()
+        );
     }
 
     fn add_terms(&mut self, text: &str, id: (u64, u32), weight: usize) -> usize {
@@ -248,6 +446,11 @@ struct SearchableTerms {
     terms: BTreeMap<TermHash, Vec<Posting>>,
     documents: Vec<DocumentInfo>,
     total_document_length: usize,
+    /// Authority scores: number of incoming links for each document
+    /// Indexed by DocumentId
+    authority_scores: Vec<usize>,
+    /// Maximum authority score in this crate (for normalization)
+    max_authority: usize,
 }
 
 /// A search index for a single crate
@@ -306,6 +509,7 @@ impl SearchableTerms {
                     id_path: doc_info.path.0.clone(),
                     doc_length: doc_info.length.0,
                     term_counts,
+                    authority: self.authority_scores.get(doc_id.0).copied().unwrap_or(0),
                 })
             })
             .collect();
@@ -315,6 +519,7 @@ impl SearchableTerms {
             total_doc_length: self.total_document_length,
             term_doc_freqs,
             results,
+            max_authority: self.max_authority,
         }
     }
 }
@@ -419,6 +624,8 @@ pub struct SearchResults<'a> {
     pub term_doc_freqs: HashMap<&'a str, usize>,
     /// Matching documents with their term counts
     pub results: Vec<SearchResult<'a>>,
+    /// Maximum authority score in this crate (for normalization)
+    pub max_authority: usize,
 }
 
 /// A single document that matches the search query
@@ -429,6 +636,8 @@ pub struct SearchResult<'a> {
     pub doc_length: usize,
     /// Which query terms matched and their weighted counts
     pub term_counts: HashMap<&'a str, usize>,
+    /// Authority score (incoming link count)
+    pub authority: usize,
 }
 
 /// A scored search result from BM25 scoring
@@ -437,8 +646,12 @@ pub struct ScoredResult<'a> {
     pub crate_name: &'a str,
     /// Path to the item (rustdoc IDs)
     pub id_path: Vec<u32>,
-    /// BM25 score
+    /// Final combined score (used for sorting)
     pub score: f32,
+    /// BM25 relevance score (how well it matches the query)
+    pub relevance: f32,
+    /// Authority score (normalized 0.0-1.0, based on incoming links)
+    pub authority: f32,
 }
 
 /// BM25 scorer for combining results from multiple crates
@@ -522,10 +735,12 @@ impl<'a> BM25Scorer<'a> {
         // Score all results
         let mut scored: Vec<ScoredResult<'a>> = Vec::new();
         for (crate_name, results) in self.crate_results {
+            let max_authority = results.max_authority.max(1); // Avoid division by zero
+
             for result in results.results {
                 let doc_len_norm = result.doc_length as f32 / avgdl;
 
-                let score: f32 = result
+                let relevance: f32 = result
                     .term_counts
                     .iter()
                     .map(|(term, count)| {
@@ -537,17 +752,26 @@ impl<'a> BM25Scorer<'a> {
                     })
                     .sum();
 
+                // Normalize authority by crate's max authority
+                let authority = result.authority as f32 / max_authority as f32;
+
+                // Combine relevance and authority
+                // Using multiplicative boost: score = relevance * (1.0 + authority)
+                let score = relevance * (1.0 + authority);
+
                 scored.push(ScoredResult {
                     crate_name,
                     id_path: result.id_path,
                     score,
+                    relevance,
+                    authority,
                 });
             }
         }
 
         log::debug!("Sorting {} scored results", scored.len());
 
-        // Sort by score descending
+        // Sort by combined score (descending)
         scored.sort_by(|a, b| b.score.total_cmp(&a.score));
 
         scored

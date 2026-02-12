@@ -1,8 +1,12 @@
-use crate::{Navigator, RustdocData};
+use crate::{Navigator, RustdocData, navigator::parse_docsrs_url};
 use fieldwork::Fieldwork;
-use rustdoc_types::{Id, Item, ItemEnum, ItemKind, ItemSummary, MacroKind, ProcMacro, Use};
+use rustdoc_types::{
+    ExternalCrate, Id, Item, ItemEnum, ItemKind, ItemSummary, MacroKind, ProcMacro, Use,
+};
+use semver::VersionReq;
 use std::{
     fmt::{self, Debug, Display, Formatter},
+    hash::{Hash, Hasher},
     ops::Deref,
 };
 
@@ -25,6 +29,13 @@ impl<'a, T> PartialEq for DocRef<'a, T> {
 }
 
 impl<'a, T> Eq for DocRef<'a, T> {}
+
+impl Hash for DocRef<'_, Item> {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.crate_docs.name().hash(state);
+        self.id.hash(state);
+    }
+}
 
 impl<'a, T> From<&DocRef<'a, T>> for &'a RustdocData {
     fn from(value: &DocRef<'a, T>) -> Self {
@@ -79,7 +90,7 @@ impl<'a> DocRef<'a, Item> {
             .find(|c| c.name().is_some_and(|n| n == child_name))
     }
 
-    pub(crate) fn find_by_path<'b>(
+    pub fn find_by_path<'b>(
         &self,
         mut iter: impl Iterator<Item = &'b String>,
     ) -> Option<DocRef<'a, Item>> {
@@ -176,6 +187,46 @@ impl<'a, T> DocRef<'a, T> {
 impl<'a> DocRef<'a, Use> {
     pub fn name(self) -> &'a str {
         self.name.unwrap_or(&self.item.name)
+    }
+}
+
+impl<'a> DocRef<'a, ItemSummary> {
+    /// Get the external crate this item summary refers to, if any.
+    /// Returns None if crate_id == 0 (same crate).
+    pub fn external_crate(&self) -> Option<DocRef<'a, ExternalCrate>> {
+        if self.crate_id == 0 {
+            return None;
+        }
+
+        let external = self.crate_docs().external_crates.get(&self.crate_id)?;
+        Some(self.build_ref(external))
+    }
+}
+
+impl<'a> DocRef<'a, ExternalCrate> {
+    /// Get the canonical name of this external crate.
+    /// Parses html_root_url if available, falls back to the name field.
+    pub fn crate_name(&self) -> &'a str {
+        if let Some(url) = &self.item.html_root_url {
+            if let Some((name, _)) = parse_docsrs_url(url) {
+                return name;
+            }
+        }
+        &self.item.name
+    }
+
+    /// Load the RustdocData for this external crate.
+    pub fn load(&self) -> Option<&'a RustdocData> {
+        let name = self.crate_name();
+        let version_req = if let Some(url) = &self.item.html_root_url {
+            parse_docsrs_url(url)
+                .and_then(|(_, version)| VersionReq::parse(&format!("={version}")).ok())
+                .unwrap_or(VersionReq::STAR)
+        } else {
+            VersionReq::STAR
+        };
+
+        self.navigator().load_crate(name, &version_req)
     }
 }
 

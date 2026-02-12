@@ -5,32 +5,32 @@ expression: "render_for_tests(Commands::search(\"trigger line-based truncation\"
 Search results for 'trigger line-based truncation'
 ================================================================================
 
-  ◦ test-crate::TestTrait  (Trait) - score: 100
+  ◦ test-crate::TestTrait  (Trait) - score: 100 (relevance: 100, authority: 0)
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
-  ◦ core::line  (Macro) - score: 35
-    Expands to the line number on which it was invoked. [...]
-
-  ◦ std::line  (Macro) - score: 35
-    Expands to the line number on which it was invoked. [...]
-
-  ◦ std::io  (Module) - score: 33
+  ◦ std::io  (Module) - score: 36 (relevance: 33, authority: 9)
     Traits, helpers, and type definitions for core I/O functionality. [...]
 
-  ◦ core::arch::x86::_mm_prefetch  (Function) - score: 30
+  ◦ core::line  (Macro) - score: 35 (relevance: 35, authority: 0)
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ std::line  (Macro) - score: 35 (relevance: 35, authority: 0)
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ core::arch::x86::_mm_prefetch  (Function) - score: 30 (relevance: 30, authority: 0)
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ std::arch::x86::_mm_prefetch  (Function) - score: 30
+  ◦ std::arch::x86::_mm_prefetch  (Function) - score: 30 (relevance: 30, authority: 0)
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ std::sync::Mutex  (Struct) - score: 29
+  ◦ alloc::collections::BTreeMap  (Struct) - score: 30 (relevance: 17, authority: 80)
+    An ordered map based on a B-Tree. [...]
+
+  ◦ std::sync::Mutex  (Struct) - score: 30 (relevance: 29, authority: 4)
     A mutual exclusion primitive useful for protecting shared data [...]
 
-  ◦ core::column  (Macro) - score: 29
+  ◦ core::column  (Macro) - score: 29 (relevance: 29, authority: 0)
     Expands to the column number at which it was invoked. [...]
 
-  ◦ std::column  (Macro) - score: 29
+  ◦ std::column  (Macro) - score: 29 (relevance: 29, authority: 0)
     Expands to the column number at which it was invoked. [...]
-
-  ◦ std::sync  (Module) - score: 27
-    Useful synchronization primitives. [...]

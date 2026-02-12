@@ -5,32 +5,32 @@ expression: "render_for_tests(Commands::search(\"generic struct\"), OutputMode :
 Search results for 'generic struct'
 ================================================================================
 
-  ◦ test-crate::GenericStruct  (Struct) - score: 100
+  ◦ test-crate::GenericStruct  (Struct) - score: 100 (relevance: 100, authority: 0)
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ core::borrow::Borrow  (Trait) - score: 87
+  ◦ alloc::borrow::Borrow  (Trait) - score: 93 (relevance: 87, authority: 7)
     A trait for borrowing data. [...]
 
-  ◦ std::borrow::Borrow  (Trait) - score: 87
+  ◦ core::borrow::Borrow  (Trait) - score: 87 (relevance: 87, authority: 0)
     A trait for borrowing data. [...]
 
-  ◦ alloc::borrow::Borrow  (Trait) - score: 87
+  ◦ std::borrow::Borrow  (Trait) - score: 87 (relevance: 87, authority: 0)
     A trait for borrowing data. [...]
 
-  ◦ core::clone::Clone  (Trait) - score: 83
+  ◦ core::clone::Clone  (Trait) - score: 84 (relevance: 83, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ std::clone::Clone  (Trait) - score: 83
+  ◦ std::clone::Clone  (Trait) - score: 84 (relevance: 83, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ core::hash  (Module) - score: 80
-    Generic hashing support. [...]
-
-  ◦ std::hash  (Module) - score: 80
-    Generic hashing support. [...]
-
-  ◦ core::ops::Deref  (Trait) - score: 80
+  ◦ core::ops::Deref  (Trait) - score: 81 (relevance: 80, authority: 1)
     Used for immutable dereferencing operations, like *v. [...]
 
-  ◦ std::ops::Deref  (Trait) - score: 80
+  ◦ std::ops::Deref  (Trait) - score: 81 (relevance: 80, authority: 1)
     Used for immutable dereferencing operations, like *v. [...]
+
+  ◦ core::hash  (Module) - score: 80 (relevance: 80, authority: 0)
+    Generic hashing support. [...]
+
+  ◦ std::hash  (Module) - score: 80 (relevance: 80, authority: 0)
+    Generic hashing support. [...]

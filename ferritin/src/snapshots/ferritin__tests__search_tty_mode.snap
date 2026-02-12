@@ -5,32 +5,35 @@ expression: "render_for_tests(Commands::search(\"trigger line-based truncation\"
 Search results for 'trigger line-based truncation'
 ================================================================================
 
-  ◦ [test-crate::TestTrait](https://docs.rs/test-crate/0.1.0/test-crate/trait.TestTrait.html)  (Trait) - score: 100
+  ◦ [test-crate::TestTrait](https://docs.rs/test-crate/0.1.0/test-crate/trait.TestTrait.html)  (Trait) - score: 100 (relevance: 100, authority: 0)
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
-  ◦ [core::line](http://docs.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 35
-    Expands to the line number on which it was invoked. [...]
-
-  ◦ [std::line](http://docs.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 35
-    Expands to the line number on which it was invoked. [...]
-
-  ◦ [std::io](http://docs.rust-lang.org/nightly/std/io/index.html)  (Module) - score: 33
+  ◦ [std::io](http://docs.rust-lang.org/nightly/std/io/index.html)  (Module) - score: 36 (relevance: 33, authority: 9)
     Traits, helpers, and type definitions for core I/O functionality. [...]
 
-  ◦ [core::arch::x86::_mm_prefetch](http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30
+  ◦ [core::line](http://docs.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 35 (relevance: 35, authority: 0)
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ [std::line](http://docs.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 35 (relevance: 35, authority: 0)
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ [core::arch::x86::_mm_prefetch](http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30 (relevance: 30,
+    authority: 0)
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ [std::arch::x86::_mm_prefetch](http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30
+  ◦ [std::arch::x86::_mm_prefetch](http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30 (relevance: 30,
+    authority: 0)
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ [std::sync::Mutex](http://docs.rust-lang.org/nightly/std/sync/poison/mutex/struct.Mutex.html)  (Struct) - score: 29
+  ◦ [alloc::collections::BTreeMap](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html)  (Struct) - score: 30 (relevance: 17,
+    authority: 80)
+    An ordered map based on a [B-Tree](https://en.wikipedia.org/wiki/B-tree). [...]
+
+  ◦ [std::sync::Mutex](http://docs.rust-lang.org/nightly/std/sync/poison/mutex/struct.Mutex.html)  (Struct) - score: 30 (relevance: 29, authority: 4)
     A mutual exclusion primitive useful for protecting shared data [...]
 
-  ◦ [core::column](http://docs.rust-lang.org/nightly/core/macro.column.html)  (Macro) - score: 29
+  ◦ [core::column](http://docs.rust-lang.org/nightly/core/macro.column.html)  (Macro) - score: 29 (relevance: 29, authority: 0)
     Expands to the column number at which it was invoked. [...]
 
-  ◦ [std::column](http://docs.rust-lang.org/nightly/core/macro.column.html)  (Macro) - score: 29
+  ◦ [std::column](http://docs.rust-lang.org/nightly/core/macro.column.html)  (Macro) - score: 29 (relevance: 29, authority: 0)
     Expands to the column number at which it was invoked. [...]
-
-  ◦ [std::sync](http://docs.rust-lang.org/nightly/std/sync/index.html)  (Module) - score: 27
-    Useful synchronization primitives. [...]
