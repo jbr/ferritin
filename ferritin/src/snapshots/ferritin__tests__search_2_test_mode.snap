@@ -2,66 +2,66 @@
 source: ferritin/src/tests.rs
 expression: "render_for_tests(Commands::search(\"generic struct\"), OutputMode :: TestMode)"
 ---
-<title>Search results for 'generic struct'</title>
+<title>Search results for '<emphasis>generic struct</emphasis>'</title>
 <list>
   <item><p>
-test-crate::GenericStruct  (Struct) - score: 100.0</p>
+test-crate::GenericStruct  (Struct) - score: 100</p>
 <truncated level="single-line"><p>
 A generic struct for testing multi-paragraph documentation.</p>
 This struct and provides a <elided chars="401"/></truncated>
 </item>
   <item><p>
-core::ops::Deref  (Trait) - score: 95.1</p>
+core::borrow::Borrow  (Trait) - score: 87</p>
+<truncated level="single-line"><p>
+A trait for borrowing data.</p>
+In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
+</item>
+  <item><p>
+std::borrow::Borrow  (Trait) - score: 87</p>
+<truncated level="single-line"><p>
+A trait for borrowing data.</p>
+In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
+</item>
+  <item><p>
+alloc::borrow::Borrow  (Trait) - score: 87</p>
+<truncated level="single-line"><p>
+A trait for borrowing data.</p>
+In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
+</item>
+  <item><p>
+core::clone::Clone  (Trait) - score: 83</p>
+<truncated level="single-line"><p>
+A common trait that allows explicit creation of a duplicate value.</p>
+Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4423"/></truncated>
+</item>
+  <item><p>
+std::clone::Clone  (Trait) - score: 83</p>
+<truncated level="single-line"><p>
+A common trait that allows explicit creation of a duplicate value.</p>
+Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4423"/></truncated>
+</item>
+  <item><p>
+core::hash  (Module) - score: 80</p>
+<truncated level="single-line"><p>
+Generic hashing support.</p>
+This module provides a generic way to compute the hash of a value. Hashes are most commonly used with <inline-code>HashMap</inline-code> and <inline-code>HashSet</inline-code>. <elided chars="1346"/></truncated>
+</item>
+  <item><p>
+std::hash  (Module) - score: 80</p>
+<truncated level="single-line"><p>
+Generic hashing support.</p>
+This module provides a generic way to compute the hash of a value. Hashes are most commonly used with <inline-code>HashMap</inline-code> and <inline-code>HashSet</inline-code>. <elided chars="1346"/></truncated>
+</item>
+  <item><p>
+core::ops::Deref  (Trait) - score: 80</p>
 <truncated level="single-line"><p>
 Used for immutable dereferencing operations, like <inline-code>*v</inline-code>.</p>
 In addition to being used (unary) <inline-code>*</inline-code> operator in immutable<inline-code>Deref</inline-code> is also used implicitly by the compiler in many "<inline-code>Deref</inline-code> coercion". In mutable contexts, <inline-code>DerefMut</inline-code> is used and mutable deref coercion <elided chars="4481"/></truncated>
 </item>
   <item><p>
-std::ops::Deref  (Trait) - score: 95.1</p>
+std::ops::Deref  (Trait) - score: 80</p>
 <truncated level="single-line"><p>
 Used for immutable dereferencing operations, like <inline-code>*v</inline-code>.</p>
 In addition to being used (unary) <inline-code>*</inline-code> operator in immutable<inline-code>Deref</inline-code> is also used implicitly by the compiler in many "<inline-code>Deref</inline-code> coercion". In mutable contexts, <inline-code>DerefMut</inline-code> is used and mutable deref coercion <elided chars="4481"/></truncated>
-</item>
-  <item><p>
-core::borrow::Borrow  (Trait) - score: 92.8</p>
-<truncated level="single-line"><p>
-A trait for borrowing data.</p>
-In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
-</item>
-  <item><p>
-std::borrow::Borrow  (Trait) - score: 92.8</p>
-<truncated level="single-line"><p>
-A trait for borrowing data.</p>
-In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
-</item>
-  <item><p>
-alloc::borrow::Borrow  (Trait) - score: 92.8</p>
-<truncated level="single-line"><p>
-A trait for borrowing data.</p>
-In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
-</item>
-  <item><p>
-core::convert::Into  (Trait) - score: 91.5</p>
-<truncated level="single-line"><p>
-A value-to-value conversion that consumes the input value. The opposite of <inline-code>From</inline-code>.</p>
- <elided chars="1829"/></truncated>
-</item>
-  <item><p>
-std::convert::Into  (Trait) - score: 91.5</p>
-<truncated level="single-line"><p>
-A value-to-value conversion that consumes the input value. The opposite of <inline-code>From</inline-code>.</p>
- <elided chars="1829"/></truncated>
-</item>
-  <item><p>
-core::convert::AsMut  (Trait) - score: 90.7</p>
-<truncated level="single-line"><p>
-Used to do a cheap mutable-to-mutable reference conversion.</p>
-This trait is<inline-code>AsRef</inline-code> but used for references. If you implement <inline-code>From</inline-code> with type <inline-code>&mut T</inline-code> or write a custom <elided chars="3913"/></truncated>
-</item>
-  <item><p>
-std::convert::AsMut  (Trait) - score: 90.7</p>
-<truncated level="single-line"><p>
-Used to do a cheap mutable-to-mutable reference conversion.</p>
-This trait is<inline-code>AsRef</inline-code> but used for references. If you implement <inline-code>From</inline-code> with type <inline-code>&mut T</inline-code> or write a custom <elided chars="3913"/></truncated>
 </item>
 </list>

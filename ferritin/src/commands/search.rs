@@ -97,43 +97,27 @@ pub(crate) fn execute<'a>(
         .map(|r| r.score)
         .unwrap_or(1.0)
         .max(1.0);
-    let total_score: f32 = scored_results.iter().map(|r| r.score).sum();
 
     let mut nodes = vec![DocumentNode::Heading {
         level: HeadingLevel::Title,
         spans: vec![
             Span::plain("Search results for '"),
-            Span::plain(query.to_string()),
+            Span::emphasis(query.to_string()),
             Span::plain("'"),
         ],
     }];
 
-    // Display results with early stopping based on score thresholds
-    let min_results = 1;
-    let mut cumulative_score = 0.0;
-    let mut prev_score = top_score;
+    // Display up to `limit` results
     let mut list_items = vec![];
 
     for (i, result) in scored_results.into_iter().enumerate() {
-        // Early stopping: stop if we've shown enough results and scores are dropping significantly
-        if i >= min_results && i >= limit {
-            break;
-        }
-
-        if i >= min_results
-            && (result.score / top_score < 0.05
-                || result.score / prev_score < 0.5
-                || cumulative_score / total_score > 0.3)
-        {
+        if i >= limit {
             break;
         }
 
         if let Some((item, path_segments)) =
             request.get_item_from_id_path(result.crate_name, &result.id_path)
         {
-            cumulative_score += result.score;
-            prev_score = result.score;
-
             let path = path_segments.join("::");
             let normalized_score = 100.0 * result.score / top_score;
 
@@ -141,7 +125,7 @@ pub(crate) fn execute<'a>(
                 Span::plain(path).with_target(Some(item)),
                 Span::plain(" "),
                 Span::plain(format!(
-                    " ({:?}) - score: {:.1}",
+                    " ({:?}) - score: {:.0}",
                     item.kind(),
                     normalized_score
                 )),

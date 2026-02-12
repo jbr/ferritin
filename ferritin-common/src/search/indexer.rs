@@ -203,12 +203,21 @@ impl<'a> Terms<'a> {
     fn add_for_item(&mut self, item: DocRef<'a, Item>, id: (u64, u32)) {
         let mut doc_length = 0;
 
+        // Item name gets very high weight - when someone searches for "vec",
+        // they almost certainly want the Vec struct, not its methods
         if let Some(name) = item.name() {
-            doc_length += self.add_terms(name, id, 2);
+            doc_length += self.add_terms(name, id, 20);
         }
 
         if let Some(docs) = &item.docs {
-            doc_length += self.add_terms(docs, id, 1);
+            // First paragraph (up to first blank line) gets extra weight
+            // as it's usually the item's summary/description
+            if let Some((first_para, rest)) = docs.split_once("\n\n") {
+                doc_length += self.add_terms(first_para, id, 3);
+                doc_length += self.add_terms(rest, id, 1);
+            } else {
+                doc_length += self.add_terms(docs, id, 3);
+            }
         }
 
         self.document_lengths.insert(id, DocumentLength(doc_length));
@@ -443,8 +452,13 @@ impl<'a> BM25Scorer<'a> {
     /// Create a new BM25 scorer with default parameters
     pub fn new() -> Self {
         Self {
+            // k1 controls term frequency saturation (1.2 is standard)
             k1: 1.2,
-            b: 0.75,
+            // b controls document length normalization
+            // Set to 0 to disable length penalty entirely.
+            // In documentation, longer documents (like Vec's comprehensive docs)
+            // are often MORE relevant than short focused docs (like methods).
+            b: 0.0,
             crate_results: Vec::new(),
         }
     }
