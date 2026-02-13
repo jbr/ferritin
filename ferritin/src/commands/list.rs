@@ -1,7 +1,7 @@
 use crate::request::Request;
 use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span};
 
-pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool) {
+pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool, Option<&'a str>) {
     let mut nodes = vec![DocumentNode::Heading {
         level: HeadingLevel::Title,
         spans: vec![Span::plain("Available crates:")],
@@ -19,6 +19,12 @@ pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool) {
     );
 
     available_crates.sort_by(|a, b| a.name().cmp(b.name()));
+
+    // Find the default crate if any
+    let default_crate = available_crates
+        .iter()
+        .find(|c| c.is_default_crate())
+        .map(|c| c.name());
 
     // If no local project, show helpful message
     if request.local_source().is_none() {
@@ -93,5 +99,5 @@ pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool) {
         });
     }
 
-    (Document::from(nodes), false)
+    (Document::from(nodes), false, default_crate)
 }

@@ -64,9 +64,18 @@ impl<'a> InteractiveState<'a> {
                     }
                 },
                 KeyCode::Tab => {
-                    // Toggle search scope (only in Search mode)
+                    // Toggle search scope (only in Search mode and only if there's a crate to scope to)
                     if let InputMode::Search { all_crates, .. } = input_mode {
-                        *all_crates = !*all_crates;
+                        // Only allow toggling if there's actually a current crate
+                        let has_crate = self
+                            .document
+                            .history
+                            .current()
+                            .and_then(|entry| entry.crate_name())
+                            .is_some();
+                        if has_crate {
+                            *all_crates = !*all_crates;
+                        }
                     }
                 }
                 KeyCode::Enter => {
@@ -241,9 +250,17 @@ impl<'a> InteractiveState<'a> {
 
                 // Enter Search mode
                 (KeyCode::Char('s'), _) => {
+                    // Default to current crate only if there is one
+                    let has_crate = self
+                        .document
+                        .history
+                        .current()
+                        .and_then(|entry| entry.crate_name())
+                        .is_some();
+
                     self.ui_mode = UiMode::Input(InputMode::Search {
                         buffer: String::new(),
-                        all_crates: false, // Default to current crate
+                        all_crates: !has_crate, // Search all crates if no current crate
                     });
                 }
 

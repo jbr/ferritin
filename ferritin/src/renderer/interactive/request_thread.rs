@@ -67,8 +67,8 @@ pub(super) fn request_thread_loop<'a>(
             }
 
             UiCommand::List => {
-                let (list_doc, _is_error) = list::execute(request);
-                let entry = HistoryEntry::List;
+                let (list_doc, _is_error, default_crate) = list::execute(request);
+                let entry = HistoryEntry::List { default_crate };
 
                 let _ = resp_tx.send(RequestResponse::Document {
                     doc: list_doc,

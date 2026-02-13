@@ -31,23 +31,29 @@ impl<'a> InteractiveState<'a> {
             UiMode::Input(InputMode::Search {
                 buffer, all_crates, ..
             }) => {
+                // Get current crate name for search scope display
+                let current_crate = self
+                    .document
+                    .history
+                    .current()
+                    .and_then(|entry| entry.crate_name());
+
                 let scope = if *all_crates {
                     "all crates".to_string()
                 } else {
-                    // Get current crate name for search scope display
-                    let current_crate = self
-                        .document
-                        .history
-                        .current()
-                        .and_then(|entry| entry.crate_name());
                     current_crate
                         .map(|c| c.to_string())
                         .unwrap_or_else(|| "current crate".to_string())
                 };
-                (
-                    format!("Search in {}: {}", scope, buffer).into(),
-                    Some("[tab] toggle scope"),
-                )
+
+                // Only show toggle hint if there's a crate to toggle to
+                let hint = if current_crate.is_some() {
+                    Some("[tab] toggle scope")
+                } else {
+                    None
+                };
+
+                (format!("Search in {}: {}", scope, buffer).into(), hint)
             }
         };
 

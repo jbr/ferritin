@@ -21,7 +21,10 @@ pub enum HistoryEntry<'a> {
         crate_name: Option<String>,
     },
     /// List crates page
-    List,
+    List {
+        /// The default crate (if any) - used for scoped search
+        default_crate: Option<&'a str>,
+    },
 }
 
 impl Display for HistoryEntry<'_> {
@@ -45,7 +48,7 @@ impl Display for HistoryEntry<'_> {
                     }
                 }
             }
-            HistoryEntry::List => f.write_str("List"),
+            HistoryEntry::List { .. } => f.write_str("List"),
         }
     }
 }
@@ -69,7 +72,7 @@ impl<'a> HistoryEntry<'a> {
         match self {
             HistoryEntry::Item(item) => Some(item.crate_docs().name()),
             HistoryEntry::Search { crate_name, .. } => crate_name.as_deref(),
-            HistoryEntry::List => None,
+            HistoryEntry::List { default_crate } => default_crate.as_deref(),
         }
     }
 
@@ -82,7 +85,7 @@ impl<'a> HistoryEntry<'a> {
                 crate_name: crate_name.as_ref().map(|c| Cow::Owned(c.clone())),
                 limit: 20,
             },
-            HistoryEntry::List => UiCommand::List,
+            HistoryEntry::List { .. } => UiCommand::List,
         }
     }
 }

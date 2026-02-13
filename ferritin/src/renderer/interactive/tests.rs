@@ -116,7 +116,9 @@ fn test_history_navigation() {
     assert!(!state.document.history.can_go_forward());
 
     // Add first entry
-    state.document.history.push(HistoryEntry::List);
+    state.document.history.push(HistoryEntry::List {
+        default_crate: None,
+    });
     // Still can't go back (only one entry, at index 0)
     assert!(!state.document.history.can_go_back());
     assert!(!state.document.history.can_go_forward());

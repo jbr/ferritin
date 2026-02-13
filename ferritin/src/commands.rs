@@ -135,8 +135,9 @@ impl Commands {
                 (doc, is_error, history_entry)
             }
             Commands::List => {
-                let (doc, is_error) = list::execute(request);
-                (doc, is_error, Some(HistoryEntry::List))
+                let (doc, is_error, default_crate) = list::execute(request);
+                let history_entry = Some(HistoryEntry::List { default_crate });
+                (doc, is_error, history_entry)
             }
         }
     }
