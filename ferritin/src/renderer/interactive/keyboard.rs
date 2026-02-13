@@ -400,6 +400,15 @@ impl<'a> InteractiveState<'a> {
                             self.viewport.keyboard_cursor = KeyboardCursor::Focused {
                                 action_index: first_idx,
                             };
+                        } else {
+                            // No visible links - continue scrolling down
+                            let old_offset = self.viewport.scroll_offset;
+                            self.set_scroll_offset(old_offset.saturating_add(1));
+                            if self.viewport.scroll_offset == old_offset {
+                                // Couldn't scroll (at bottom) - enter virtual bottom
+                                self.viewport.keyboard_cursor = KeyboardCursor::VirtualBottom;
+                            }
+                            // Otherwise keep current focus
                         }
                     } else {
                         // Focused link is below viewport - scroll down towards it
@@ -483,6 +492,15 @@ impl<'a> InteractiveState<'a> {
                             self.viewport.keyboard_cursor = KeyboardCursor::Focused {
                                 action_index: last_idx,
                             };
+                        } else {
+                            // No visible links - continue scrolling up
+                            let old_offset = self.viewport.scroll_offset;
+                            self.set_scroll_offset(old_offset.saturating_sub(1));
+                            if self.viewport.scroll_offset == old_offset {
+                                // Couldn't scroll (at top) - enter virtual top
+                                self.viewport.keyboard_cursor = KeyboardCursor::VirtualTop;
+                            }
+                            // Otherwise keep current focus
                         }
                     }
                 } else {
