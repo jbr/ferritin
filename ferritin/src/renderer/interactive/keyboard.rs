@@ -15,8 +15,10 @@ impl<'a> InteractiveState<'a> {
         key: KeyEvent,
         terminal: &mut Terminal<impl Backend + Write>,
     ) -> bool {
-        // Always allow Escape to exit help, cancel input mode, or quit
-        if key.code == KeyCode::Esc {
+        // Always allow Escape (or C-g) to exit help, cancel input mode, or quit
+        if key.code == KeyCode::Esc
+            || (key.code == KeyCode::Char('g') && key.modifiers == KeyModifiers::CONTROL)
+        {
             match std::mem::replace(&mut self.ui_mode, UiMode::Normal) {
                 UiMode::Help => {
                     // Already set to Normal by replace
@@ -164,12 +166,16 @@ impl<'a> InteractiveState<'a> {
                 }
 
                 // Navigate down / scroll down
-                (KeyCode::Char('j'), _) | (KeyCode::Down, _) => {
+                (KeyCode::Char('j'), _)
+                | (KeyCode::Down, _)
+                | (KeyCode::Char('n'), KeyModifiers::CONTROL) => {
                     self.handle_navigate_down();
                 }
 
                 // Navigate up / scroll up
-                (KeyCode::Char('k'), _) | (KeyCode::Up, _) => {
+                (KeyCode::Char('k'), _)
+                | (KeyCode::Up, _)
+                | (KeyCode::Char('p'), KeyModifiers::CONTROL) => {
                     self.handle_navigate_up();
                 }
 
@@ -179,7 +185,9 @@ impl<'a> InteractiveState<'a> {
                 }
 
                 // Page down
-                (KeyCode::Char('d'), KeyModifiers::CONTROL) | (KeyCode::PageDown, _) => {
+                (KeyCode::Char('d'), KeyModifiers::CONTROL)
+                | (KeyCode::Char('v'), KeyModifiers::CONTROL)
+                | (KeyCode::PageDown, _) => {
                     let Ok(size) = terminal.size() else {
                         return false;
                     };
@@ -188,7 +196,9 @@ impl<'a> InteractiveState<'a> {
                 }
 
                 // Page up
-                (KeyCode::Char('u'), KeyModifiers::CONTROL) | (KeyCode::PageUp, _) => {
+                (KeyCode::Char('u'), KeyModifiers::CONTROL)
+                | (KeyCode::Char('v'), KeyModifiers::ALT)
+                | (KeyCode::PageUp, _) => {
                     let Ok(size) = terminal.size() else {
                         return false;
                     };
@@ -237,12 +247,14 @@ impl<'a> InteractiveState<'a> {
                 }
 
                 // Jump to top
-                (KeyCode::Home, _) => {
+                (KeyCode::Home, _) | (KeyCode::Char('<'), KeyModifiers::ALT) => {
                     self.set_scroll_offset(0);
                 }
 
                 // Jump to bottom (will clamp to actual max)
-                (KeyCode::Char('G'), KeyModifiers::SHIFT) | (KeyCode::End, _) => {
+                (KeyCode::Char('G'), KeyModifiers::SHIFT)
+                | (KeyCode::End, _)
+                | (KeyCode::Char('>'), KeyModifiers::ALT) => {
                     self.set_scroll_offset(u16::MAX); // Large number, will clamp to actual max
                 }
 
@@ -254,7 +266,7 @@ impl<'a> InteractiveState<'a> {
                 }
 
                 // Enter Search mode
-                (KeyCode::Char('s'), _) => {
+                (KeyCode::Char('s'), _) | (KeyCode::Char('/'), _) => {
                     // Default to current crate only if there is one
                     let has_crate = self
                         .document
@@ -331,7 +343,7 @@ impl<'a> InteractiveState<'a> {
                 }
 
                 // Navigate back
-                (KeyCode::Left, _) => {
+                (KeyCode::Left, _) | (KeyCode::Backspace, _) => {
                     if let Some(entry) = self.document.history.go_back() {
                         // Send command from history entry (non-blocking)
                         let _ = self.cmd_tx.send(entry.to_command());
