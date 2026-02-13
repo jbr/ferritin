@@ -219,7 +219,7 @@ impl<'a> Iterator for ChildItems<'a> {
                 ChildItems::Use(use_item_option @ Some(_), id_iter @ None, include_use) => {
                     let use_item = use_item_option.take()?;
 
-                    let name = use_item.name();
+                    let name = use_item.use_name();
 
                     let source_item = use_item
                         .id
