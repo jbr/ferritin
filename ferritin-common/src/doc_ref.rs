@@ -185,7 +185,7 @@ impl<'a, T> DocRef<'a, T> {
 }
 
 impl<'a> DocRef<'a, Use> {
-    pub fn name(self) -> &'a str {
+    pub fn use_name(self) -> &'a str {
         self.name.unwrap_or(&self.item.name)
     }
 }
