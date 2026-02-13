@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.5.0...ferritin-common-v0.6.0) - 2026-02-13
+
+### Added
+
+- exclude fenced blocks from search indexing
+
+### Fixed
+
+- [**breaking**] DocRef<'a, Use>::name and DocRef<'a, Item>::name collision
+
+### Other
+
+- Merge pull request #85 from jbr/no-indexing-code-examples
+
 ## [0.5.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.4.0...ferritin-common-v0.5.0) - 2026-02-12
 
 ### Added

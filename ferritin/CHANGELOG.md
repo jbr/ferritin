@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0](https://github.com/jbr/ferritin/compare/ferritin-v0.6.0...ferritin-v0.7.0) - 2026-02-13
+
+### Added
+
+- exclude fenced blocks from search indexing
+
+### Fixed
+
+- address issue where scrolling was broken in screens with no links
+- improve handling of workspaces with no default crate root
+
+### Other
+
+- Merge pull request #88 from jbr/scroll-bug
+- Merge pull request #86 from jbr/default-search-when-no-crate-root
+
 ## [0.6.0](https://github.com/jbr/ferritin/compare/ferritin-v0.5.0...ferritin-v0.6.0) - 2026-02-12
 
 ### Added

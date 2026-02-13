@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.4.0...rustdoc-mcp-v0.5.0) - 2026-02-13
+
+### Added
+
+- exclude fenced blocks from search indexing
+
 ## [0.4.0](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.3.0...rustdoc-mcp-v0.4.0) - 2026-02-12
 
 ### Added
