@@ -9,29 +9,30 @@ Search results for 'generic struct'
     authority: 0)
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 93 (relevance: 87, authority: 7)
+  ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 91 (relevance: 85, authority: 7)
     A trait for borrowing data. [...]
 
-  ◦ [core::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 87 (relevance: 87, authority: 0)
+  ◦ [core::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 85 (relevance: 85, authority: 0)
     A trait for borrowing data. [...]
 
-  ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 87 (relevance: 87, authority: 0)
+  ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 85 (relevance: 85, authority: 0)
     A trait for borrowing data. [...]
 
-  ◦ [core::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 84 (relevance: 83, authority: 1)
+  ◦ [core::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 83 (relevance: 82, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 84 (relevance: 83, authority: 1)
+  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 83 (relevance: 82, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [core::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 81 (relevance: 80, authority: 1)
+  ◦ [core::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 80 (relevance: 79, authority: 1)
     Used for immutable dereferencing operations, like *v. [...]
 
-  ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 81 (relevance: 80, authority: 1)
+  ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 80 (relevance: 79, authority: 1)
     Used for immutable dereferencing operations, like *v. [...]
 
-  ◦ [core::hash](http://docs.rust-lang.org/nightly/core/hash/index.html)  (Module) - score: 80 (relevance: 80, authority: 0)
-    Generic hashing support. [...]
+  ◦ [test-crate::GenericEnum](https://docs.rs/test-crate/0.1.0/test-crate/enum.GenericEnum.html)  (Enum) - score: 77 (relevance: 58, authority: 33)
+    A generic enum for testing [...]
 
-  ◦ [std::hash](http://docs.rust-lang.org/nightly/std/hash/index.html)  (Module) - score: 80 (relevance: 80, authority: 0)
-    Generic hashing support. [...]
+  ◦ [core::mem::ManuallyDrop](http://docs.rust-lang.org/nightly/core/mem/manually_drop/struct.ManuallyDrop.html)  (Struct) - score: 76 (relevance: 76, authority: 1)
+    A wrapper to inhibit the compiler from automatically calling T’s destructor.
+    This wrapper is 0-cost. [...]

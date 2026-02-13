@@ -8,29 +8,29 @@ Search results for 'generic struct'
   ◦ test-crate::GenericStruct  (Struct) - score: 100 (relevance: 100, authority: 0)
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ alloc::borrow::Borrow  (Trait) - score: 93 (relevance: 87, authority: 7)
+  ◦ alloc::borrow::Borrow  (Trait) - score: 91 (relevance: 85, authority: 7)
     A trait for borrowing data. [...]
 
-  ◦ core::borrow::Borrow  (Trait) - score: 87 (relevance: 87, authority: 0)
+  ◦ core::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0)
     A trait for borrowing data. [...]
 
-  ◦ std::borrow::Borrow  (Trait) - score: 87 (relevance: 87, authority: 0)
+  ◦ std::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0)
     A trait for borrowing data. [...]
 
-  ◦ core::clone::Clone  (Trait) - score: 84 (relevance: 83, authority: 1)
+  ◦ core::clone::Clone  (Trait) - score: 83 (relevance: 82, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ std::clone::Clone  (Trait) - score: 84 (relevance: 83, authority: 1)
+  ◦ std::clone::Clone  (Trait) - score: 83 (relevance: 82, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ core::ops::Deref  (Trait) - score: 81 (relevance: 80, authority: 1)
+  ◦ core::ops::Deref  (Trait) - score: 80 (relevance: 79, authority: 1)
     Used for immutable dereferencing operations, like *v. [...]
 
-  ◦ std::ops::Deref  (Trait) - score: 81 (relevance: 80, authority: 1)
+  ◦ std::ops::Deref  (Trait) - score: 80 (relevance: 79, authority: 1)
     Used for immutable dereferencing operations, like *v. [...]
 
-  ◦ core::hash  (Module) - score: 80 (relevance: 80, authority: 0)
-    Generic hashing support. [...]
+  ◦ test-crate::GenericEnum  (Enum) - score: 77 (relevance: 58, authority: 33)
+    A generic enum for testing [...]
 
-  ◦ std::hash  (Module) - score: 80 (relevance: 80, authority: 0)
-    Generic hashing support. [...]
+  ◦ core::mem::ManuallyDrop  (Struct) - score: 76 (relevance: 76, authority: 1)
+    A wrapper to inhibit the compiler from automatically calling T’s destructor. This wrapper is 0-cost. [...]

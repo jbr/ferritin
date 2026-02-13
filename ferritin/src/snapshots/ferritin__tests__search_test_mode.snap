@@ -11,46 +11,28 @@ A trait for testing extremely long documentation that exceeds line limits.</p>
 This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
 </item>
   <item><p>
-std::io  (Module) - score: 36 (relevance: 33, authority: 9)</p>
-<truncated level="single-line"><p>
-Traits, helpers, and type definitions for core I/O functionality.</p>
-The <inline-code>std::io</inline-code> module when doing the <inline-code>Read</inline-code> and <inline-code>Write</inline-code> traits, which most general <elided chars="8722"/></truncated>
-</item>
-  <item><p>
-core::line  (Macro) - score: 35 (relevance: 35, authority: 0)</p>
+core::line  (Macro) - score: 36 (relevance: 36, authority: 0)</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-std::line  (Macro) - score: 35 (relevance: 35, authority: 0)</p>
+std::line  (Macro) - score: 36 (relevance: 36, authority: 0)</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-core::arch::x86::_mm_prefetch  (Function) - score: 30 (relevance: 30, authority: 0)</p>
+core::arch::x86::_mm_prefetch  (Function) - score: 31 (relevance: 31, authority: 0)</p>
 <truncated level="single-line"><p>
 Fetch the cache line that contains address <inline-code>p</inline-code> using the given <inline-code>STRATEGY</inline-code>.</p>
 The <inline-code>STRATEGY</inline-code> must be <elided chars="1362"/></truncated>
 </item>
   <item><p>
-std::arch::x86::_mm_prefetch  (Function) - score: 30 (relevance: 30, authority: 0)</p>
+std::arch::x86::_mm_prefetch  (Function) - score: 31 (relevance: 31, authority: 0)</p>
 <truncated level="single-line"><p>
 Fetch the cache line that contains address <inline-code>p</inline-code> using the given <inline-code>STRATEGY</inline-code>.</p>
 The <inline-code>STRATEGY</inline-code> must be <elided chars="1362"/></truncated>
-</item>
-  <item><p>
-alloc::collections::BTreeMap  (Struct) - score: 30 (relevance: 17, authority: 80)</p>
-<truncated level="single-line"><p>
-An ordered map based on a B-Tree.</p>
-Given a key type with a total order, an ordered map stores its entries in key That means that keys must be of a type that<inline-code>Ord</inline-code> trait, such that two keys can always be compared to<inline-code>Ordering</inline-code>. Examples of keys with a total order are and numbers with their natural order. <elided chars="5721"/></truncated>
-</item>
-  <item><p>
-std::sync::Mutex  (Struct) - score: 30 (relevance: 29, authority: 4)</p>
-<truncated level="single-line"><p>
-A mutual exclusion primitive useful for protecting shared data</p>
-This mutex will mutex can be<inline-code>new</inline-code> constructor. which represents through the RAII<inline-code>lock</inline-code> and <inline-code>try_lock</inline-code>, which guarantees that <elided chars="7197"/></truncated>
 </item>
   <item><p>
 core::column  (Macro) - score: 29 (relevance: 29, authority: 0)</p>
@@ -63,5 +45,22 @@ std::column  (Macro) - score: 29 (relevance: 29, authority: 0)</p>
 <truncated level="single-line"><p>
 Expands to the column number at which it was invoked.</p>
 With <inline-code>line!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="885"/></truncated>
+</item>
+  <item><p>
+alloc::collections::BTreeMap  (Struct) - score: 29 (relevance: 16, authority: 80)</p>
+<truncated level="single-line"><p>
+An ordered map based on a B-Tree.</p>
+Given a key type with a total order, an ordered map stores its entries in key That means that keys must be of a type that<inline-code>Ord</inline-code> trait, such that two keys can always be compared to<inline-code>Ordering</inline-code>. Examples of keys with a total order are and numbers with their natural order. <elided chars="5721"/></truncated>
+</item>
+  <item><p>
+std::sync  (Module) - score: 28 (relevance: 28, authority: 0)</p>
+<truncated level="single-line"><p>
+Useful synchronization primitives.</p>
+<section-heading>The need for synchronization</section-heading>
+Conceptually, a be executed on a program is <elided chars="5253"/></truncated>
+</item>
+  <item><p>
+core::prelude::v1::Option::map_or_else  (Function) - score: 27 (relevance: 27, authority: 0)</p>
+<truncated level="single-line">Computes a default function result (if none), or applies a different function to the contained value (if any). <elided chars="770"/></truncated>
 </item>
 </list>

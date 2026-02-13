@@ -1007,6 +1007,8 @@ dependencies = [
  "fieldwork",
  "home",
  "log",
+ "memchr",
+ "pulldown-cmark",
  "rayon",
  "rkyv",
  "rustc-hash",

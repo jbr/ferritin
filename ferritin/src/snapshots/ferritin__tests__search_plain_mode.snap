@@ -8,29 +8,29 @@ Search results for 'trigger line-based truncation'
   ◦ test-crate::TestTrait  (Trait) - score: 100 (relevance: 100, authority: 0)
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
-  ◦ std::io  (Module) - score: 36 (relevance: 33, authority: 9)
-    Traits, helpers, and type definitions for core I/O functionality. [...]
-
-  ◦ core::line  (Macro) - score: 35 (relevance: 35, authority: 0)
+  ◦ core::line  (Macro) - score: 36 (relevance: 36, authority: 0)
     Expands to the line number on which it was invoked. [...]
 
-  ◦ std::line  (Macro) - score: 35 (relevance: 35, authority: 0)
+  ◦ std::line  (Macro) - score: 36 (relevance: 36, authority: 0)
     Expands to the line number on which it was invoked. [...]
 
-  ◦ core::arch::x86::_mm_prefetch  (Function) - score: 30 (relevance: 30, authority: 0)
+  ◦ core::arch::x86::_mm_prefetch  (Function) - score: 31 (relevance: 31, authority: 0)
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ std::arch::x86::_mm_prefetch  (Function) - score: 30 (relevance: 30, authority: 0)
+  ◦ std::arch::x86::_mm_prefetch  (Function) - score: 31 (relevance: 31, authority: 0)
     Fetch the cache line that contains address p using the given STRATEGY. [...]
-
-  ◦ alloc::collections::BTreeMap  (Struct) - score: 30 (relevance: 17, authority: 80)
-    An ordered map based on a B-Tree. [...]
-
-  ◦ std::sync::Mutex  (Struct) - score: 30 (relevance: 29, authority: 4)
-    A mutual exclusion primitive useful for protecting shared data [...]
 
   ◦ core::column  (Macro) - score: 29 (relevance: 29, authority: 0)
     Expands to the column number at which it was invoked. [...]
 
   ◦ std::column  (Macro) - score: 29 (relevance: 29, authority: 0)
     Expands to the column number at which it was invoked. [...]
+
+  ◦ alloc::collections::BTreeMap  (Struct) - score: 29 (relevance: 16, authority: 80)
+    An ordered map based on a B-Tree. [...]
+
+  ◦ std::sync  (Module) - score: 28 (relevance: 28, authority: 0)
+    Useful synchronization primitives. [...]
+
+  ◦ core::prelude::v1::Option::map_or_else  (Function) - score: 27 (relevance: 27, authority: 0)
+    Computes a default function result (if none), or applies a different function to the contained value (if any). [...]

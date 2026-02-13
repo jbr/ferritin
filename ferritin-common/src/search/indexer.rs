@@ -1,13 +1,18 @@
+#[cfg(test)]
+mod tests;
+
 use fieldwork::Fieldwork;
+use memchr::memmem;
 use rkyv::rancor::Error;
 use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize};
 use rustc_hash::FxHashMap;
 use rustc_hash::FxHasher;
 use rustdoc_types::{Item, ItemEnum, ItemSummary, StructKind, Trait};
 use std::cmp::Reverse;
+use std::collections::HashMap;
 use std::collections::{BTreeMap, HashSet};
-use std::fs::File;
 use std::fs::OpenOptions;
+use std::fs::{self, File};
 use std::hash::{Hash, Hasher};
 use std::io::{Read, Write};
 use std::ops::AddAssign;
@@ -19,7 +24,6 @@ use crate::{
     doc_ref::DocRef,
     navigator::{Navigator, Suggestion},
 };
-use std::collections::HashMap;
 
 /// Represents either a resolved Item or an unresolved ItemSummary for link counting
 #[derive(Clone, Copy, Debug)]
@@ -226,18 +230,14 @@ impl<'a> Terms<'a> {
                 } else {
                     skipped_count += 1;
                     if skipped_count <= 5 {
-                        log::debug!("Skipped target: {:?}", target);
+                        log::debug!("Skipped target: {target:?}");
                     }
                     None
                 }
             })
             .collect();
 
-        log::debug!(
-            "Filtered: {} kept, {} skipped",
-            filtered_count,
-            skipped_count
-        );
+        log::debug!("Filtered: {filtered_count} kept, {skipped_count} skipped");
 
         log::debug!(
             "Authority: {} unique items with incoming links after filtering",
@@ -280,9 +280,7 @@ impl<'a> Terms<'a> {
         }
 
         log::debug!(
-            "Authority: max={}, assigned to {} of {} documents",
-            max_authority,
-            authority_count,
+            "Authority: max={max_authority}, assigned to {authority_count} of {} documents",
             documents.len()
         );
 
@@ -309,6 +307,7 @@ impl<'a> Terms<'a> {
             .collect();
 
         SearchableTerms {
+            version: INDEX_FORMAT_VERSION,
             terms,
             documents,
             total_document_length,
@@ -385,13 +384,23 @@ impl<'a> Terms<'a> {
         }
 
         if let Some(docs) = &item.docs {
-            // First paragraph (up to first blank line) gets extra weight
-            // as it's usually the item's summary/description
-            if let Some((first_para, rest)) = docs.split_once("\n\n") {
-                doc_length += self.add_terms(first_para, id, 3);
-                doc_length += self.add_terms(rest, id, 1);
-            } else {
-                doc_length += self.add_terms(docs, id, 3);
+            // Strip code examples to reduce noise in search results
+            let mut prose_iter = prose_slices(docs);
+
+            // First prose block: split into first paragraph vs rest
+            if let Some(first_prose) = prose_iter.next() {
+                if let Some((first_para, rest)) = first_prose.split_once("\n\n") {
+                    doc_length += self.add_terms(first_para, id, 3);
+                    doc_length += self.add_terms(rest, id, 1);
+                } else {
+                    // No blank line in first prose block - whole thing is first paragraph
+                    doc_length += self.add_terms(first_prose, id, 3);
+                }
+            }
+
+            // All subsequent prose blocks get weight 1
+            for prose in prose_iter {
+                doc_length += self.add_terms(prose, id, 1);
             }
         }
 
@@ -441,8 +450,13 @@ impl<'a> Terms<'a> {
     }
 }
 
+/// Index format version - increment to invalidate all cached indexes
+const INDEX_FORMAT_VERSION: u32 = 1;
+
 #[derive(Debug, Clone, Archive, RkyvSerialize, RkyvDeserialize)]
 struct SearchableTerms {
+    /// Format version for cache invalidation
+    version: u32,
     terms: BTreeMap<TermHash, Vec<Posting>>,
     documents: Vec<DocumentInfo>,
     total_document_length: usize,
@@ -566,11 +580,11 @@ impl SearchIndex {
             match rkyv::to_bytes::<Error>(terms) {
                 Ok(bytes) => {
                     if file.write_all(&bytes).is_err() {
-                        let _ = std::fs::remove_file(path);
+                        let _ = fs::remove_file(path);
                     }
                 }
                 Err(_) => {
-                    let _ = std::fs::remove_file(path);
+                    let _ = fs::remove_file(path);
                 }
             }
         }
@@ -585,14 +599,27 @@ impl SearchIndex {
             let mut bytes = Vec::new();
             file.read_to_end(&mut bytes).ok()?;
             match rkyv::from_bytes::<SearchableTerms, Error>(&bytes) {
-                Ok(terms) => Some(terms),
+                Ok(terms) => {
+                    if terms.version == INDEX_FORMAT_VERSION {
+                        Some(terms)
+                    } else {
+                        log::debug!(
+                            "Index version mismatch at {}: found {}, expected {}",
+                            path.display(),
+                            terms.version,
+                            INDEX_FORMAT_VERSION
+                        );
+                        let _ = fs::remove_file(path);
+                        None
+                    }
+                }
                 Err(_) => {
-                    let _ = std::fs::remove_file(path);
+                    let _ = fs::remove_file(path);
                     None
                 }
             }
         } else {
-            let _ = std::fs::remove_file(path);
+            let _ = fs::remove_file(path);
             None
         }
     }
@@ -864,36 +891,59 @@ fn hash_term(term: &str) -> TermHash {
     TermHash(hasher.finish())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+/// Extract prose (non-code) slices from markdown text, excluding fenced code blocks.
+/// Returns an iterator of string slices containing only prose content.
+///
+/// Detection strategy:
+/// - Conservative on fence start: ``` must be only content on line (plus optional language tag)
+/// - Eager on fence end: ``` anywhere on line closes the fence
+/// This biases toward indexing content when ambiguous, which is safer for search quality.
+fn prose_slices(text: &str) -> impl Iterator<Item = &str> {
+    let mut slices = Vec::new();
+    let mut in_fence = false;
+    let mut prose_start = 0;
+    let mut pos = 0;
 
-    #[test]
-    fn test_tokenize() {
-        assert_eq!(
-            tokenize("Hello, world! This is a test. CamelCase hyphenate-word snake_word"),
-            vec![
-                "Hello",
-                "world",
-                "This",
-                "test",
-                "Camel",
-                "Case",
-                "CamelCase",
-                "hyphenate",
-                "word",
-                "hyphenate-word",
-                "snake",
-                "word",
-                "snake_word"
-            ]
-        );
+    // SIMD-accelerated fence marker search
+    let fence_finder = memmem::Finder::new(b"```");
+
+    for line in text.split_inclusive('\n') {
+        let line_start = pos;
+        pos += line.len();
+
+        let line_content = line.trim_end_matches('\n');
+
+        if in_fence {
+            // Eager end: ``` anywhere on line closes the fence (SIMD search)
+            if fence_finder.find(line_content.as_bytes()).is_some() {
+                in_fence = false;
+                prose_start = pos;
+            }
+        } else {
+            // Conservative start: ``` must be only content (plus optional lang tag)
+            let trimmed = line_content.trim();
+            if trimmed.starts_with("```") {
+                let rest = &trimmed[3..];
+                // Language tags are alphanumeric, comma, underscore (e.g., "rust", "rust,no_run")
+                if rest.is_empty()
+                    || rest
+                        .chars()
+                        .all(|c| c.is_ascii_alphanumeric() || c == ',' || c == '_')
+                {
+                    // Found fence start - save accumulated prose
+                    if prose_start < line_start {
+                        slices.push(&text[prose_start..line_start]);
+                    }
+                    in_fence = true;
+                }
+            }
+        }
     }
 
-    #[test]
-    fn test_hash_term() {
-        // Should be case insensitive
-        assert_eq!(hash_term("Hello"), hash_term("HELLO"));
-        assert_eq!(hash_term("Hello"), hash_term("hello"));
+    // Capture remaining prose after last fence (or all prose if no fences)
+    if !in_fence && prose_start < text.len() {
+        slices.push(&text[prose_start..]);
     }
+
+    slices.into_iter()
 }
