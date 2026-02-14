@@ -1,7 +1,10 @@
 use ferritin_common::DocRef;
+use fieldwork::Fieldwork;
 use percent_encoding::{NON_ALPHANUMERIC, utf8_percent_encode};
 use rustdoc_types::Item;
 use std::borrow::Cow;
+
+use crate::renderer::HistoryEntry;
 
 /// Interactive action that can be attached to a span
 #[derive(Debug, Clone)]
@@ -50,6 +53,23 @@ impl<'a> TuiAction<'a> {
             TuiAction::ExpandBlock(_) => None,
             TuiAction::OpenUrl(cow) => Some(cow.clone()),
             TuiAction::SelectTheme(_) => None,
+        }
+    }
+
+    pub fn navigate(doc_ref: DocRef<'a, Item>, url: Option<impl Into<Cow<'a, str>>>) -> Self {
+        Self::Navigate {
+            doc_ref,
+            url: url.map(Into::into),
+        }
+    }
+
+    pub fn navigate_to_path(
+        path: impl Into<Cow<'a, str>>,
+        url: Option<impl Into<Cow<'a, str>>>,
+    ) -> Self {
+        Self::NavigateToPath {
+            path: path.into(),
+            url: url.map(Into::into),
         }
     }
 }
@@ -135,9 +155,17 @@ pub enum LinkTarget<'a> {
 }
 
 /// A semantic content tree for Rust documentation
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Fieldwork, Default)]
+#[fieldwork(rename_predicates, get, get_mut, take, into_field, set, with, without)]
 pub struct Document<'a> {
-    pub nodes: Vec<DocumentNode<'a>>,
+    nodes: Vec<DocumentNode<'a>>,
+
+    error: bool,
+
+    #[field(copy)]
+    item: Option<DocRef<'a, Item>>,
+
+    history_entry: Option<HistoryEntry<'a>>,
 }
 
 /// Condition for when to show content (used by Conditional node)
@@ -222,6 +250,8 @@ pub struct ListItem<'a> {
 
 /// Heading level for semantic structure
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "serve-json", derive(serde::Serialize))]
+#[cfg_attr(test, derive(serde::Deserialize))]
 pub enum HeadingLevel {
     Title,   // Top-level item name: "Item: Vec"
     Section, // Section header: "Fields:", "Methods:"
@@ -254,6 +284,8 @@ impl<'a> Span<'a> {
 
 /// Semantic styling categories for Rust code elements
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serve-json", derive(serde::Serialize))]
+#[cfg_attr(test, derive(serde::Deserialize))]
 pub enum SpanStyle {
     // Rust code semantic elements
     Keyword,      // struct, enum, pub, fn, const, etc.
@@ -429,26 +461,42 @@ impl<'a> Span<'a> {
     }
 }
 
-impl<'a> Document<'a> {
-    pub fn new() -> Self {
-        Self { nodes: Vec::new() }
-    }
-
-    pub fn with_nodes(nodes: Vec<DocumentNode<'a>>) -> Self {
-        Self { nodes }
-    }
-}
-
-impl<'a> Default for Document<'a> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 // Into<Document> conversions for ergonomic render() calls
 impl<'a> From<Vec<DocumentNode<'a>>> for Document<'a> {
     fn from(nodes: Vec<DocumentNode<'a>>) -> Self {
-        Self { nodes }
+        Self {
+            nodes,
+            ..Default::default()
+        }
+    }
+}
+
+impl<'a> From<DocumentNode<'a>> for Document<'a> {
+    fn from(value: DocumentNode<'a>) -> Self {
+        Self::from(vec![value])
+    }
+}
+
+impl<'a> From<Span<'a>> for Document<'a> {
+    fn from(value: Span<'a>) -> Self {
+        DocumentNode::from(value).into()
+    }
+}
+impl<'a> From<Vec<Span<'a>>> for Document<'a> {
+    fn from(value: Vec<Span<'a>>) -> Self {
+        DocumentNode::from(value).into()
+    }
+}
+
+impl<'a> From<Span<'a>> for DocumentNode<'a> {
+    fn from(value: Span<'a>) -> Self {
+        Self::from(vec![value])
+    }
+}
+
+impl<'a> From<Vec<Span<'a>>> for DocumentNode<'a> {
+    fn from(spans: Vec<Span<'a>>) -> Self {
+        Self::Paragraph { spans }
     }
 }
 

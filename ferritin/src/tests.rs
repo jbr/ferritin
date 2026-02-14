@@ -10,6 +10,7 @@ use ferritin_common::{
     sources::{LocalSource, StdSource},
 };
 use ratatui::backend::TestBackend;
+use regex::Regex;
 use std::path::PathBuf;
 
 /// Get the path to our test crate (fast to build, minimal dependencies)
@@ -37,7 +38,7 @@ fn convert_osc8_to_markdown(text: &str) -> String {
 
 fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
     let request = create_test_state();
-    let (document, _, _) = command.execute(&request);
+    let document = command.execute(&request);
     let mut output = String::new();
     let render_context = RenderContext::new().with_output_mode(output_mode);
     render(&document, &render_context, &mut output).unwrap();
@@ -62,8 +63,7 @@ fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
 
     // Normalize Rust version info to avoid daily breakage with nightly updates
     // Matches patterns like: 1.95.0-nightly	(f889772d6	2026-02-05)
-    let re =
-        regex::Regex::new(r"\d+\.\d+\.\d+-[a-z]+\s+\([a-f0-9]+\s+\d{4}-\d{2}-\d{2}\)").unwrap();
+    let re = Regex::new(r"\d+\.\d+\.\d+-[a-z]+\s+\([a-f0-9]+\s+\d{4}-\d{2}-\d{2}\)").unwrap();
     re.replace_all(&output, "RUST_VERSION").to_string()
 }
 
@@ -71,7 +71,7 @@ fn render_interactive_for_tests(command: Commands) -> TestBackend {
     use crate::renderer::render_to_test_backend;
 
     let request = create_test_state();
-    let (document, _, _) = command.execute(&request);
+    let document = command.execute(&request);
     let render_context = RenderContext::new();
 
     render_to_test_backend(document, render_context)

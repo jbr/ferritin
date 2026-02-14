@@ -1,6 +1,6 @@
 use super::channels::UiCommand;
 use super::utils::find_node_at_path_mut;
-use crate::styled_string::{Document, DocumentNode, TruncationLevel, TuiAction};
+use crate::document::{Document, DocumentNode, TruncationLevel, TuiAction};
 
 /// Handle a TuiAction, returning a command to send if navigation is needed
 ///
@@ -13,7 +13,7 @@ pub(super) fn handle_action<'a>(
     match action {
         TuiAction::ExpandBlock(path) => {
             // Find the node at this path and expand it
-            if let Some(node) = find_node_at_path_mut(&mut document.nodes, path.indices())
+            if let Some(node) = find_node_at_path_mut(document.nodes_mut(), path.indices())
                 && let DocumentNode::TruncatedBlock { level, .. } = node
             {
                 // Cycle through truncation levels: SingleLine -> Full

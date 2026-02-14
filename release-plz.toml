@@ -1,2 +1,7 @@
 [workspace]
 features_always_increment_minor = true
+
+[[package]]
+name = "ferritin"
+publish_features = ["web"]
+publish_allow_dirty = true

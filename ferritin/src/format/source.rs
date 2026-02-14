@@ -1,5 +1,5 @@
 use super::*;
-use crate::styled_string::{DocumentNode, Span as StyledSpan};
+use crate::document::{DocumentNode, Span as StyledSpan};
 
 /// Format source code
 pub(crate) fn format_source_code<'a>(request: &'a Request, span: &Span) -> Vec<DocumentNode<'a>> {

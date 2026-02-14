@@ -17,7 +17,7 @@
 
 use std::fmt::{Result, Write};
 
-use crate::styled_string::{
+use crate::document::{
     Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, TruncationLevel,
 };
 
@@ -30,7 +30,7 @@ struct PlainRenderer<'w, W: Write> {
 /// Render a document as plain text without any styling
 pub fn render(document: &Document, output: &mut impl Write) -> Result {
     let mut renderer = PlainRenderer::new(output);
-    renderer.render_block_sequence(&document.nodes)
+    renderer.render_block_sequence(document.nodes())
 }
 
 impl<'w, W: Write> PlainRenderer<'w, W> {
@@ -283,10 +283,10 @@ mod tests {
 
     #[test]
     fn test_render_heading() {
-        let doc = Document::with_nodes(vec![DocumentNode::heading(
+        let doc = Document::from(DocumentNode::heading(
             HeadingLevel::Title,
             vec![Span::plain("Item: "), Span::type_name("Vec")],
-        )]);
+        ));
         let mut output = String::new();
         render(&doc, &mut output).unwrap();
         assert!(output.contains("Item: Vec"));
@@ -295,10 +295,10 @@ mod tests {
 
     #[test]
     fn test_render_list() {
-        let doc = Document::with_nodes(vec![DocumentNode::list(vec![
+        let doc = Document::from(DocumentNode::list(vec![
             ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain("First")])]),
             ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain("Second")])]),
-        ])]);
+        ]));
 
         let mut output = String::new();
         render(&doc, &mut output).unwrap();

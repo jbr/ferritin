@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_for_tests(Commands::get(\"crate::TestStruct::cute\"), OutputMode ::\nTestMode)"
 ---
 <p>
-Could not find 'crate::TestStruct::cute'</p>
+Could not find '<emphasis>crate::TestStruct::cute</emphasis>'</p>
 <p>
 Did you mean:</p>
 <list>

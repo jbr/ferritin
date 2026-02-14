@@ -1,7 +1,7 @@
 use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModifier};
 
 use super::*;
-use crate::styled_string::{DocumentNode, Span as StyledSpan};
+use crate::document::{DocumentNode, Span as StyledSpan};
 
 impl Request {
     /// Format a function signature

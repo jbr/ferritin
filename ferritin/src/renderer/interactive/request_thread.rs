@@ -3,7 +3,7 @@
 use super::channels::{RequestResponse, UiCommand};
 use super::history::HistoryEntry;
 use crate::commands::{list, search};
-use crate::{request::Request, styled_string::Document};
+use crate::{document::Document, request::Request};
 use crossbeam_channel::{Receiver, Sender};
 
 /// Request thread loop - processes commands from UI thread
@@ -17,26 +17,22 @@ pub(super) fn request_thread_loop<'a>(
             UiCommand::Navigate(doc_ref) => {
                 // Format the already-resolved item (e.g., from clicking a link)
                 let doc_nodes = request.format_item(doc_ref);
-                let doc = Document::from(doc_nodes);
-                let entry = HistoryEntry::Item(doc_ref);
+                let doc = Document::from(doc_nodes)
+                    .with_history_entry(HistoryEntry::Item(doc_ref))
+                    .with_item(doc_ref);
 
-                let _ = resp_tx.send(RequestResponse::Document {
-                    doc,
-                    entry: Some(entry),
-                });
+                let _ = resp_tx.send(RequestResponse::Document(doc));
             }
 
             UiCommand::NavigateToPath(path) => {
                 let mut suggestions = vec![];
                 if let Some(item) = request.resolve_path(path.as_ref(), &mut suggestions) {
                     let doc_nodes = request.format_item(item);
-                    let doc = Document::from(doc_nodes);
-                    let entry = HistoryEntry::Item(item);
+                    let doc = Document::from(doc_nodes)
+                        .with_item(item)
+                        .with_history_entry(HistoryEntry::Item(item));
 
-                    let _ = resp_tx.send(RequestResponse::Document {
-                        doc,
-                        entry: Some(entry),
-                    });
+                    let _ = resp_tx.send(RequestResponse::Document(doc));
                 } else {
                     let _ = resp_tx.send(RequestResponse::Error(format!("Not found: {}", path)));
                 }
@@ -47,33 +43,19 @@ pub(super) fn request_thread_loop<'a>(
                 crate_name,
                 limit,
             } => {
-                let (search_doc, _is_error) = search::execute(
+                let search_doc = search::execute(
                     request,
                     query.as_ref(),
                     limit,
                     crate_name.as_ref().map(|c| c.as_ref()),
                 );
 
-                // Always create history entry for searches
-                let entry = HistoryEntry::Search {
-                    query: query.into_owned(),
-                    crate_name: crate_name.map(|c| c.into_owned()),
-                };
-
-                let _ = resp_tx.send(RequestResponse::Document {
-                    doc: search_doc,
-                    entry: Some(entry),
-                });
+                let _ = resp_tx.send(RequestResponse::Document(search_doc));
             }
 
             UiCommand::List => {
-                let (list_doc, _is_error, default_crate) = list::execute(request);
-                let entry = HistoryEntry::List { default_crate };
-
-                let _ = resp_tx.send(RequestResponse::Document {
-                    doc: list_doc,
-                    entry: Some(entry),
-                });
+                let doc = list::execute(request);
+                let _ = resp_tx.send(RequestResponse::Document(doc));
             }
 
             UiCommand::ToggleSource {
@@ -82,10 +64,9 @@ pub(super) fn request_thread_loop<'a>(
             } => {
                 request.format_context().set_include_source(include_source);
                 if let Some(current_item) = current_item {
-                    let _ = resp_tx.send(RequestResponse::Document {
-                        doc: Document::from(request.format_item(current_item)),
-                        entry: None,
-                    });
+                    let _ = resp_tx.send(RequestResponse::Document(Document::from(
+                        request.format_item(current_item),
+                    )));
                 }
             }
 

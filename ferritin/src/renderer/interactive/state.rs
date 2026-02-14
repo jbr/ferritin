@@ -6,9 +6,9 @@ use super::channels::{RequestResponse, UiCommand};
 use super::history::{History, HistoryEntry};
 use super::theme::InteractiveTheme;
 use super::utils::supports_cursor_shape;
+use crate::document::{Document, NodePath, TuiAction};
 use crate::logging::LogReader;
 use crate::render_context::{RenderContext, ThemeError};
-use crate::styled_string::{Document, NodePath, TuiAction};
 use crossbeam_channel::{Receiver, Sender};
 
 /// UI mode - makes the modal structure of the interface explicit

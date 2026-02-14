@@ -1,5 +1,5 @@
 use super::*;
-use crate::styled_string::Span;
+use crate::document::Span;
 
 impl Request {
     /// Enhanced type formatting for signatures

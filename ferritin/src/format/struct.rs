@@ -1,5 +1,5 @@
 use super::*;
-use crate::styled_string::DocumentNode;
+use crate::document::DocumentNode;
 
 impl Request {
     pub(super) fn format_struct<'a>(
@@ -44,7 +44,7 @@ impl Request {
         item: DocRef<'a, Item>,
         fields: &[Id],
     ) -> Vec<DocumentNode<'a>> {
-        use crate::styled_string::{DocumentNode, ListItem, Span};
+        use crate::document::{DocumentNode, ListItem, Span};
 
         let (visible_fields, hidden_count) = self.categorize_fields(item, fields);
         let struct_name = item.name().unwrap_or("<unnamed>");
@@ -150,7 +150,7 @@ impl Request {
         item: DocRef<'a, Item>,
         fields: &[Option<Id>],
     ) -> Vec<DocumentNode<'a>> {
-        use crate::styled_string::{DocumentNode, ListItem, Span};
+        use crate::document::{DocumentNode, ListItem, Span};
 
         let mut visible_fields = Vec::new();
         let mut hidden_count = 0;
@@ -258,7 +258,7 @@ impl Request {
         struct_data: DocRef<'a, Struct>,
         item: DocRef<'a, Item>,
     ) -> Vec<DocumentNode<'a>> {
-        use crate::styled_string::{DocumentNode, Span};
+        use crate::document::{DocumentNode, Span};
 
         let struct_name = item.name().unwrap_or("<unnamed>");
 

@@ -3,8 +3,7 @@
 use ferritin_common::DocRef;
 use rustdoc_types::Item;
 
-use super::history::HistoryEntry;
-use crate::styled_string::Document;
+use crate::document::Document;
 use std::borrow::Cow;
 
 /// Commands sent from UI thread to Request thread
@@ -39,10 +38,7 @@ pub enum UiCommand<'a> {
 /// Responses sent from Request thread to UI thread
 pub enum RequestResponse<'a> {
     /// Successfully loaded a document with optional history entry
-    Document {
-        doc: Document<'a>,
-        entry: Option<HistoryEntry<'a>>,
-    },
+    Document(Document<'a>),
 
     /// An error occurred (path not found, etc.)
     Error(String),

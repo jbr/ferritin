@@ -1,5 +1,5 @@
 use super::*;
-use crate::styled_string::{DocumentNode, ListItem, Span};
+use crate::document::{DocumentNode, ListItem, Span};
 
 impl Request {
     /// Format a trait

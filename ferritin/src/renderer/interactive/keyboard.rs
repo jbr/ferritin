@@ -573,7 +573,7 @@ impl<'a> InteractiveState<'a> {
                 let action = action.clone();
 
                 // Handle SelectTheme specially (same as mouse click)
-                if let crate::styled_string::TuiAction::SelectTheme(theme_name) = &action {
+                if let crate::document::TuiAction::SelectTheme(theme_name) = &action {
                     let _ = self.apply_theme(theme_name);
                     if let super::UiMode::ThemePicker {
                         ref mut selected_index,

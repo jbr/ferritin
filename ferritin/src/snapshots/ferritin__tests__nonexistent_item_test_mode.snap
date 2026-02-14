@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_for_tests(Commands::get(\"crate::DoesNotExist\"), OutputMode :: TestMode)"
 ---
 <p>
-Could not find 'crate::DoesNotExist'</p>
+Could not find '<emphasis>crate::DoesNotExist</emphasis>'</p>
 <p>
 Did you mean:</p>
 <list>

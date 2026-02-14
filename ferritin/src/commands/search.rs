@@ -1,12 +1,13 @@
+use crate::document::{Document, DocumentNode, HeadingLevel, ListItem, Span, TruncationLevel};
+use crate::renderer::HistoryEntry;
 use crate::request::Request;
-use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span, TruncationLevel};
 
 pub(crate) fn execute<'a>(
     request: &'a Request,
     query: &str,
     limit: usize,
     crate_: Option<&str>,
-) -> (Document<'a>, bool) {
+) -> Document<'a> {
     log::info!("Searching for {query}");
 
     let crate_names: Vec<_> = match crate_ {
@@ -54,7 +55,7 @@ pub(crate) fn execute<'a>(
                 }
             }
 
-            return (Document::from(nodes), true);
+            return Document::from(nodes).with_error();
         }
     };
 
@@ -64,7 +65,7 @@ pub(crate) fn execute<'a>(
     if scored_results.is_empty() {
         if query.is_empty() {
             // Empty query - show search instructions
-            let doc = Document::from(vec![
+            return Document::from(vec![
                 DocumentNode::Heading {
                     level: HeadingLevel::Title,
                     spans: vec![Span::plain("Search")],
@@ -73,10 +74,9 @@ pub(crate) fn execute<'a>(
                     "Type to search. Press Tab to toggle between current crate and all crates.",
                 )]),
             ]);
-            return (doc, false);
         } else {
             // No matches for query
-            let error_doc = Document::from(vec![
+            return Document::from(vec![
                 DocumentNode::Heading {
                     level: HeadingLevel::Title,
                     spans: vec![Span::plain("No results")],
@@ -86,8 +86,8 @@ pub(crate) fn execute<'a>(
                     Span::plain(query.to_string()),
                     Span::plain("'"),
                 ]),
-            ]);
-            return (error_doc, false);
+            ])
+            .with_error();
         }
     }
 
@@ -157,5 +157,8 @@ pub(crate) fn execute<'a>(
 
     nodes.push(DocumentNode::List { items: list_items });
 
-    (Document::from(nodes), false)
+    Document::from(nodes).with_history_entry(HistoryEntry::Search {
+        query: query.into(),
+        crate_name: crate_.map(String::from),
+    })
 }

@@ -1,9 +1,8 @@
-use crate::renderer::HistoryEntry;
+use crate::document::Document;
 use crate::request::Request;
-use crate::styled_string::Document;
 use std::fmt::Display;
 
-mod get;
+pub(crate) mod get;
 pub(crate) mod list;
 pub(crate) mod search;
 
@@ -39,6 +38,13 @@ pub(crate) enum Commands {
 
     /// List available crates
     List,
+
+    #[cfg(feature = "serve-json")]
+    /// Start JSON API server (uses HOST and PORT env vars, defaults to 127.0.0.1:8080)
+    Serve {
+        #[arg(short, long)]
+        open: bool,
+    },
 }
 
 impl Commands {
@@ -108,36 +114,25 @@ impl Commands {
         }
     }
 
-    pub fn execute<'a>(
-        self,
-        request: &'a Request,
-    ) -> (Document<'a>, bool, Option<HistoryEntry<'a>>) {
+    pub fn execute<'a>(self, request: &'a Request) -> Document<'a> {
         match self {
             Commands::Get {
                 path,
                 source,
                 recursive,
-            } => {
-                let (doc, is_error, item_ref) = get::execute(request, &path, source, recursive);
-                let history_entry = item_ref.map(HistoryEntry::Item);
-                (doc, is_error, history_entry)
-            }
+            } => get::execute(request, &path, source, recursive),
+
             Commands::Search {
                 query,
                 limit,
                 crate_,
-            } => {
-                let (doc, is_error) = search::execute(request, &query, limit, crate_.as_deref());
-                let history_entry = Some(HistoryEntry::Search {
-                    query,
-                    crate_name: crate_,
-                });
-                (doc, is_error, history_entry)
-            }
-            Commands::List => {
-                let (doc, is_error, default_crate) = list::execute(request);
-                let history_entry = Some(HistoryEntry::List { default_crate });
-                (doc, is_error, history_entry)
+            } => search::execute(request, &query, limit, crate_.as_deref()),
+
+            Commands::List => list::execute(request),
+
+            #[cfg(feature = "serve-json")]
+            Commands::Serve { .. } => {
+                unreachable!("Serve command should be handled before execute() is called")
             }
         }
     }

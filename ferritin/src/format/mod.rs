@@ -1,5 +1,5 @@
+use crate::document::{DocumentNode, Span as StyledSpan, TruncationLevel};
 use crate::request::Request;
-use crate::styled_string::{DocumentNode, Span as StyledSpan, TruncationLevel};
 use ferritin_common::doc_ref::DocRef;
 use rustdoc_types::{
     Abi, Constant, Enum, Function, FunctionPointer, GenericArg, GenericArgs, GenericBound,

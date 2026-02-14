@@ -20,6 +20,7 @@ use crate::{
 
 mod color_scheme;
 mod commands;
+mod document;
 mod format;
 mod format_context;
 mod generate_docsrs_url;
@@ -29,11 +30,13 @@ mod markdown;
 mod render_context;
 mod renderer;
 mod request;
-mod styled_string;
 #[cfg(test)]
 mod tests;
 mod traits;
 mod verbosity;
+
+#[cfg(feature = "serve-json")]
+mod web;
 
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
@@ -153,24 +156,25 @@ fn main() -> ExitCode {
     let format_context = FormatContext::new();
     let request = Request::new(navigator, format_context);
 
+    // Check for serve command before non-interactive mode
+    #[cfg(feature = "serve-json")]
+    if let Some(Commands::Serve { open }) = cli.command {
+        web::run_server(&path, open);
+        return ExitCode::SUCCESS;
+    }
+
     // One-shot mode: execute command and render to stdout
     // Use env_logger for CLI mode
     env_logger::init();
-    let (document, is_error, _initial_entry) =
-        cli.command.unwrap_or_else(Commands::list).execute(&request);
+    let document = cli.command.unwrap_or_else(Commands::list).execute(&request);
 
+    let output = &mut IoFmtWriter(std::io::stdout());
     // Render to stdout and exit
-    if renderer::render(
-        &document,
-        &render_context,
-        &mut IoFmtWriter(std::io::stdout()),
-    )
-    .is_err()
-    {
+    if renderer::render(&document, &render_context, output).is_err() {
         return ExitCode::FAILURE;
     }
 
-    if is_error {
+    if document.is_error() {
         ExitCode::FAILURE
     } else {
         ExitCode::SUCCESS

@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_for_tests(Commands::get(\"crate::TestStruct::incrementCount\"),\nOutputMode :: TestMode)"
 ---
 <p>
-Could not find 'crate::TestStruct::incrementCount'</p>
+Could not find '<emphasis>crate::TestStruct::incrementCount</emphasis>'</p>
 <p>
 Did you mean:</p>
 <list>

@@ -14,16 +14,19 @@
 
 use std::fmt::{Result, Write};
 
-use crate::render_context::RenderContext;
-use crate::styled_string::{
+use crate::document::{
     Document, DocumentNode, HeadingLevel, ShowWhen, Span, SpanStyle, TruncationLevel,
 };
+use crate::render_context::RenderContext;
 use ratatui::{
     style::{Color, Modifier, Style},
     text::{Line, Span as RatatuiSpan},
 };
 use syntect::easy::HighlightLines;
 use syntect::util::LinesWithEndings;
+
+#[cfg(test)]
+mod tests;
 
 /// Render budget for truncation
 #[derive(Clone)]
@@ -224,7 +227,7 @@ pub fn render(
 ) -> Result {
     // Build ratatui lines from document
     let mut budget = RenderBudget::Unlimited;
-    let lines = build_lines(&document.nodes, render_context, &mut budget);
+    let lines = build_lines(document.nodes(), render_context, &mut budget);
 
     // Write lines directly to output
     for line in lines {
@@ -724,8 +727,8 @@ fn build_node_lines<'a>(
 
 /// Render table with UTF-8 borders
 fn render_table<'a>(
-    header: Option<&[crate::styled_string::TableCell<'a>]>,
-    rows: &[Vec<crate::styled_string::TableCell<'a>>],
+    header: Option<&[crate::document::TableCell<'a>]>,
+    rows: &[Vec<crate::document::TableCell<'a>>],
     render_context: &RenderContext,
 ) -> Vec<Line<'a>> {
     let mut lines = Vec::new();
@@ -811,7 +814,7 @@ fn render_table<'a>(
                 cell.spans
                     .first()
                     .map(|s| s.style)
-                    .unwrap_or(crate::styled_string::SpanStyle::Plain),
+                    .unwrap_or(crate::document::SpanStyle::Plain),
                 render_context,
             );
             style = style.add_modifier(Modifier::BOLD);
@@ -864,7 +867,7 @@ fn render_table<'a>(
                 cell.spans
                     .first()
                     .map(|s| s.style)
-                    .unwrap_or(crate::styled_string::SpanStyle::Plain),
+                    .unwrap_or(crate::document::SpanStyle::Plain),
                 render_context,
             );
             row_spans.push(RatatuiSpan::styled(cell_text, style));
@@ -1005,47 +1008,5 @@ fn span_style_to_ratatui(span_style: SpanStyle, render_context: &RenderContext) 
             let color = render_context.color_scheme().color_for(span_style);
             Style::default().fg(Color::Rgb(color.r, color.g, color.b))
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::renderer::OutputMode;
-
-    use super::*;
-
-    #[test]
-    fn test_render_paragraph() {
-        let doc = Document::with_nodes(vec![DocumentNode::paragraph(vec![
-            Span::keyword("struct"),
-            Span::plain(" "),
-            Span::type_name("Foo"),
-        ])]);
-        let mut output = String::new();
-        let render_context = RenderContext::new().with_output_mode(OutputMode::Tty);
-        render(&doc, &render_context, &mut output).unwrap();
-        // Should contain ANSI codes
-        assert!(output.contains("\x1b"));
-        // Should contain the actual text
-        assert!(output.contains("struct"));
-        assert!(output.contains("Foo"));
-    }
-
-    #[test]
-    fn test_render_heading() {
-        let doc = Document::with_nodes(vec![DocumentNode::heading(
-            HeadingLevel::Title,
-            vec![Span::plain("Test")],
-        )]);
-
-        let mut output = String::new();
-        let render_context = RenderContext::new()
-            .with_output_mode(OutputMode::Tty)
-            .with_terminal_width(10);
-
-        render(&doc, &render_context, &mut output).unwrap();
-        assert!(output.contains("Test"));
-        // Should have decorative underline
-        assert!(output.contains("=========="));
     }
 }

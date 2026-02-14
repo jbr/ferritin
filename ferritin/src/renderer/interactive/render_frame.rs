@@ -4,7 +4,7 @@ use ratatui::{
 };
 
 use super::{InteractiveState, UiMode};
-use crate::styled_string::NodePath;
+use crate::document::NodePath;
 
 impl<'a> InteractiveState<'a> {
     pub(super) fn render_frame(&mut self, frame: &mut Frame) {

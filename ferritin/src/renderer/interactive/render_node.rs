@@ -1,7 +1,7 @@
 use ratatui::{buffer::Buffer, layout::Rect, style::Modifier};
 
 use super::{state::InteractiveState, utils::find_paragraph_truncation_point};
-use crate::styled_string::{DocumentNode, HeadingLevel, ShowWhen, TruncationLevel, TuiAction};
+use crate::document::{DocumentNode, HeadingLevel, ShowWhen, TruncationLevel, TuiAction};
 
 // Truncated block borders are outdented (to the left of content) so that content
 // doesn't shift when expanding/collapsing the block. The border is purely decorative.

@@ -1,7 +1,7 @@
 use ratatui::{buffer::Buffer, layout::Rect, style::Modifier};
 
 use super::state::InteractiveState;
-use crate::styled_string::Span;
+use crate::document::Span;
 
 impl<'a> InteractiveState<'a> {
     /// Render a span with optional action tracking

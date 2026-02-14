@@ -1,0 +1,99 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+}
+
+body {
+  margin: 0;
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.ferritin-document {
+  max-width: 900px;
+}
+
+.loading,
+.error {
+  padding: 2rem;
+  text-align: center;
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+pre {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+th,
+td {
+  border: 1px solid #444;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+th {
+  background: #1a1a1a;
+}
+
+blockquote {
+  border-left: 3px solid #666;
+  margin-left: 0;
+  padding-left: 1rem;
+  color: #999;
+}
+
+/* Basic span styles - will iterate on these */
+.span-keyword { color: #ff79c6; }
+.span-typename { color: #8be9fd; }
+.span-functionname { color: #50fa7b; }
+.span-fieldname { color: #f1fa8c; }
+.span-lifetime { color: #ff79c6; }
+.span-generic { color: #8be9fd; }
+.span-punctuation { color: #f8f8f2; }
+.span-operator { color: #ff79c6; }
+.span-comment { color: #6272a4; }
+.span-inlinerustcode,
+.span-inlinecode {
+  background: #1a1a1a;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: ui-monospace, monospace;
+}
+.span-strong { font-weight: bold; }
+.span-emphasis { font-style: italic; }
+.span-strikethrough { text-decoration: line-through; }
+
+a {
+  color: #8be9fd;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

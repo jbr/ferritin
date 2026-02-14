@@ -1,6 +1,6 @@
+use crate::document::{Document, DocumentNode, HeadingLevel, ListItem, Span};
 use crate::logging::LogEntry;
 use crate::renderer::interactive::InteractiveState;
-use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span};
 use log::Level;
 use std::fs::File;
 use std::io::Write;

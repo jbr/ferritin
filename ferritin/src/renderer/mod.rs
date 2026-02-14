@@ -1,4 +1,4 @@
-use crate::{render_context::RenderContext, styled_string::Document};
+use crate::{document::Document, render_context::RenderContext};
 use std::{
     fmt::Write,
     io::{self, IsTerminal},
@@ -69,11 +69,11 @@ pub fn render(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::styled_string::{DocumentNode, HeadingLevel, Span};
+    use crate::document::{DocumentNode, HeadingLevel, Span};
 
     #[test]
     fn test_render_modes() {
-        let doc = Document::with_nodes(vec![
+        let doc = Document::from(vec![
             DocumentNode::heading(
                 HeadingLevel::Title,
                 vec![Span::plain("Test"), Span::keyword("struct")],

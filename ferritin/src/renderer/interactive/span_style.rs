@@ -1,6 +1,6 @@
 use ratatui::style::{Color, Modifier, Style};
 
-use crate::styled_string::SpanStyle;
+use crate::document::SpanStyle;
 
 use super::state::InteractiveState;
 

@@ -1,7 +1,7 @@
 use rustdoc_types::ItemKind;
 
 use super::*;
-use crate::styled_string::{DocumentNode, ListItem, Span};
+use crate::document::{DocumentNode, ListItem, Span};
 
 // Define display order for groups
 const GROUP_ORDER: &[(ItemKind, &str)] = &[

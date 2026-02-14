@@ -4,7 +4,7 @@ use ratatui::{
 };
 
 use super::state::{DocumentLayoutCache, InteractiveState};
-use crate::styled_string::NodePath;
+use crate::document::NodePath;
 
 // Baseline left margin for all content - provides breathing room and space for outdented borders
 pub(super) const BASELINE_LEFT_MARGIN: u16 = 3;
@@ -30,8 +30,8 @@ impl<'a> InteractiveState<'a> {
             .unwrap_or(true);
 
         // Use raw pointer to avoid borrow checker issues when calling render_node
-        let nodes_ptr = self.document.document.nodes.as_ptr();
-        let node_count = self.document.document.nodes.len();
+        let nodes_ptr = self.document.document.nodes().as_ptr();
+        let node_count = self.document.document.nodes().len();
 
         for idx in 0..node_count {
             // Only short-circuit if we have a valid cache (don't need full height calculation)
