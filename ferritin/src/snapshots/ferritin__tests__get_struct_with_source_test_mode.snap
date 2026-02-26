@@ -61,7 +61,7 @@ Update the count</p>
 </item>
 </list>
 </section><section><section-title>Trait Implementations</section-title><p>
-std traits: Any Borrow BorrowMut Clone CloneToUninit Debug Freeze From Into RefUnwindSafe Send Sync TestTrait ToOwned TryFrom TryInto Unpin UnwindSafe </p>
+std traits: Any Borrow BorrowMut Clone CloneToUninit Debug Freeze From Into RefUnwindSafe Send Sync TestTrait ToOwned TryFrom TryInto Unpin UnsafeUnpin UnwindSafe </p>
 </section><p>
 Source: /TEST_CRATE_ROOT/src/lib.rs</p>
 <code-block lang="rust">

@@ -21,7 +21,7 @@ primitives](#primitives), [standard macros](#macros), [I/O] and
 Modules:
 alloc // Memory allocation APIs. [+60 more lines]
 any // Utilities for dynamic typing or type reflection. [+83 more lines]
-arch // SIMD and vendor intrinsics module. [+353 more lines]
+arch // SIMD and vendor intrinsics module. [+355 more lines]
 array // Utilities for the array primitive type. [+2 more lines]
 ascii // Operations on ASCII strings and characters. [+11 more lines]
 async_iter // Composable asynchronous iteration. [+121 more lines]

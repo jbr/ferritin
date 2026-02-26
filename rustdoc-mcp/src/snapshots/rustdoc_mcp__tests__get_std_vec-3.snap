@@ -100,6 +100,12 @@ where
 • pub fn shrink_to(&mut self, min_capacity: usize)
     Shrinks the capacity of the vector with a lower bound. [+17 more lines]
 
+• pub fn try_shrink_to_fit(&mut self) -> Result<(), TryReserveError>
+    Tries to shrink the capacity of the vector as much as possible [+24 more lines]
+
+• pub fn try_shrink_to(&mut self, min_capacity: usize) -> Result<(), TryReserveError>
+    Shrinks the capacity of the vector with a lower bound. [+25 more lines]
+
 • pub fn into_boxed_slice(self) -> Box<[T], A>
     Converts the vector into [`Box<[T]>`][owned slice]. [+24 more lines]
 
@@ -251,4 +257,4 @@ where
     Creates an iterator which uses a closure to determine if an element in the range should be removed. [+73 more lines]
 
 
-std traits: Any, AsMut<Vec<T, A>>, AsMut<[T]>, AsRef<Vec<T, A>>, AsRef<[T]>, Borrow<T>, Borrow<[T]>, BorrowMut<T>, BorrowMut<[T]>, Clone [+50 more]
+std traits: Any, AsMut<Vec<T, A>>, AsMut<[T]>, AsRef<Vec<T, A>>, AsRef<[T]>, Borrow<T>, Borrow<[T]>, BorrowMut<T>, BorrowMut<[T]>, Clone [+51 more]

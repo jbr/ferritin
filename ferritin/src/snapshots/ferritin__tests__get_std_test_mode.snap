@@ -152,7 +152,7 @@ Utilities for dynamic typing or type reflection.</p>
 <type-name>arch</type-name> </p>
 <truncated level="single-line"><p>
 SIMD and vendor intrinsics module.</p>
-This module is intended to be the gateway to intrinsic functions, typically related to architecture that Rust compiles to may means that this is not a portable module! If library take care when using these APIs! <elided chars="10878"/></truncated>
+This module is intended to be the gateway to intrinsic functions, typically related to architecture that Rust compiles to may means that this is not a portable module! If library take care when using these APIs! <elided chars="10885"/></truncated>
 </item>
   <item><p>
 <type-name>array</type-name> </p>

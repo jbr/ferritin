@@ -46,5 +46,5 @@ Variant with mixed generics</p>
 </item>
 </list>
 </section><section><section-title>Trait Implementations</section-title><p>
-std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnwindSafe </p>
+std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnsafeUnpin UnwindSafe </p>
 </section>

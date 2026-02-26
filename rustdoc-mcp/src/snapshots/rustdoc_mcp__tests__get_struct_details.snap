@@ -45,4 +45,4 @@ Associated Types:
     Update the count
 
 
-std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Freeze, From<T>, Into<U>, RefUnwindSafe [+8 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Freeze, From<T>, Into<U>, RefUnwindSafe [+9 more]

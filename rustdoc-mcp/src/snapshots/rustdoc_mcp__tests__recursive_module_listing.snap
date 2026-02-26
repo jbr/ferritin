@@ -116,6 +116,8 @@ Vec::truncate // Shortens the vector, keeping the first `len` elements and dropp
 Vec::try_remove // Remove and return the element at position `index` within the vector, [+18 more lines]
 Vec::try_reserve // Tries to reserve capacity for at least `additional` more elements to be inserted [+31 more lines]
 Vec::try_reserve_exact // Tries to reserve the minimum capacity for at least `additional` [+37 more lines]
+Vec::try_shrink_to // Shrinks the capacity of the vector with a lower bound. [+25 more lines]
+Vec::try_shrink_to_fit // Tries to shrink the capacity of the vector as much as possible [+24 more lines]
 Vec::try_with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+9 more lines]
 Vec::try_with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+10 more lines]
 Vec::with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+49 more lines]

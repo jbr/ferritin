@@ -35,7 +35,7 @@ expression: "render_interactive_for_tests(Commands::get(\"crate::submodule::Test
 "   Trait Implementations                                                        "
 "                                                                                "
 "   std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync    "
-"   TryFrom TryInto Unpin UnwindSafe                                             "
+"   TryFrom TryInto Unpin UnsafeUnpin UnwindSafe                                 "
 "                                                                                "
 "                                                                                "
 "                                                                                "

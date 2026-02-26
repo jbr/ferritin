@@ -336,7 +336,7 @@ Creates a <inline-code>Vec<T></inline-code> directly from a <inline-code>NonNull
 </item>
   <item><p>
 <type-name>Vec::from_parts_in</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2868"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2832"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_raw_parts</type-name> </p>
@@ -380,7 +380,7 @@ Panics if the length of<inline-code>usize</inline-code>. <elided chars="393"/></
 </item>
   <item><p>
 <type-name>Vec::into_parts_with_alloc</type-name> </p>
-<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity, allocator)</inline-code>. <elided chars="1013"/></truncated>
+<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity, allocator)</inline-code>. <elided chars="995"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::into_raw_parts</type-name> </p>
@@ -551,6 +551,18 @@ If <inline-code>len</inline-code> is no <elided chars="665"/></truncated>
   <item><p>
 <type-name>Vec::try_reserve_exact</type-name> </p>
 <truncated level="single-line">Tries to reserve the minimum capacity for at least <inline-code>additional</inline-code> elements to be inserted in the given <inline-code>Vec<T></inline-code>. Unlike <inline-code>try_reserve</inline-code>, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling <inline-code>try_reserve_exact</inline-code>, capacity will be greater than or equal to <inline-code>self.len() + additional</inline-code> if it returns <inline-code>Ok(())</inline-code>. Does nothing if the capacity is already sufficient. <elided chars="1021"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::try_shrink_to</type-name> </p>
+<truncated level="single-line"><p>
+Shrinks the capacity of the vector with a lower bound.</p>
+The capacity will remain and the supplied value. <elided chars="687"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::try_shrink_to_fit</type-name> </p>
+<truncated level="single-line"><p>
+Tries to shrink the capacity of the vector as much as possible</p>
+The behavior of in-place or is the case for <inline-code>with_capacity</inline-code>. See <inline-code>Allocator::shrink</inline-code> for more details. <elided chars="677"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::try_with_capacity</type-name> </p>

@@ -13,9 +13,9 @@ trillium-smol = "0.4.2"
 anyhow.workspace = true
 cargo_metadata.workspace = true
 elsa.workspace = true
-fieldwork = "0.4.6"
+fieldwork = "0.4.8"
 log = "0.4.29"
-rkyv = "0.8.14"
+rkyv = "0.8.15"
 rustc-hash.workspace = true
 rustdoc-types.workspace = true
 rustdoc-types-56 = { package = "rustdoc-types", version = "0.56" }
@@ -28,10 +28,10 @@ zstd = "0.13"
 home = "0.5.12"
 async-fs = "2.2.0"
 semver = { version = "1.0.27", features = ["serde"] }
-sonic-rs = "0.5.6"
+sonic-rs = "0.5.7"
 rayon = "1.11.0"
 memchr = "2.8.0"
 
 [dev-dependencies]
-env_logger = "0.11.8"
-pulldown-cmark = "0.13.0"
+env_logger = "0.11.9"
+pulldown-cmark = "0.13.1"

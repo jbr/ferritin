@@ -43,5 +43,5 @@ Variant C with struct data (<inline-code>name</inline-code> and <inline-code>val
 </item>
 </list>
 </section><section><section-title>Trait Implementations</section-title><p>
-std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnwindSafe </p>
+std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnsafeUnpin UnwindSafe </p>
 </section>

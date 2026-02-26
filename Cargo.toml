@@ -9,12 +9,12 @@ repository = "https://github.com/jbr/ferritin"
 license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
-anyhow = "1.0.101"
+anyhow = "1.0.102"
 cargo_metadata = "0.23.1"
 elsa = "1.11.2"
 rustc-hash = { version = "2.1.1" }
 rustdoc-types = { version = "0.57.0", features = ["rustc-hash"] }
 serde = { version = "1.0.228", features = ["derive"] }
-shellexpand = "3.1.1"
+shellexpand = "3.1.2"
 strsim = "0.11.1"
 walkdir = "2.5.0"

@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Item: GenericStruct
@@ -33,4 +33,4 @@ Fields:
     Generic field with default
 
 
-std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+3 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]

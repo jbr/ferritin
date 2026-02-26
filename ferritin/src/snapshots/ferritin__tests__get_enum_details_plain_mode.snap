@@ -34,4 +34,4 @@ Variants:
 
 Trait Implementations
 
-std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnwindSafe
+std traits: Any Borrow BorrowMut Freeze From Into RefUnwindSafe Send Sync TryFrom TryInto Unpin UnsafeUnpin UnwindSafe

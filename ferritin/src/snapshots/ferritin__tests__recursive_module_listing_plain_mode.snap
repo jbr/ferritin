@@ -310,6 +310,12 @@ Functions
   ◦ Vec::try_reserve_exact 
     Tries to reserve the minimum capacity for at least additional elements to be inserted in the given Vec<T>. Unlike try_reserve, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling try_reserve_exact, capacity will be greater than or equal to self.len() + additional if it returns Ok(()). Does nothing if the capacity is already sufficient. [...]
 
+  ◦ Vec::try_shrink_to 
+    Shrinks the capacity of the vector with a lower bound. [...]
+
+  ◦ Vec::try_shrink_to_fit 
+    Tries to shrink the capacity of the vector as much as possible [...]
+
   ◦ Vec::try_with_capacity 
     Constructs a new, empty Vec<T> with at least the specified capacity. [...]
 
