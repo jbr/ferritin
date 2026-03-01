@@ -1,7 +1,8 @@
+use crate::document::{Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span};
+use crate::renderer::HistoryEntry;
 use crate::request::Request;
-use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span};
 
-pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool, Option<&'a str>) {
+pub(crate) fn execute<'a>(request: &'a Request) -> Document<'a> {
     let mut nodes = vec![DocumentNode::Heading {
         level: HeadingLevel::Title,
         spans: vec![Span::plain("Available crates:")],
@@ -99,5 +100,5 @@ pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool, Option<&
         });
     }
 
-    (Document::from(nodes), false, default_crate)
+    Document::from(nodes).with_history_entry(HistoryEntry::List { default_crate })
 }

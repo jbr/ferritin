@@ -1,12 +1,12 @@
 use std::fmt::{Result, Write};
 
-use crate::styled_string::{
+use crate::document::{
     Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, SpanStyle, TruncationLevel,
 };
 
 /// Render a document with semantic XML-like tags for testing
 pub fn render(document: &Document, output: &mut impl Write) -> Result {
-    render_nodes(&document.nodes, output)
+    render_nodes(document.nodes(), output)
 }
 
 fn render_nodes(nodes: &[DocumentNode], output: &mut impl Write) -> Result {
@@ -321,11 +321,11 @@ mod tests {
 
     #[test]
     fn test_render_paragraph() {
-        let doc = Document::with_nodes(vec![DocumentNode::paragraph(vec![
+        let doc = Document::from(DocumentNode::paragraph(vec![
             Span::keyword("struct"),
             Span::plain(" "),
             Span::type_name("Foo"),
-        ])]);
+        ]));
 
         let mut output = String::new();
         render(&doc, &mut output).unwrap();
@@ -335,10 +335,10 @@ mod tests {
 
     #[test]
     fn test_render_heading() {
-        let doc = Document::with_nodes(vec![DocumentNode::heading(
+        let doc = Document::from(DocumentNode::heading(
             HeadingLevel::Title,
             vec![Span::plain("Item: "), Span::type_name("Vec")],
-        )]);
+        ));
 
         let mut output = String::new();
         render(&doc, &mut output).unwrap();
@@ -350,10 +350,10 @@ mod tests {
 
     #[test]
     fn test_render_code_block() {
-        let doc = Document::with_nodes(vec![DocumentNode::code_block(
+        let doc = Document::from(DocumentNode::code_block(
             Some("rust".to_string()),
             "fn main() {}".to_string(),
-        )]);
+        ));
 
         let mut output = String::new();
         render(&doc, &mut output).unwrap();

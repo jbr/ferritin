@@ -106,11 +106,11 @@ use utils::set_cursor_shape;
 
 use crate::{
     commands::Commands,
+    document::{Document, DocumentNode, HeadingLevel, Span},
     logging::LogReader,
     render_context::RenderContext,
     renderer::interactive::state::{InputMode, InteractiveState, UiMode},
     request::Request,
-    styled_string::{Document, DocumentNode, HeadingLevel, Span},
 };
 use crossbeam_channel::select;
 use crossterm::{
@@ -190,14 +190,11 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
     request.populate();
 
     // Execute initial command and send to UI
-    let (document, _is_error, initial_entry) = initial_command
+    let document = initial_command
         .unwrap_or_else(Commands::list)
         .execute(request);
 
-    let _ = resp_tx.send(RequestResponse::Document {
-        doc: document,
-        entry: initial_entry,
-    });
+    let _ = resp_tx.send(RequestResponse::Document(document));
 
     // Run request thread loop
     request_thread_loop(request, cmd_rx, resp_tx);

@@ -1,15 +1,15 @@
-use ferritin_common::DocRef;
-use rustdoc_types::Item;
+use std::time::Instant;
 
+use crate::document::{Document, DocumentNode, ListItem, Span};
+use crate::renderer::HistoryEntry;
 use crate::request::Request;
-use crate::styled_string::{Document, DocumentNode, ListItem, Span};
 
 pub(crate) fn execute<'a>(
     request: &'a Request,
     path: &str,
     source: bool,
     recursive: bool,
-) -> (Document<'a>, bool, Option<DocRef<'a, Item>>) {
+) -> Document<'a> {
     request
         .format_context()
         .set_include_source(source)
@@ -23,18 +23,22 @@ pub(crate) fn execute<'a>(
             if let Some(name) = item.name() {
                 log::info!("Resolved {name}");
             }
-            let start = std::time::Instant::now();
+            let start = Instant::now();
             let doc_nodes = request.format_item(item);
             let format_elapsed = start.elapsed();
             if let Some(name) = item.name() {
                 log::debug!("⏱️ Formatted {name} in {:?}", format_elapsed);
             }
-            (Document::from(doc_nodes), false, Some(item))
+            Document::from(doc_nodes)
+                .with_item(item)
+                .with_history_entry(HistoryEntry::Item(item))
         }
         None => {
-            let mut nodes = vec![DocumentNode::paragraph(vec![Span::plain(format!(
-                "Could not find '{path}'",
-            ))])];
+            let mut nodes = vec![DocumentNode::paragraph(vec![
+                Span::plain("Could not find '"),
+                Span::emphasis(path.to_string()),
+                Span::plain("'"),
+            ])];
 
             if !suggestions.is_empty() {
                 nodes.push(DocumentNode::paragraph(vec![Span::plain("Did you mean:")]));
@@ -51,7 +55,7 @@ pub(crate) fn execute<'a>(
                 nodes.push(DocumentNode::List { items });
             }
 
-            (Document::from(nodes), true, None)
+            Document::from(nodes).with_error()
         }
     }
 }

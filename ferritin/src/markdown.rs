@@ -1,4 +1,4 @@
-use crate::styled_string::{
+use crate::document::{
     DocumentNode, HeadingLevel, LinkTarget, ListItem, Span, SpanStyle, TuiAction,
 };
 use pulldown_cmark::{BrokenLink, CodeBlockKind, Event, Options, Parser, Tag, TagEnd};
@@ -50,9 +50,9 @@ impl MarkdownRenderer {
 
         // Table state
         let mut in_table_head = false;
-        let mut table_header: Option<Vec<crate::styled_string::TableCell<'a>>> = None;
-        let mut table_rows: Vec<Vec<crate::styled_string::TableCell<'a>>> = Vec::new();
-        let mut current_row: Vec<crate::styled_string::TableCell<'a>> = Vec::new();
+        let mut table_header: Option<Vec<crate::document::TableCell<'a>>> = None;
+        let mut table_rows: Vec<Vec<crate::document::TableCell<'a>>> = Vec::new();
+        let mut current_row: Vec<crate::document::TableCell<'a>> = Vec::new();
 
         for event in parser {
             match event {
@@ -249,9 +249,8 @@ impl MarkdownRenderer {
                     }
                     TagEnd::TableCell => {
                         // Create a table cell from collected spans
-                        let cell = crate::styled_string::TableCell::new(std::mem::take(
-                            &mut current_spans,
-                        ));
+                        let cell =
+                            crate::document::TableCell::new(std::mem::take(&mut current_spans));
                         current_row.push(cell);
                     }
                     TagEnd::TableHead => {

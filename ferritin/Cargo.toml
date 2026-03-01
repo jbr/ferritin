@@ -7,10 +7,11 @@ readme = "../README.md"
 repository.workspace = true
 license.workspace = true
 include = [
-    "src/**/*",
-    "build.rs",
-    "assets/**/*.tmTheme",
-    "CHANGELOG.md",
+        "src/**/*",
+        "build.rs",
+        "assets/**/*.tmTheme",
+        "CHANGELOG.md",
+        "web/dist",
 ]
 
 [[bin]]
@@ -31,19 +32,58 @@ pulldown-cmark = "0.13"
 ratatui = "0.30"
 regex = "1.12"
 rustdoc-types.workspace = true
-syntect = { version = "5.3", default-features = false, features = ["parsing", "default-syntaxes", "html", "plist-load", "yaml-load", "dump-load", "dump-create", "regex-onig"] }
+syntect = { version = "5.3", default-features = false, features = [
+        "parsing",
+        "default-syntaxes",
+        "html",
+        "plist-load",
+        "yaml-load",
+        "dump-load",
+        "dump-create",
+        "regex-onig",
+] }
 terminal_size = "0.4"
 thiserror = "2"
 unicode-width = "0.2.2"
 webbrowser = "1.1.0"
 semver = "1.0.27"
-percent-encoding = "2.3"
+percent-encoding = "2.3.2"
 mimalloc = "0.1.48"
+trillium = { version = "0.2.20", optional = true }
+trillium-router = { version = "0.4.1", optional = true }
+trillium-smol = { version = "0.4.2", optional = true }
+querystrong = { version = "0.4.0", optional = true }
+serde = { version = "1.0.228", features = ["derive"], optional = true }
+sonic-rs = { version = "0.5.7", optional = true }
+trillium-logger = { version = "0.4.5", optional = true }
+trillium-frontend = { version = "0.2.0", optional = true }
 
 [build-dependencies]
-syntect = { version = "5.3", default-features = false, features = ["parsing", "plist-load", "dump-load", "dump-create", "regex-onig"] }
+syntect = { version = "5.3", default-features = false, features = [
+        "parsing",
+        "plist-load",
+        "dump-load",
+        "dump-create",
+        "regex-onig",
+] }
 
 [dev-dependencies]
+serde = { version = "1.0.228", features = ["derive"] }
 insta = { version = "1.46.3", features = ["filters"] }
 paste = "1.0.15"
 strip-ansi-escapes = "0.2.1"
+trillium-testing = { version = "0.7.0", features = ["smol"] }
+
+[features]
+default = []
+web = ["serve-json", "dep:trillium-frontend"]
+dev = ["trillium-frontend/dev-proxy"]
+serve-json = [
+        "dep:trillium",
+        "dep:trillium-router",
+        "dep:trillium-smol",
+        "dep:serde",
+        "dep:sonic-rs",
+        "dep:querystrong",
+        "dep:trillium-logger",
+]

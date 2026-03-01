@@ -24,7 +24,10 @@ impl<'a> InteractiveState<'a> {
     pub fn handle_response(&mut self, response: RequestResponse<'a>) -> bool {
         self.loading.pending_request = false;
         match response {
-            RequestResponse::Document { doc, entry } => {
+            RequestResponse::Document(mut doc) => {
+                if let Some(entry) = doc.take_history_entry() {
+                    self.document.history.push(entry)
+                }
                 self.document.document = doc;
                 self.set_scroll_offset(0);
                 // Invalidate layout cache when document changes
@@ -32,10 +35,6 @@ impl<'a> InteractiveState<'a> {
                 // Reset keyboard cursor to virtual top when navigating to new document
                 self.reset_keyboard_cursor();
 
-                // Add to history if we got an entry
-                if let Some(new_entry) = entry {
-                    self.document.history.push(new_entry);
-                }
                 false
             }
 

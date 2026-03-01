@@ -4,7 +4,7 @@ use ratatui::{
 };
 
 use super::state::InteractiveState;
-use crate::styled_string::TableCell;
+use crate::document::TableCell;
 
 impl<'a> InteractiveState<'a> {
     /// Render table with unicode borders

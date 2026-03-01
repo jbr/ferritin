@@ -1,4 +1,4 @@
-use crate::styled_string::SpanStyle;
+use crate::document::SpanStyle;
 use syntect::highlighting::{Color, Highlighter, Theme};
 use syntect::parsing::{Scope, ScopeStack};
 

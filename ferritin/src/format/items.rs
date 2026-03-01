@@ -1,5 +1,5 @@
 use super::*;
-use crate::styled_string::{DocumentNode, Span};
+use crate::document::{DocumentNode, Span};
 
 impl Request {
     /// Format a type alias

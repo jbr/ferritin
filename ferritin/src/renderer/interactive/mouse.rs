@@ -4,9 +4,9 @@ use crossterm::event::{MouseEvent, MouseEventKind};
 use ratatui::{Terminal, layout::Position, prelude::Backend};
 
 use crate::{
+    document::TuiAction,
     render_context::RenderContext,
     renderer::interactive::{handle_action, set_cursor_shape},
-    styled_string::TuiAction,
 };
 
 use super::UiMode;

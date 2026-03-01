@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
+    document::{Document, DocumentNode, Span},
     logging::StatusLogBackend,
-    styled_string::{Document, DocumentNode, Span, SpanStyle},
 };
 use crossbeam_channel::unbounded as channel;
 use ratatui::{Terminal, backend::TestBackend};
@@ -11,13 +11,7 @@ fn create_test_state<'a>() -> InteractiveState<'a> {
     let (cmd_tx, _cmd_rx) = channel();
     let (_resp_tx, resp_rx) = channel();
 
-    let document = Document {
-        nodes: vec![DocumentNode::paragraph(vec![Span {
-            text: "Test document".into(),
-            style: SpanStyle::Plain,
-            action: None,
-        }])],
-    };
+    let document = Document::from(Span::plain("Test document"));
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
     let (_, log_reader) = StatusLogBackend::new(100);
@@ -171,14 +165,13 @@ fn test_rendering_to_test_backend() {
 
 #[test]
 fn test_brief_truncation_with_code_block() {
-    use crate::styled_string::TruncationLevel;
+    use crate::document::TruncationLevel;
 
     let (cmd_tx, _cmd_rx) = channel();
     let (_resp_tx, resp_rx) = channel();
 
     // Create a document with a Brief truncated block containing text and a code block
-    let document = Document {
-        nodes: vec![DocumentNode::TruncatedBlock {
+    let document = Document::from(vec![DocumentNode::TruncatedBlock {
             level: TruncationLevel::Brief,
             nodes: vec![
                 DocumentNode::paragraph(vec![Span::plain("First paragraph with some text.")]),
@@ -189,8 +182,7 @@ fn test_brief_truncation_with_code_block() {
                 },
                 DocumentNode::paragraph(vec![Span::plain("Third paragraph after code.")]),
             ],
-        }],
-    };
+    }]);
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
@@ -248,24 +240,22 @@ fn test_brief_truncation_with_code_block() {
 
 #[test]
 fn test_brief_with_short_code_block() {
-    use crate::styled_string::TruncationLevel;
+    use crate::document::TruncationLevel;
 
     let (cmd_tx, _cmd_rx) = channel();
     let (_resp_tx, resp_rx) = channel();
 
     // Create a simpler case: just one line of text and a small code block
-    let document = Document {
-        nodes: vec![DocumentNode::TruncatedBlock {
-            level: TruncationLevel::Brief,
-            nodes: vec![
-                DocumentNode::paragraph(vec![Span::plain("Some text before code.")]),
-                DocumentNode::CodeBlock {
-                    lang: Some("rust".into()),
-                    code: "let x = 42;".into(),
-                },
-            ],
-        }],
-    };
+    let document = Document::from(DocumentNode::TruncatedBlock {
+        level: TruncationLevel::Brief,
+        nodes: vec![
+            DocumentNode::paragraph(vec![Span::plain("Some text before code.")]),
+            DocumentNode::CodeBlock {
+                lang: Some("rust".into()),
+                code: "let x = 42;".into(),
+            },
+        ],
+    });
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
@@ -316,7 +306,7 @@ fn test_brief_with_short_code_block() {
 
 #[test]
 fn test_truncated_block_border_on_wrapped_lines() {
-    use crate::styled_string::TruncationLevel;
+    use crate::document::TruncationLevel;
 
     let (cmd_tx, _cmd_rx) = channel();
     let (_resp_tx, resp_rx) = channel();
@@ -325,24 +315,22 @@ fn test_truncated_block_border_on_wrapped_lines() {
     // Brief mode has an 8-line limit, so we need enough content to exceed that and trigger truncation
     let long_text = "This is a very long line of text that should wrap across multiple lines when rendered in a narrow terminal window and we want to make sure the border appears on all wrapped lines not just the last one.";
 
-    let document = Document {
-        nodes: vec![DocumentNode::TruncatedBlock {
-            level: TruncationLevel::Brief,
-            nodes: vec![
-                DocumentNode::paragraph(vec![Span::plain(long_text)]),
-                DocumentNode::paragraph(vec![Span::plain(
-                    "Second paragraph with additional content.",
-                )]),
-                DocumentNode::paragraph(vec![Span::plain(
-                    "Third paragraph to ensure we exceed the 8-line Brief limit.",
-                )]),
-                DocumentNode::paragraph(vec![Span::plain(
-                    "Fourth paragraph - this should be truncated.",
-                )]),
-                DocumentNode::paragraph(vec![Span::plain("Fifth paragraph - also truncated.")]),
-            ],
-        }],
-    };
+    let document = Document::from(DocumentNode::TruncatedBlock {
+        level: TruncationLevel::Brief,
+        nodes: vec![
+            DocumentNode::paragraph(vec![Span::plain(long_text)]),
+            DocumentNode::paragraph(vec![Span::plain(
+                "Second paragraph with additional content.",
+            )]),
+            DocumentNode::paragraph(vec![Span::plain(
+                "Third paragraph to ensure we exceed the 8-line Brief limit.",
+            )]),
+            DocumentNode::paragraph(vec![Span::plain(
+                "Fourth paragraph - this should be truncated.",
+            )]),
+            DocumentNode::paragraph(vec![Span::plain("Fifth paragraph - also truncated.")]),
+        ],
+    });
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
@@ -398,56 +386,54 @@ fn test_truncated_block_border_on_wrapped_lines() {
 #[test]
 #[ignore] // Run with --ignored to update snapshot
 fn test_std_module_spacing() {
-    use crate::styled_string::{DocumentNode, ListItem, Span};
+    use crate::document::{DocumentNode, ListItem, Span};
 
     let (cmd_tx, _cmd_rx) = channel();
     let (_resp_tx, resp_rx) = channel();
 
     // Simulate the structure from std's markdown: paragraph, list, paragraph, list
-    let document = Document {
-        nodes: vec![
-            // First paragraph
-            DocumentNode::paragraph(vec![Span::plain(
-                "The standard library exposes three common ways:",
-            )]),
-            // First list
-            DocumentNode::List {
-                items: vec![
-                    ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
-                        "Vec<T> - A heap-allocated vector",
-                    )])]),
-                    ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
-                        "[T; N] - An inline array",
-                    )])]),
-                    ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
-                        "[T] - A dynamically sized slice",
-                    )])]),
-                ],
-            },
-            // Second paragraph
-            DocumentNode::paragraph(vec![Span::plain(
-                "Slices can only be handled through pointers:",
-            )]),
-            // Second list
-            DocumentNode::List {
-                items: vec![
-                    ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
-                        "&[T] - shared slice",
-                    )])]),
-                    ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
-                        "&mut [T] - mutable slice",
-                    )])]),
-                    ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
-                        "Box<[T]> - owned slice",
-                    )])]),
-                ],
-            },
-            // Final paragraph
-            DocumentNode::paragraph(vec![Span::plain(
-                "str, a UTF-8 string slice, is a primitive type.",
-            )]),
-        ],
-    };
+    let document = Document::from(vec![
+        // First paragraph
+        DocumentNode::paragraph(vec![Span::plain(
+            "The standard library exposes three common ways:",
+        )]),
+        // First list
+        DocumentNode::List {
+            items: vec![
+                ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
+                    "Vec<T> - A heap-allocated vector",
+                )])]),
+                ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
+                    "[T; N] - An inline array",
+                )])]),
+                ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
+                    "[T] - A dynamically sized slice",
+                )])]),
+            ],
+        },
+        // Second paragraph
+        DocumentNode::paragraph(vec![Span::plain(
+            "Slices can only be handled through pointers:",
+        )]),
+        // Second list
+        DocumentNode::List {
+            items: vec![
+                ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
+                    "&[T] - shared slice",
+                )])]),
+                ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
+                    "&mut [T] - mutable slice",
+                )])]),
+                ListItem::new(vec![DocumentNode::paragraph(vec![Span::plain(
+                    "Box<[T]> - owned slice",
+                )])]),
+            ],
+        },
+        // Final paragraph
+        DocumentNode::paragraph(vec![Span::plain(
+            "str, a UTF-8 string slice, is a primitive type.",
+        )]),
+    ]);
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);
@@ -490,16 +476,14 @@ fn test_code_block_spacing() {
     let (_resp_tx, resp_rx) = channel();
 
     // Simulate paragraph followed by code block (like alloc module docs)
-    let document = Document {
-        nodes: vec![
-            DocumentNode::paragraph(vec![Span::plain("Here's an example:")]),
-            DocumentNode::CodeBlock {
-                lang: Some("rust".into()),
-                code: "let x = vec![1, 2, 3];".into(),
-            },
-            DocumentNode::paragraph(vec![Span::plain("More content after the code block.")]),
-        ],
-    };
+    let document = Document::from(vec![
+        DocumentNode::paragraph(vec![Span::plain("Here's an example:")]),
+        DocumentNode::CodeBlock {
+            lang: Some("rust".into()),
+            code: "let x = vec![1, 2, 3];".into(),
+        },
+        DocumentNode::paragraph(vec![Span::plain("More content after the code block.")]),
+    ]);
 
     let render_context = RenderContext::new();
     let theme = InteractiveTheme::from_render_context(&render_context);

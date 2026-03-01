@@ -1,4 +1,4 @@
-use crate::styled_string::DocumentNode;
+use crate::document::DocumentNode;
 use crossterm::{queue, style::Print};
 use ratatui::prelude::Backend;
 use std::{env, io};

@@ -2,7 +2,7 @@ use ferritin_common::CrateProvenance;
 use rustdoc_types::ItemKind;
 
 use super::*;
-use crate::styled_string::{DocumentNode, ListItem, Span};
+use crate::document::{DocumentNode, ListItem, Span};
 use semver::VersionReq;
 use std::cmp::Ordering;
 

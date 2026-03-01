@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 
 use super::*;
+use crate::document::{DocumentNode, LinkTarget, TruncationLevel};
 use crate::markdown::MarkdownRenderer;
-use crate::styled_string::{DocumentNode, LinkTarget, TruncationLevel};
 use rustdoc_types::ItemKind;
 
 /// Information about documentation text with truncation details
