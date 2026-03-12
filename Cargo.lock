@@ -985,7 +985,7 @@ dependencies = [
  "pulldown-cmark",
  "ratatui",
  "regex",
- "rustdoc-types 0.57.0",
+ "rustdoc-types 0.57.3",
  "semver",
  "strip-ansi-escapes",
  "syntect",
@@ -1014,7 +1014,7 @@ dependencies = [
  "rustc-hash",
  "rustdoc-types 0.55.0",
  "rustdoc-types 0.56.0",
- "rustdoc-types 0.57.0",
+ "rustdoc-types 0.57.3",
  "semver",
  "serde",
  "sonic-rs",
@@ -2604,7 +2604,7 @@ dependencies = [
  "insta",
  "log",
  "mcplease",
- "rustdoc-types 0.57.0",
+ "rustdoc-types 0.57.3",
  "schemars",
  "semver",
  "serde",
@@ -2635,9 +2635,9 @@ dependencies = [
 
 [[package]]
 name = "rustdoc-types"
-version = "0.57.0"
+version = "0.57.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97a32214c8a67cec971ddea507040fb3d8ac485a2cbf29ecb0a502264ab3a873"
+checksum = "7e6919c49bdd9cca072b3b502d16c073d0a4d3b7283ff6e0c86a5f6e6b07bbfe"
 dependencies = [
  "rustc-hash",
  "serde",
