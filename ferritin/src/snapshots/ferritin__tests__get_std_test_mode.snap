@@ -292,6 +292,12 @@ Utilities related to FFI bindings.</p>
 This module provides utilities to handle data interfaces, like other programming languages operating system. It is mainly of use for FFI Interface) bindings and code that needs to with other languages. <elided chars="5972"/></truncated>
 </item>
   <item><p>
+<type-name>field</type-name> </p>
+<truncated level="single-line"><p>
+Field Reflection</p>
+</truncated>
+</item>
+  <item><p>
 <type-name>fmt</type-name> </p>
 <truncated level="single-line"><p>
 Utilities for formatting and printing <inline-code>String</inline-code>s.</p>
@@ -390,8 +396,8 @@ Rust types their as traits. <elided chars="127"/></truncated>
   <item><p>
 <type-name>mem</type-name> </p>
 <truncated level="single-line"><p>
-Basic functions for dealing with memory.</p>
-This module contains functions for types, initializing and manipulating <elided chars="74"/></truncated>
+Basic functions for dealing with memory, values, and types.</p>
+The contents of this <elided chars="727"/></truncated>
 </item>
   <item><p>
 <type-name>net</type-name> </p>
@@ -445,7 +451,7 @@ This module provides two types, <inline-code>PathBuf</inline-code> and <inline-c
 <type-name>pin</type-name> </p>
 <truncated level="single-line"><p>
 Types that pin data to a location in memory.</p>
-It is sometimes useful to be able<emphasis>move</emphasis>, in the sense that its address in are one or more <emphasis>pointers</emphasis> pointing at that value. The guarantee that the value a pointer is pointing at (its <strong>pointee</strong>) will <elided chars="41313"/></truncated>
+It is sometimes useful to be able<emphasis>move</emphasis>, in the sense that its address in are one or more <emphasis>pointers</emphasis> pointing at that value. The guarantee that the value a pointer is pointing at (its <strong>pointee</strong>) will <elided chars="41321"/></truncated>
 </item>
   <item><p>
 <type-name>prelude</type-name> </p>
@@ -462,7 +468,7 @@ This module is mostly concerned with processes, but it also provides <inline-cod
 <type-name>ptr</type-name> </p>
 <truncated level="single-line"><p>
 Manually manage memory through raw pointers.</p>
-<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="19801"/></truncated>
+<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="20120"/></truncated>
 </item>
   <item><p>
 <type-name>random</type-name> </p>

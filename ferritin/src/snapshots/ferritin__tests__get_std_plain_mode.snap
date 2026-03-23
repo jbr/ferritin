@@ -198,6 +198,9 @@ Modules
   ◦ ffi 
     Utilities related to FFI bindings. [...]
 
+  ◦ field 
+    Field Reflection
+
   ◦ fmt 
     Utilities for formatting and printing Strings. [...]
 
@@ -247,7 +250,7 @@ Modules
     Primitive traits and types representing basic properties of types. [...]
 
   ◦ mem 
-    Basic functions for dealing with memory. [...]
+    Basic functions for dealing with memory, values, and types. [...]
 
   ◦ net 
     Networking primitives for TCP/UDP communication. [...]

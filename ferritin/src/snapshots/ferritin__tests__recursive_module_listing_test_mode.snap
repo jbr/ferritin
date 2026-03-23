@@ -362,22 +362,22 @@ Iterates over the slice <inline-code>other</inline-code>, clones each element, i
 <type-name>Vec::from_parts</type-name> </p>
 <truncated level="single-line"><p>
 Creates a <inline-code>Vec<T></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, and a capacity.</p>
- <elided chars="2885"/></truncated>
+ <elided chars="2886"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_parts_in</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2832"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2833"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_raw_parts</type-name> </p>
 <truncated level="single-line"><p>
 Creates a <inline-code>Vec<T></inline-code> directly from a pointer, a length, and a capacity.</p>
 <title>Safety</title>
-This checked <elided chars="3067"/></truncated>
+This checked <elided chars="3068"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_raw_parts_in</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator. <elided chars="2866"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator. <elided chars="2867"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::insert</type-name> </p>

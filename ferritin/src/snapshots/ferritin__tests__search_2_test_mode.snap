@@ -61,7 +61,7 @@ See also <inline-code>crate::TestEnum</inline-code></p>
 </truncated>
 </item>
   <item><p>
-core::mem::ManuallyDrop  (Struct) - score: 76 (relevance: 76, authority: 1)</p>
+core::mem::ManuallyDrop  (Struct) - score: 77 (relevance: 76, authority: 1)</p>
 <truncated level="single-line">A wrapper to inhibit the compiler from automatically calling <inline-code>T</inline-code>’s destructor. This wrapper is 0-cost. <elided chars="4225"/></truncated>
 </item>
 </list>
