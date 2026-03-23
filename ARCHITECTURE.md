@@ -40,7 +40,7 @@ The `Navigator` is the main entry point for all documentation operations. It coo
 
 ### Data Sources
 
-Three sources provide documentation in priority order:
+Three sources provide documentation:
 
 1. **StdSource** - Standard library crates (std, core, alloc) from rustup's `rust-docs-json` component
 2. **LocalSource** - Workspace crates and dependencies, built on demand with nightly toolchain
@@ -64,8 +64,8 @@ When loading a crate (e.g., `tokio` or `tokio@1.40`), Navigator performs two-pha
 
 Sources are tried in priority order until one returns a version match:
 1. StdSource (if crate name matches std/core/alloc)
-2. LocalSource (if present and has a matching version)
-3. DocsRsSource (if present)
+2. LocalSource (if present and has a matching version) — only when `--local` is active
+3. DocsRsSource (if present) — active by default; disabled when `--local` is set
 
 Each source's `lookup` method checks if it can satisfy the `VersionReq` and returns `CrateInfo` containing:
 - Resolved crate name (canonicalized)

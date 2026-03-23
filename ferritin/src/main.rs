@@ -62,6 +62,10 @@ struct Cli {
     #[arg(short, long, global = true)]
     interactive: bool,
 
+    /// Use local workspace (implies --manifest-path cwd if not set). By default, docs.rs is used.
+    #[arg(short = 'l', long, global = true)]
+    local: bool,
+
     #[command(subcommand)]
     command: Option<Commands>,
 }
@@ -98,6 +102,7 @@ where
 fn main() -> ExitCode {
     let cli = Cli::parse();
 
+    let use_local = cli.local || cli.manifest_path.is_some();
     let path = cli
         .manifest_path
         .unwrap_or_else(|| std::env::current_dir().unwrap());
@@ -125,7 +130,8 @@ fn main() -> ExitCode {
             return ExitCode::FAILURE;
         }
 
-        if let Err(e) = renderer::render_interactive(path, render_context, cli.command, log_reader)
+        if let Err(e) =
+            renderer::render_interactive(path, use_local, render_context, cli.command, log_reader)
         {
             eprintln!("Interactive mode error: {}", e);
             return ExitCode::FAILURE;
@@ -134,21 +140,22 @@ fn main() -> ExitCode {
     }
 
     // Non-interactive mode: build sources eagerly and handle errors upfront
-    let local_source = LocalSource::load(&path);
-
-    if let Err(error) = &local_source {
-        eprintln!("could not load rust project at {}", path.display());
-        log::error!("{error:?}");
-        return ExitCode::FAILURE;
-    }
-
     let std_source = StdSource::from_rustup();
-    let docsrs_source = DocsRsSource::from_default_cache();
-
-    let navigator = Navigator::default()
-        .with_std_source(std_source)
-        .with_local_source(local_source.ok())
-        .with_docsrs_source(docsrs_source);
+    let navigator = if use_local {
+        let local_source = LocalSource::load(&path);
+        if let Err(error) = &local_source {
+            eprintln!("could not load rust project at {}", path.display());
+            log::error!("{error:?}");
+            return ExitCode::FAILURE;
+        }
+        Navigator::default()
+            .with_std_source(std_source)
+            .with_local_source(local_source.ok())
+    } else {
+        Navigator::default()
+            .with_std_source(std_source)
+            .with_docsrs_source(DocsRsSource::from_default_cache())
+    };
 
     let format_context = FormatContext::new();
     let request = Request::new(navigator, format_context);
