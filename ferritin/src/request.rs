@@ -13,6 +13,7 @@ pub(crate) struct Request {
     inner: OnceLock<Navigator>,
     manifest_path: PathBuf,
     format_context: FormatContext,
+    local: bool,
 }
 
 impl Deref for Request {
@@ -32,15 +33,17 @@ impl Request {
             inner: OnceLock::from(navigator),
             manifest_path: PathBuf::new(), // Not used in eager mode
             format_context,
+            local: false, // Not used in eager mode
         }
     }
 
     /// Create a lazy request that defers Navigator construction until populate() is called
-    pub(crate) fn lazy(manifest_path: PathBuf, format_context: FormatContext) -> Self {
+    pub(crate) fn lazy(manifest_path: PathBuf, format_context: FormatContext, local: bool) -> Self {
         Self {
             inner: OnceLock::new(),
             manifest_path,
             format_context,
+            local,
         }
     }
 
@@ -59,30 +62,34 @@ impl Request {
                 );
             }
 
-            log::info!(
-                "Looking for a cargo workspace from {}",
-                manifest_path.display()
-            );
-            let local_source = LocalSource::load(manifest_path).ok();
-            if let Some(local_source) = &local_source {
+            if self.local {
                 log::info!(
-                    "Found cargo workspace at {}",
-                    local_source.manifest_path().display()
+                    "Looking for a cargo workspace from {}",
+                    manifest_path.display()
                 );
+                let local_source = LocalSource::load(manifest_path).ok();
+                if let Some(local_source) = &local_source {
+                    log::info!(
+                        "Found cargo workspace at {}",
+                        local_source.manifest_path().display()
+                    );
+                }
+                Navigator::default()
+                    .with_std_source(std_source)
+                    .with_local_source(local_source)
+            } else {
+                log::info!("Building a docs.rs client");
+                let docsrs_source = DocsRsSource::from_default_cache();
+                if let Some(docsrs_source) = &docsrs_source {
+                    log::info!(
+                        "Built new docs.rs client with cache at {}",
+                        docsrs_source.client().cache_dir().display()
+                    );
+                }
+                Navigator::default()
+                    .with_std_source(std_source)
+                    .with_docsrs_source(docsrs_source)
             }
-            log::info!("Building a docs.rs client");
-            let docsrs_source = DocsRsSource::from_default_cache();
-            if let Some(docsrs_source) = &docsrs_source {
-                log::info!(
-                    "Built new docs.rs client with cache at {}",
-                    docsrs_source.client().cache_dir().display()
-                );
-            }
-
-            Navigator::default()
-                .with_std_source(std_source)
-                .with_local_source(local_source)
-                .with_docsrs_source(docsrs_source)
         });
     }
 

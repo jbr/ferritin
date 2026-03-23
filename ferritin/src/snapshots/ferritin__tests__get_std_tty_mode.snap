@@ -269,6 +269,9 @@ Modules
   ◦ [ffi](http://docs.rust-lang.org/nightly/std/ffi/index.html) 
     Utilities related to FFI bindings. [...]
 
+  ◦ [field](http://docs.rust-lang.org/nightly/core/field/index.html) 
+    Field Reflection
+
   ◦ [fmt](http://docs.rust-lang.org/nightly/alloc/fmt/index.html) 
     Utilities for formatting and printing Strings. [...]
 
@@ -318,7 +321,7 @@ Modules
     Primitive traits and types representing basic properties of types. [...]
 
   ◦ [mem](http://docs.rust-lang.org/nightly/core/mem/index.html) 
-    Basic functions for dealing with memory. [...]
+    Basic functions for dealing with memory, values, and types. [...]
 
   ◦ [net](http://docs.rust-lang.org/nightly/std/net/index.html) 
     Networking primitives for TCP/UDP communication. [...]

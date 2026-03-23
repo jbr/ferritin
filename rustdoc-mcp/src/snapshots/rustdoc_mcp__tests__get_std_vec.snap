@@ -44,6 +44,7 @@ f16 // Constants for the `f16` half-precision floating point type. [+4 more line
 f32 // Constants for the `f32` single-precision floating point type. [+9 more lines]
 f64 // Constants for the `f64` double-precision floating point type. [+9 more lines]
 ffi // Utilities related to FFI bindings. [+159 more lines]
+field // Field Reflection
 fmt // Utilities for formatting and printing `String`s. [+589 more lines]
 from // Unstable module containing the unstable `From` derive macro.
 fs // Filesystem manipulation operations. [+26 more lines]
@@ -60,7 +61,7 @@ io // Traits, helpers, and type definitions for core I/O functionality. [+292 mo
 isize // Redundant constants module for the [`isize` primitive type][isize]. [+2 more lines]
 iter // Composable external iteration. [+353 more lines]
 marker // Primitive traits and types representing basic properties of types. [+4 more lines]
-mem // Basic functions for dealing with memory. [+3 more lines]
+mem // Basic functions for dealing with memory, values, and types. [+27 more lines]
 net // Networking primitives for TCP/UDP communication. [+20 more lines]
 num // Additional functionality for numerics. [+3 more lines]
 ops // Overloadable operators. [+136 more lines]
@@ -72,7 +73,7 @@ path // Cross-platform path manipulation. [+77 more lines]
 pin // Types that pin data to a location in memory. [+916 more lines]
 prelude // # The Rust Prelude [+106 more lines]
 process // A module for working with processes. [+145 more lines]
-ptr // Manually manage memory through raw pointers. [+393 more lines]
+ptr // Manually manage memory through raw pointers. [+397 more lines]
 random // Random value generation.
 range // # Experimental replacement range types [+16 more lines]
 rc // Single-threaded reference-counting pointers. 'Rc' stands for 'Reference [+239 more lines]

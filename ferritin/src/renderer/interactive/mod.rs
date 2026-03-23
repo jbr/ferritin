@@ -143,6 +143,7 @@ fn initial_document() -> Document<'static> {
 /// Render a document in interactive mode with scrolling and hover tracking
 pub fn render_interactive(
     manifest_path: std::path::PathBuf,
+    local: bool,
     render_context: RenderContext,
     initial_command: Option<Commands>,
     log_reader: LogReader,
@@ -151,7 +152,7 @@ pub fn render_interactive(
 
     // Create lazy Request - exists immediately but Navigator not built yet
     let format_context = FormatContext::new();
-    let request = Request::lazy(manifest_path, format_context);
+    let request = Request::lazy(manifest_path, format_context, local);
 
     // Use scoped threads so request can be borrowed by both threads
     thread::scope(|scope| {

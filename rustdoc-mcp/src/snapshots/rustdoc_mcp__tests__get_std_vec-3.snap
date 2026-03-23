@@ -30,10 +30,10 @@ Associated Types:
 • pub fn try_with_capacity(capacity: usize) -> Result<Self, TryReserveError>
     Constructs a new, empty `Vec<T>` with at least the specified capacity. [+9 more lines]
 
-• pub unsafe fn from_raw_parts(ptr: *mut T, length: usize, capacity: usize) -> Self
+• pub const unsafe fn from_raw_parts(ptr: *mut T, length: usize, capacity: usize) -> Self
     Creates a `Vec<T>` directly from a pointer, a length, and a capacity. [+97 more lines]
 
-• pub unsafe fn from_parts(ptr: NonNull<T>, length: usize, capacity: usize) -> Self
+• pub const unsafe fn from_parts(ptr: NonNull<T>, length: usize, capacity: usize) -> Self
     Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+94 more lines]
 
 • pub fn from_fn<F>(length: usize, f: F) -> Self
@@ -41,10 +41,10 @@ where
     F: FnMut(usize) -> T
     Creates a `Vec<T>` where each element is produced by calling `f` with [+42 more lines]
 
-• pub fn into_raw_parts(self) -> (*mut T, usize, usize)
+• pub const fn into_raw_parts(self) -> (*mut T, usize, usize)
     Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity)`. [+34 more lines]
 
-• pub fn into_parts(self) -> (NonNull<T>, usize, usize)
+• pub const fn into_parts(self) -> (NonNull<T>, usize, usize)
     Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity)`. [+32 more lines]
 
 • pub const fn const_make_global(self) -> &'static [T]
@@ -67,16 +67,16 @@ where
 • pub fn try_with_capacity_in(capacity: usize, alloc: A) -> Result<Self, TryReserveError>
     Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+10 more lines]
 
-• pub unsafe fn from_raw_parts_in(ptr: *mut T, length: usize, capacity: usize, alloc: A) -> Self
+• pub const unsafe fn from_raw_parts_in(ptr: *mut T, length: usize, capacity: usize, alloc: A) -> Self
     Creates a `Vec<T, A>` directly from a pointer, a length, a capacity, [+98 more lines]
 
-• pub unsafe fn from_parts_in(ptr: NonNull<T>, length: usize, capacity: usize, alloc: A) -> Self
+• pub const unsafe fn from_parts_in(ptr: NonNull<T>, length: usize, capacity: usize, alloc: A) -> Self
     Creates a `Vec<T, A>` directly from a `NonNull` pointer, a length, a capacity, [+96 more lines]
 
-• pub fn into_raw_parts_with_alloc(self) -> (*mut T, usize, usize, A)
+• pub const fn into_raw_parts_with_alloc(self) -> (*mut T, usize, usize, A)
     Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity, allocator)`. [+36 more lines]
 
-• pub fn into_parts_with_alloc(self) -> (NonNull<T>, usize, usize, A)
+• pub const fn into_parts_with_alloc(self) -> (NonNull<T>, usize, usize, A)
     Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity, allocator)`. [+36 more lines]
 
 • pub const fn capacity(&self) -> usize
@@ -127,7 +127,7 @@ where
 • pub const fn as_non_null(&mut self) -> NonNull<T>
     Returns a `NonNull` pointer to the vector's buffer, or a dangling [+55 more lines]
 
-• pub fn allocator(&self) -> &A
+• pub const fn allocator(&self) -> &A
     Returns a reference to the underlying allocator.
 
 • pub unsafe fn set_len(&mut self, new_len: usize)
