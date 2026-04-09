@@ -72,7 +72,7 @@ version = "1.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "40c48f72fd53cd289104fc64099abca73db4166ad86ea0b4341abe65af83dadc"
 dependencies = [
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -83,7 +83,7 @@ checksum = "291e6a250ff86cd4a820112fb8898808a366d8f9f58ce16d1f538353ad55747d"
 dependencies = [
  "anstyle",
  "once_cell_polyfill",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -793,7 +793,7 @@ dependencies = [
  "libc",
  "option-ext",
  "redox_users",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -894,7 +894,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -976,7 +976,7 @@ dependencies = [
  "crossterm",
  "env_logger",
  "ferritin-common",
- "fieldwork",
+ "fieldwork 0.5.1",
  "insta",
  "log",
  "mimalloc",
@@ -1004,7 +1004,7 @@ dependencies = [
  "cargo_metadata",
  "elsa",
  "env_logger",
- "fieldwork",
+ "fieldwork 0.5.1",
  "home",
  "log",
  "memchr",
@@ -1032,7 +1032,16 @@ version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d643da1287eeff3c63f5e0565a54f37d83431800c00f284776cc779c00b9c2b"
 dependencies = [
- "fieldwork-derive",
+ "fieldwork-derive 0.4.7",
+]
+
+[[package]]
+name = "fieldwork"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4e4ce2198f558616d979bf4e13c0684f695ffeebe1a541ca466c928ddf42185b"
+dependencies = [
+ "fieldwork-derive 0.5.1",
 ]
 
 [[package]]
@@ -1040,6 +1049,17 @@ name = "fieldwork-derive"
 version = "0.4.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f6dc42d4fc87d8838bec863e20c3c344b6f89563a337264ec029c210e20d4e6"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
+name = "fieldwork-derive"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "31f4ce202eae2f2828b8f461bb6e8c40ed5358db1c3dce9e34108c94e68fe580"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1745,7 +1765,7 @@ dependencies = [
  "clap",
  "dirs",
  "env_logger",
- "fieldwork",
+ "fieldwork 0.4.8",
  "log",
  "notify",
  "schemars",
@@ -1900,7 +1920,7 @@ version = "0.50.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7957b9740744892f114936ab4a57b3f487491bbeafaf8083688b16841a4240e5"
 dependencies = [
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2600,7 +2620,7 @@ dependencies = [
  "dirs",
  "env_logger",
  "ferritin-common",
- "fieldwork",
+ "fieldwork 0.5.1",
  "insta",
  "log",
  "mcplease",
@@ -2654,7 +2674,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2720,7 +2740,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3212,7 +3232,7 @@ dependencies = [
  "getrandom 0.4.1",
  "once_cell",
  "rustix",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3934,7 +3954,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
