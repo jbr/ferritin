@@ -1,0 +1,54 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::TestTrait\"), OutputMode :: TestMode)"
+---
+<p>
+<strong>Item:</strong> TestTrait
+<strong>Kind:</strong> Trait
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>TestTrait</type-name>
+<strong>In crate:</strong> fixture-crate (0.1.0)</p>
+<truncated level="full"><p>
+A trait for testing extremely long documentation that exceeds line limits.</p>
+<p>
+This trait provides a comprehensive interface for data processing operations. It demonstrates various method signatures including mutable references, error handling, and different return types. The trait is designed to be flexible and extensible for different use cases in data processing pipelines. Each method serves a specific purpose in the data transformation workflow. The implementation should handle edge cases gracefully and provide meaningful error messages when operations fail. This documentation intentionally spans many lines to test the line-based truncation when paragraph truncation doesn't apply. We want to see how the system handles documentation that goes well beyond the 16-line limit and should trigger line-based truncation. This continues for several more lines to ensure we exceed the limit. Line 14 of this very long paragraph that should be truncated. Line 15 of this extremely verbose documentation example. Line 16 which should be the last line shown in brief mode. Line 17 that should be hidden and show a truncation indicator. Line 18 that definitely won't be visible in brief mode.</p>
+<section-heading>Additional sections after the long paragraph</section-heading>
+<p>
+This section should not be visible in brief mode since the first paragraph already exceeded the line limit.</p>
+</truncated>
+<generated-code>
+<keyword>trait</keyword> <type-name>TestTrait</type-name> <punctuation>{</punctuation> ... <punctuation>}</punctuation></generated-code>
+<list>
+  <item><p>
+<keyword>const</keyword> ASSOCIATED_CONSTANT<punctuation>:</punctuation> <punctuation>(</punctuation><punctuation>)</punctuation><punctuation>;</punctuation> </p>
+<truncated level="single-line"><p>
+trait associated constant</p>
+</truncated>
+</item>
+  <item><p>
+<keyword>type</keyword> <type-name>T</type-name><punctuation>:</punctuation> <type-name>Clone</type-name><punctuation>;</punctuation> </p>
+<truncated level="single-line"><p>
+trait associated type</p>
+</truncated>
+</item>
+  <item><p>
+<keyword>fn</keyword> test_method<punctuation>(</punctuation><punctuation>&</punctuation>self<punctuation>)</punctuation> <operator>-></operator> <type-name>String</type-name><punctuation>;</punctuation> </p>
+<truncated level="single-line"><p>
+A method</p>
+</truncated>
+</item>
+  <item><p>
+<keyword>fn</keyword> process<punctuation>(</punctuation><punctuation>&</punctuation><keyword>mut</keyword> self<punctuation>,</punctuation> data<punctuation>:</punctuation> <operator>&</operator><type-name>str</type-name><punctuation>)</punctuation> <operator>-></operator> <type-name>Result</type-name><punctuation><</punctuation><punctuation>(</punctuation><punctuation>)</punctuation><punctuation>,</punctuation> <type-name>String</type-name><punctuation>></punctuation><punctuation>;</punctuation> </p>
+<truncated level="single-line"><p>
+Another method with parameters</p>
+</truncated>
+</item>
+</list>
+<section><section-title>Implementors (this crate)</section-title><list>
+  <item><generated-code>
+<type-name>TestStruct</type-name></generated-code>
+<generated-code>
+    <keyword>type</keyword> <type-name>T</type-name> <operator>=</operator> <type-name>String</type-name></generated-code>
+</item>
+</list>
+</section>

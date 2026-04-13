@@ -1,0 +1,47 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::ComplexTrait\"), OutputMode :: TestMode)"
+---
+<p>
+<strong>Item:</strong> ComplexTrait
+<strong>Kind:</strong> Trait
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>ComplexTrait</type-name>
+<strong>In crate:</strong> fixture-crate (0.1.0)</p>
+<truncated level="full"><p>
+A more complex trait demonstrating various features</p>
+</truncated>
+<generated-code>
+<keyword>trait</keyword> <type-name>ComplexTrait</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation> <keyword>where</keyword> <generic>T</generic><punctuation>:</punctuation> <type-name>Clone</type-name> + <type-name>Send</type-name> <punctuation>{</punctuation> ... <punctuation>}</punctuation></generated-code>
+<list>
+  <item><p>
+<keyword>type</keyword> <type-name>Output</type-name><punctuation>:</punctuation> <type-name>std::fmt::Display</type-name><punctuation>;</punctuation> </p>
+<truncated level="single-line"><p>
+An associated type</p>
+</truncated>
+</item>
+  <item><p>
+<keyword>const</keyword> MAX_SIZE<punctuation>:</punctuation> <type-name>usize</type-name> <operator>=</operator> <inline-rust-code>100</inline-rust-code><punctuation>;</punctuation> </p>
+<truncated level="single-line"><p>
+An associated constant</p>
+</truncated>
+</item>
+  <item><p>
+<keyword>fn</keyword> process<punctuation>(</punctuation><punctuation>&</punctuation>self<punctuation>,</punctuation> input<punctuation>:</punctuation> <generic>T</generic><punctuation>)</punctuation> <operator>-></operator> <generic>Self</generic><punctuation>::</punctuation><type-name>Output</type-name><punctuation>;</punctuation> </p>
+<truncated level="single-line"><p>
+A simple method</p>
+</truncated>
+</item>
+  <item><p>
+<keyword>fn</keyword> is_ready<punctuation>(</punctuation><punctuation>&</punctuation>self<punctuation>)</punctuation> <operator>-></operator> <type-name>bool</type-name> <punctuation>{</punctuation> ... <punctuation>}</punctuation> </p>
+<truncated level="single-line"><p>
+A method with default implementation</p>
+</truncated>
+</item>
+  <item><p>
+<keyword>fn</keyword> transform<punctuation><</punctuation><generic>U</generic><punctuation>></punctuation><punctuation>(</punctuation><punctuation>&</punctuation>self<punctuation>,</punctuation> data<punctuation>:</punctuation> <generic>U</generic><punctuation>)</punctuation> <operator>-></operator> <type-name>Result</type-name><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <type-name>String</type-name><punctuation>></punctuation> <keyword>where</keyword> <generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>;</punctuation> </p>
+<truncated level="single-line"><p>
+A method with complex generics</p>
+</truncated>
+</item>
+</list>

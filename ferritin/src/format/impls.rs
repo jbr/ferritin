@@ -419,7 +419,7 @@ impl Request {
     }
 
     /// Render associated type assignments from an impl as indented `type Foo = Bar` lines.
-    fn format_impl_assoc_types<'a>(
+    pub(super) fn format_impl_assoc_types<'a>(
         &self,
         impl_block: DocRef<'a, Item>,
         impl_item: &'a Impl,

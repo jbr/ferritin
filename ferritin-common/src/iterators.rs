@@ -68,6 +68,42 @@ impl<'a> Iterator for TraitIter<'a> {
     }
 }
 
+pub struct ImplementorIter<'a> {
+    trait_item: DocRef<'a, Item>,
+    item_iter: Values<'a, Id, Item>,
+}
+
+impl<'a> ImplementorIter<'a> {
+    fn new(trait_item: DocRef<'a, Item>) -> Self {
+        let item_iter = trait_item.crate_docs().index.values();
+        Self { trait_item, item_iter }
+    }
+}
+
+impl<'a> DocRef<'a, Item> {
+    /// Iterate impl blocks in this crate that implement this trait.
+    pub fn implementors(&self) -> ImplementorIter<'a> {
+        ImplementorIter::new(*self)
+    }
+}
+
+impl<'a> Iterator for ImplementorIter<'a> {
+    type Item = DocRef<'a, Item>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        for item in &mut self.item_iter {
+            if let ItemEnum::Impl(impl_block) = &item.inner
+                && let Some(trait_path) = &impl_block.trait_
+                && trait_path.id == self.trait_item.id
+                && !impl_block.is_negative
+            {
+                return Some(self.trait_item.build_ref(item));
+            }
+        }
+        None
+    }
+}
+
 impl<'a> Iterator for MethodIter<'a> {
     type Item = DocRef<'a, Item>;
 
