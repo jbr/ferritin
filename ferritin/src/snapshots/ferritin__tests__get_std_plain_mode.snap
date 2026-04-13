@@ -60,7 +60,7 @@ Contributing changes to the documentation
 
 Check out the Rust contribution guidelines here. The source for this documentation can be found on GitHub in the 'library/std/' directory. To contribute changes, make sure you read the guidelines first, then submit pull-requests for your suggested changes.
 
-Contributions are appreciated! If you see a part of the docs that can be improved, submit a PR, or chat with us first on Zulip #docs.
+Contributions are appreciated! If you see a part of the docs that can be improved, submit a PR, or chat with us first on Zulip #t-libs.
 
 A Tour of The Rust Standard Library
 ================================================================================
@@ -142,7 +142,7 @@ Modules
     Composable asynchronous iteration. [...]
 
   ◦ autodiff 
-    This module provides support for automatic differentiation.
+    This module provides support for automatic differentiation. For precise information on differences between the autodiff_forward and autodiff_reverse macros and how to use them, see their respective documentation. [...]
 
   ◦ backtrace 
     Support for capturing a stack backtrace of an OS thread [...]
@@ -292,7 +292,7 @@ Modules
     Random value generation.
 
   ◦ range 
-    Experimental replacement range types [...]
+    Replacement range types [...]
 
   ◦ rc 
     Single-threaded reference-counting pointers. 'Rc' stands for 'Reference Counted'. [...]

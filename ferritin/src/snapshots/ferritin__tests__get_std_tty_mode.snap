@@ -101,7 +101,7 @@ contribute changes, make sure you read the guidelines first, then submit
 pull-requests for your suggested changes.
 
 Contributions are appreciated! If you see a part of the docs that can be 
-improved, submit a PR, or chat with us first on [Zulip](https://rust-lang.zulipchat.com/) #docs.
+improved, submit a PR, or chat with us first on [Zulip](https://rust-lang.zulipchat.com/#narrow/channel/219381-t-libs/) #t-libs.
 
 A Tour of The Rust Standard Library
 ================================================================================
@@ -213,7 +213,9 @@ Modules
     Composable asynchronous iteration. [...]
 
   ◦ [autodiff](http://docs.rust-lang.org/nightly/std/autodiff/index.html) 
-    This module provides support for automatic differentiation.
+    This module provides support for automatic differentiation. For precise
+    information on differences between the autodiff_forward and autodiff_reverse
+    macros and how to use them, see their respective documentation. [...]
 
   ◦ [backtrace](http://docs.rust-lang.org/nightly/std/backtrace/index.html) 
     Support for capturing a stack backtrace of an OS thread [...]
@@ -363,7 +365,7 @@ Modules
     Random value generation.
 
   ◦ [range](http://docs.rust-lang.org/nightly/core/range/index.html) 
-    Experimental replacement range types [...]
+    Replacement range types [...]
 
   ◦ [rc](http://docs.rust-lang.org/nightly/alloc/rc/index.html) 
     Single-threaded reference-counting pointers. 'Rc' stands for 'Reference 

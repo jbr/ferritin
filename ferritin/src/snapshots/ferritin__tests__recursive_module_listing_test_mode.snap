@@ -449,7 +449,7 @@ The vector will not allocate until elements are <elided chars="57"/></truncated>
 <type-name>Vec::new_in</type-name> </p>
 <truncated level="single-line"><p>
 Constructs a new, empty <inline-code>Vec<T, A></inline-code>.</p>
-The vector will not allocate until elements <elided chars="125"/></truncated>
+The vector will not allocate until elements <elided chars="126"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::peek_mut</type-name> </p>
@@ -735,7 +735,7 @@ The hash set is initially created with a capacity of is first inserted into. <el
 <type-name>link_resolution_tests::HashSet::new_in</type-name> </p>
 <truncated level="single-line"><p>
 Creates an empty <inline-code>HashSet</inline-code> in the provided allocator.</p>
-The hash set is initially is first inserted into. <elided chars="83"/></truncated>
+The hash set is initially is first inserted into. <elided chars="195"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::HashSet::remove</type-name> </p>
@@ -793,13 +793,13 @@ The hash set will<inline-code>capacity</inline-code> elements without reallocati
 </item>
   <item><p>
 <type-name>link_resolution_tests::HashSet::with_capacity_and_hasher_in</type-name> </p>
-<truncated level="single-line">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity, using <inline-code>hasher</inline-code> to hash the keys and <inline-code>alloc</inline-code> to allocate memory. <elided chars="606"/></truncated>
+<truncated level="single-line">Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity, using <inline-code>hasher</inline-code> to hash the keys and <inline-code>alloc</inline-code> to allocate memory. <elided chars="802"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::HashSet::with_capacity_in</type-name> </p>
 <truncated level="single-line"><p>
 Creates an empty <inline-code>HashSet</inline-code> with at least the specified capacity.</p>
-The hash set will<inline-code>capacity</inline-code> elements without reallocating. <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the <elided chars="306"/></truncated>
+The hash set will<inline-code>capacity</inline-code> elements without reallocating. <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, the <elided chars="311"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::HashSet::with_hasher</type-name> </p>
@@ -809,7 +809,7 @@ The <elided chars="567"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::HashSet::with_hasher_in</type-name> </p>
-<truncated level="single-line">Creates a new empty hash set which will use the given hasher to hash keys and will allocate memory using the provided allocator. <elided chars="472"/></truncated>
+<truncated level="single-line">Creates a new empty hash set which will use the given hasher to hash keys and will allocate memory using the provided allocator. <elided chars="651"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::LinkTestStruct::get_data</type-name> </p>
@@ -997,7 +997,7 @@ Does not allocate anything on its own.</p>
 <truncated level="single-line"><p>
 Makes a new empty BTreeMap with a reasonable choice for B.</p>
 <title>Examples</title>
- <elided chars="153"/></truncated>
+ <elided chars="99"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::Tree::pop_first</type-name> </p>

@@ -35,10 +35,10 @@ Associated Types:
     Creates an empty `HashMap` with at least the specified capacity. [+11 more lines]
 
 • pub fn new_in(alloc: A) -> Self
-    Creates an empty `HashMap` using the given allocator. [+10 more lines]
+    Creates an empty `HashMap` using the given allocator. [+13 more lines]
 
 • pub fn with_capacity_in(capacity: usize, alloc: A) -> Self
-    Creates an empty `HashMap` with at least the specified capacity using [+12 more lines]
+    Creates an empty `HashMap` with at least the specified capacity using [+15 more lines]
 
 • pub const fn with_hasher(hash_builder: S) -> HashMap<K, V, S>
     Creates an empty `HashMap` which will use the given hash builder to hash [+22 more lines]
@@ -47,10 +47,10 @@ Associated Types:
     Creates an empty `HashMap` with at least the specified capacity, using [+24 more lines]
 
 • pub fn with_hasher_in(hash_builder: S, alloc: A) -> Self
-    Creates an empty `HashMap` which will use the given hash builder and [+11 more lines]
+    Creates an empty `HashMap` which will use the given hash builder and [+23 more lines]
 
 • pub fn with_capacity_and_hasher_in(capacity: usize, hash_builder: S, alloc: A) -> Self
-    Creates an empty `HashMap` with at least the specified capacity, using [+13 more lines]
+    Creates an empty `HashMap` with at least the specified capacity, using [+25 more lines]
 
 • pub fn capacity(&self) -> usize
     Returns the number of elements the map can hold without reallocating. [+11 more lines]

@@ -63,7 +63,7 @@ And finally, the standard library exports a number of standard macros, and lists
 <p>
 Check out the Rust contribution guidelines here. The source for this documentation can be found on GitHub in the 'library/std/' directory. To contribute changes, make sure you read the guidelines first, then submit pull-requests for your suggested changes.</p>
 <p>
-Contributions are appreciated! If you see a part of the docs that can be improved, submit a PR, or chat with us first on Zulip #docs.</p>
+Contributions are appreciated! If you see a part of the docs that can be improved, submit a PR, or chat with us first on Zulip #t-libs.</p>
 <title>A Tour of The Rust Standard Library</title>
 <p>
 The rest of this crate documentation is dedicated to pointing out notable features of The Rust Standard Library.</p>
@@ -176,9 +176,7 @@ If you've found yourself with an asynchronous and needed to perform an operation
 </item>
   <item><p>
 <type-name>autodiff</type-name> </p>
-<truncated level="single-line"><p>
-This module provides support for automatic differentiation.</p>
-</truncated>
+<truncated level="single-line">This module provides support for automatic differentiation. For precise differences between the <inline-code>autodiff_forward</inline-code> and <inline-code>autodiff_reverse</inline-code> macros and how to use them, see their respective documentation. <elided chars="4139"/></truncated>
 </item>
   <item><p>
 <type-name>backtrace</type-name> </p>
@@ -451,7 +449,7 @@ This module provides two types, <inline-code>PathBuf</inline-code> and <inline-c
 <type-name>pin</type-name> </p>
 <truncated level="single-line"><p>
 Types that pin data to a location in memory.</p>
-It is sometimes useful to be able<emphasis>move</emphasis>, in the sense that its address in are one or more <emphasis>pointers</emphasis> pointing at that value. The guarantee that the value a pointer is pointing at (its <strong>pointee</strong>) will <elided chars="41321"/></truncated>
+It is sometimes useful to be able<emphasis>move</emphasis>, in the sense that its address in are one or more <emphasis>pointers</emphasis> pointing at that value. The guarantee that the value a pointer is pointing at (its <strong>pointee</strong>) will <elided chars="41285"/></truncated>
 </item>
   <item><p>
 <type-name>prelude</type-name> </p>
@@ -478,8 +476,8 @@ Random value generation.</p>
 </item>
   <item><p>
 <type-name>range</type-name> </p>
-<truncated level="single-line"><title>Experimental replacement range types</title>
-The types within this module are meant to <inline-code>Range</inline-code>, <inline-code>RangeInclusive</inline-code>, and <inline-code>RangeFrom</inline-code> types in a future edition. <elided chars="567"/></truncated>
+<truncated level="single-line"><title>Replacement range types</title>
+The types within this module are meant to replace the<inline-code>Range</inline-code>, <inline-code>RangeInclusive</inline-code>, <inline-code>RangeToInclusive</inline-code> and <inline-code>RangeFrom</inline-code> types in a future edition. <elided chars="572"/></truncated>
 </item>
   <item><p>
 <type-name>rc</type-name> </p>

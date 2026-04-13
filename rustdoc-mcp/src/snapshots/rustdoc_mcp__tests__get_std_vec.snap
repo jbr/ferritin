@@ -25,7 +25,7 @@ arch // SIMD and vendor intrinsics module. [+355 more lines]
 array // Utilities for the array primitive type. [+2 more lines]
 ascii // Operations on ASCII strings and characters. [+11 more lines]
 async_iter // Composable asynchronous iteration. [+121 more lines]
-autodiff // This module provides support for automatic differentiation.
+autodiff // This module provides support for automatic differentiation. For precise information on [+156 more lines]
 backtrace // Support for capturing a stack backtrace of an OS thread [+58 more lines]
 borrow // A module for working with borrowed data.
 boxed // The `Box<T>` type for heap allocation. [+181 more lines]
@@ -75,7 +75,7 @@ prelude // # The Rust Prelude [+106 more lines]
 process // A module for working with processes. [+145 more lines]
 ptr // Manually manage memory through raw pointers. [+397 more lines]
 random // Random value generation.
-range // # Experimental replacement range types [+16 more lines]
+range // # Replacement range types [+15 more lines]
 rc // Single-threaded reference-counting pointers. 'Rc' stands for 'Reference [+239 more lines]
 result // Error handling with the `Result` type. [+535 more lines]
 simd // Portable SIMD module. [+38 more lines]

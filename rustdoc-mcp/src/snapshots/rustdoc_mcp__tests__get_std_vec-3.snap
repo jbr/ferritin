@@ -62,7 +62,7 @@ where
     Appends an element to the back of a collection, returning a reference to it. [+24 more lines]
 
 • pub const fn new_in(alloc: A) -> Self
-    Constructs a new, empty `Vec<T, A>`. [+13 more lines]
+    Constructs a new, empty `Vec<T, A>`. [+12 more lines]
 
 • pub fn try_with_capacity_in(capacity: usize, alloc: A) -> Result<Self, TryReserveError>
     Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+10 more lines]
