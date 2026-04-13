@@ -1,6 +1,4 @@
-use rustdoc_types::{
-    AssocItemConstraintKind, GenericArg, GenericArgs, GenericParamDefKind, Impl,
-};
+use rustdoc_types::{AssocItemConstraintKind, GenericArg, GenericArgs, GenericParamDefKind, Impl};
 
 use super::*;
 use crate::styled_string::{DocumentNode, ListItem, Span};
@@ -248,7 +246,10 @@ impl Request {
 
         if let Some(args) = &path.args {
             match args.as_ref() {
-                GenericArgs::AngleBracketed { args: generic_args, constraints } => {
+                GenericArgs::AngleBracketed {
+                    args: generic_args,
+                    constraints,
+                } => {
                     for (i, arg) in generic_args.iter().enumerate() {
                         if i > 0 {
                             inner.push(Span::punctuation(","));
@@ -268,9 +269,8 @@ impl Request {
                                     if !bounds.is_empty() {
                                         inner.push(Span::punctuation(":"));
                                         inner.push(Span::plain(" "));
-                                        inner.extend(
-                                            self.format_generic_bounds(impl_block, bounds),
-                                        );
+                                        inner
+                                            .extend(self.format_generic_bounds(impl_block, bounds));
                                         bounds_started = true;
                                     }
                                 }

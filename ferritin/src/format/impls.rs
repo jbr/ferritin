@@ -250,7 +250,10 @@ impl Request {
 
         if let Some(args) = &trait_path.args {
             match args.as_ref() {
-                GenericArgs::AngleBracketed { args: generic_args, constraints } => {
+                GenericArgs::AngleBracketed {
+                    args: generic_args,
+                    constraints,
+                } => {
                     for (i, arg) in generic_args.iter().enumerate() {
                         if i > 0 {
                             inner.push(Span::punctuation(","));
@@ -380,7 +383,11 @@ impl Request {
                     spans.extend(self.format_generic_param(impl_block, param));
 
                     // Append matching where-predicate bounds to this param inline
-                    if let GenericParamDefKind::Type { bounds: inline_bounds, .. } = &param.kind {
+                    if let GenericParamDefKind::Type {
+                        bounds: inline_bounds,
+                        ..
+                    } = &param.kind
+                    {
                         for (pred_name, where_bounds) in &extra_bounds {
                             if *pred_name == param.name.as_str() {
                                 for (j, bound) in where_bounds.iter().enumerate() {
@@ -403,10 +410,7 @@ impl Request {
                 spans.extend(self.format_generics(impl_block, &impl_item.generics));
                 if !impl_item.generics.where_predicates.is_empty() {
                     spans.extend(
-                        self.format_where_clause(
-                            impl_block,
-                            &impl_item.generics.where_predicates,
-                        ),
+                        self.format_where_clause(impl_block, &impl_item.generics.where_predicates),
                     );
                 }
             }

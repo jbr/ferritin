@@ -76,7 +76,10 @@ pub struct ImplementorIter<'a> {
 impl<'a> ImplementorIter<'a> {
     fn new(trait_item: DocRef<'a, Item>) -> Self {
         let item_iter = trait_item.crate_docs().index.values();
-        Self { trait_item, item_iter }
+        Self {
+            trait_item,
+            item_iter,
+        }
     }
 }
 
