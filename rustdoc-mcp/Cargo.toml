@@ -13,10 +13,10 @@ categories = []
 [dependencies]
 ferritin-common = { path = "../ferritin-common", version = "0.6.0" }
 anyhow.workspace = true
-clap = { version = "4.5.60", features = ["derive"] }
+clap = { version = "4.6.0", features = ["derive"] }
 dirs = "6.0.0"
-env_logger = "0.11.9"
-fieldwork = "0.4.8"
+env_logger = "0.11.10"
+fieldwork = "0.5.1"
 log = "0.4.29"
 mcplease = "0.2.3"
 rustdoc-types.workspace = true
@@ -24,8 +24,8 @@ schemars = { version = "1.2.1", features = ["derive"] }
 serde.workspace = true
 shellexpand.workspace = true
 strum = { version = "0.28.0", features = ["derive"] }
-semver = "1.0.27"
+semver = "1.0.28"
 
 [dev-dependencies]
-tempfile = "3.26.0"
-insta = { version = "1.46", features = ["yaml", "filters"] }
+tempfile = "3.27.0"
+insta = { version = "1.47", features = ["yaml", "filters"] }
