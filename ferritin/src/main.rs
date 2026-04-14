@@ -66,6 +66,10 @@ struct Cli {
     #[arg(short = 'l', long, global = true)]
     local: bool,
 
+    /// Output in LLM-friendly format (also enabled by CLAUDECODE or GEMINI_CLI env vars)
+    #[arg(long, global = true)]
+    ai: bool,
+
     #[command(subcommand)]
     command: Option<Commands>,
 }
@@ -107,8 +111,13 @@ fn main() -> ExitCode {
         .manifest_path
         .unwrap_or_else(|| std::env::current_dir().unwrap());
 
+    let mut output_mode = OutputMode::detect();
+    if cli.ai {
+        output_mode = OutputMode::Ai;
+    }
+
     let mut render_context = RenderContext::new()
-        .with_output_mode(OutputMode::detect())
+        .with_output_mode(output_mode)
         .with_terminal_width(
             terminal_size()
                 .map(|(Width(w), _)| w as usize)

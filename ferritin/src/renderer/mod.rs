@@ -4,6 +4,7 @@ use std::{
     io::{self, IsTerminal},
 };
 
+mod ai;
 mod interactive;
 mod plain;
 mod test_mode;
@@ -38,6 +39,8 @@ pub enum OutputMode {
     Plain,
     /// Pseudo-XML tags for testing (e.g., <keyword>struct</keyword>)
     TestMode,
+    /// Token-efficient format for AI/LLM consumption
+    Ai,
 }
 
 impl OutputMode {
@@ -45,6 +48,11 @@ impl OutputMode {
     pub fn detect() -> Self {
         if std::env::var("FERRITIN_TEST_MODE").is_ok() {
             OutputMode::TestMode
+        } else if std::env::var("CLAUDECODE").is_ok()
+            || std::env::var("GEMINI_CLI").is_ok()
+            || std::env::var("CODEX_SANDBOX").is_ok()
+        {
+            OutputMode::Ai
         } else if io::stdout().is_terminal() {
             OutputMode::Tty
         } else {
@@ -63,6 +71,7 @@ pub fn render(
         OutputMode::Tty => tty::render(document, render_context, output),
         OutputMode::Plain => plain::render(document, output),
         OutputMode::TestMode => test_mode::render(document, output),
+        OutputMode::Ai => ai::render(document, output),
     }
 }
 
