@@ -181,3 +181,7 @@ test_all_modes!(
     get_markdown_test,
     Commands::get("fixture-crate::markdown_test")
 );
+
+test_all_modes!(get_trait_simple, Commands::get("crate::TestTrait"));
+
+test_all_modes!(get_trait_complex, Commands::get("crate::ComplexTrait"));

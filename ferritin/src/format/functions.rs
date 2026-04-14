@@ -397,6 +397,16 @@ impl Request {
             return vec![];
         }
 
+        if predicates.len() == 1 {
+            let mut spans = vec![
+                StyledSpan::plain(" "),
+                StyledSpan::keyword("where"),
+                StyledSpan::plain(" "),
+            ];
+            spans.extend(self.format_where_predicate(item, &predicates[0]));
+            return spans;
+        }
+
         let mut spans = vec![
             StyledSpan::plain("\n"),
             StyledSpan::keyword("where"),

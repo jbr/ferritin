@@ -35,6 +35,12 @@ Fetch the cache line that contains address <inline-code>p</inline-code> using th
 The <inline-code>STRATEGY</inline-code> must be <elided chars="1362"/></truncated>
 </item>
   <item><p>
+alloc::collections::BTreeMap  (Struct) - score: 30 (relevance: 16, authority: 87)</p>
+<truncated level="single-line"><p>
+An ordered map based on a B-Tree.</p>
+Given a key type with a total order, an ordered map stores its entries in key That means that keys must be of a type that<inline-code>Ord</inline-code> trait, such that two keys can always be compared to<inline-code>Ordering</inline-code>. Examples of keys with a total order are and numbers with their natural order. <elided chars="5721"/></truncated>
+</item>
+  <item><p>
 core::column  (Macro) - score: 29 (relevance: 29, authority: 0)</p>
 <truncated level="single-line"><p>
 Expands to the column number at which it was invoked.</p>
@@ -45,12 +51,6 @@ std::column  (Macro) - score: 29 (relevance: 29, authority: 0)</p>
 <truncated level="single-line"><p>
 Expands to the column number at which it was invoked.</p>
 With <inline-code>line!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="885"/></truncated>
-</item>
-  <item><p>
-alloc::collections::BTreeMap  (Struct) - score: 29 (relevance: 16, authority: 80)</p>
-<truncated level="single-line"><p>
-An ordered map based on a B-Tree.</p>
-Given a key type with a total order, an ordered map stores its entries in key That means that keys must be of a type that<inline-code>Ord</inline-code> trait, such that two keys can always be compared to<inline-code>Ordering</inline-code>. Examples of keys with a total order are and numbers with their natural order. <elided chars="5721"/></truncated>
 </item>
   <item><p>
 std::sync  (Module) - score: 28 (relevance: 28, authority: 0)</p>

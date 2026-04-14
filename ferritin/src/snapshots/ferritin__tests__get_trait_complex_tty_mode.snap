@@ -1,0 +1,28 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::ComplexTrait\"), OutputMode :: Tty)"
+---
+Item: ComplexTrait
+Kind: Trait
+Visibility: Public
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html)::[ComplexTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html)
+In crate: fixture-crate (0.1.0)
+
+A more complex trait demonstrating various features
+
+trait ComplexTrait<T> where T: [Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html) + [Send](http://docs.rust-lang.org/nightly/core/marker/trait.Send.html) { ... }
+
+  ◦ type Output: [std::fmt::Display](http://docs.rust-lang.org/nightly/core/fmt/trait.Display.html); 
+    An associated type
+
+  ◦ const MAX_SIZE: usize = 100; 
+    An associated constant
+
+  ◦ fn [process](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&self, input: T) -> Self::Output; 
+    A simple method
+
+  ◦ fn [is_ready](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&self) -> bool { ... } 
+    A method with default implementation
+
+  ◦ fn [transform](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)<U>(&self, data: U) -> [Result](http://docs.rust-lang.org/nightly/core/result/enum.Result.html)<T, [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)> where U: [Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)<T>; 
+    A method with complex generics
