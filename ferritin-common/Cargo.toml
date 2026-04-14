@@ -1,6 +1,6 @@
 [package]
 name = "ferritin-common"
-version = "0.6.0"
+version = "0.7.0"
 edition.workspace = true
 description = "library for rustdoc navigation and search"
 readme = "README.md"

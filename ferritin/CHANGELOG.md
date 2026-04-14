@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0](https://github.com/jbr/ferritin/compare/ferritin-v0.7.0...ferritin-v0.8.0) - 2026-04-14
+
+### Added
+
+- add ai-mode
+- display implementations of a trait
+- improved trait impl list display
+- [**breaking**] ferritin defaults to docs.rs, falls back to local with --local
+- add support for ItemSummary::path lookup
+
+### Other
+
+- Merge pull request #105 from jbr/renovate/ferritin-assets-themes-solarized-digest
+- Merge pull request #115 from jbr/ai-mode
+- fmt
+- update rust
+- update snaps
+- *(deps)* upgrade deps and rebuild snapshots
+
 ## [0.7.0](https://github.com/jbr/ferritin/compare/ferritin-v0.6.0...ferritin-v0.7.0) - 2026-02-13
 
 ### Added
