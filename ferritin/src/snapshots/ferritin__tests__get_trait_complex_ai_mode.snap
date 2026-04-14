@@ -1,0 +1,27 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::ComplexTrait\"), OutputMode :: Ai)"
+---
+Item: ComplexTrait
+Kind: Trait
+Visibility: Public
+Defined at: fixture_crate::ComplexTrait
+In crate: fixture-crate (0.1.0)
+
+A more complex trait demonstrating various features
+
+trait ComplexTrait<T> where T: Clone + Send { ... }
+
+type Output: std::fmt::Display; // An associated type
+
+
+const MAX_SIZE: usize = 100; // An associated constant
+
+
+fn process(&self, input: T) -> Self::Output; // A simple method
+
+
+fn is_ready(&self) -> bool { ... } // A method with default implementation
+
+
+fn transform<U>(&self, data: U) -> Result<T, String> where U: Into<T>; // A method with complex generics

@@ -97,6 +97,11 @@ macro_rules! test_all_modes {
             }
 
             #[test]
+            fn [<$name _ai_mode>]() {
+                insta::assert_snapshot!(render_for_tests($cmd, OutputMode::Ai));
+            }
+
+            #[test]
             fn [<$name _interactive_mode>]() {
                 let fixture_crate_path = get_fixture_crate_path();
                 let fixture_crate_path_str = fixture_crate_path
