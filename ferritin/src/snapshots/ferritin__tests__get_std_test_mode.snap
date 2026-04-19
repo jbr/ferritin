@@ -457,6 +457,10 @@ It is sometimes useful to be able<emphasis>move</emphasis>, in the sense that it
 Rust comes with a variety of things in its standard library. you had to manually import every single thing that you used, it very verbose. But importing a lot of things that a program good either. A balance needs to be struck. <elided chars="3107"/></truncated>
 </item>
   <item><p>
+<type-name>primitive</type-name> </p>
+<truncated level="single-line">This module reexports the primitive types to allow usage that is not possibly shadowed by other declared types. <elided chars="674"/></truncated>
+</item>
+  <item><p>
 <type-name>process</type-name> </p>
 <truncated level="single-line"><p>
 A module for working with processes.</p>
@@ -601,10 +605,432 @@ Ve<emphasis>O</emphasis>(1<emphasis>O</emphasis>(1 <emphasis>O</emphasis>(1 <eli
 </list>
 </section><section><section-title>Macros</section-title><list>
   <item><p>
+<type-name>assert</type-name> </p>
+<truncated level="single-line"><p>
+Asserts that a boolean expression is <inline-code>true</inline-code> at runtime.</p>
+This will invoke the <inline-code>panic!</inline-code> macro if the provided evaluated to <inline-code>true</inline-code> at runtime. <elided chars="1117"/></truncated>
+</item>
+  <item><p>
+<type-name>assert_eq</type-name> </p>
+<truncated level="single-line"><p>
+Asserts that two expressions are equal to each other (using <inline-code>PartialEq</inline-code>).</p>
+Assertion be<inline-code>debug_ass</inline-code> for release <elided chars="464"/></truncated>
+</item>
+  <item><p>
+<type-name>assert_matches</type-name> </p>
+<truncated level="single-line"><p>
+Asserts that an expression matches the provided pattern.</p>
+This macro is generally<inline-code>assert!(matches!(value,</inline-code>, because it can print the debug using <inline-code>assert!</inline-code> will only print that <elided chars="1241"/></truncated>
+</item>
+  <item><p>
+<type-name>assert_ne</type-name> </p>
+<truncated level="single-line"><p>
+Asserts that two expressions are not equal to each other (using <inline-code>PartialEq</inline-code>).</p>
+Asser be<inline-code>debug</inline-code> for relea <elided chars="464"/></truncated>
+</item>
+  <item><p>
+<type-name>cfg</type-name> </p>
+<truncated level="single-line"><p>
+Evaluates boolean combinations of configuration flags at compile-time.</p>
+In<inline-code>#[cfg]</inline-code> boolean leads to <elided chars="565"/></truncated>
+</item>
+  <item><p>
+<type-name>cfg_select</type-name> </p>
+<truncated level="single-line"><p>
+Selects code at compile-time based on <inline-code>cfg</inline-code> predicates.</p>
+This macro evaluates, at<inline-code>cfg</inline-code> predicates, selects the first that is predicate. The code <elided chars="838"/></truncated>
+</item>
+  <item><p>
+<type-name>column</type-name> </p>
+<truncated level="single-line"><p>
+Expands to the column number at which it was invoked.</p>
+With <inline-code>line!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="885"/></truncated>
+</item>
+  <item><p>
+<type-name>compile_error</type-name> </p>
+<truncated level="single-line"><p>
+Causes compilation to fail with the given error message when encountered.</p>
+This better<inline-code>panic!</inline-code>, but<emphasis>compila</emphasis><emphasis>runtime</emphasis>. <elided chars="969"/></truncated>
+</item>
+  <item><p>
+<type-name>concat</type-name> </p>
+<truncated level="single-line"><p>
+Concatenates literals into a static string slice.</p>
+This macro takes any number of expression of type <inline-code>&'static str</inline-code> which represents all of the concatenated left-to-right. <elided chars="291"/></truncated>
+</item>
+  <item><p>
+<type-name>concat_bytes</type-name> </p>
+<truncated level="single-line"><p>
+Concatenates literals into a byte slice.</p>
+This macro takes any number of one, yielding an expression of type <inline-code>&[u8; _]</inline-code>, which represents all of the literals concatenated left-to-right. The <elided chars="411"/></truncated>
+</item>
+  <item><p>
+<type-name>const_format_args</type-name> </p>
+<truncated level="single-line"><p>
+Same as <inline-code>format_args</inline-code>, but can be used in some const contexts.</p>
+This macro is used<inline-code>const_panic</inline-code> feature. <elided chars="120"/></truncated>
+</item>
+  <item><p>
+<type-name>dbg</type-name> </p>
+<truncated level="single-line">Prints and returns the value of a given expression for quick and dirty debugging. <elided chars="2738"/></truncated>
+</item>
+  <item><p>
+<type-name>debug_assert</type-name> </p>
+<truncated level="single-line"><p>
+Asserts that a boolean expression is <inline-code>true</inline-code> at runtime.</p>
+This will invoke the <inline-code>panic!</inline-code> macro if the provided evaluated to <inline-code>true</inline-code> at runtime. <elided chars="1402"/></truncated>
+</item>
+  <item><p>
+<type-name>debug_assert_eq</type-name> </p>
+<truncated level="single-line"><p>
+Asserts that two expressions are equal to each other.</p>
+On panic, this macro will debug representations. <elided chars="548"/></truncated>
+</item>
+  <item><p>
+<type-name>debug_assert_matches</type-name> </p>
+<truncated level="single-line"><p>
+Asserts that an expression matches the provided pattern.</p>
+This macro is generally<inline-code>debug_assert!(matches!(v</inline-code>, because it can print the debug contrast, using <inline-code>debug_assert!</inline-code> will only print that <elided chars="1585"/></truncated>
+</item>
+  <item><p>
+<type-name>debug_assert_ne</type-name> </p>
+<truncated level="single-line"><p>
+Asserts that two expressions are not equal to each other.</p>
+On panic, this macro debug representations. <elided chars="548"/></truncated>
+</item>
+  <item><p>
+<type-name>env</type-name> </p>
+<truncated level="single-line"><p>
+Inspects an environment variable at compile time.</p>
+This macro will expand to the compile time, yielding an<inline-code>&'static str</inline-code>. Use <inline-code>std::env::var</inline-code> instead if you want to read <elided chars="785"/></truncated>
+</item>
+  <item><p>
+<type-name>eprint</type-name> </p>
+<truncated level="single-line"><p>
+Prints to the standard error.</p>
+Equivalent to the <inline-code>print!</inline-code> macro, except that output goes to <inline-code>io::stderr</inline-code> instead of <inline-code>io::stdout</inline-code>. See <inline-code>print!</inline-code> for example usage. <elided chars="446"/></truncated>
+</item>
+  <item><p>
+<type-name>eprintln</type-name> </p>
+<truncated level="single-line"><p>
+Prints to the standard error, with a newline.</p>
+Equivalent to the <inline-code>println!</inline-code> macro, except that output goes to <inline-code>io::stderr</inline-code> instead of <inline-code>io::stdout</inline-code>. See <inline-code>println!</inline-code> for example usage. <elided chars="472"/></truncated>
+</item>
+  <item><p>
+<type-name>file</type-name> </p>
+<truncated level="single-line"><p>
+Expands to the file name in which it was invoked.</p>
+With <inline-code>line!</inline-code> and <inline-code>column!</inline-code>, these macros provide developers about the location <elided chars="1235"/></truncated>
+</item>
+  <item><p>
 <type-name>format</type-name> </p>
 <truncated level="single-line"><p>
 Creates a <inline-code>String</inline-code> using interpolation of runtime expressions.</p>
 The first argument <inline-code>format!</inline-code> receives is a literal. The power<inline-code>{}</inline-code>s contained. Additional<inline-code>format!</inline-code> replace the <inline-code>{}</inline-code>s within the formatting string are used. <elided chars="1206"/></truncated>
+</item>
+  <item><p>
+<type-name>format_args</type-name> </p>
+<truncated level="single-line"><p>
+Constructs parameters for the other string-formatting macros.</p>
+This macro <inline-code>{}</inline-code> for each<inline-code>format_args!</inline-code> prepares the additional and canonicalizes the <inline-code>Display</inline-code> trait can be<inline-code>format_args!</inline-code>, as can any <inline-code>Debug</inline-code> implementation be<inline-code>{:?}</inline-code> within the <elided chars="1767"/></truncated>
+</item>
+  <item><p>
+<type-name>hash_map</type-name> </p>
+<truncated level="single-line"><p>
+Creates a <inline-code>HashMap</inline-code> containing the arguments.</p>
+<inline-code>hash_map!</inline-code> allows specifying the entries that up the <inline-code>HashMap</inline-code> where the key and value are<inline-code>=></inline-code>. <elided chars="818"/></truncated>
+</item>
+  <item><p>
+<type-name>include</type-name> </p>
+<truncated level="single-line"><p>
+Parses a file as an expression or an item according to the context.</p>
+<strong>Warning</strong>: For<inline-code>include!</inline-code> macro is are looking modules. Multi-file modules are here and the explained in here. <elided chars="1836"/></truncated>
+</item>
+  <item><p>
+<type-name>include_bytes</type-name> </p>
+<truncated level="single-line"><p>
+Includes a file as a reference to a byte array.</p>
+The file is located relative to modules are found). The provided way at compile time. So, for containing backslashes <inline-code>\</inline-code> would not compile correctly on <elided chars="689"/></truncated>
+</item>
+  <item><p>
+<type-name>include_str</type-name> </p>
+<truncated level="single-line"><p>
+Includes a UTF-8 encoded file as a string.</p>
+The file is located relative to the modules are found). The provided path way at compile time. So, for containing backslashes <inline-code>\</inline-code> would not compile correctly on Unix. <elided chars="647"/></truncated>
+</item>
+  <item><p>
+<type-name>line</type-name> </p>
+<truncated level="single-line"><p>
+Expands to the line number on which it was invoked.</p>
+With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
+</item>
+  <item><p>
+<type-name>log_syntax</type-name> </p>
+<truncated level="single-line"><p>
+Prints passed tokens into the standard output.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>matches</type-name> </p>
+<truncated level="single-line"><p>
+Returns whether the given expression matches the provided pattern.</p>
+The pattern used to add return <inline-code>false</inline-code>. <elided chars="492"/></truncated>
+</item>
+  <item><p>
+<type-name>module_path</type-name> </p>
+<truncated level="single-line"><p>
+Expands to a string that represents the current module path.</p>
+The current module leading back up to returned is the <elided chars="286"/></truncated>
+</item>
+  <item><p>
+<type-name>option_env</type-name> </p>
+<truncated level="single-line"><p>
+Optionally inspects an environment variable at compile time.</p>
+If the named expand into an<inline-code>Option<&'static str></inline-code> whose value is <inline-code>Some</inline-code> of the value of will be emitted if string). If the expand to <inline-code>None</inline-code>. See <inline-code>Option<T></inline-code> for more type.  Use <inline-code>std::env::var</inline-code> instead if you runtime. <elided chars="798"/></truncated>
+</item>
+  <item><p>
+<type-name>panic</type-name> </p>
+<truncated level="single-line"><p>
+Panics the current thread.</p>
+This allows a program to terminate immediately and to the caller of the program. <elided chars="3627"/></truncated>
+</item>
+  <item><p>
+<type-name>print</type-name> </p>
+<truncated level="single-line"><p>
+Prints to the standard output.</p>
+Equivalent to the <inline-code>println!</inline-code> macro except that a newline is not printed at the end of the message. <elided chars="1117"/></truncated>
+</item>
+  <item><p>
+<type-name>println</type-name> </p>
+<truncated level="single-line"><p>
+Prints to the standard output, with a newline.</p>
+On all platforms, the newline is<inline-code>\n</inline-code>/<inline-code>U+000A</inline-code>) alone (no additional CARRIAGE RETURN (<inline-code>\r</inline-code>/<inline-code>U+000D</inline-code>)). <elided chars="1033"/></truncated>
+</item>
+  <item><p>
+<type-name>stringify</type-name> </p>
+<truncated level="single-line"><p>
+Stringifies its arguments.</p>
+This macro will yield an expression of type <inline-code>&'static str</inline-code> which is the stringification of all the tokens passed to the are placed on the syntax of the macro invocation <elided chars="348"/></truncated>
+</item>
+  <item><p>
+<type-name>thread_local</type-name> </p>
+<truncated level="single-line"><p>
+Declare a new thread local storage key of type <inline-code>std::thread::LocalKey</inline-code>.</p>
+<title>Syntax</title>
+The Publi <elided chars="1114"/></truncated>
+</item>
+  <item><p>
+<type-name>todo</type-name> </p>
+<truncated level="single-line"><p>
+Indicates unfinished code.</p>
+This can be useful if you are prototyping and just want a placeholder to let your code pass type <elided chars="1435"/></truncated>
+</item>
+  <item><p>
+<type-name>trace_macros</type-name> </p>
+<truncated level="single-line"><p>
+Enables or disables tracing functionality used for debugging other macros.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>try</type-name> </p>
+<truncated level="single-line"><p>
+Unwraps a result or propagates its error.</p>
+The <inline-code>?</inline-code> operator was added to replace <inline-code>try!</inline-code> and should be used instead.<inline-code>try</inline-code> is a reserved word in Rust 2018, so if you must use it, raw-identifier syntax: <inline-code>r#try</inline-code>. <elided chars="1577"/></truncated>
+</item>
+  <item><p>
+<type-name>unimplemented</type-name> </p>
+<truncated level="single-line"><p>
+Indicates unimplemented code by panicking with a message of "not implemented".</p>
+Th im <elided chars="1789"/></truncated>
+</item>
+  <item><p>
+<type-name>unreachable</type-name> </p>
+<truncated level="single-line"><p>
+Indicates unreachable code.</p>
+This is useful any time that the compiler can't example: <elided chars="1145"/></truncated>
+</item>
+  <item><p>
+<type-name>write</type-name> </p>
+<truncated level="single-line"><p>
+Writes formatted data into a buffer.</p>
+This macro accepts a 'writer', a format formatted according to the specified format The writer may be any value with a <inline-code>write_fmt</inline-code> method; generally this comes from an implementation of either the <inline-code>fmt::Write</inline-code> or the <inline-code>io::Write</inline-code> trait. The macro returns whatever the <inline-code>write_fmt</inline-code> method returns; commonly a <inline-code>fmt::Result</inline-code>, or an <inline-code>io::Result</inline-code>. <elided chars="2053"/></truncated>
+</item>
+  <item><p>
+<type-name>writeln</type-name> </p>
+<truncated level="single-line"><p>
+Writes formatted data into a buffer, with a newline appended.</p>
+On all platforms,<inline-code>\n</inline-code>/<inline-code>U+000A</inline-code>) alone (no additional<inline-code>\r</inline-code>/<inline-code>U+000D</inline-code>). <elided chars="471"/></truncated>
+</item>
+</list>
+</section><section><section-title>ProcAttribute</section-title><list>
+  <item><p>
+<type-name>derive</type-name> </p>
+<truncated level="single-line"><p>
+Attribute macro used to apply derive macros.</p>
+<p>
+See the reference for more info.</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Primitive</section-title><list>
+  <item><p>
+<type-name>array</type-name> </p>
+<truncated level="single-line">A fixed-size array, denoted <inline-code>[T; N]</inline-code>, for the element type, <inline-code>T</inline-code>, and the non-negative compile-time constant size, <inline-code>N</inline-code>. <elided chars="5525"/></truncated>
+</item>
+  <item><p>
+<type-name>bool</type-name> </p>
+<truncated level="single-line"><p>
+The boolean type.</p>
+The <inline-code>bool</inline-code> represents a value, which could only be either <inline-code>true</inline-code> or <inline-code>false</inline-code>. If you cast a <inline-code>bool</inline-code> into an integer, <inline-code>true</inline-code> will be 1 and <inline-code>false</inline-code> will be 0. <elided chars="1023"/></truncated>
+</item>
+  <item><p>
+<type-name>char</type-name> </p>
+<truncated level="single-line"><p>
+A character type.</p>
+The <inline-code>char</inline-code> type represents a single character. More specifically, since 'character' isn't a well-defined concept in Unicode, <inline-code>char</inline-code> is a 'Unicode scalar value'. <elided chars="3613"/></truncated>
+</item>
+  <item><p>
+<type-name>f128</type-name> </p>
+<truncated level="single-line">A 128-bit floating-point type (specifically, the "binary128" type defined in <elided chars="883"/></truncated>
+</item>
+  <item><p>
+<type-name>f16</type-name> </p>
+<truncated level="single-line">A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE <elided chars="705"/></truncated>
+</item>
+  <item><p>
+<type-name>f32</type-name> </p>
+<truncated level="single-line">A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE <elided chars="9237"/></truncated>
+</item>
+  <item><p>
+<type-name>f64</type-name> </p>
+<truncated level="single-line">A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE <elided chars="241"/></truncated>
+</item>
+  <item><p>
+<type-name>fn</type-name> </p>
+<truncated level="single-line"><p>
+Function pointers, like <inline-code>fn(usize) -> bool</inline-code>.</p>
+<emphasis>See also the traits </emphasis><inline-code>Fn</inline-code><emphasis>, </emphasis><inline-code>FnMut</inline-code><emphasis>, and </emphasis><inline-code>FnOnce</inline-code><emphasis>.</emphasis> <elided chars="10991"/></truncated>
+</item>
+  <item><p>
+<type-name>i128</type-name> </p>
+<truncated level="single-line"><p>
+The 128-bit signed integer type.</p>
+<title>ABI compatibility</title>
+Rust's <inline-code>i128</inline-code> is expected to be<inline-code>__int128</inline-code> on platforms where the type is available, which includes <inline-code>__int128</inline-code> are updated to introduce it,<inline-code>i128</inline-code> ABI on relevant targets will to match. <elided chars="580"/></truncated>
+</item>
+  <item><p>
+<type-name>i16</type-name> </p>
+<truncated level="single-line"><p>
+The 16-bit signed integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>i32</type-name> </p>
+<truncated level="single-line"><p>
+The 32-bit signed integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>i64</type-name> </p>
+<truncated level="single-line"><p>
+The 64-bit signed integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>i8</type-name> </p>
+<truncated level="single-line"><p>
+The 8-bit signed integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>isize</type-name> </p>
+<truncated level="single-line"><p>
+The pointer-sized signed integer type.</p>
+The size of this primitive is how many location in memory. For example, on a 32 and on a 64 bit target, this is 8 bytes. <elided chars="138"/></truncated>
+</item>
+  <item><p>
+<type-name>never</type-name> </p>
+<truncated level="single-line"><p>
+The <inline-code>!</inline-code> type, also called "never".</p>
+<inline-code>!</inline-code> represents the type of computations which the <inline-code>exit</inline-code> function <inline-code>fn exit(code: i32) -> !</inline-code> exits the process without ever returning, and so returns <inline-code>!</inline-code>. <elided chars="6667"/></truncated>
+</item>
+  <item><p>
+<type-name>pointer</type-name> </p>
+<truncated level="single-line"><p>
+Raw, unsafe pointers, <inline-code>*const T</inline-code>, and <inline-code>*mut T</inline-code>.</p>
+<p>
+<emphasis>See also the </emphasis><inline-code>std::ptr</inline-code><emphasis> module</emphasis><emphasis>.</emphasis></p>
+Working can be<inline-code>null</inline-code>. pointer,valid for tuple of in-bound. <elided chars="2971"/></truncated>
+</item>
+  <item><p>
+<type-name>reference</type-name> </p>
+<truncated level="single-line"><p>
+References, <inline-code>&T</inline-code> and <inline-code>&mut T</inline-code>.</p>
+A reference represents a borrow of some owned value.<inline-code>&</inline-code> or <inline-code>&mut</inline-code> operators on a value, or by using a <inline-code>ref</inline-code> or ref mut pattern. <elided chars="4803"/></truncated>
+</item>
+  <item><p>
+<type-name>slice</type-name> </p>
+<truncated level="single-line"><p>
+A dynamically-sized view into a contiguous sequence, <inline-code>[T]</inline-code>.</p>
+Contiguous here means distance from its <elided chars="2514"/></truncated>
+</item>
+  <item><p>
+<type-name>str</type-name> </p>
+<truncated level="single-line"><p>
+String slices.</p>
+<p>
+<emphasis>See also the </emphasis><inline-code>std::str</inline-code><emphasis> module</emphasis><emphasis>.</emphasis></p>
+The <inline-code>str</inline-code> type, also called a 'string slice', type. It is usually seen in its<inline-code>&str</inline-code>. It is also the type of string literals, <inline-code>&'static str</inline-code>. <elided chars="1664"/></truncated>
+</item>
+  <item><p>
+<type-name>tuple</type-name> </p>
+<truncated level="single-line"><p>
+A finite heterogeneous sequence, <inline-code>(T, U, ..)</inline-code>.</p>
+<p>
+Let's cover each of those in turn:</p>
+Tu<emphasis>fi</emphasis>. of<inline-code>3</inline-code>: <elided chars="2244"/></truncated>
+</item>
+  <item><p>
+<type-name>u128</type-name> </p>
+<truncated level="single-line"><p>
+The 128-bit unsigned integer type.</p>
+Please see the documentation for <inline-code>i128</inline-code> for information on ABI compatibility. <elided chars="29"/></truncated>
+</item>
+  <item><p>
+<type-name>u16</type-name> </p>
+<truncated level="single-line"><p>
+The 16-bit unsigned integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>u32</type-name> </p>
+<truncated level="single-line"><p>
+The 32-bit unsigned integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>u64</type-name> </p>
+<truncated level="single-line"><p>
+The 64-bit unsigned integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>u8</type-name> </p>
+<truncated level="single-line"><p>
+The 8-bit unsigned integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>unit</type-name> </p>
+<truncated level="single-line"><p>
+The <inline-code>()</inline-code> type, also called "unit".</p>
+The <inline-code>()</inline-code> type has exactly one value <inline-code>()</inline-code>, and is used when there is no other meaningful value that could be<inline-code>()</inline-code> is most commonly seen implicitly: functions without a <inline-code>-> ...</inline-code> implicitly have return type <inline-code>()</inline-code>, that is, these are equivalent: <elided chars="529"/></truncated>
+</item>
+  <item><p>
+<type-name>usize</type-name> </p>
+<truncated level="single-line"><p>
+The pointer-sized unsigned integer type.</p>
+The size of this primitive is how many location in memory. For example, on a and on a 64 bit target, this is 8 bytes. <elided chars="140"/></truncated>
 </item>
 </list>
 </section>

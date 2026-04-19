@@ -2,8 +2,8 @@ use rustdoc_types::ItemKind;
 use std::path::PathBuf;
 
 use crate::{
-    Navigator,
-    sources::{LocalSource, StdSource},
+    CrateName, Navigator, RustdocData,
+    sources::{CrateProvenance, LocalSource, StdSource},
 };
 
 fn get_fixture_crate_path() -> PathBuf {
@@ -196,5 +196,150 @@ fn private_module_path_resolves_via_index() {
     assert_eq!(
         via_reexport, via_private_path,
         "re-export and private-module path should resolve to the same item"
+    );
+}
+
+/// A failing `pub use` must not abort iteration of its module's remaining children.
+///
+/// Regression guard: previously, if any one `Use` in a module's `items` list could not
+/// be resolved (neither `use.id` in the local index nor `resolve_path(&use.source)`),
+/// `IdIter` short-circuited via `?` and yielded nothing further. That silently dropped
+/// every sibling after the broken re-export. For example, in `trillium_server_common`
+/// the first root-level `pub use futures_lite::AsyncRead` failed to resolve, hiding
+/// `ServerHandle` and every other subsequent re-export.
+#[test]
+fn iterator_skips_unresolvable_use_items() {
+    use rustdoc_types::{
+        Crate, Generics, Id, Item, ItemEnum, Module, Struct, StructKind, Target, Use, Visibility,
+    };
+    use std::collections::HashMap;
+
+    fn item(id: u32, name: Option<&str>, inner: ItemEnum) -> Item {
+        Item {
+            id: Id(id),
+            crate_id: 0,
+            name: name.map(str::to_owned),
+            span: None,
+            visibility: Visibility::Public,
+            docs: None,
+            links: Default::default(),
+            attrs: vec![],
+            deprecation: None,
+            inner,
+        }
+    }
+
+    fn unit_struct() -> ItemEnum {
+        ItemEnum::Struct(Struct {
+            kind: StructKind::Unit,
+            generics: Generics {
+                params: vec![],
+                where_predicates: vec![],
+            },
+            impls: vec![],
+        })
+    }
+
+    // Root module contains, in order:
+    //   [broken_use, valid_struct_a, another_broken_use, valid_struct_b]
+    // The two broken uses point at ids not present in the index and at source paths
+    // that Navigator cannot resolve (no such crates exist / loaded). A correct
+    // iterator skips them and still yields both valid structs.
+    let root_id = Id(1);
+    let broken_use_a = Id(10);
+    let valid_struct_a = Id(11);
+    let broken_use_b = Id(12);
+    let valid_struct_b = Id(13);
+
+    let mut index: HashMap<Id, Item, rustc_hash::FxBuildHasher> = Default::default();
+    index.insert(
+        root_id,
+        item(
+            root_id.0,
+            Some("fake_crate"),
+            ItemEnum::Module(Module {
+                is_crate: true,
+                items: vec![broken_use_a, valid_struct_a, broken_use_b, valid_struct_b],
+                is_stripped: false,
+            }),
+        ),
+    );
+    index.insert(
+        broken_use_a,
+        item(
+            broken_use_a.0,
+            None,
+            ItemEnum::Use(Use {
+                source: "___definitely_not_a_real_crate___::Thing".into(),
+                name: "Thing".into(),
+                id: Some(Id(9_999)), // deliberately not in the index
+                is_glob: false,
+            }),
+        ),
+    );
+    index.insert(
+        valid_struct_a,
+        item(valid_struct_a.0, Some("KeepA"), unit_struct()),
+    );
+    index.insert(
+        broken_use_b,
+        item(
+            broken_use_b.0,
+            None,
+            ItemEnum::Use(Use {
+                source: "___also_not_a_real_crate___::Other".into(),
+                name: "Other".into(),
+                id: Some(Id(9_998)),
+                is_glob: false,
+            }),
+        ),
+    );
+    index.insert(
+        valid_struct_b,
+        item(valid_struct_b.0, Some("KeepB"), unit_struct()),
+    );
+
+    let crate_data = Crate {
+        root: root_id,
+        crate_version: None,
+        includes_private: false,
+        index,
+        paths: Default::default(),
+        external_crates: Default::default(),
+        target: Target {
+            triple: String::new(),
+            target_features: vec![],
+        },
+        format_version: rustdoc_types::FORMAT_VERSION,
+    };
+
+    let data = RustdocData {
+        crate_data,
+        name: "fake_crate".into(),
+        provenance: CrateProvenance::DocsRs,
+        fs_path: PathBuf::new(),
+        version: None,
+        path_to_id: HashMap::new(),
+    };
+
+    // Build a Navigator with no real sources; load_crate is stubbed by pre-populating
+    // working_set. resolve_path of the broken sources will try to look them up via
+    // lookup_crate, which with no sources configured returns None — exactly the
+    // unresolvable case we want to exercise.
+    let nav = Navigator::default();
+    nav.working_set
+        .insert(CrateName::from("fake_crate"), Box::new(Some(data)));
+
+    let root = nav
+        .load_crate("fake_crate", &semver::VersionReq::STAR)
+        .expect("pre-populated crate should be loadable")
+        .root_item(&nav);
+
+    let names: Vec<&str> = root.child_items().filter_map(|c| c.name()).collect();
+
+    assert_eq!(
+        names,
+        vec!["KeepA", "KeepB"],
+        "unresolvable `Use` items should be skipped, not terminate the iterator"
     );
 }
