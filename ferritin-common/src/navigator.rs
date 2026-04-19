@@ -91,7 +91,7 @@ pub struct Navigator {
     /// all references to &'a RustdocData or DocRef<'a> are borrowing from this map.
     ///
     /// A None value indicates permanent failure.
-    working_set: FrozenMap<CrateName<'static>, Box<Option<RustdocData>>>,
+    pub(crate) working_set: FrozenMap<CrateName<'static>, Box<Option<RustdocData>>>,
 
     /// Map from internal name (underscores) to real name/version from external_crates
     external_crate_names: FrozenMap<CrateName<'static>, Box<ExternalCrateInfo>>,

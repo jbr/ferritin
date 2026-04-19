@@ -282,6 +282,9 @@ Modules
   ◦ prelude 
     The Rust Prelude [...]
 
+  ◦ primitive 
+    This module reexports the primitive types to allow usage that is not possibly shadowed by other declared types. [...]
+
   ◦ process 
     A module for working with processes. [...]
 
@@ -353,5 +356,219 @@ Modules
 
 Macros
 
+  ◦ assert 
+    Asserts that a boolean expression is true at runtime. [...]
+
+  ◦ assert_eq 
+    Asserts that two expressions are equal to each other (using PartialEq). [...]
+
+  ◦ assert_matches 
+    Asserts that an expression matches the provided pattern. [...]
+
+  ◦ assert_ne 
+    Asserts that two expressions are not equal to each other (using PartialEq). [...]
+
+  ◦ cfg 
+    Evaluates boolean combinations of configuration flags at compile-time. [...]
+
+  ◦ cfg_select 
+    Selects code at compile-time based on cfg predicates. [...]
+
+  ◦ column 
+    Expands to the column number at which it was invoked. [...]
+
+  ◦ compile_error 
+    Causes compilation to fail with the given error message when encountered. [...]
+
+  ◦ concat 
+    Concatenates literals into a static string slice. [...]
+
+  ◦ concat_bytes 
+    Concatenates literals into a byte slice. [...]
+
+  ◦ const_format_args 
+    Same as format_args, but can be used in some const contexts. [...]
+
+  ◦ dbg 
+    Prints and returns the value of a given expression for quick and dirty debugging. [...]
+
+  ◦ debug_assert 
+    Asserts that a boolean expression is true at runtime. [...]
+
+  ◦ debug_assert_eq 
+    Asserts that two expressions are equal to each other. [...]
+
+  ◦ debug_assert_matches 
+    Asserts that an expression matches the provided pattern. [...]
+
+  ◦ debug_assert_ne 
+    Asserts that two expressions are not equal to each other. [...]
+
+  ◦ env 
+    Inspects an environment variable at compile time. [...]
+
+  ◦ eprint 
+    Prints to the standard error. [...]
+
+  ◦ eprintln 
+    Prints to the standard error, with a newline. [...]
+
+  ◦ file 
+    Expands to the file name in which it was invoked. [...]
+
   ◦ format 
     Creates a String using interpolation of runtime expressions. [...]
+
+  ◦ format_args 
+    Constructs parameters for the other string-formatting macros. [...]
+
+  ◦ hash_map 
+    Creates a HashMap containing the arguments. [...]
+
+  ◦ include 
+    Parses a file as an expression or an item according to the context. [...]
+
+  ◦ include_bytes 
+    Includes a file as a reference to a byte array. [...]
+
+  ◦ include_str 
+    Includes a UTF-8 encoded file as a string. [...]
+
+  ◦ line 
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ log_syntax 
+    Prints passed tokens into the standard output.
+
+  ◦ matches 
+    Returns whether the given expression matches the provided pattern. [...]
+
+  ◦ module_path 
+    Expands to a string that represents the current module path. [...]
+
+  ◦ option_env 
+    Optionally inspects an environment variable at compile time. [...]
+
+  ◦ panic 
+    Panics the current thread. [...]
+
+  ◦ print 
+    Prints to the standard output. [...]
+
+  ◦ println 
+    Prints to the standard output, with a newline. [...]
+
+  ◦ stringify 
+    Stringifies its arguments. [...]
+
+  ◦ thread_local 
+    Declare a new thread local storage key of type std::thread::LocalKey. [...]
+
+  ◦ todo 
+    Indicates unfinished code. [...]
+
+  ◦ trace_macros 
+    Enables or disables tracing functionality used for debugging other macros.
+
+  ◦ try 
+    Unwraps a result or propagates its error. [...]
+
+  ◦ unimplemented 
+    Indicates unimplemented code by panicking with a message of "not implemented". [...]
+
+  ◦ unreachable 
+    Indicates unreachable code. [...]
+
+  ◦ write 
+    Writes formatted data into a buffer. [...]
+
+  ◦ writeln 
+    Writes formatted data into a buffer, with a newline appended. [...]
+
+ProcAttribute
+
+  ◦ derive 
+    Attribute macro used to apply derive macros. [...]
+
+Primitive
+
+  ◦ array 
+    A fixed-size array, denoted [T; N], for the element type, T, and the non-negative compile-time constant size, N. [...]
+
+  ◦ bool 
+    The boolean type. [...]
+
+  ◦ char 
+    A character type. [...]
+
+  ◦ f128 
+    A 128-bit floating-point type (specifically, the "binary128" type defined in IEEE 754-2008). [...]
+
+  ◦ f16 
+    A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE 754-2008). [...]
+
+  ◦ f32 
+    A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE 754-2008). [...]
+
+  ◦ f64 
+    A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE 754-2008). [...]
+
+  ◦ fn 
+    Function pointers, like fn(usize) -> bool. [...]
+
+  ◦ i128 
+    The 128-bit signed integer type. [...]
+
+  ◦ i16 
+    The 16-bit signed integer type.
+
+  ◦ i32 
+    The 32-bit signed integer type.
+
+  ◦ i64 
+    The 64-bit signed integer type.
+
+  ◦ i8 
+    The 8-bit signed integer type.
+
+  ◦ isize 
+    The pointer-sized signed integer type. [...]
+
+  ◦ never 
+    The ! type, also called "never". [...]
+
+  ◦ pointer 
+    Raw, unsafe pointers, *const T, and *mut T. [...]
+
+  ◦ reference 
+    References, &T and &mut T. [...]
+
+  ◦ slice 
+    A dynamically-sized view into a contiguous sequence, [T]. [...]
+
+  ◦ str 
+    String slices. [...]
+
+  ◦ tuple 
+    A finite heterogeneous sequence, (T, U, ..). [...]
+
+  ◦ u128 
+    The 128-bit unsigned integer type. [...]
+
+  ◦ u16 
+    The 16-bit unsigned integer type.
+
+  ◦ u32 
+    The 32-bit unsigned integer type.
+
+  ◦ u64 
+    The 64-bit unsigned integer type.
+
+  ◦ u8 
+    The 8-bit unsigned integer type.
+
+  ◦ unit 
+    The () type, also called "unit". [...]
+
+  ◦ usize 
+    The pointer-sized unsigned integer type. [...]

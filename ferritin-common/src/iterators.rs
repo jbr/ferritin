@@ -174,12 +174,17 @@ impl<'a, T> Iterator for IdIter<'a, T> {
                             return Some(item);
                         }
 
-                        let source_item = use_item
+                        let Some(source_item) = use_item
                             .id
                             .and_then(|id| item.crate_docs().get(item.navigator(), &id))
                             .or_else(|| {
                                 item.navigator().resolve_path(&use_item.source, &mut vec![])
-                            })?;
+                            })
+                        else {
+                            // One unresolvable re-export shouldn't abort the whole iteration;
+                            // skip it and keep yielding the remaining siblings.
+                            continue;
+                        };
 
                         if use_item.is_glob {
                             self.glob_iter = match source_item.inner() {

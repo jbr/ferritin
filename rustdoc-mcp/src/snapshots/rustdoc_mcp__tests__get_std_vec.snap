@@ -72,6 +72,7 @@ pat // Helper module for exporting the `pattern_type` macro
 path // Cross-platform path manipulation. [+77 more lines]
 pin // Types that pin data to a location in memory. [+916 more lines]
 prelude // # The Rust Prelude [+106 more lines]
+primitive // This module reexports the primitive types to allow usage that is not [+37 more lines]
 process // A module for working with processes. [+145 more lines]
 ptr // Manually manage memory through raw pointers. [+397 more lines]
 random // Random value generation.
@@ -97,4 +98,78 @@ vec // A contiguous growable array type with heap-allocated contents, written [+
 vec // A contiguous growable array type with heap-allocated contents, written [+71 more lines]
 
 Macros:
+assert // Asserts that a boolean expression is `true` at runtime. [+46 more lines]
+assert_eq // Asserts that two expressions are equal to each other (using [`PartialEq`]). [+22 more lines]
+assert_matches // Asserts that an expression matches the provided pattern. [+39 more lines]
+assert_ne // Asserts that two expressions are not equal to each other (using [`PartialEq`]). [+22 more lines]
+cfg // Evaluates boolean combinations of configuration flags at compile-time. [+23 more lines]
+cfg_select // Selects code at compile-time based on `cfg` predicates. [+33 more lines]
+column // Expands to the column number at which it was invoked. [+29 more lines]
+compile_error // Causes compilation to fail with the given error message when encountered. [+32 more lines]
+concat // Concatenates literals into a static string slice. [+14 more lines]
+concat_bytes // Concatenates literals into a byte slice. [+19 more lines]
+const_format_args // Same as [`format_args`], but can be used in some const contexts. [+4 more lines]
+dbg // Prints and returns the value of a given expression for quick and dirty [+123 more lines]
+debug_assert // Asserts that a boolean expression is `true` at runtime. [+43 more lines]
+debug_assert_eq // Asserts that two expressions are equal to each other. [+18 more lines]
+debug_assert_matches // Asserts that an expression matches the provided pattern. [+39 more lines]
+debug_assert_ne // Asserts that two expressions are not equal to each other. [+18 more lines]
+env // Inspects an environment variable at compile time. [+32 more lines]
+eprint // Prints to the standard error. [+26 more lines]
+eprintln // Prints to the standard error, with a newline. [+27 more lines]
+file // Expands to the file name in which it was invoked. [+28 more lines]
 format // Creates a `String` using interpolation of runtime expressions. [+42 more lines]
+format_args // Constructs parameters for the other string-formatting macros. [+57 more lines]
+hash_map // Creates a [`HashMap`] containing the arguments. [+46 more lines]
+include // Parses a file as an expression or an item according to the context. [+59 more lines]
+include_bytes // Includes a file as a reference to a byte array. [+31 more lines]
+include_str // Includes a UTF-8 encoded file as a string. [+31 more lines]
+line // Expands to the line number on which it was invoked. [+17 more lines]
+log_syntax // Prints passed tokens into the standard output.
+matches // Returns whether the given expression matches the provided pattern. [+18 more lines]
+module_path // Expands to a string that represents the current module path. [+16 more lines]
+option_env // Optionally inspects an environment variable at compile time. [+23 more lines]
+panic // Panics the current thread. [+98 more lines]
+print // Prints to the standard output. [+55 more lines]
+println // Prints to the standard output, with a newline. [+45 more lines]
+stringify // Stringifies its arguments. [+14 more lines]
+thread_local // Declare a new thread local storage key of type [`std::thread::LocalKey`]. [+44 more lines]
+todo // Indicates unfinished code. [+66 more lines]
+trace_macros // Enables or disables tracing functionality used for debugging other macros.
+try // Unwraps a result or propagates its error. [+61 more lines]
+unimplemented // Indicates unimplemented code by panicking with a message of "not implemented". [+73 more lines]
+unreachable // Indicates unreachable code. [+51 more lines]
+write // Writes formatted data into a buffer. [+85 more lines]
+writeln // Writes formatted data into a buffer, with a newline appended. [+24 more lines]
+
+Primitive:
+array // A fixed-size array, denoted `[T; N]`, for the element type, `T`, and the [+204 more lines]
+bool // The boolean type. [+55 more lines]
+char // A character type. [+125 more lines]
+f128 // A 128-bit floating-point type (specifically, the "binary128" type defined in IEEE 754-2008). [+17 more lines]
+f16 // A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE 754-2008). [+14 more lines]
+f32 // A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE 754-2008). [+189 more lines]
+f64 // A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE 754-2008). [+8 more lines]
+fn // Function pointers, like `fn(usize) -> bool`. [+266 more lines]
+i128 // The 128-bit signed integer type. [+12 more lines]
+i16 // The 16-bit signed integer type.
+i32 // The 32-bit signed integer type.
+i64 // The 64-bit signed integer type.
+i8 // The 8-bit signed integer type.
+isize // The pointer-sized signed integer type. [+4 more lines]
+never // The `!` type, also called "never". [+245 more lines]
+pointer // Raw, unsafe pointers, `*const T`, and `*mut T`. [+112 more lines]
+reference // References, `&T` and `&mut T`. [+153 more lines]
+slice // A dynamically-sized view into a contiguous sequence, `[T]`. [+106 more lines]
+str // String slices. [+68 more lines]
+tuple // A finite heterogeneous sequence, `(T, U, ..)`. [+115 more lines]
+u128 // The 128-bit unsigned integer type. [+2 more lines]
+u16 // The 16-bit unsigned integer type.
+u32 // The 32-bit unsigned integer type.
+u64 // The 64-bit unsigned integer type.
+u8 // The 8-bit unsigned integer type.
+unit // The `()` type, also called "unit". [+31 more lines]
+usize // The pointer-sized unsigned integer type. [+4 more lines]
+
+ProcAttribute:
+derive // Attribute macro used to apply derive macros. [+4 more lines]

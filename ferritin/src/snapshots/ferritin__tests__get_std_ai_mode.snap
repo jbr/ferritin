@@ -281,6 +281,9 @@ pin // Types that pin data to a location in memory. [+137 more lines]
 prelude // The Rust Prelude [+12 more lines]
 
 
+primitive // This module reexports the primitive types to allow usage that is not possibly shadowed by other declared types. [+7 more lines]
+
+
 process // A module for working with processes. [+20 more lines]
 
 
@@ -351,4 +354,216 @@ vec // A contiguous growable array type with heap-allocated contents, written Ve
 
 
 Macros
+assert // Asserts that a boolean expression is true at runtime. [+9 more lines]
+
+
+assert_eq // Asserts that two expressions are equal to each other (using PartialEq). [+5 more lines]
+
+
+assert_matches // Asserts that an expression matches the provided pattern. [+7 more lines]
+
+
+assert_ne // Asserts that two expressions are not equal to each other (using PartialEq). [+5 more lines]
+
+
+cfg // Evaluates boolean combinations of configuration flags at compile-time. [+5 more lines]
+
+
+cfg_select // Selects code at compile-time based on cfg predicates. [+6 more lines]
+
+
+column // Expands to the column number at which it was invoked. [+6 more lines]
+
+
+compile_error // Causes compilation to fail with the given error message when encountered. [+7 more lines]
+
+
+concat // Concatenates literals into a static string slice. [+4 more lines]
+
+
+concat_bytes // Concatenates literals into a byte slice. [+4 more lines]
+
+
+const_format_args // Same as format_args, but can be used in some const contexts. [+2 more lines]
+
+
+dbg // Prints and returns the value of a given expression for quick and dirty debugging. [+26 more lines]
+
+
+debug_assert // Asserts that a boolean expression is true at runtime. [+7 more lines]
+
+
+debug_assert_eq // Asserts that two expressions are equal to each other. [+4 more lines]
+
+
+debug_assert_matches // Asserts that an expression matches the provided pattern. [+7 more lines]
+
+
+debug_assert_ne // Asserts that two expressions are not equal to each other. [+4 more lines]
+
+
+env // Inspects an environment variable at compile time. [+8 more lines]
+
+
+eprint // Prints to the standard error. [+8 more lines]
+
+
+eprintln // Prints to the standard error, with a newline. [+8 more lines]
+
+
+file // Expands to the file name in which it was invoked. [+6 more lines]
+
+
 format // Creates a String using interpolation of runtime expressions. [+9 more lines]
+
+
+format_args // Constructs parameters for the other string-formatting macros. [+9 more lines]
+
+
+hash_map // Creates a HashMap containing the arguments. [+9 more lines]
+
+
+include // Parses a file as an expression or an item according to the context. [+13 more lines]
+
+
+include_bytes // Includes a file as a reference to a byte array. [+9 more lines]
+
+
+include_str // Includes a UTF-8 encoded file as a string. [+9 more lines]
+
+
+line // Expands to the line number on which it was invoked. [+4 more lines]
+
+
+log_syntax // Prints passed tokens into the standard output.
+
+
+matches // Returns whether the given expression matches the provided pattern. [+4 more lines]
+
+
+module_path // Expands to a string that represents the current module path. [+3 more lines]
+
+
+option_env // Optionally inspects an environment variable at compile time. [+4 more lines]
+
+
+panic // Panics the current thread. [+21 more lines]
+
+
+print // Prints to the standard output. [+11 more lines]
+
+
+println // Prints to the standard output, with a newline. [+11 more lines]
+
+
+stringify // Stringifies its arguments. [+4 more lines]
+
+
+thread_local // Declare a new thread local storage key of type std::thread::LocalKey. [+7 more lines]
+
+
+todo // Indicates unfinished code. [+11 more lines]
+
+
+trace_macros // Enables or disables tracing functionality used for debugging other macros.
+
+
+try // Unwraps a result or propagates its error. [+6 more lines]
+
+
+unimplemented // Indicates unimplemented code by panicking with a message of "not implemented". [+12 more lines]
+
+
+unreachable // Indicates unreachable code. [+12 more lines]
+
+
+write // Writes formatted data into a buffer. [+10 more lines]
+
+
+writeln // Writes formatted data into a buffer, with a newline appended. [+4 more lines]
+
+
+ProcAttribute
+derive // Attribute macro used to apply derive macros. [+1 more lines]
+
+
+Primitive
+array // A fixed-size array, denoted [T; N], for the element type, T, and the non-negative compile-time constant size, N. [+30 more lines]
+
+
+bool // The boolean type. [+11 more lines]
+
+
+char // A character type. [+23 more lines]
+
+
+f128 // A 128-bit floating-point type (specifically, the "binary128" type defined in IEEE 754-2008). [+4 more lines]
+
+
+f16 // A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE 754-2008). [+3 more lines]
+
+
+f32 // A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE 754-2008). [+31 more lines]
+
+
+f64 // A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE 754-2008). [+2 more lines]
+
+
+fn // Function pointers, like fn(usize) -> bool. [+48 more lines]
+
+
+i128 // The 128-bit signed integer type. [+3 more lines]
+
+
+i16 // The 16-bit signed integer type.
+
+
+i32 // The 32-bit signed integer type.
+
+
+i64 // The 64-bit signed integer type.
+
+
+i8 // The 8-bit signed integer type.
+
+
+isize // The pointer-sized signed integer type. [+1 more lines]
+
+
+never // The ! type, also called "never". [+44 more lines]
+
+
+pointer // Raw, unsafe pointers, *const T, and *mut T. [+20 more lines]
+
+
+reference // References, &T and &mut T. [+26 more lines]
+
+
+slice // A dynamically-sized view into a contiguous sequence, [T]. [+21 more lines]
+
+
+str // String slices. [+14 more lines]
+
+
+tuple // A finite heterogeneous sequence, (T, U, ..). [+23 more lines]
+
+
+u128 // The 128-bit unsigned integer type. [+1 more lines]
+
+
+u16 // The 16-bit unsigned integer type.
+
+
+u32 // The 32-bit unsigned integer type.
+
+
+u64 // The 64-bit unsigned integer type.
+
+
+u8 // The 8-bit unsigned integer type.
+
+
+unit // The () type, also called "unit". [+4 more lines]
+
+
+usize // The pointer-sized unsigned integer type. [+1 more lines]

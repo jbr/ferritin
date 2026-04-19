@@ -355,6 +355,10 @@ Modules
   ◦ [prelude](http://docs.rust-lang.org/nightly/std/prelude/index.html) 
     The Rust Prelude [...]
 
+  ◦ [primitive](http://docs.rust-lang.org/nightly/core/primitive/index.html) 
+    This module reexports the primitive types to allow usage that is not possibly
+    shadowed by other declared types. [...]
+
   ◦ [process](http://docs.rust-lang.org/nightly/std/process/index.html) 
     A module for working with processes. [...]
 
@@ -427,5 +431,225 @@ Modules
 
 Macros
 
+  ◦ [assert](http://docs.rust-lang.org/nightly/core/macro.assert.html) 
+    Asserts that a boolean expression is true at runtime. [...]
+
+  ◦ [assert_eq](http://docs.rust-lang.org/nightly/core/macro.assert_eq.html) 
+    Asserts that two expressions are equal to each other (using [PartialEq](http://docs.rust-lang.org/nightly/core/cmp/trait.PartialEq.html)). [...]
+
+  ◦ [assert_matches](http://docs.rust-lang.org/nightly/core/macros/macro.assert_matches.html) 
+    Asserts that an expression matches the provided pattern. [...]
+
+  ◦ [assert_ne](http://docs.rust-lang.org/nightly/core/macro.assert_ne.html) 
+    Asserts that two expressions are not equal to each other (using [PartialEq](http://docs.rust-lang.org/nightly/core/cmp/trait.PartialEq.html)). [...]
+
+  ◦ [cfg](http://docs.rust-lang.org/nightly/core/macro.cfg.html) 
+    Evaluates boolean combinations of configuration flags at compile-time. [...]
+
+  ◦ [cfg_select](http://docs.rust-lang.org/nightly/core/macros/macro.cfg_select.html) 
+    Selects code at compile-time based on cfg predicates. [...]
+
+  ◦ [column](http://docs.rust-lang.org/nightly/core/macro.column.html) 
+    Expands to the column number at which it was invoked. [...]
+
+  ◦ [compile_error](http://docs.rust-lang.org/nightly/core/macro.compile_error.html) 
+    Causes compilation to fail with the given error message when encountered. [...]
+
+  ◦ [concat](http://docs.rust-lang.org/nightly/core/macro.concat.html) 
+    Concatenates literals into a static string slice. [...]
+
+  ◦ [concat_bytes](http://docs.rust-lang.org/nightly/core/macro.concat_bytes.html) 
+    Concatenates literals into a byte slice. [...]
+
+  ◦ [const_format_args](http://docs.rust-lang.org/nightly/core/macro.const_format_args.html) 
+    Same as [format_args](http://docs.rust-lang.org/nightly/core/macro.format_args.html), but can be used in some const contexts. [...]
+
+  ◦ [dbg](http://docs.rust-lang.org/nightly/std/macro.dbg.html) 
+    Prints and returns the value of a given expression for quick and dirty 
+    debugging. [...]
+
+  ◦ [debug_assert](http://docs.rust-lang.org/nightly/core/macro.debug_assert.html) 
+    Asserts that a boolean expression is true at runtime. [...]
+
+  ◦ [debug_assert_eq](http://docs.rust-lang.org/nightly/core/macro.debug_assert_eq.html) 
+    Asserts that two expressions are equal to each other. [...]
+
+  ◦ [debug_assert_matches](http://docs.rust-lang.org/nightly/core/macros/macro.debug_assert_matches.html) 
+    Asserts that an expression matches the provided pattern. [...]
+
+  ◦ [debug_assert_ne](http://docs.rust-lang.org/nightly/core/macro.debug_assert_ne.html) 
+    Asserts that two expressions are not equal to each other. [...]
+
+  ◦ [env](http://docs.rust-lang.org/nightly/core/macro.env.html) 
+    Inspects an environment variable at compile time. [...]
+
+  ◦ [eprint](http://docs.rust-lang.org/nightly/std/macro.eprint.html) 
+    Prints to the standard error. [...]
+
+  ◦ [eprintln](http://docs.rust-lang.org/nightly/std/macro.eprintln.html) 
+    Prints to the standard error, with a newline. [...]
+
+  ◦ [file](http://docs.rust-lang.org/nightly/core/macro.file.html) 
+    Expands to the file name in which it was invoked. [...]
+
   ◦ [format](http://docs.rust-lang.org/nightly/alloc/macro.format.html) 
     Creates a String using interpolation of runtime expressions. [...]
+
+  ◦ [format_args](http://docs.rust-lang.org/nightly/core/macro.format_args.html) 
+    Constructs parameters for the other string-formatting macros. [...]
+
+  ◦ [hash_map](http://docs.rust-lang.org/nightly/std/macro.hash_map.html) 
+    Creates a [HashMap](http://docs.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html) containing the arguments. [...]
+
+  ◦ [include](http://docs.rust-lang.org/nightly/core/macro.include.html) 
+    Parses a file as an expression or an item according to the context. [...]
+
+  ◦ [include_bytes](http://docs.rust-lang.org/nightly/core/macro.include_bytes.html) 
+    Includes a file as a reference to a byte array. [...]
+
+  ◦ [include_str](http://docs.rust-lang.org/nightly/core/macro.include_str.html) 
+    Includes a UTF-8 encoded file as a string. [...]
+
+  ◦ [line](http://docs.rust-lang.org/nightly/core/macro.line.html) 
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ [log_syntax](http://docs.rust-lang.org/nightly/core/macro.log_syntax.html) 
+    Prints passed tokens into the standard output.
+
+  ◦ [matches](http://docs.rust-lang.org/nightly/core/macro.matches.html) 
+    Returns whether the given expression matches the provided pattern. [...]
+
+  ◦ [module_path](http://docs.rust-lang.org/nightly/core/macro.module_path.html) 
+    Expands to a string that represents the current module path. [...]
+
+  ◦ [option_env](http://docs.rust-lang.org/nightly/core/macro.option_env.html) 
+    Optionally inspects an environment variable at compile time. [...]
+
+  ◦ [panic](http://docs.rust-lang.org/nightly/std/macro.panic.html) 
+    Panics the current thread. [...]
+
+  ◦ [print](http://docs.rust-lang.org/nightly/std/macro.print.html) 
+    Prints to the standard output. [...]
+
+  ◦ [println](http://docs.rust-lang.org/nightly/std/macro.println.html) 
+    Prints to the standard output, with a newline. [...]
+
+  ◦ [stringify](http://docs.rust-lang.org/nightly/core/macro.stringify.html) 
+    Stringifies its arguments. [...]
+
+  ◦ [thread_local](http://docs.rust-lang.org/nightly/std/macro.thread_local.html) 
+    Declare a new thread local storage key of type [std::thread::LocalKey](http://docs.rust-lang.org/nightly/std/thread/local/struct.LocalKey.html). [...]
+
+  ◦ [todo](http://docs.rust-lang.org/nightly/core/macro.todo.html) 
+    Indicates unfinished code. [...]
+
+  ◦ [trace_macros](http://docs.rust-lang.org/nightly/core/macro.trace_macros.html) 
+    Enables or disables tracing functionality used for debugging other macros.
+
+  ◦ [try](http://docs.rust-lang.org/nightly/core/macro.try.html) 
+    Unwraps a result or propagates its error. [...]
+
+  ◦ [unimplemented](http://docs.rust-lang.org/nightly/core/macro.unimplemented.html) 
+    Indicates unimplemented code by panicking with a message of "not implemented". [...]
+
+  ◦ [unreachable](http://docs.rust-lang.org/nightly/core/macro.unreachable.html) 
+    Indicates unreachable code. [...]
+
+  ◦ [write](http://docs.rust-lang.org/nightly/core/macro.write.html) 
+    Writes formatted data into a buffer. [...]
+
+  ◦ [writeln](http://docs.rust-lang.org/nightly/core/macro.writeln.html) 
+    Writes formatted data into a buffer, with a newline appended. [...]
+
+ProcAttribute
+
+  ◦ [derive](http://docs.rust-lang.org/nightly/core/macros/builtin/macro.derive.html) 
+    Attribute macro used to apply derive macros. [...]
+
+Primitive
+
+  ◦ [array](http://docs.rust-lang.org/nightly/std/primitive.array.html) 
+    A fixed-size array, denoted [T; N], for the element type, T, and the 
+    non-negative compile-time constant size, N. [...]
+
+  ◦ [bool](http://docs.rust-lang.org/nightly/std/primitive.bool.html) 
+    The boolean type. [...]
+
+  ◦ [char](http://docs.rust-lang.org/nightly/std/primitive.char.html) 
+    A character type. [...]
+
+  ◦ [f128](http://docs.rust-lang.org/nightly/std/primitive.f128.html) 
+    A 128-bit floating-point type (specifically, the "binary128" type defined in
+    IEEE 754-2008). [...]
+
+  ◦ [f16](http://docs.rust-lang.org/nightly/std/primitive.f16.html) 
+    A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE
+    754-2008). [...]
+
+  ◦ [f32](http://docs.rust-lang.org/nightly/std/primitive.f32.html) 
+    A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE
+    754-2008). [...]
+
+  ◦ [f64](http://docs.rust-lang.org/nightly/std/primitive.f64.html) 
+    A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE
+    754-2008). [...]
+
+  ◦ [fn](http://docs.rust-lang.org/nightly/std/primitive.fn.html) 
+    Function pointers, like fn(usize) -> bool. [...]
+
+  ◦ [i128](http://docs.rust-lang.org/nightly/std/primitive.i128.html) 
+    The 128-bit signed integer type. [...]
+
+  ◦ [i16](http://docs.rust-lang.org/nightly/std/primitive.i16.html) 
+    The 16-bit signed integer type.
+
+  ◦ [i32](http://docs.rust-lang.org/nightly/std/primitive.i32.html) 
+    The 32-bit signed integer type.
+
+  ◦ [i64](http://docs.rust-lang.org/nightly/std/primitive.i64.html) 
+    The 64-bit signed integer type.
+
+  ◦ [i8](http://docs.rust-lang.org/nightly/std/primitive.i8.html) 
+    The 8-bit signed integer type.
+
+  ◦ [isize](http://docs.rust-lang.org/nightly/std/primitive.isize.html) 
+    The pointer-sized signed integer type. [...]
+
+  ◦ [never](http://docs.rust-lang.org/nightly/std/primitive.never.html) 
+    The ! type, also called "never". [...]
+
+  ◦ [pointer](http://docs.rust-lang.org/nightly/std/primitive.pointer.html) 
+    Raw, unsafe pointers, *const T, and *mut T. [...]
+
+  ◦ [reference](http://docs.rust-lang.org/nightly/std/primitive.reference.html) 
+    References, &T and &mut T. [...]
+
+  ◦ [slice](http://docs.rust-lang.org/nightly/std/primitive.slice.html) 
+    A dynamically-sized view into a contiguous sequence, [T]. [...]
+
+  ◦ [str](http://docs.rust-lang.org/nightly/std/primitive.str.html) 
+    String slices. [...]
+
+  ◦ [tuple](http://docs.rust-lang.org/nightly/std/primitive.tuple.html) 
+    A finite heterogeneous sequence, (T, U, ..). [...]
+
+  ◦ [u128](http://docs.rust-lang.org/nightly/std/primitive.u128.html) 
+    The 128-bit unsigned integer type. [...]
+
+  ◦ [u16](http://docs.rust-lang.org/nightly/std/primitive.u16.html) 
+    The 16-bit unsigned integer type.
+
+  ◦ [u32](http://docs.rust-lang.org/nightly/std/primitive.u32.html) 
+    The 32-bit unsigned integer type.
+
+  ◦ [u64](http://docs.rust-lang.org/nightly/std/primitive.u64.html) 
+    The 64-bit unsigned integer type.
+
+  ◦ [u8](http://docs.rust-lang.org/nightly/std/primitive.u8.html) 
+    The 8-bit unsigned integer type.
+
+  ◦ [unit](http://docs.rust-lang.org/nightly/std/primitive.unit.html) 
+    The () type, also called "unit". [...]
+
+  ◦ [usize](http://docs.rust-lang.org/nightly/std/primitive.usize.html) 
+    The pointer-sized unsigned integer type. [...]
