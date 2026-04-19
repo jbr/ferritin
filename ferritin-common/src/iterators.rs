@@ -1,7 +1,32 @@
+use crate::Navigator;
 use crate::doc_ref::{DocRef, ParentRef};
 use fieldwork::Fieldwork;
 use rustdoc_types::{Id, Item, ItemEnum, Type, Use};
 use std::collections::hash_map::Values;
+
+/// Resolve a `Use::source` path via `Navigator::resolve_path`, rewriting a leading
+/// `crate::` (or bare `crate`) to the canonical name of the crate the use lives in.
+///
+/// Rustdoc emits `Use::source` verbatim from the Rust source, so a `pub use crate::foo::Bar;`
+/// appears as `"crate::foo::Bar"`. Passing that to `resolve_path` untreated makes it try to
+/// load a crate literally named `"crate"` — and there happens to be one on crates.io, which
+/// is not only wrong but also triggers a network round-trip for every such import.
+fn resolve_use_source<'a>(
+    navigator: &'a Navigator,
+    crate_name: &str,
+    source: &str,
+) -> Option<DocRef<'a, Item>> {
+    let rewritten;
+    let path = if let Some(tail) = source.strip_prefix("crate::") {
+        rewritten = format!("{crate_name}::{tail}");
+        rewritten.as_str()
+    } else if source == "crate" {
+        crate_name
+    } else {
+        source
+    };
+    navigator.resolve_path(path, &mut vec![])
+}
 
 pub struct MethodIter<'a> {
     item: DocRef<'a, Item>,
@@ -178,7 +203,11 @@ impl<'a, T> Iterator for IdIter<'a, T> {
                             .id
                             .and_then(|id| item.crate_docs().get(item.navigator(), &id))
                             .or_else(|| {
-                                item.navigator().resolve_path(&use_item.source, &mut vec![])
+                                resolve_use_source(
+                                    item.navigator(),
+                                    item.crate_docs().name(),
+                                    &use_item.source,
+                                )
                             })
                         else {
                             // One unresolvable re-export shouldn't abort the whole iteration;
@@ -275,9 +304,11 @@ impl<'a> Iterator for ChildItems<'a> {
                         .id
                         .and_then(|id| use_item.get(&id))
                         .or_else(|| {
-                            use_item
-                                .navigator()
-                                .resolve_path(&use_item.source, &mut vec![])
+                            resolve_use_source(
+                                use_item.navigator(),
+                                use_item.crate_docs().name(),
+                                &use_item.source,
+                            )
                         })?
                         .with_name(name);
 
