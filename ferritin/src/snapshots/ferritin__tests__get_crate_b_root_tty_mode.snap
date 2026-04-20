@@ -16,4 +16,6 @@ Structs
 
   ◦ [CrateBProcessor](https://docs.rs/crate-b/0.1.0/crate-b/struct.CrateBProcessor.html) 
 
-  ◦ [PrefixCrateAAlias](https://docs.rs/crate-a/0.1.0/crate-a/struct.PrefixCrateAAlias.html)
+  ◦ [PrefixCrateAAlias](https://docs.rs/crate-a/0.1.0/crate-a/struct.PrefixCrateAAlias.html) 
+
+  ◦ [SelfPrefixAlias](https://docs.rs/crate-a/0.1.0/crate-a/struct.SelfPrefixAlias.html)

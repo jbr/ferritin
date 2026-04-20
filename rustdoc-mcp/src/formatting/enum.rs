@@ -56,12 +56,7 @@ impl Request {
         result
     }
 
-    fn format_struct_enum<T>(
-        &self,
-        result: &mut String,
-        variant_name: &str,
-        fields: IdIter<'_, T>,
-    ) {
+    fn format_struct_enum(&self, result: &mut String, variant_name: &str, fields: IdIter<'_>) {
         result.push_str(&format!("    {variant_name} {{\n"));
         for field in fields {
             if let ItemEnum::StructField(field_type) = &field.inner {

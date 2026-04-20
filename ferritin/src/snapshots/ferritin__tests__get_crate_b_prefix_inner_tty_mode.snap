@@ -10,4 +10,6 @@ In crate: crate-b (0.1.0)
 
 Structs
 
-  ◦ [CratePrefixAlias](https://docs.rs/crate-a/0.1.0/crate-a/struct.CratePrefixAlias.html)
+  ◦ [CratePrefixAlias](https://docs.rs/crate-a/0.1.0/crate-a/struct.CratePrefixAlias.html) 
+
+  ◦ [SuperPrefixAlias](https://docs.rs/crate-a/0.1.0/crate-a/struct.SuperPrefixAlias.html)

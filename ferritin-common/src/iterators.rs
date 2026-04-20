@@ -4,28 +4,80 @@ use fieldwork::Fieldwork;
 use rustdoc_types::{Id, Item, ItemEnum, Type, Use};
 use std::collections::hash_map::Values;
 
-/// Resolve a `Use::source` path via `Navigator::resolve_path`, rewriting a leading
-/// `crate::` (or bare `crate`) to the canonical name of the crate the use lives in.
+/// Resolve a `Use::source` path via `Navigator::resolve_path`, rewriting any
+/// leading relative prefix (`crate::`, `self::`, `super::super::…`) against the
+/// containing module's path so it becomes an absolute path that `resolve_path`
+/// can handle.
 ///
-/// Rustdoc emits `Use::source` verbatim from the Rust source, so a `pub use crate::foo::Bar;`
-/// appears as `"crate::foo::Bar"`. Passing that to `resolve_path` untreated makes it try to
-/// load a crate literally named `"crate"` — and there happens to be one on crates.io, which
-/// is not only wrong but also triggers a network round-trip for every such import.
+/// Rustdoc emits `Use::source` verbatim from the Rust source:
+/// - `pub use crate::foo::Bar;`     → `"crate::foo::Bar"`
+/// - `pub use self::Bar;`           → `"self::Bar"`
+/// - `pub use super::super::Bar;`   → `"super::super::Bar"`
+///
+/// Passing any of those to `resolve_path` untreated makes it try to load a
+/// crate literally named `"crate"`, `"self"`, or `"super"`. This helper
+/// substitutes the correct prefix using the containing module's path so, e.g.,
+/// `self::Bar` in module `home::inner` becomes `home::inner::Bar`.
+///
+/// `module_path` is the fully-qualified path of the module containing the use,
+/// with the crate name as the first segment (e.g. `["home", "inner"]`). For a
+/// use at the crate root, pass `["home"]`.
+///
+/// Returns `None` when too many `super::` prefixes would walk above the crate
+/// root.
 fn resolve_use_source<'a>(
     navigator: &'a Navigator,
-    crate_name: &str,
+    module_path: &[&str],
     source: &str,
 ) -> Option<DocRef<'a, Item>> {
-    let rewritten;
-    let path = if let Some(tail) = source.strip_prefix("crate::") {
-        rewritten = format!("{crate_name}::{tail}");
-        rewritten.as_str()
-    } else if source == "crate" {
-        crate_name
-    } else {
-        source
-    };
-    navigator.resolve_path(path, &mut vec![])
+    let rewritten = rewrite_relative_prefix(module_path, source)?;
+    navigator.resolve_path(&rewritten, &mut vec![])
+}
+
+/// Rewrite a relative path prefix against `module_path`, returning the
+/// absolute equivalent. Returns `None` only when `super::` prefixes exceed the
+/// depth of `module_path`. Non-prefixed paths are returned unchanged (as owned
+/// strings so the return type is uniform).
+fn rewrite_relative_prefix(module_path: &[&str], source: &str) -> Option<String> {
+    // Strip any number of leading `super::` segments, counting them.
+    let mut supers = 0;
+    let mut rest = source;
+    while let Some(tail) = rest.strip_prefix("super::") {
+        supers += 1;
+        rest = tail;
+    }
+    if supers > 0 || rest == "super" {
+        // A trailing bare `super` counts as one more level.
+        let supers = if rest == "super" { supers + 1 } else { supers };
+        let tail = if rest == "super" { "" } else { rest };
+        let remaining = module_path.len().checked_sub(supers)?;
+        if remaining == 0 {
+            return None;
+        }
+        let prefix = module_path[..remaining].join("::");
+        return Some(if tail.is_empty() {
+            prefix
+        } else {
+            format!("{prefix}::{tail}")
+        });
+    }
+
+    if let Some(tail) = source.strip_prefix("self::") {
+        return Some(format!("{}::{}", module_path.join("::"), tail));
+    }
+    if source == "self" {
+        return Some(module_path.join("::"));
+    }
+
+    if let Some(tail) = source.strip_prefix("crate::") {
+        let crate_name = module_path.first().copied()?;
+        return Some(format!("{crate_name}::{tail}"));
+    }
+    if source == "crate" {
+        return module_path.first().copied().map(String::from);
+    }
+
+    Some(source.to_owned())
 }
 
 pub struct MethodIter<'a> {
@@ -59,8 +111,8 @@ impl<'a> DocRef<'a, Item> {
     }
 }
 
-impl<'a, T> DocRef<'a, T> {
-    pub fn id_iter(&self, ids: &'a [Id]) -> IdIter<'a, T> {
+impl<'a> DocRef<'a, Item> {
+    pub fn id_iter(&self, ids: &'a [Id]) -> IdIter<'a> {
         IdIter::new(*self, ids)
     }
 }
@@ -157,18 +209,18 @@ impl<'a> Iterator for MethodIter<'a> {
 }
 
 #[derive(Debug, Fieldwork)]
-pub struct IdIter<'a, T> {
-    item: DocRef<'a, T>,
+pub struct IdIter<'a> {
+    item: DocRef<'a, Item>,
     id_iter: std::slice::Iter<'a, Id>,
-    glob_iter: Option<Box<IdIter<'a, Item>>>,
+    glob_iter: Option<Box<IdIter<'a>>>,
     #[field(with)]
     include_use: bool,
     #[field(with(vis = "pub(crate)", option_set_some, into))]
     parent: Option<ParentRef<'a>>,
 }
 
-impl<'a, T> IdIter<'a, T> {
-    pub(crate) fn new(item: DocRef<'a, T>, ids: &'a [Id]) -> Self {
+impl<'a> IdIter<'a> {
+    pub(crate) fn new(item: DocRef<'a, Item>, ids: &'a [Id]) -> Self {
         Self {
             item,
             id_iter: ids.iter(),
@@ -179,7 +231,7 @@ impl<'a, T> IdIter<'a, T> {
     }
 }
 
-impl<'a, T> Iterator for IdIter<'a, T> {
+impl<'a> Iterator for IdIter<'a> {
     type Item = DocRef<'a, Item>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -203,11 +255,10 @@ impl<'a, T> Iterator for IdIter<'a, T> {
                             .id
                             .and_then(|id| item.crate_docs().get(item.navigator(), &id))
                             .or_else(|| {
-                                resolve_use_source(
-                                    item.navigator(),
-                                    item.crate_docs().name(),
-                                    &use_item.source,
-                                )
+                                // `self.item` is the module containing these use items,
+                                // so its path is what `self::` / `super::` are relative to.
+                                let module_path = self.item.containing_module_path();
+                                resolve_use_source(item.navigator(), &module_path, &use_item.source)
                             })
                         else {
                             // One unresolvable re-export shouldn't abort the whole iteration;
@@ -277,9 +328,9 @@ impl<'a> Iterator for InherentImplBlockIter<'a> {
 
 pub enum ChildItems<'a> {
     AssociatedMethods(MethodIter<'a>),
-    Module(IdIter<'a, Item>),
-    Use(Option<DocRef<'a, Use>>, Option<IdIter<'a, Item>>, bool),
-    Enum(IdIter<'a, Item>, MethodIter<'a>),
+    Module(IdIter<'a>),
+    Use(Option<DocRef<'a, Use>>, Option<IdIter<'a>>, bool),
+    Enum(IdIter<'a>, MethodIter<'a>),
     None,
 }
 
@@ -304,9 +355,16 @@ impl<'a> Iterator for ChildItems<'a> {
                         .id
                         .and_then(|id| use_item.get(&id))
                         .or_else(|| {
+                            // ChildItems::Use doesn't track the use's parent module, so
+                            // `self::`/`super::` resolution is degraded here — we fall
+                            // back to the crate root. In practice this branch is only
+                            // taken when someone calls `.child_items()` directly on a
+                            // Use item (rare); the common module-iteration path uses
+                            // `IdIter` with accurate module context.
+                            let crate_name = use_item.crate_docs().name();
                             resolve_use_source(
                                 use_item.navigator(),
-                                use_item.crate_docs().name(),
+                                &[crate_name],
                                 &use_item.source,
                             )
                         })?

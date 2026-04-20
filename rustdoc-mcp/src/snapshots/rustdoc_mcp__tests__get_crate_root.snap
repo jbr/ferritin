@@ -14,6 +14,7 @@ Modules:
 link_resolution_tests // Module for testing intra-doc link resolution
 markdown_test // # Markdown: Syntax [+332 more lines]
 namespace_collisions // Module for testing namespace disambiguation with kind discriminators. [+3 more lines]
+prefix_tests // Edge cases for path-prefix resolution in use-item sources and intra-doc links. [+11 more lines]
 reexport_mod
 submodule // A module with items
 

@@ -12,5 +12,8 @@ expression: "render_for_tests_rooted(Commands::get(\"crate_b::prefix_inner\"), O
   <item><p>
 <type-name>CratePrefixAlias</type-name> </p>
 </item>
+  <item><p>
+<type-name>SuperPrefixAlias</type-name> </p>
+</item>
 </list>
 </section>

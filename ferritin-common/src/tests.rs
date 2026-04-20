@@ -401,24 +401,20 @@ fn build_prefix_test_navigator() -> Navigator {
     nav
 }
 
-/// Captures current behavior of cross-crate prefix resolution at a crate root.
+/// Cross-crate prefix resolution at a crate root.
 ///
-/// Each prefix in the re-exports below has `use.id` pointing into `target_crate`,
+/// Every prefix in the re-exports below has `use.id` pointing into `target_crate`,
 /// so every resolution goes through `Navigator::resolve_path(&source)`. What
-/// resolves today and what doesn't:
+/// resolves:
 ///
-/// | prefix                          | today  | expected post-fix |
-/// |---------------------------------|--------|-------------------|
-/// | `target_crate::TargetStruct`    | ✅     | ✅                |
-/// | `crate::RootTarget`             | ✅     | ✅                |
-/// | `self::RootTarget`              | ❌     | ✅                |
-/// | `super::RootTarget` (at root)   | ❌     | ❌ (no parent)    |
-///
-/// When the relative-prefix rewriter lands, the expected list here will grow to
-/// include `SelfAlias`. `SuperAlias` should stay skipped even after the fix —
-/// there is no parent to walk up to.
+/// | prefix                          | resolves | why                             |
+/// |---------------------------------|----------|----------------------------------|
+/// | `target_crate::TargetStruct`    | ✅       | absolute path                    |
+/// | `crate::RootTarget`             | ✅       | rewritten to `home_crate::…`    |
+/// | `self::RootTarget`              | ✅       | rewritten to `home_crate::…`    |
+/// | `super::RootTarget` (at root)   | ❌       | no parent above the crate root   |
 #[test]
-fn current_cross_crate_prefix_behavior_at_root() {
+fn cross_crate_prefix_resolves_at_root() {
     let nav = build_prefix_test_navigator();
 
     let root = nav
@@ -435,26 +431,24 @@ fn current_cross_crate_prefix_behavior_at_root() {
             "BaseAlias",
             "AbsAlias",
             "CrateAlias",
-            // SelfAlias and SuperAlias are silently dropped today.
+            "SelfAlias",
+            // SuperAlias stays dropped: super:: at the crate root has no parent.
             "inner",
         ],
-        "captures CURRENT behavior: self:: / super:: at crate root are dropped"
     );
 }
 
-/// Same as above but for uses inside a nested module, where `self::` and
+/// Cross-crate prefix resolution inside a nested module, where `self::` and
 /// `super::` each have a meaningful module context.
 ///
-/// | prefix                          | today  | expected post-fix |
-/// |---------------------------------|--------|-------------------|
-/// | `target_crate::TargetStruct`    | ✅     | ✅                |
-/// | `crate::RootTarget`             | ✅     | ✅                |
-/// | `self::InnerTarget`             | ❌     | ✅                |
-/// | `super::RootTarget`             | ❌     | ✅                |
-///
-/// Post-fix, this list should grow to include `SelfAliasInner` and `SuperAliasInner`.
+/// | prefix                          | resolves | rewritten to                     |
+/// |---------------------------------|----------|----------------------------------|
+/// | `target_crate::TargetStruct`    | ✅       | (unchanged)                      |
+/// | `crate::RootTarget`             | ✅       | `home_crate::RootTarget`         |
+/// | `self::InnerTarget`             | ✅       | `home_crate::inner::InnerTarget` |
+/// | `super::RootTarget`             | ✅       | `home_crate::RootTarget`         |
 #[test]
-fn current_cross_crate_prefix_behavior_in_nested_module() {
+fn cross_crate_prefix_resolves_in_nested_module() {
     let nav = build_prefix_test_navigator();
 
     let inner = nav
@@ -469,9 +463,9 @@ fn current_cross_crate_prefix_behavior_in_nested_module() {
             "InnerTarget",
             "AbsAliasInner",
             "CrateAliasInner",
-            // SelfAliasInner and SuperAliasInner are silently dropped today.
+            "SelfAliasInner",
+            "SuperAliasInner",
         ],
-        "captures CURRENT behavior: self:: / super:: in a nested module are dropped"
     );
 }
 

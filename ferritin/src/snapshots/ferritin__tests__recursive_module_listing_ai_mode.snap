@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate\").recursive(), OutputMode :: Ai)"
+expression: "render_for_tests_rooted(Commands::get(\"crate\").recursive(), OutputMode :: Ai,\n& get_fixture_crate_path ())"
 ---
 Item: fixture_crate
 Kind: Module
@@ -27,6 +27,18 @@ namespace_collisions // Module for testing namespace disambiguation with kind di
 
 
 namespace_collisions::both // A module sharing its name with both() below.
+
+
+prefix_tests // Edge cases for path-prefix resolution in use-item sources and intra-doc links. [+2 more lines]
+
+
+prefix_tests::deep // A nested module to exercise self::, super::, and super::super::.
+
+
+prefix_tests::deep::glob_reexport // Exercises the "glob brings a name into scope, then re-export that name" pattern, all within the same crate.
+
+
+prefix_tests::deep::glob_reexport::deep // A nested module to exercise self::, super::, and super::super::.
 
 
 reexport_mod
@@ -83,6 +95,39 @@ link_resolution_tests::nested::deeply_nested::DeepStruct // Struct in deeply nes
 namespace_collisions::both::Inside // An item inside the colliding module.
 
 
+prefix_tests::DocOuter // Intra-doc links from the outer module: [+1 more lines]
+
+
+prefix_tests::PrefixMarker // A sibling target for self:: / super::PrefixMarker references.
+
+
+prefix_tests::deep::CrateAlias // A struct in a submodule
+
+
+prefix_tests::deep::DeepMarker // A marker target inside deep.
+
+
+prefix_tests::deep::DocDeep // Intra-doc links from a nested module: [+1 more lines]
+
+
+prefix_tests::deep::SelfAliasDeep // A marker target inside deep.
+
+
+prefix_tests::deep::SuperAlias // A sibling target for self:: / super::PrefixMarker references.
+
+
+prefix_tests::deep::SuperSuperAlias // A simple struct for testing basic functionality. [+2 more lines]
+
+
+prefix_tests::deep::glob_reexport::DocOuter // Intra-doc links from the outer module: [+1 more lines]
+
+
+prefix_tests::deep::glob_reexport::GlobReexportedMarker // A sibling target for self:: / super::PrefixMarker references.
+
+
+prefix_tests::deep::glob_reexport::PrefixMarker // A sibling target for self:: / super::PrefixMarker references.
+
+
 reexport_mod::SubStruct // A struct in a submodule
 
 
@@ -114,24 +159,6 @@ link_resolution_tests::nested::TestTrait // A trait for testing extremely long d
 
 Functions
 ReachableViaPrivateModule::private_module_method // A method on a struct whose module is private. [+1 more lines]
-
-
-SubStruct::double // Double the value
-
-
-SubStruct::get_value // Get the value
-
-
-SubStruct::new // Create a new SubStruct
-
-
-TestStruct::get_field // Get the field value
-
-
-TestStruct::increment_count // Update the count
-
-
-TestStruct::new // Create a new TestStruct
 
 
 Vec::allocator // Returns a reference to the underlying allocator.
@@ -470,15 +497,6 @@ link_resolution_tests::RenamedTestStruct::increment_count // Update the count
 link_resolution_tests::RenamedTestStruct::new // Create a new TestStruct
 
 
-link_resolution_tests::SubStruct::double // Double the value
-
-
-link_resolution_tests::SubStruct::get_value // Get the value
-
-
-link_resolution_tests::SubStruct::new // Create a new SubStruct
-
-
 link_resolution_tests::Tree::append // Moves all elements from other into self, leaving other empty. [+3 more lines]
 
 
@@ -743,15 +761,6 @@ link_resolution_tests::nested::Str::with_capacity // Creates a new empty String 
 namespace_collisions::both // A function sharing its name with the both module above.
 
 
-reexport_mod::SubStruct::double // Double the value
-
-
-reexport_mod::SubStruct::get_value // Get the value
-
-
-reexport_mod::SubStruct::new // Create a new SubStruct
-
-
 reexport_mod::sub_function // A function in a submodule
 
 
@@ -791,15 +800,6 @@ GenericEnum::Simple // Simple variant
 GenericEnum::WithData // Variant with generic data
 
 
-TestEnum::VariantA // Variant A (see also crate::GenericEnum)
-
-
-TestEnum::VariantB // Variant B with data
-
-
-TestEnum::VariantC // Variant C with struct data (name and value)
-
-
 VariantA // Variant A (see also crate::GenericEnum)
 
 
@@ -807,15 +807,6 @@ VariantB // Variant B with data
 
 
 VariantC // Variant C with struct data (name and value)
-
-
-reexport_mod::TestEnum::VariantA // Variant A (see also crate::GenericEnum)
-
-
-reexport_mod::TestEnum::VariantB // Variant B with data
-
-
-reexport_mod::TestEnum::VariantC // Variant C with struct data (name and value)
 
 
 reexport_mod::VariantA // Variant A (see also crate::GenericEnum)
@@ -846,7 +837,4 @@ submodule::VariantC // Variant C with struct data (name and value)
 
 
 AssocConst
-TestStruct::ASSOCIATED_CONST // This is an associated constant for a struct
-
-
 link_resolution_tests::RenamedTestStruct::ASSOCIATED_CONST // This is an associated constant for a struct

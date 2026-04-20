@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate\").recursive(), OutputMode :: Tty)"
+expression: "render_for_tests_rooted(Commands::get(\"crate\").recursive(), OutputMode :: Tty,\n& get_fixture_crate_path ())"
 ---
 Item: fixture_crate
 Kind: Module
@@ -29,6 +29,19 @@ Modules
 
   ◦ [namespace_collisions::both](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/both/index.html) 
     A module sharing its name with [both()](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/fn.both.html) below.
+
+  ◦ [prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html) 
+    Edge cases for path-prefix resolution in use-item sources and intra-doc links. [...]
+
+  ◦ [prefix_tests::deep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html) 
+    A nested module to exercise self::, super::, and super::super::.
+
+  ◦ [prefix_tests::deep::glob_reexport](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/glob_reexport/index.html) 
+    Exercises the "glob brings a name into scope, then re-export that name"
+    pattern, all within the same crate.
+
+  ◦ [prefix_tests::deep::glob_reexport::deep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html) 
+    A nested module to exercise self::, super::, and super::super::.
 
   ◦ [reexport_mod](https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html) 
 
@@ -85,6 +98,39 @@ Structs
   ◦ [namespace_collisions::both::Inside](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/both/struct.Inside.html) 
     An item inside the colliding module.
 
+  ◦ [prefix_tests::DocOuter](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.DocOuter.html) 
+    Intra-doc links from the outer module: [...]
+
+  ◦ [prefix_tests::PrefixMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html) 
+    A sibling target for self:: / super::PrefixMarker references.
+
+  ◦ [prefix_tests::deep::CrateAlias](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.CrateAlias.html) 
+    A struct in a submodule
+
+  ◦ [prefix_tests::deep::DeepMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DeepMarker.html) 
+    A marker target inside deep.
+
+  ◦ [prefix_tests::deep::DocDeep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DocDeep.html) 
+    Intra-doc links from a nested module: [...]
+
+  ◦ [prefix_tests::deep::SelfAliasDeep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.SelfAliasDeep.html) 
+    A marker target inside deep.
+
+  ◦ [prefix_tests::deep::SuperAlias](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.SuperAlias.html) 
+    A sibling target for self:: / super::PrefixMarker references.
+
+  ◦ [prefix_tests::deep::SuperSuperAlias](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.SuperSuperAlias.html) 
+    A simple struct for testing basic functionality. [...]
+
+  ◦ [prefix_tests::deep::glob_reexport::DocOuter](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.DocOuter.html) 
+    Intra-doc links from the outer module: [...]
+
+  ◦ [prefix_tests::deep::glob_reexport::GlobReexportedMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.GlobReexportedMarker.html) 
+    A sibling target for self:: / super::PrefixMarker references.
+
+  ◦ [prefix_tests::deep::glob_reexport::PrefixMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html) 
+    A sibling target for self:: / super::PrefixMarker references.
+
   ◦ [reexport_mod::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
@@ -120,24 +166,6 @@ Functions
 
   ◦ [ReachableViaPrivateModule::private_module_method](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html#method.private_module_method) 
     A method on a struct whose module is private. [...]
-
-  ◦ [SubStruct::double](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.double) 
-    Double the value
-
-  ◦ [SubStruct::get_value](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.get_value) 
-    Get the value
-
-  ◦ [SubStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.new) 
-    Create a new SubStruct
-
-  ◦ [TestStruct::get_field](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.get_field) 
-    Get the field value
-
-  ◦ [TestStruct::increment_count](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.increment_count) 
-    Update the count
-
-  ◦ [TestStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.new) 
-    Create a new TestStruct
 
   ◦ [Vec::allocator](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.allocator) 
     Returns a reference to the underlying allocator.
@@ -556,15 +584,6 @@ Functions
   ◦ [link_resolution_tests::RenamedTestStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.new) 
     Create a new TestStruct
 
-  ◦ [link_resolution_tests::SubStruct::double](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.double) 
-    Double the value
-
-  ◦ [link_resolution_tests::SubStruct::get_value](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.get_value) 
-    Get the value
-
-  ◦ [link_resolution_tests::SubStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.new) 
-    Create a new SubStruct
-
   ◦ [link_resolution_tests::Tree::append](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.append) 
     Moves all elements from other into self, leaving other empty. [...]
 
@@ -885,15 +904,6 @@ Functions
   ◦ [namespace_collisions::both](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/fn.both.html) 
     A function sharing its name with the [both](https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3Aboth) module above.
 
-  ◦ [reexport_mod::SubStruct::double](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.double) 
-    Double the value
-
-  ◦ [reexport_mod::SubStruct::get_value](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.get_value) 
-    Get the value
-
-  ◦ [reexport_mod::SubStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.new) 
-    Create a new SubStruct
-
   ◦ [reexport_mod::sub_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html) 
     A function in a submodule
 
@@ -936,15 +946,6 @@ Variants
   ◦ [GenericEnum::WithData](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
     Variant with generic data
 
-  ◦ [TestEnum::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
-
-  ◦ [TestEnum::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant B with data
-
-  ◦ [TestEnum::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant C with struct data (name and value)
-
   ◦ [VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
     Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
 
@@ -952,15 +953,6 @@ Variants
     Variant B with data
 
   ◦ [VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant C with struct data (name and value)
-
-  ◦ [reexport_mod::TestEnum::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
-
-  ◦ [reexport_mod::TestEnum::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant B with data
-
-  ◦ [reexport_mod::TestEnum::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
     Variant C with struct data (name and value)
 
   ◦ [reexport_mod::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
@@ -991,9 +983,6 @@ Variants
     Variant C with struct data (name and value)
 
 AssocConst
-
-  ◦ [TestStruct::ASSOCIATED_CONST](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#associatedconstant.ASSOCIATED_CONST) 
-    This is an associated constant for a struct
 
   ◦ [link_resolution_tests::RenamedTestStruct::ASSOCIATED_CONST](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#associatedconstant.ASSOCIATED_CONST) 
     This is an associated constant for a struct

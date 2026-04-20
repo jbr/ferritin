@@ -142,6 +142,9 @@ unreachable // Indicates unreachable code. [+51 more lines]
 write // Writes formatted data into a buffer. [+85 more lines]
 writeln // Writes formatted data into a buffer, with a newline appended. [+24 more lines]
 
+ProcAttribute:
+derive // Attribute macro used to apply derive macros. [+4 more lines]
+
 Primitive:
 array // A fixed-size array, denoted `[T; N]`, for the element type, `T`, and the [+204 more lines]
 bool // The boolean type. [+55 more lines]
@@ -170,6 +173,3 @@ u64 // The 64-bit unsigned integer type.
 u8 // The 8-bit unsigned integer type.
 unit // The `()` type, also called "unit". [+31 more lines]
 usize // The pointer-sized unsigned integer type. [+4 more lines]
-
-ProcAttribute:
-derive // Attribute macro used to apply derive macros. [+4 more lines]

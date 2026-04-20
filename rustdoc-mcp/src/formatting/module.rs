@@ -24,9 +24,14 @@ struct FlatItem<'a> {
 }
 
 impl Request {
-    /// Collect all items in a module hierarchy as flat qualified paths
+    /// Collect all items in a module hierarchy as flat qualified paths.
+    ///
+    /// Tracks visited items so cyclic re-export chains (e.g. a nested module
+    /// glob-importing its parent) can't send the recursion into an infinite
+    /// loop.
     fn collect_flat_items<'a>(
         collected: &mut Vec<FlatItem<'a>>,
+        visited: &mut std::collections::HashSet<DocRef<'a, Item>>,
         path: Option<String>,
         item: DocRef<'a, Item>,
         context: &FormatContext,
@@ -45,8 +50,8 @@ impl Request {
                     item: child,
                 });
 
-                if context.is_recursive() {
-                    Self::collect_flat_items(collected, Some(path), child, context);
+                if context.is_recursive() && visited.insert(child) {
+                    Self::collect_flat_items(collected, visited, Some(path), child, context);
                 }
             }
         }
@@ -114,7 +119,9 @@ impl Request {
         let mut result = String::new();
 
         let mut collected = Vec::new();
-        Self::collect_flat_items(&mut collected, None, item, context);
+        let mut visited = std::collections::HashSet::new();
+        visited.insert(item);
+        Self::collect_flat_items(&mut collected, &mut visited, None, item, context);
         result.push_str(&self.format_grouped_flat_items(&collected, context));
 
         result

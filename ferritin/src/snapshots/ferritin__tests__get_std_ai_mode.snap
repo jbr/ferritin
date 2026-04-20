@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"std\"), OutputMode :: Ai)"
+expression: "render_for_tests_rooted(Commands::get(\"std\"), OutputMode :: Ai, &\nget_fixture_crate_path ())"
 ---
 Item: std
 Kind: Module
@@ -483,6 +483,10 @@ write // Writes formatted data into a buffer. [+10 more lines]
 writeln // Writes formatted data into a buffer, with a newline appended. [+4 more lines]
 
 
+ProcAttribute
+derive // Attribute macro used to apply derive macros. [+1 more lines]
+
+
 Primitive
 array // A fixed-size array, denoted [T; N], for the element type, T, and the non-negative compile-time constant size, N. [+30 more lines]
 
@@ -563,7 +567,3 @@ unit // The () type, also called "unit". [+4 more lines]
 
 
 usize // The pointer-sized unsigned integer type. [+1 more lines]
-
-
-ProcAttribute
-derive // Attribute macro used to apply derive macros. [+1 more lines]
