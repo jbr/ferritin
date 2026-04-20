@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate\").recursive(), OutputMode :: TestMode)"
+expression: "render_for_tests_rooted(Commands::get(\"crate\").recursive(), OutputMode ::\nTestMode, & get_fixture_crate_path ())"
 ---
 <p>
 <strong>Item:</strong> fixture_crate
@@ -45,6 +45,28 @@ Contains a genuine <elided chars="120"/></truncated>
 <type-name>namespace_collisions::both</type-name> </p>
 <truncated level="single-line"><p>
 A module sharing its name with <inline-code>both()</inline-code> below.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests</type-name> </p>
+<truncated level="single-line"><p>
+Edge cases for path-prefix resolution in use-item sources and intra-doc links.</p>
+Ru<inline-code>Us</inline-code> so<inline-code>cr</inline-code>, <inline-code>se</inline-code>,<inline-code>su</inline-code> th<emphasis>lo</emphasis> th<inline-code>pu</inline-code>s to <inline-code>te</inline-code> <elided chars="595"/></truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep</type-name> </p>
+<truncated level="single-line"><p>
+A nested module to exercise <inline-code>self::</inline-code>, <inline-code>super::</inline-code>, and <inline-code>super::super::</inline-code>.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::glob_reexport</type-name> </p>
+<truncated level="single-line">Exercises the "glob brings a name into scope, then re-export that name" pattern, all within the same crate. <elided chars="27"/></truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::glob_reexport::deep</type-name> </p>
+<truncated level="single-line"><p>
+A nested module to exercise <inline-code>self::</inline-code>, <inline-code>super::</inline-code>, and <inline-code>super::super::</inline-code>.</p>
 </truncated>
 </item>
   <item><p>
@@ -156,6 +178,72 @@ An item inside the colliding module.</p>
 </truncated>
 </item>
   <item><p>
+<type-name>prefix_tests::DocOuter</type-name> </p>
+<truncated level="single-line"><p>
+Intra-doc links from the outer module:</p>
+ <elided chars="172"/></truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::PrefixMarker</type-name> </p>
+<truncated level="single-line"><p>
+A sibling target for <inline-code>self::</inline-code> / <inline-code>super::PrefixMarker</inline-code> references.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::CrateAlias</type-name> </p>
+<truncated level="single-line"><p>
+A struct in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::DeepMarker</type-name> </p>
+<truncated level="single-line"><p>
+A marker target inside <inline-code>deep</inline-code>.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::DocDeep</type-name> </p>
+<truncated level="single-line"><p>
+Intra-doc links from a nested module:</p>
+ <elided chars="139"/></truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::SelfAliasDeep</type-name> </p>
+<truncated level="single-line"><p>
+A marker target inside <inline-code>deep</inline-code>.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::SuperAlias</type-name> </p>
+<truncated level="single-line"><p>
+A sibling target for <inline-code>self::</inline-code> / <inline-code>super::PrefixMarker</inline-code> references.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::SuperSuperAlias</type-name> </p>
+<truncated level="single-line"><p>
+A simple struct for testing basic functionality.</p>
+This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::glob_reexport::DocOuter</type-name> </p>
+<truncated level="single-line"><p>
+Intra-doc links from the outer module:</p>
+ <elided chars="172"/></truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::glob_reexport::GlobReexportedMarker</type-name> </p>
+<truncated level="single-line"><p>
+A sibling target for <inline-code>self::</inline-code> / <inline-code>super::PrefixMarker</inline-code> references.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests::deep::glob_reexport::PrefixMarker</type-name> </p>
+<truncated level="single-line"><p>
+A sibling target for <inline-code>self::</inline-code> / <inline-code>super::PrefixMarker</inline-code> references.</p>
+</truncated>
+</item>
+  <item><p>
 <type-name>reexport_mod::SubStruct</type-name> </p>
 <truncated level="single-line"><p>
 A struct in a submodule</p>
@@ -228,42 +316,6 @@ This It error flexib Each The error many doesn' goes This Line Line Line Line Li
 <truncated level="single-line"><p>
 A method on a struct whose module is private.</p>
 This exercises the combined case: <inline-code>paths</inline-code> map (rust-lang/rust#152511), and <inline-code>ItemSummary::path</inline-code> passes through this private traversal cannot anchor on the <elided chars="201"/></truncated>
-</item>
-  <item><p>
-<type-name>SubStruct::double</type-name> </p>
-<truncated level="single-line"><p>
-Double the value</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>SubStruct::get_value</type-name> </p>
-<truncated level="single-line"><p>
-Get the value</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>SubStruct::new</type-name> </p>
-<truncated level="single-line"><p>
-Create a new SubStruct</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>TestStruct::get_field</type-name> </p>
-<truncated level="single-line"><p>
-Get the field value</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>TestStruct::increment_count</type-name> </p>
-<truncated level="single-line"><p>
-Update the count</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>TestStruct::new</type-name> </p>
-<truncated level="single-line"><p>
-Create a new TestStruct</p>
-</truncated>
 </item>
   <item><p>
 <type-name>Vec::allocator</type-name> </p>
@@ -842,24 +894,6 @@ Create a new TestStruct</p>
 </truncated>
 </item>
   <item><p>
-<type-name>link_resolution_tests::SubStruct::double</type-name> </p>
-<truncated level="single-line"><p>
-Double the value</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>link_resolution_tests::SubStruct::get_value</type-name> </p>
-<truncated level="single-line"><p>
-Get the value</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>link_resolution_tests::SubStruct::new</type-name> </p>
-<truncated level="single-line"><p>
-Create a new SubStruct</p>
-</truncated>
-</item>
-  <item><p>
 <type-name>link_resolution_tests::Tree::append</type-name> </p>
 <truncated level="single-line"><p>
 Moves all elements from <inline-code>other</inline-code> into <inline-code>self</inline-code>, leaving <inline-code>other</inline-code> empty.</p>
@@ -1340,24 +1374,6 @@ A function sharing its name with the <inline-code>both</inline-code> module abov
 </truncated>
 </item>
   <item><p>
-<type-name>reexport_mod::SubStruct::double</type-name> </p>
-<truncated level="single-line"><p>
-Double the value</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>reexport_mod::SubStruct::get_value</type-name> </p>
-<truncated level="single-line"><p>
-Get the value</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>reexport_mod::SubStruct::new</type-name> </p>
-<truncated level="single-line"><p>
-Create a new SubStruct</p>
-</truncated>
-</item>
-  <item><p>
 <type-name>reexport_mod::sub_function</type-name> </p>
 <truncated level="single-line"><p>
 A function in a submodule</p>
@@ -1436,24 +1452,6 @@ Variant with generic data</p>
 </truncated>
 </item>
   <item><p>
-<type-name>TestEnum::VariantA</type-name> </p>
-<truncated level="single-line"><p>
-Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>TestEnum::VariantB</type-name> </p>
-<truncated level="single-line"><p>
-Variant B with data</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>TestEnum::VariantC</type-name> </p>
-<truncated level="single-line"><p>
-Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
-</truncated>
-</item>
-  <item><p>
 <type-name>VariantA</type-name> </p>
 <truncated level="single-line"><p>
 Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
@@ -1467,24 +1465,6 @@ Variant B with data</p>
 </item>
   <item><p>
 <type-name>VariantC</type-name> </p>
-<truncated level="single-line"><p>
-Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>reexport_mod::TestEnum::VariantA</type-name> </p>
-<truncated level="single-line"><p>
-Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>reexport_mod::TestEnum::VariantB</type-name> </p>
-<truncated level="single-line"><p>
-Variant B with data</p>
-</truncated>
-</item>
-  <item><p>
-<type-name>reexport_mod::TestEnum::VariantC</type-name> </p>
 <truncated level="single-line"><p>
 Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
 </truncated>
@@ -1545,12 +1525,6 @@ Variant C with struct data (<inline-code>name</inline-code> and <inline-code>val
 </item>
 </list>
 </section><section><section-title>AssocConst</section-title><list>
-  <item><p>
-<type-name>TestStruct::ASSOCIATED_CONST</type-name> </p>
-<truncated level="single-line"><p>
-This is an associated constant for a struct</p>
-</truncated>
-</item>
   <item><p>
 <type-name>link_resolution_tests::RenamedTestStruct::ASSOCIATED_CONST</type-name> </p>
 <truncated level="single-line"><p>

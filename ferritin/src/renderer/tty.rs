@@ -103,15 +103,16 @@ impl RenderBudget {
 
 /// Truncate at word boundary
 fn truncate_at_word_boundary(text: &str, max_chars: usize) -> &str {
-    if text.len() <= max_chars {
+    // Map char count to byte index, respecting UTF-8 boundaries.
+    let Some((max_byte_pos, _)) = text.char_indices().nth(max_chars) else {
         return text;
-    }
+    };
 
-    // Find last whitespace before max_chars
-    if let Some(pos) = text[..max_chars].rfind(char::is_whitespace) {
+    // Find last whitespace before the cutoff
+    if let Some(pos) = text[..max_byte_pos].rfind(char::is_whitespace) {
         &text[..pos]
     } else {
-        &text[..max_chars]
+        &text[..max_byte_pos]
     }
 }
 
