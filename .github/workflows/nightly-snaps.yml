@@ -54,7 +54,7 @@ jobs:
 
       - name: Open or update snap-update PR
         if: steps.test.outcome == 'success' && steps.diff.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: chore/update-snaps
           commit-message: "chore: update snaps to ${{ steps.nightly.outputs.version }}"
