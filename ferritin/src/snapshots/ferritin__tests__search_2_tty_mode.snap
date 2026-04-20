@@ -12,16 +12,16 @@ Search results for 'generic struct'
   ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 91 (relevance: 85, authority: 7)
     A trait for borrowing data. [...]
 
-  ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 86 (relevance: 85, authority: 1)
-    A trait for borrowing data. [...]
-
   ◦ [core::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 85 (relevance: 85, authority: 0)
     A trait for borrowing data. [...]
 
-  ◦ [core::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 82 (relevance: 81, authority: 1)
+  ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 85 (relevance: 85, authority: 0)
+    A trait for borrowing data. [...]
+
+  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 83 (relevance: 81, authority: 2)
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 82 (relevance: 81, authority: 1)
+  ◦ [core::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 82 (relevance: 81, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 81 (relevance: 80, authority: 2)
