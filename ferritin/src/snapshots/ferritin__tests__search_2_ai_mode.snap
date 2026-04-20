@@ -11,16 +11,16 @@ fixture-crate::GenericStruct  (Struct) - score: 100 (relevance: 100, authority: 
 alloc::borrow::Borrow  (Trait) - score: 91 (relevance: 85, authority: 7) // A trait for borrowing data. [+19 more lines]
 
 
+std::borrow::Borrow  (Trait) - score: 86 (relevance: 85, authority: 1) // A trait for borrowing data. [+19 more lines]
+
+
 core::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0) // A trait for borrowing data. [+19 more lines]
-
-
-std::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0) // A trait for borrowing data. [+19 more lines]
 
 
 core::clone::Clone  (Trait) - score: 82 (relevance: 81, authority: 1) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]
 
 
-std::clone::Clone  (Trait) - score: 81 (relevance: 81, authority: 0) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]
+std::clone::Clone  (Trait) - score: 82 (relevance: 81, authority: 1) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]
 
 
 std::ops::Deref  (Trait) - score: 81 (relevance: 80, authority: 2) // Used for immutable dereferencing operations, like *v. [+23 more lines]

@@ -21,7 +21,7 @@ Search results for 'generic struct'
   ◦ [core::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 82 (relevance: 81, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 81 (relevance: 81, authority: 0)
+  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 82 (relevance: 81, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 81 (relevance: 80, authority: 2)

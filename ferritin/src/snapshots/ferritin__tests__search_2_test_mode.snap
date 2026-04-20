@@ -17,13 +17,13 @@ A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
 </item>
   <item><p>
-core::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0)</p>
+std::borrow::Borrow  (Trait) - score: 86 (relevance: 85, authority: 1)</p>
 <truncated level="single-line"><p>
 A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
 </item>
   <item><p>
-std::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0)</p>
+core::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0)</p>
 <truncated level="single-line"><p>
 A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
@@ -35,7 +35,7 @@ A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4423"/></truncated>
 </item>
   <item><p>
-std::clone::Clone  (Trait) - score: 81 (relevance: 81, authority: 0)</p>
+std::clone::Clone  (Trait) - score: 82 (relevance: 81, authority: 1)</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4423"/></truncated>
