@@ -1,0 +1,33 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::prefix_tests::deep\"), OutputMode :: Ai)"
+---
+Item: deep
+Kind: Module
+Visibility: Public
+Defined at: fixture_crate::prefix_tests::deep
+In crate: fixture-crate (0.1.0)
+
+A nested module to exercise self::, super::, and super::super::.
+
+Modules
+glob_reexport // Exercises the "glob brings a name into scope, then re-export that name" pattern, all within the same crate.
+
+
+Structs
+CrateAlias // A struct in a submodule
+
+
+DeepMarker // A marker target inside deep.
+
+
+DocDeep // Intra-doc links from a nested module: [+1 more lines]
+
+
+SelfAliasDeep // A marker target inside deep.
+
+
+SuperAlias // A sibling target for self:: / super::PrefixMarker references.
+
+
+SuperSuperAlias // A simple struct for testing basic functionality. [+2 more lines]

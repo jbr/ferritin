@@ -1,0 +1,42 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::prefix_tests::deep::glob_reexport\"),\nOutputMode :: TestMode)"
+---
+<p>
+<strong>Item:</strong> glob_reexport
+<strong>Kind:</strong> Module
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>prefix_tests</type-name><punctuation>::</punctuation><type-name>deep</type-name><punctuation>::</punctuation><type-name>glob_reexport</type-name>
+<strong>In crate:</strong> fixture-crate (0.1.0)</p>
+<truncated level="full"><p>
+Exercises the "glob brings a name into scope, then re-export that name" pattern, all within the same crate.</p>
+</truncated>
+<section><section-title>Modules</section-title><list>
+  <item><p>
+<type-name>deep</type-name> </p>
+<truncated level="single-line"><p>
+A nested module to exercise <inline-code>self::</inline-code>, <inline-code>super::</inline-code>, and <inline-code>super::super::</inline-code>.</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Structs</section-title><list>
+  <item><p>
+<type-name>DocOuter</type-name> </p>
+<truncated level="single-line"><p>
+Intra-doc links from the outer module:</p>
+ <elided chars="172"/></truncated>
+</item>
+  <item><p>
+<type-name>GlobReexportedMarker</type-name> </p>
+<truncated level="single-line"><p>
+A sibling target for <inline-code>self::</inline-code> / <inline-code>super::PrefixMarker</inline-code> references.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>PrefixMarker</type-name> </p>
+<truncated level="single-line"><p>
+A sibling target for <inline-code>self::</inline-code> / <inline-code>super::PrefixMarker</inline-code> references.</p>
+</truncated>
+</item>
+</list>
+</section>

@@ -485,11 +485,6 @@ Macros
   ◦ writeln 
     Writes formatted data into a buffer, with a newline appended. [...]
 
-ProcAttribute
-
-  ◦ derive 
-    Attribute macro used to apply derive macros. [...]
-
 Primitive
 
   ◦ array 
@@ -572,3 +567,8 @@ Primitive
 
   ◦ usize 
     The pointer-sized unsigned integer type. [...]
+
+ProcAttribute
+
+  ◦ derive 
+    Attribute macro used to apply derive macros. [...]

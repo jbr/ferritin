@@ -21,6 +21,9 @@ Modules
   ◦ [namespace_collisions](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/index.html) 
     Module for testing namespace disambiguation with kind discriminators. [...]
 
+  ◦ [prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html) 
+    Edge cases for path-prefix resolution in use-item sources and intra-doc links. [...]
+
   ◦ [reexport_mod](https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html) 
 
   ◦ [submodule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html) 

@@ -1,0 +1,37 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::prefix_tests::deep\"), OutputMode ::\nTty)"
+---
+Item: deep
+Kind: Module
+Visibility: Public
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html)::[prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html)::[deep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html)
+In crate: fixture-crate (0.1.0)
+
+A nested module to exercise self::, super::, and super::super::.
+
+Modules
+
+  ◦ [glob_reexport](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/glob_reexport/index.html) 
+    Exercises the "glob brings a name into scope, then re-export that name"
+    pattern, all within the same crate.
+
+Structs
+
+  ◦ [CrateAlias](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.CrateAlias.html) 
+    A struct in a submodule
+
+  ◦ [DeepMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DeepMarker.html) 
+    A marker target inside deep.
+
+  ◦ [DocDeep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DocDeep.html) 
+    Intra-doc links from a nested module: [...]
+
+  ◦ [SelfAliasDeep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.SelfAliasDeep.html) 
+    A marker target inside deep.
+
+  ◦ [SuperAlias](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.SuperAlias.html) 
+    A sibling target for self:: / super::PrefixMarker references.
+
+  ◦ [SuperSuperAlias](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.SuperSuperAlias.html) 
+    A simple struct for testing basic functionality. [...]

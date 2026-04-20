@@ -20,6 +20,9 @@ markdown_test // Markdown: Syntax [+90 more lines]
 namespace_collisions // Module for testing namespace disambiguation with kind discriminators. [+1 more lines]
 
 
+prefix_tests // Edge cases for path-prefix resolution in use-item sources and intra-doc links. [+2 more lines]
+
+
 reexport_mod
 
 submodule // A module with items

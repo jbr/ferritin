@@ -1,0 +1,24 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate_b\"), OutputMode :: TestMode, &\nget_test_workspace_path ())"
+---
+<p>
+<strong>Item:</strong> crate_b
+<strong>Kind:</strong> Module
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>crate_b</type-name>
+<strong>In crate:</strong> crate-b (0.1.0)</p>
+<section><section-title>Modules</section-title><list>
+  <item><p>
+<type-name>prefix_inner</type-name> </p>
+</item>
+</list>
+</section><section><section-title>Structs</section-title><list>
+  <item><p>
+<type-name>CrateBProcessor</type-name> </p>
+</item>
+  <item><p>
+<type-name>PrefixCrateAAlias</type-name> </p>
+</item>
+</list>
+</section>

@@ -199,7 +199,282 @@ fn private_module_path_resolves_via_index() {
     );
 }
 
-/// A failing `pub use` must not abort iteration of its module's remaining children.
+/// Build a minimal `RustdocData` directly for use in synthetic iterator tests.
+///
+/// The returned crate has `name` as both the Cargo crate name and the first segment
+/// of every item path, so it round-trips through `resolve_path`. `modules` and
+/// `items` are keyed by `Id`; IDs in `items` should not collide with module IDs.
+#[cfg(test)]
+fn synth_crate(
+    name: &str,
+    root_id: u32,
+    modules: Vec<(u32, Option<&str>, Vec<u32>)>,
+    items: Vec<rustdoc_types::Item>,
+) -> RustdocData {
+    use rustdoc_types::{Crate, Id, Item, ItemEnum, ItemSummary, Module, Target, Visibility};
+    use std::collections::HashMap;
+
+    let mut index: HashMap<Id, Item, rustc_hash::FxBuildHasher> = Default::default();
+    let mut paths: HashMap<Id, ItemSummary, rustc_hash::FxBuildHasher> = Default::default();
+    for (id, mod_name, children) in modules {
+        let ids: Vec<Id> = children.into_iter().map(Id).collect();
+        index.insert(
+            Id(id),
+            Item {
+                id: Id(id),
+                crate_id: 0,
+                name: mod_name.map(str::to_owned),
+                span: None,
+                visibility: Visibility::Public,
+                docs: None,
+                links: Default::default(),
+                attrs: vec![],
+                deprecation: None,
+                inner: ItemEnum::Module(Module {
+                    is_crate: id == root_id,
+                    items: ids,
+                    is_stripped: false,
+                }),
+            },
+        );
+        let summary_path = if id == root_id {
+            vec![name.to_string()]
+        } else {
+            vec![
+                name.to_string(),
+                mod_name.expect("non-root module needs a name").to_string(),
+            ]
+        };
+        paths.insert(
+            Id(id),
+            ItemSummary {
+                crate_id: 0,
+                path: summary_path,
+                kind: rustdoc_types::ItemKind::Module,
+            },
+        );
+    }
+    for item in items {
+        index.insert(item.id, item);
+    }
+
+    RustdocData {
+        crate_data: Crate {
+            root: Id(root_id),
+            crate_version: None,
+            includes_private: false,
+            index,
+            paths,
+            external_crates: Default::default(),
+            target: Target {
+                triple: String::new(),
+                target_features: vec![],
+            },
+            format_version: rustdoc_types::FORMAT_VERSION,
+        },
+        name: name.to_owned(),
+        provenance: CrateProvenance::DocsRs,
+        fs_path: PathBuf::new(),
+        version: None,
+        path_to_id: std::collections::HashMap::new(),
+    }
+}
+
+#[cfg(test)]
+fn synth_item(id: u32, name: Option<&str>, inner: rustdoc_types::ItemEnum) -> rustdoc_types::Item {
+    use rustdoc_types::{Id, Item, Visibility};
+    Item {
+        id: Id(id),
+        crate_id: 0,
+        name: name.map(str::to_owned),
+        span: None,
+        visibility: Visibility::Public,
+        docs: None,
+        links: Default::default(),
+        attrs: vec![],
+        deprecation: None,
+        inner,
+    }
+}
+
+#[cfg(test)]
+fn synth_unit_struct() -> rustdoc_types::ItemEnum {
+    use rustdoc_types::{Generics, ItemEnum, Struct, StructKind};
+    ItemEnum::Struct(Struct {
+        kind: StructKind::Unit,
+        generics: Generics {
+            params: vec![],
+            where_predicates: vec![],
+        },
+        impls: vec![],
+    })
+}
+
+#[cfg(test)]
+fn synth_use(id: u32, name: &str, source: &str, target: Option<u32>) -> rustdoc_types::Item {
+    use rustdoc_types::{ItemEnum, Use};
+    synth_item(
+        id,
+        None,
+        ItemEnum::Use(Use {
+            source: source.to_owned(),
+            name: name.to_owned(),
+            id: target.map(rustdoc_types::Id),
+            is_glob: false,
+        }),
+    )
+}
+
+/// Build the two-crate test setup used by the prefix-resolution tests below.
+///
+/// Layout:
+/// ```text
+/// target_crate::TargetStruct   (id 100 in target_crate)
+/// home_crate
+///   RootTarget                 (struct, id 50 — anchor for crate::/self:: at root)
+///   BaseAlias                  (use → target_crate::TargetStruct, id=100 foreign)
+///   AbsAlias                   (use → target_crate::TargetStruct, id=100 foreign)
+///   CrateAlias                 (use → crate::RootTarget, id=100 foreign)
+///   SelfAlias                  (use → self::RootTarget, id=100 foreign)
+///   SuperAlias                 (use → super::RootTarget, id=100 foreign) — at root, no parent
+///   inner
+///     InnerTarget              (struct, id 60 — anchor for self:: in `inner`)
+///     AbsAliasInner            (use → target_crate::TargetStruct)
+///     CrateAliasInner          (use → crate::RootTarget)
+///     SelfAliasInner           (use → self::InnerTarget)
+///     SuperAliasInner          (use → super::RootTarget)
+/// ```
+///
+/// Every `use` below has `use.id = 100`, which is not in home_crate's local
+/// index — forcing `IdIter` to fall through to `Navigator::resolve_path(&source)`.
+/// Anchor structs (RootTarget, InnerTarget) let the `crate::` / `self::` /
+/// `super::` rewrites resolve to a real item without iterating the uses
+/// themselves (which would cycle).
+#[cfg(test)]
+fn build_prefix_test_navigator() -> Navigator {
+    use rustdoc_types::{Id, ItemSummary};
+
+    let mut target = synth_crate(
+        "target_crate",
+        1,
+        vec![(1, None, vec![100])],
+        vec![synth_item(100, Some("TargetStruct"), synth_unit_struct())],
+    );
+    target.crate_data.paths.insert(
+        Id(100),
+        ItemSummary {
+            crate_id: 0,
+            path: vec!["target_crate".into(), "TargetStruct".into()],
+            kind: rustdoc_types::ItemKind::Struct,
+        },
+    );
+
+    const FOREIGN: Option<u32> = Some(100);
+    let home_items = vec![
+        synth_item(50, Some("RootTarget"), synth_unit_struct()),
+        synth_use(20, "BaseAlias", "target_crate::TargetStruct", FOREIGN),
+        synth_use(21, "AbsAlias", "target_crate::TargetStruct", FOREIGN),
+        synth_use(22, "CrateAlias", "crate::RootTarget", FOREIGN),
+        synth_use(23, "SelfAlias", "self::RootTarget", FOREIGN),
+        synth_use(24, "SuperAlias", "super::RootTarget", FOREIGN),
+        synth_item(60, Some("InnerTarget"), synth_unit_struct()),
+        synth_use(30, "AbsAliasInner", "target_crate::TargetStruct", FOREIGN),
+        synth_use(31, "CrateAliasInner", "crate::RootTarget", FOREIGN),
+        synth_use(32, "SelfAliasInner", "self::InnerTarget", FOREIGN),
+        synth_use(33, "SuperAliasInner", "super::RootTarget", FOREIGN),
+    ];
+    let home = synth_crate(
+        "home_crate",
+        1,
+        vec![
+            (1, None, vec![50, 20, 21, 22, 23, 24, 2]),
+            (2, Some("inner"), vec![60, 30, 31, 32, 33]),
+        ],
+        home_items,
+    );
+
+    let nav = Navigator::default();
+    nav.working_set
+        .insert(CrateName::from("home_crate"), Box::new(Some(home)));
+    nav.working_set
+        .insert(CrateName::from("target_crate"), Box::new(Some(target)));
+    nav
+}
+
+/// Captures current behavior of cross-crate prefix resolution at a crate root.
+///
+/// Each prefix in the re-exports below has `use.id` pointing into `target_crate`,
+/// so every resolution goes through `Navigator::resolve_path(&source)`. What
+/// resolves today and what doesn't:
+///
+/// | prefix                          | today  | expected post-fix |
+/// |---------------------------------|--------|-------------------|
+/// | `target_crate::TargetStruct`    | ✅     | ✅                |
+/// | `crate::RootTarget`             | ✅     | ✅                |
+/// | `self::RootTarget`              | ❌     | ✅                |
+/// | `super::RootTarget` (at root)   | ❌     | ❌ (no parent)    |
+///
+/// When the relative-prefix rewriter lands, the expected list here will grow to
+/// include `SelfAlias`. `SuperAlias` should stay skipped even after the fix —
+/// there is no parent to walk up to.
+#[test]
+fn current_cross_crate_prefix_behavior_at_root() {
+    let nav = build_prefix_test_navigator();
+
+    let root = nav
+        .load_crate("home_crate", &semver::VersionReq::STAR)
+        .expect("home_crate pre-populated")
+        .root_item(&nav);
+
+    let names: Vec<&str> = root.child_items().filter_map(|c| c.name()).collect();
+
+    assert_eq!(
+        names,
+        vec![
+            "RootTarget",
+            "BaseAlias",
+            "AbsAlias",
+            "CrateAlias",
+            // SelfAlias and SuperAlias are silently dropped today.
+            "inner",
+        ],
+        "captures CURRENT behavior: self:: / super:: at crate root are dropped"
+    );
+}
+
+/// Same as above but for uses inside a nested module, where `self::` and
+/// `super::` each have a meaningful module context.
+///
+/// | prefix                          | today  | expected post-fix |
+/// |---------------------------------|--------|-------------------|
+/// | `target_crate::TargetStruct`    | ✅     | ✅                |
+/// | `crate::RootTarget`             | ✅     | ✅                |
+/// | `self::InnerTarget`             | ❌     | ✅                |
+/// | `super::RootTarget`             | ❌     | ✅                |
+///
+/// Post-fix, this list should grow to include `SelfAliasInner` and `SuperAliasInner`.
+#[test]
+fn current_cross_crate_prefix_behavior_in_nested_module() {
+    let nav = build_prefix_test_navigator();
+
+    let inner = nav
+        .resolve_path("home_crate::inner", &mut vec![])
+        .expect("home_crate::inner should resolve");
+
+    let names: Vec<&str> = inner.child_items().filter_map(|c| c.name()).collect();
+
+    assert_eq!(
+        names,
+        vec![
+            "InnerTarget",
+            "AbsAliasInner",
+            "CrateAliasInner",
+            // SelfAliasInner and SuperAliasInner are silently dropped today.
+        ],
+        "captures CURRENT behavior: self:: / super:: in a nested module are dropped"
+    );
+}
+
 ///
 /// Regression guard: previously, if any one `Use` in a module's `items` list could not
 /// be resolved (neither `use.id` in the local index nor `resolve_path(&use.source)`),
