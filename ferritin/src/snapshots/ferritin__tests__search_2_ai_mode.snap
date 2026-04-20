@@ -17,7 +17,7 @@ std::borrow::Borrow  (Trait) - score: 86 (relevance: 85, authority: 1) // A trai
 core::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0) // A trait for borrowing data. [+19 more lines]
 
 
-std::clone::Clone  (Trait) - score: 83 (relevance: 81, authority: 2) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]
+std::clone::Clone  (Trait) - score: 84 (relevance: 81, authority: 3) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]
 
 
 core::clone::Clone  (Trait) - score: 82 (relevance: 81, authority: 1) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]

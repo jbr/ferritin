@@ -11,16 +11,16 @@ Search results for 'generic struct'
   ◦ alloc::borrow::Borrow  (Trait) - score: 91 (relevance: 85, authority: 7)
     A trait for borrowing data. [...]
 
+  ◦ std::borrow::Borrow  (Trait) - score: 86 (relevance: 85, authority: 1)
+    A trait for borrowing data. [...]
+
   ◦ core::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0)
     A trait for borrowing data. [...]
 
-  ◦ std::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0)
-    A trait for borrowing data. [...]
-
-  ◦ core::clone::Clone  (Trait) - score: 82 (relevance: 81, authority: 1)
+  ◦ std::clone::Clone  (Trait) - score: 84 (relevance: 81, authority: 3)
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ std::clone::Clone  (Trait) - score: 82 (relevance: 81, authority: 1)
+  ◦ core::clone::Clone  (Trait) - score: 82 (relevance: 81, authority: 1)
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ std::ops::Deref  (Trait) - score: 81 (relevance: 80, authority: 2)

@@ -217,25 +217,26 @@ impl<'a> Terms<'a> {
             self.link_counts.len()
         );
 
-        // Two-pass: filter link_counts to only items in visited crates
+        // Two-pass: filter link_counts to only items in visited crates.
+        // Multiple `ItemOrSummary` keys can resolve to the same `DocRef<Item>`
+        // (e.g. an item is linked to directly from its own crate and via a
+        // summary from another crate), so sum the counts rather than
+        // overwriting — otherwise HashMap iteration order determines which
+        // variant's count survives.
         let mut filtered_count = 0;
         let mut skipped_count = 0;
-        let filtered_link_counts: HashMap<DocRef<Item>, usize> = self
-            .link_counts
-            .into_iter()
-            .filter_map(|(target, count)| {
-                if let Some(item) = target.try_to_item(&self.visited_crates) {
-                    filtered_count += 1;
-                    Some((item, count))
-                } else {
-                    skipped_count += 1;
-                    if skipped_count <= 5 {
-                        log::debug!("Skipped target: {target:?}");
-                    }
-                    None
+        let mut filtered_link_counts: HashMap<DocRef<Item>, usize> = HashMap::new();
+        for (target, count) in self.link_counts {
+            if let Some(item) = target.try_to_item(&self.visited_crates) {
+                filtered_count += 1;
+                *filtered_link_counts.entry(item).or_insert(0) += count;
+            } else {
+                skipped_count += 1;
+                if skipped_count <= 5 {
+                    log::debug!("Skipped target: {target:?}");
                 }
-            })
-            .collect();
+            }
+        }
 
         log::debug!("Filtered: {filtered_count} kept, {skipped_count} skipped");
 
