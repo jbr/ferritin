@@ -404,6 +404,9 @@ Macros
   ◦ debug_assert_ne 
     Asserts that two expressions are not equal to each other. [...]
 
+  ◦ derive 
+    Attribute macro used to apply derive macros. [...]
+
   ◦ env 
     Inspects an environment variable at compile time. [...]
 
@@ -485,12 +488,7 @@ Macros
   ◦ writeln 
     Writes formatted data into a buffer, with a newline appended. [...]
 
-ProcAttribute
-
-  ◦ derive 
-    Attribute macro used to apply derive macros. [...]
-
-Primitive
+Primitives
 
   ◦ array 
     A fixed-size array, denoted [T; N], for the element type, T, and the non-negative compile-time constant size, N. [...]

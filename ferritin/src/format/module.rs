@@ -3,19 +3,29 @@ use rustdoc_types::ItemKind;
 use super::*;
 use crate::styled_string::{DocumentNode, ListItem, Span};
 
-// Define display order for groups
-const GROUP_ORDER: &[(ItemKind, &str)] = &[
-    (ItemKind::Module, "Modules"),
-    (ItemKind::Struct, "Structs"),
-    (ItemKind::Enum, "Enums"),
-    (ItemKind::Trait, "Traits"),
-    (ItemKind::Union, "Unions"),
-    (ItemKind::TypeAlias, "Type Aliases"),
-    (ItemKind::Function, "Functions"),
-    (ItemKind::Constant, "Constants"),
-    (ItemKind::Static, "Statics"),
-    (ItemKind::Macro, "Macros"),
-    (ItemKind::Variant, "Variants"),
+// Display order for groups. Each group has a label and the set of ItemKinds it
+// collects — so we can merge e.g. the three macro-flavored kinds under a single
+// "Macros" heading rather than exposing rustdoc's internal distinction.
+const GROUP_ORDER: &[(&str, &[ItemKind])] = &[
+    ("Modules", &[ItemKind::Module]),
+    ("Structs", &[ItemKind::Struct]),
+    ("Enums", &[ItemKind::Enum]),
+    ("Traits", &[ItemKind::Trait]),
+    ("Unions", &[ItemKind::Union]),
+    ("Type Aliases", &[ItemKind::TypeAlias]),
+    ("Functions", &[ItemKind::Function]),
+    ("Constants", &[ItemKind::Constant]),
+    ("Statics", &[ItemKind::Static]),
+    (
+        "Macros",
+        &[
+            ItemKind::Macro,
+            ItemKind::ProcAttribute,
+            ItemKind::ProcDerive,
+        ],
+    ),
+    ("Primitives", &[ItemKind::Primitive]),
+    ("Variants", &[ItemKind::Variant]),
 ];
 
 #[derive(Debug)]
@@ -73,26 +83,37 @@ impl Request {
 
         let mut doc_nodes = vec![];
 
-        for (kind, group_name) in GROUP_ORDER {
-            if let Some(mut group_items) = groups.remove(kind)
-                && !group_items.is_empty()
-            {
-                group_items.sort_by_key(|a| &a.path);
+        for (group_name, kinds) in GROUP_ORDER {
+            let mut group_items: Vec<&FlatItem> = kinds
+                .iter()
+                .filter_map(|kind| groups.remove(kind))
+                .flatten()
+                .collect();
 
-                let list_items: Vec<ListItem> = group_items
-                    .iter()
-                    .map(|flat_item| self.format_flat_item(flat_item))
-                    .collect();
-
-                let section = DocumentNode::section(
-                    vec![Span::plain(*group_name)],
-                    vec![DocumentNode::list(list_items)],
-                );
-                doc_nodes.push(section);
+            if group_items.is_empty() {
+                continue;
             }
+
+            group_items.sort_by_key(|a| &a.path);
+
+            let list_items: Vec<ListItem> = group_items
+                .iter()
+                .map(|flat_item| self.format_flat_item(flat_item))
+                .collect();
+
+            let section = DocumentNode::section(
+                vec![Span::plain(*group_name)],
+                vec![DocumentNode::list(list_items)],
+            );
+            doc_nodes.push(section);
         }
 
-        for (kind, mut group_items) in groups {
+        // Sort remaining (unrecognized) kinds alphabetically by their debug name
+        // so output is stable across runs — HashMap iteration order is not.
+        let mut remaining: Vec<_> = groups.into_iter().collect();
+        remaining.sort_by_key(|(kind, _)| format!("{kind:?}"));
+
+        for (kind, mut group_items) in remaining {
             group_items.sort_by_key(|a| &a.path);
 
             let list_items: Vec<ListItem> = group_items
