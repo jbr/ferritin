@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1](https://github.com/jbr/ferritin/compare/ferritin-v0.8.0...ferritin-v0.8.1) - 2026-04-20
+
+### Fixed
+
+- address search instability
+- address module-listing order instability
+- utf-8 mid-grapheme-aware truncation
+- imroved handling of relative path prefixes like super::, crate::, and self::
+- recover from failed resolution in iterators
+
+### Other
+
+- fix search snaps
+- update rust
+- update snaps
+- update snaps
+- add tests for currently-broken crate::/self::/super:: resolution
+
 ## [0.8.0](https://github.com/jbr/ferritin/compare/ferritin-v0.7.0...ferritin-v0.8.0) - 2026-04-14
 
 ### Added
