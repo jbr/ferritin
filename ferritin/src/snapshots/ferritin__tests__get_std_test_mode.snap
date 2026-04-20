@@ -470,7 +470,7 @@ This module is mostly concerned with processes, but it also provides <inline-cod
 <type-name>ptr</type-name> </p>
 <truncated level="single-line"><p>
 Manually manage memory through raw pointers.</p>
-<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="20120"/></truncated>
+<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="20008"/></truncated>
 </item>
   <item><p>
 <type-name>random</type-name> </p>
@@ -862,16 +862,6 @@ Writes formatted data into a buffer, with a newline appended.</p>
 On all platforms,<inline-code>\n</inline-code>/<inline-code>U+000A</inline-code>) alone (no additional<inline-code>\r</inline-code>/<inline-code>U+000D</inline-code>). <elided chars="471"/></truncated>
 </item>
 </list>
-</section><section><section-title>ProcAttribute</section-title><list>
-  <item><p>
-<type-name>derive</type-name> </p>
-<truncated level="single-line"><p>
-Attribute macro used to apply derive macros.</p>
-<p>
-See the reference for more info.</p>
-</truncated>
-</item>
-</list>
 </section><section><section-title>Primitive</section-title><list>
   <item><p>
 <type-name>array</type-name> </p>
@@ -1031,6 +1021,16 @@ The <inline-code>()</inline-code> type has exactly one value <inline-code>()</in
 <truncated level="single-line"><p>
 The pointer-sized unsigned integer type.</p>
 The size of this primitive is how many location in memory. For example, on a and on a 64 bit target, this is 8 bytes. <elided chars="140"/></truncated>
+</item>
+</list>
+</section><section><section-title>ProcAttribute</section-title><list>
+  <item><p>
+<type-name>derive</type-name> </p>
+<truncated level="single-line"><p>
+Attribute macro used to apply derive macros.</p>
+<p>
+See the reference for more info.</p>
+</truncated>
 </item>
 </list>
 </section>

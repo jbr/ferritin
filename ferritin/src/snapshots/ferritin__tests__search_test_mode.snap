@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::search(\"trigger line-based truncation\"), OutputMode\n:: TestMode)"
+expression: "render_for_tests_rooted(Commands::search(\"trigger line-based truncation\"),\nOutputMode :: TestMode, & get_fixture_crate_path ())"
 ---
 <title>Search results for '<emphasis>trigger line-based truncation</emphasis>'</title>
 <list>
@@ -11,13 +11,13 @@ A trait for testing extremely long documentation that exceeds line limits.</p>
 This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
 </item>
   <item><p>
-core::line  (Macro) - score: 36 (relevance: 36, authority: 0)</p>
+std::line  (Macro) - score: 36 (relevance: 36, authority: 0)</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-std::line  (Macro) - score: 36 (relevance: 36, authority: 0)</p>
+core::line  (Macro) - score: 36 (relevance: 36, authority: 0)</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
@@ -35,19 +35,19 @@ Fetch the cache line that contains address <inline-code>p</inline-code> using th
 The <inline-code>STRATEGY</inline-code> must be <elided chars="1362"/></truncated>
 </item>
   <item><p>
-alloc::collections::BTreeMap  (Struct) - score: 30 (relevance: 16, authority: 87)</p>
+alloc::collections::BTreeMap  (Struct) - score: 31 (relevance: 17, authority: 87)</p>
 <truncated level="single-line"><p>
 An ordered map based on a B-Tree.</p>
 Given a key type with a total order, an ordered map stores its entries in key That means that keys must be of a type that<inline-code>Ord</inline-code> trait, such that two keys can always be compared to<inline-code>Ordering</inline-code>. Examples of keys with a total order are and numbers with their natural order. <elided chars="5721"/></truncated>
 </item>
   <item><p>
-core::column  (Macro) - score: 29 (relevance: 29, authority: 0)</p>
+std::column  (Macro) - score: 30 (relevance: 29, authority: 0)</p>
 <truncated level="single-line"><p>
 Expands to the column number at which it was invoked.</p>
 With <inline-code>line!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="885"/></truncated>
 </item>
   <item><p>
-std::column  (Macro) - score: 29 (relevance: 29, authority: 0)</p>
+core::column  (Macro) - score: 30 (relevance: 29, authority: 0)</p>
 <truncated level="single-line"><p>
 Expands to the column number at which it was invoked.</p>
 With <inline-code>line!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="885"/></truncated>
@@ -58,9 +58,5 @@ std::sync  (Module) - score: 28 (relevance: 28, authority: 0)</p>
 Useful synchronization primitives.</p>
 <section-heading>The need for synchronization</section-heading>
 Conceptually, a be executed on a program is <elided chars="5253"/></truncated>
-</item>
-  <item><p>
-core::prelude::v1::Option::map_or_else  (Function) - score: 27 (relevance: 27, authority: 0)</p>
-<truncated level="single-line">Computes a default function result (if none), or applies a different function to the contained value (if any). <elided chars="770"/></truncated>
 </item>
 </list>

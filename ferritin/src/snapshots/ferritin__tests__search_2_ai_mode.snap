@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::search(\"generic struct\"), OutputMode :: Ai)"
+expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), OutputMode :: Ai,\n& get_fixture_crate_path ())"
 ---
 Search results for 'generic struct'
 ================================================================================
@@ -17,19 +17,19 @@ core::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0) // A tra
 std::borrow::Borrow  (Trait) - score: 85 (relevance: 85, authority: 0) // A trait for borrowing data. [+19 more lines]
 
 
-core::clone::Clone  (Trait) - score: 83 (relevance: 82, authority: 1) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]
+core::clone::Clone  (Trait) - score: 82 (relevance: 81, authority: 1) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]
 
 
-std::clone::Clone  (Trait) - score: 83 (relevance: 82, authority: 1) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]
+std::clone::Clone  (Trait) - score: 81 (relevance: 81, authority: 0) // A common trait that allows explicit creation of a duplicate value. [+28 more lines]
 
 
-core::ops::Deref  (Trait) - score: 80 (relevance: 79, authority: 1) // Used for immutable dereferencing operations, like *v. [+23 more lines]
+std::ops::Deref  (Trait) - score: 81 (relevance: 80, authority: 2) // Used for immutable dereferencing operations, like *v. [+23 more lines]
 
 
-std::ops::Deref  (Trait) - score: 80 (relevance: 79, authority: 1) // Used for immutable dereferencing operations, like *v. [+23 more lines]
+core::ops::Deref  (Trait) - score: 80 (relevance: 80, authority: 1) // Used for immutable dereferencing operations, like *v. [+23 more lines]
 
 
-fixture-crate::GenericEnum  (Enum) - score: 77 (relevance: 58, authority: 33) // A generic enum for testing [+1 more lines]
+std::mem::ManuallyDrop  (Struct) - score: 77 (relevance: 76, authority: 1) // A wrapper to inhibit the compiler from automatically calling T’s destructor. This wrapper is 0-cost. [+21 more lines]
 
 
-core::mem::ManuallyDrop  (Struct) - score: 77 (relevance: 76, authority: 1) // A wrapper to inhibit the compiler from automatically calling T’s destructor. This wrapper is 0-cost. [+21 more lines]
+fixture-crate::GenericEnum  (Enum) - score: 76 (relevance: 57, authority: 33) // A generic enum for testing [+1 more lines]
