@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"std\"), OutputMode :: Plain)"
+expression: "render_for_tests_rooted(Commands::get(\"std\"), OutputMode :: Plain, &\nget_fixture_crate_path ())"
 ---
 Item: std
 Kind: Module
@@ -485,6 +485,11 @@ Macros
   ◦ writeln 
     Writes formatted data into a buffer, with a newline appended. [...]
 
+ProcAttribute
+
+  ◦ derive 
+    Attribute macro used to apply derive macros. [...]
+
 Primitive
 
   ◦ array 
@@ -567,8 +572,3 @@ Primitive
 
   ◦ usize 
     The pointer-sized unsigned integer type. [...]
-
-ProcAttribute
-
-  ◦ derive 
-    Attribute macro used to apply derive macros. [...]
