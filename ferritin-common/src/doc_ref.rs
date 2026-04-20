@@ -116,6 +116,34 @@ impl<'a> DocRef<'a, Item> {
         self.crate_docs().paths.get(&self.id)
     }
 
+    /// The fully-qualified path of this item's module, for use in resolving
+    /// relative path prefixes (`self::`, `super::`, `crate::`) in `Use` sources
+    /// and intra-doc links.
+    ///
+    /// For a module item, returns the module's own path (e.g. `["home", "inner"]`
+    /// for a module `home::inner`, or `["home"]` for a root module).
+    /// For other items in the paths map, returns the containing module path
+    /// (the ItemSummary path with the last segment dropped).
+    /// For items absent from the paths map (e.g. `Use` items, which never have
+    /// summaries), falls back to `[crate_name]` — correct for `crate::` but a
+    /// degraded best-effort for `self::`/`super::`. Callers that need accurate
+    /// self/super resolution for a `Use` must obtain the path from the use's
+    /// *parent* module instead.
+    pub fn containing_module_path(&self) -> Vec<&'a str> {
+        if let Some(summary) = self.summary() {
+            return match self.kind() {
+                ItemKind::Module => summary.path.iter().map(String::as_str).collect(),
+                _ => summary
+                    .path
+                    .iter()
+                    .take(summary.path.len().saturating_sub(1))
+                    .map(String::as_str)
+                    .collect(),
+            };
+        }
+        vec![self.crate_docs().name()]
+    }
+
     pub fn find_child(&self, child_name: &str) -> Option<DocRef<'a, Item>> {
         self.child_items()
             .find(|c| c.name().is_some_and(|n| n == child_name))

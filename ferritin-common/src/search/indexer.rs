@@ -337,6 +337,11 @@ impl<'a> Terms<'a> {
             return;
         }
 
+        // Insert eagerly so cyclic re-exports (e.g. a glob that brings a
+        // parent module back into scope) short-circuit on the next visit
+        // instead of re-recursing forever.
+        self.shortest_paths.insert(id, ids.clone());
+
         // Track visited crate
         self.visited_crates.insert(crate_name.into());
 
@@ -370,8 +375,6 @@ impl<'a> Terms<'a> {
         for child in item.child_items().with_use() {
             self.recurse(child, &ids, true)
         }
-
-        self.shortest_paths.insert(id, ids);
     }
 
     fn add_for_item(&mut self, item: DocRef<'a, Item>, id: (u64, u32)) {

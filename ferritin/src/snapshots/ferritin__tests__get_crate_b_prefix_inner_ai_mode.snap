@@ -10,3 +10,5 @@ In crate: crate-b (0.1.0)
 
 Structs
 CratePrefixAlias
+
+SuperPrefixAlias

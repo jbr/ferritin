@@ -1,5 +1,5 @@
 ---
-source: src/workspace_tests.rs
+source: rustdoc-mcp/src/workspace_tests.rs
 expression: result
 ---
 Item: crate_b
@@ -7,5 +7,10 @@ Kind: Module
 Visibility: Public
 Defined at: crate_b
 
+Modules:
+prefix_inner
+
 Structs:
 CrateBProcessor
+PrefixCrateAAlias
+SelfPrefixAlias

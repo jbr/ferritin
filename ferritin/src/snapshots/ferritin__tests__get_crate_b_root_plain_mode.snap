@@ -16,4 +16,6 @@ Structs
 
   ◦ CrateBProcessor 
 
-  ◦ PrefixCrateAAlias
+  ◦ PrefixCrateAAlias 
+
+  ◦ SelfPrefixAlias

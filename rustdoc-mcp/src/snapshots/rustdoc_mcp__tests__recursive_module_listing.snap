@@ -17,6 +17,10 @@ link_resolution_tests::nested::deeply_nested // Another nested module
 markdown_test // # Markdown: Syntax [+332 more lines]
 namespace_collisions // Module for testing namespace disambiguation with kind discriminators. [+3 more lines]
 namespace_collisions::both // A module sharing its name with [`both()`] below.
+prefix_tests // Edge cases for path-prefix resolution in use-item sources and intra-doc links. [+11 more lines]
+prefix_tests::deep // A nested module to exercise `self::`, `super::`, and `super::super::`.
+prefix_tests::deep::glob_reexport // Exercises the "glob brings a name into scope, then re-export that [+1 more lines]
+prefix_tests::deep::glob_reexport::deep // A nested module to exercise `self::`, `super::`, and `super::super::`.
 reexport_mod
 submodule // A module with items
 
@@ -37,6 +41,17 @@ link_resolution_tests::nested::NestedStruct // Struct in nested module
 link_resolution_tests::nested::Str // A UTF-8–encoded, growable string. [+279 more lines]
 link_resolution_tests::nested::deeply_nested::DeepStruct // Struct in deeply nested module
 namespace_collisions::both::Inside // An item inside the colliding module.
+prefix_tests::DocOuter // Intra-doc links from the outer module: [+4 more lines]
+prefix_tests::PrefixMarker // A sibling target for `self::` / `super::PrefixMarker` references.
+prefix_tests::deep::CrateAlias // A struct in a submodule
+prefix_tests::deep::DeepMarker // A marker target inside `deep`.
+prefix_tests::deep::DocDeep // Intra-doc links from a nested module: [+4 more lines]
+prefix_tests::deep::SelfAliasDeep // A marker target inside `deep`.
+prefix_tests::deep::SuperAlias // A sibling target for `self::` / `super::PrefixMarker` references.
+prefix_tests::deep::SuperSuperAlias // A simple struct for testing basic functionality. [+6 more lines]
+prefix_tests::deep::glob_reexport::DocOuter // Intra-doc links from the outer module: [+4 more lines]
+prefix_tests::deep::glob_reexport::GlobReexportedMarker // A sibling target for `self::` / `super::PrefixMarker` references.
+prefix_tests::deep::glob_reexport::PrefixMarker // A sibling target for `self::` / `super::PrefixMarker` references.
 reexport_mod::SubStruct // A struct in a submodule
 submodule::SubStruct // A struct in a submodule
 
@@ -53,12 +68,6 @@ link_resolution_tests::nested::TestTrait // A trait for testing extremely long d
 
 Functions:
 ReachableViaPrivateModule::private_module_method // A method on a struct whose module is private. [+5 more lines]
-SubStruct::double // Double the value
-SubStruct::get_value // Get the value
-SubStruct::new // Create a new SubStruct
-TestStruct::get_field // Get the field value
-TestStruct::increment_count // Update the count
-TestStruct::new // Create a new TestStruct
 Vec::allocator // Returns a reference to the underlying allocator.
 Vec::append // Moves all the elements of `other` into `self`, leaving `other` empty. [+14 more lines]
 Vec::as_mut_ptr // Returns a raw mutable pointer to the vector's buffer, or a dangling [+72 more lines]
@@ -171,9 +180,6 @@ link_resolution_tests::LinkTestStruct::new // Method for testing Self resolution
 link_resolution_tests::RenamedTestStruct::get_field // Get the field value
 link_resolution_tests::RenamedTestStruct::increment_count // Update the count
 link_resolution_tests::RenamedTestStruct::new // Create a new TestStruct
-link_resolution_tests::SubStruct::double // Double the value
-link_resolution_tests::SubStruct::get_value // Get the value
-link_resolution_tests::SubStruct::new // Create a new SubStruct
 link_resolution_tests::Tree::append // Moves all elements from `other` into `self`, leaving `other` empty. [+34 more lines]
 link_resolution_tests::Tree::clear // Clears the map, removing all elements. [+11 more lines]
 link_resolution_tests::Tree::contains_key // Returns `true` if the map contains a value for the specified key. [+14 more lines]
@@ -262,9 +268,6 @@ link_resolution_tests::nested::Str::try_reserve_exact // Tries to reserve the mi
 link_resolution_tests::nested::Str::try_with_capacity // Creates a new empty `String` with at least the specified capacity. [+5 more lines]
 link_resolution_tests::nested::Str::with_capacity // Creates a new empty `String` with at least the specified capacity. [+38 more lines]
 namespace_collisions::both // A function sharing its name with the [`both`] module above.
-reexport_mod::SubStruct::double // Double the value
-reexport_mod::SubStruct::get_value // Get the value
-reexport_mod::SubStruct::new // Create a new SubStruct
 reexport_mod::sub_function // A function in a submodule
 sub_function // A function in a submodule
 submodule::SubStruct::double // Double the value
@@ -283,15 +286,9 @@ Variants:
 GenericEnum::Mixed // Variant with mixed generics
 GenericEnum::Simple // Simple variant
 GenericEnum::WithData // Variant with generic data
-TestEnum::VariantA // Variant A (see also [`crate::GenericEnum`])
-TestEnum::VariantB // Variant B with data
-TestEnum::VariantC // Variant C with struct data (`name` and `value`)
 VariantA // Variant A (see also [`crate::GenericEnum`])
 VariantB // Variant B with data
 VariantC // Variant C with struct data (`name` and `value`)
-reexport_mod::TestEnum::VariantA // Variant A (see also [`crate::GenericEnum`])
-reexport_mod::TestEnum::VariantB // Variant B with data
-reexport_mod::TestEnum::VariantC // Variant C with struct data (`name` and `value`)
 reexport_mod::VariantA // Variant A (see also [`crate::GenericEnum`])
 reexport_mod::VariantB // Variant B with data
 reexport_mod::VariantC // Variant C with struct data (`name` and `value`)
@@ -303,5 +300,4 @@ submodule::VariantB // Variant B with data
 submodule::VariantC // Variant C with struct data (`name` and `value`)
 
 AssocConst:
-TestStruct::ASSOCIATED_CONST // This is an associated constant for a struct
 link_resolution_tests::RenamedTestStruct::ASSOCIATED_CONST // This is an associated constant for a struct

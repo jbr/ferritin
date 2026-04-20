@@ -15,3 +15,5 @@ Structs
 CrateBProcessor
 
 PrefixCrateAAlias
+
+SelfPrefixAlias

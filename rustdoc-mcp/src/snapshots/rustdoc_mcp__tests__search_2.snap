@@ -6,11 +6,11 @@ Search results for 'generic struct' in crate 'crate':
 
 • fixture-crate::GenericStruct (Struct) - score: 100
     A generic struct for testing multi-paragraph documentation. [+14 more lines]
-• fixture-crate::GenericEnum (Enum) - score: 77
+• fixture-crate::GenericEnum (Enum) - score: 78
     A generic enum for testing [+2 more lines]
-• fixture-crate::generic_function (Function) - score: 58
+• fixture-crate::TestStruct (Struct) - score: 67
+    A simple struct for testing basic functionality. [+6 more lines]
+• fixture-crate::generic_function (Function) - score: 59
     A generic function
-• fixture-crate::submodule::TestEnum (Enum) - score: 44
+• fixture-crate::submodule::TestEnum (Enum) - score: 51
     An enum for testing [+2 more lines]
-• fixture-crate::submodule::TestEnum::VariantA (Variant) - score: 43
-    Variant A (see also [`crate::GenericEnum`])
