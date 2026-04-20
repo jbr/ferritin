@@ -1,0 +1,93 @@
+name: Nightly snapshot refresh
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  update-snaps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - uses: dtolnay/rust-toolchain@nightly
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Record nightly version
+        id: nightly
+        run: echo "version=$(rustc --version)" >> "$GITHUB_OUTPUT"
+
+      - name: Run tests (accepting snapshot updates)
+        id: test
+        run: cargo test --workspace
+        env:
+          INSTA_UPDATE: always
+        continue-on-error: true
+
+      - name: Ensure nightly-failure label exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create nightly-failure \
+            --color d73a4a \
+            --description "Automated nightly test failures" \
+            2>/dev/null || true
+
+      - name: Check for snapshot changes
+        if: steps.test.outcome == 'success'
+        id: diff
+        run: |
+          if git diff --quiet -- '*.snap'; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update snap-update PR
+        if: steps.test.outcome == 'success' && steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/update-snaps
+          commit-message: "chore: update snaps to ${{ steps.nightly.outputs.version }}"
+          title: "chore: update snaps to ${{ steps.nightly.outputs.version }}"
+          body: |
+            Snapshot regeneration for `${{ steps.nightly.outputs.version }}`.
+
+            Verified passing in [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+          delete-branch: true
+
+      - name: Close any open nightly-failure issue
+        if: steps.test.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue list --label nightly-failure --state open --json number --jq '.[].number' \
+            | xargs -r -I{} gh issue close {} \
+                --comment "Resolved: nightly run succeeded on \`${{ steps.nightly.outputs.version }}\`."
+
+      - name: Open or update nightly-failure issue
+        if: steps.test.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          body=$(cat <<EOF
+          Nightly test run failed on \`${{ steps.nightly.outputs.version }}\`.
+
+          [Workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          EOF
+          )
+          existing=$(gh issue list --label nightly-failure --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "Nightly test failure" --label nightly-failure --body "$body"
+          fi
