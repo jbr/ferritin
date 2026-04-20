@@ -480,6 +480,9 @@ Macros
   ◦ [debug_assert_ne](http://docs.rust-lang.org/nightly/core/macro.debug_assert_ne.html) 
     Asserts that two expressions are not equal to each other. [...]
 
+  ◦ [derive](http://docs.rust-lang.org/nightly/core/macros/builtin/macro.derive.html) 
+    Attribute macro used to apply derive macros. [...]
+
   ◦ [env](http://docs.rust-lang.org/nightly/core/macro.env.html) 
     Inspects an environment variable at compile time. [...]
 
@@ -561,12 +564,7 @@ Macros
   ◦ [writeln](http://docs.rust-lang.org/nightly/core/macro.writeln.html) 
     Writes formatted data into a buffer, with a newline appended. [...]
 
-ProcAttribute
-
-  ◦ [derive](http://docs.rust-lang.org/nightly/core/macros/builtin/macro.derive.html) 
-    Attribute macro used to apply derive macros. [...]
-
-Primitive
+Primitives
 
   ◦ [array](http://docs.rust-lang.org/nightly/std/primitive.array.html) 
     A fixed-size array, denoted [T; N], for the element type, T, and the 

@@ -402,6 +402,9 @@ debug_assert_matches // Asserts that an expression matches the provided pattern.
 debug_assert_ne // Asserts that two expressions are not equal to each other. [+4 more lines]
 
 
+derive // Attribute macro used to apply derive macros. [+1 more lines]
+
+
 env // Inspects an environment variable at compile time. [+8 more lines]
 
 
@@ -483,7 +486,7 @@ write // Writes formatted data into a buffer. [+10 more lines]
 writeln // Writes formatted data into a buffer, with a newline appended. [+4 more lines]
 
 
-Primitive
+Primitives
 array // A fixed-size array, denoted [T; N], for the element type, T, and the non-negative compile-time constant size, N. [+30 more lines]
 
 
@@ -563,7 +566,3 @@ unit // The () type, also called "unit". [+4 more lines]
 
 
 usize // The pointer-sized unsigned integer type. [+1 more lines]
-
-
-ProcAttribute
-derive // Attribute macro used to apply derive macros. [+1 more lines]

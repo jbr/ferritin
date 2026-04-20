@@ -699,6 +699,14 @@ Asserts that two expressions are not equal to each other.</p>
 On panic, this macro debug representations. <elided chars="548"/></truncated>
 </item>
   <item><p>
+<type-name>derive</type-name> </p>
+<truncated level="single-line"><p>
+Attribute macro used to apply derive macros.</p>
+<p>
+See the reference for more info.</p>
+</truncated>
+</item>
+  <item><p>
 <type-name>env</type-name> </p>
 <truncated level="single-line"><p>
 Inspects an environment variable at compile time.</p>
@@ -862,17 +870,7 @@ Writes formatted data into a buffer, with a newline appended.</p>
 On all platforms,<inline-code>\n</inline-code>/<inline-code>U+000A</inline-code>) alone (no additional<inline-code>\r</inline-code>/<inline-code>U+000D</inline-code>). <elided chars="471"/></truncated>
 </item>
 </list>
-</section><section><section-title>ProcAttribute</section-title><list>
-  <item><p>
-<type-name>derive</type-name> </p>
-<truncated level="single-line"><p>
-Attribute macro used to apply derive macros.</p>
-<p>
-See the reference for more info.</p>
-</truncated>
-</item>
-</list>
-</section><section><section-title>Primitive</section-title><list>
+</section><section><section-title>Primitives</section-title><list>
   <item><p>
 <type-name>array</type-name> </p>
 <truncated level="single-line">A fixed-size array, denoted <inline-code>[T; N]</inline-code>, for the element type, <inline-code>T</inline-code>, and the non-negative compile-time constant size, <inline-code>N</inline-code>. <elided chars="5525"/></truncated>
