@@ -1,0 +1,27 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::prefix_tests::deep::glob_reexport\"),\nOutputMode :: Plain)"
+---
+Item: glob_reexport
+Kind: Module
+Visibility: Public
+Defined at: fixture_crate::prefix_tests::deep::glob_reexport
+In crate: fixture-crate (0.1.0)
+
+Exercises the "glob brings a name into scope, then re-export that name" pattern, all within the same crate.
+
+Modules
+
+  ◦ deep 
+    A nested module to exercise self::, super::, and super::super::.
+
+Structs
+
+  ◦ DocOuter 
+    Intra-doc links from the outer module: [...]
+
+  ◦ GlobReexportedMarker 
+    A sibling target for self:: / super::PrefixMarker references.
+
+  ◦ PrefixMarker 
+    A sibling target for self:: / super::PrefixMarker references.

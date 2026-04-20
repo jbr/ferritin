@@ -1,0 +1,58 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::prefix_tests::deep\"), OutputMode ::\nTestMode)"
+---
+<p>
+<strong>Item:</strong> deep
+<strong>Kind:</strong> Module
+<strong>Visibility:</strong> Public
+<strong>Defined at:</strong> <type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>prefix_tests</type-name><punctuation>::</punctuation><type-name>deep</type-name>
+<strong>In crate:</strong> fixture-crate (0.1.0)</p>
+<truncated level="full"><p>
+A nested module to exercise <inline-code>self::</inline-code>, <inline-code>super::</inline-code>, and <inline-code>super::super::</inline-code>.</p>
+</truncated>
+<section><section-title>Modules</section-title><list>
+  <item><p>
+<type-name>glob_reexport</type-name> </p>
+<truncated level="single-line">Exercises the "glob brings a name into scope, then re-export that name" pattern, all within the same crate. <elided chars="27"/></truncated>
+</item>
+</list>
+</section><section><section-title>Structs</section-title><list>
+  <item><p>
+<type-name>CrateAlias</type-name> </p>
+<truncated level="single-line"><p>
+A struct in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>DeepMarker</type-name> </p>
+<truncated level="single-line"><p>
+A marker target inside <inline-code>deep</inline-code>.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>DocDeep</type-name> </p>
+<truncated level="single-line"><p>
+Intra-doc links from a nested module:</p>
+ <elided chars="139"/></truncated>
+</item>
+  <item><p>
+<type-name>SelfAliasDeep</type-name> </p>
+<truncated level="single-line"><p>
+A marker target inside <inline-code>deep</inline-code>.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>SuperAlias</type-name> </p>
+<truncated level="single-line"><p>
+A sibling target for <inline-code>self::</inline-code> / <inline-code>super::PrefixMarker</inline-code> references.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>SuperSuperAlias</type-name> </p>
+<truncated level="single-line"><p>
+A simple struct for testing basic functionality.</p>
+This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>
+</item>
+</list>
+</section>

@@ -21,6 +21,9 @@ Modules
   ◦ namespace_collisions 
     Module for testing namespace disambiguation with kind discriminators. [...]
 
+  ◦ prefix_tests 
+    Edge cases for path-prefix resolution in use-item sources and intra-doc links. [...]
+
   ◦ reexport_mod 
 
   ◦ submodule 

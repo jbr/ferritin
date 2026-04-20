@@ -362,3 +362,57 @@ mod private_detail {
     }
 }
 pub use private_detail::ReachableViaPrivateModule;
+
+/// Edge cases for path-prefix resolution in use-item sources and intra-doc links.
+///
+/// Rustdoc emits `Use::source` and intra-doc link targets verbatim from the Rust
+/// source: `crate::`, `self::`, and `super::` prefixes are kept as-written. When
+/// the corresponding id resolves to an item in the *local* crate's index (as is
+/// the case for all the `pub use`s below), the iterator never needs to fall back
+/// to resolving the source string. The cross-crate counterparts live in
+/// `tests/test-workspace/crate-b` — those actually exercise the fallback path.
+///
+/// The intra-doc links in this module's docs and its members' docs exercise the
+/// same prefix handling on the `extract_link_target` side (rendered in
+/// snapshots).
+pub mod prefix_tests {
+    /// A sibling target for `self::` / `super::PrefixMarker` references.
+    pub struct PrefixMarker;
+
+    /// Intra-doc links from the outer module:
+    /// - [`crate::TestStruct`] — absolute path from crate root.
+    /// - [`self::PrefixMarker`] — sibling in the same module.
+    /// - [`super::TestStruct`] — parent of this module is the crate root.
+    /// - [`crate::submodule::TestEnum`] — deep absolute path.
+    pub struct DocOuter;
+
+    /// A nested module to exercise `self::`, `super::`, and `super::super::`.
+    pub mod deep {
+        /// A marker target inside `deep`.
+        pub struct DeepMarker;
+
+        /// Intra-doc links from a nested module:
+        /// - [`self::DeepMarker`] — local sibling.
+        /// - [`super::PrefixMarker`] — one module up.
+        /// - [`super::super::TestStruct`] — two modules up (crate root).
+        /// - [`crate::TestStruct`] — absolute path from crate root.
+        pub struct DocDeep;
+
+        // Same-crate prefixed uses. Each one's `use.id` is valid and present in
+        // this crate's local index, so the iterator resolves via the id path and
+        // never touches `source`. They exist to pin down what rustdoc emits for
+        // each prefix form — inspected by tests that look at the raw JSON.
+        pub use self::DeepMarker as SelfAliasDeep;
+        pub use super::PrefixMarker as SuperAlias;
+        pub use super::super::TestStruct as SuperSuperAlias;
+        pub use crate::submodule::SubStruct as CrateAlias;
+
+        /// Exercises the "glob brings a name into scope, then re-export that
+        /// name" pattern, all within the same crate.
+        pub mod glob_reexport {
+            pub use super::super::*; // brings PrefixMarker, DocOuter into scope
+
+            pub use PrefixMarker as GlobReexportedMarker;
+        }
+    }
+}

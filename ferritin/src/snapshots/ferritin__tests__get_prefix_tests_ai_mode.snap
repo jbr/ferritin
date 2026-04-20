@@ -1,0 +1,25 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests(Commands::get(\"crate::prefix_tests\"), OutputMode :: Ai)"
+---
+Item: prefix_tests
+Kind: Module
+Visibility: Public
+Defined at: fixture_crate::prefix_tests
+In crate: fixture-crate (0.1.0)
+
+Edge cases for path-prefix resolution in use-item sources and intra-doc links.
+
+Rustdoc emits Use::source and intra-doc link targets verbatim from the Rust source: crate::, self::, and super:: prefixes are kept as-written. When the corresponding id resolves to an item in the local crate's index (as is the case for all the pub uses below), the iterator never needs to fall back to resolving the source string. The cross-crate counterparts live in tests/test-workspace/crate-b — those actually exercise the fallback path.
+
+The intra-doc links in this module's docs and its members' docs exercise the same prefix handling on the extract_link_target side (rendered in snapshots).
+
+Modules
+deep // A nested module to exercise self::, super::, and super::super::.
+
+
+Structs
+DocOuter // Intra-doc links from the outer module: [+1 more lines]
+
+
+PrefixMarker // A sibling target for self:: / super::PrefixMarker references.

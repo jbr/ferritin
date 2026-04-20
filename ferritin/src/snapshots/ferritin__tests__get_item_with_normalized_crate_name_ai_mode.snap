@@ -42,6 +42,14 @@ pub fn increment_count(&mut self) // Update the count
 Trait Implementations
 TestTrait<T = String>
 std: From<T>, RefUnwindSafe, UnwindSafe, Unpin, Clone, UnsafeUnpin, Freeze, Sync, Debug, Send
+impl<T: 'static + ?Sized> Any
+
+impl<T, U: Into<T>> TryFrom<U> //     type Error = Infallible
+
+
+impl<T, U: TryFrom<T>> TryInto<U> //     type Error = <U as TryFrom<T>>::Error
+
+
 impl<T, U: From<T>> Into<U>
 
 impl<T: Clone> CloneToUninit
@@ -51,11 +59,3 @@ impl<T: ?Sized> BorrowMut<T>
 impl<T: ?Sized> Borrow<T>
 
 impl<T: Clone> ToOwned //     type Owned = T
-
-
-impl<T: 'static + ?Sized> Any
-
-impl<T, U: Into<T>> TryFrom<U> //     type Error = Infallible
-
-
-impl<T, U: TryFrom<T>> TryInto<U> //     type Error = <U as TryFrom<T>>::Error
