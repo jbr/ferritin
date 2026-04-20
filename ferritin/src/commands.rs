@@ -24,16 +24,19 @@ pub(crate) enum Commands {
     },
 
     /// Search for items by name or documentation
+    ///
+    /// Requires a scope: pass --local (to search the current workspace) or
+    /// --crate <name> (to search a specific crate, e.g. --crate std).
     Search {
         /// Search query
         query: String,
 
-        /// Crate to search
+        /// Crate to search (required unless --local is set)
         #[arg(short, long = "crate")]
         crate_: Option<String>,
 
         /// Maximum number of results
-        #[arg(short, long, default_value = "10")]
+        #[arg(short = 'n', long, default_value = "10")]
         limit: usize,
     },
 

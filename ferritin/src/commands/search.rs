@@ -9,6 +9,25 @@ pub(crate) fn execute<'a>(
 ) -> (Document<'a>, bool) {
     log::info!("Searching for {query}");
 
+    if crate_.is_none() && request.local_source().is_none() {
+        let error_doc = Document::from(vec![
+            DocumentNode::Heading {
+                level: HeadingLevel::Title,
+                spans: vec![Span::plain("Search requires a scope")],
+            },
+            DocumentNode::paragraph(vec![
+                Span::plain("Pass "),
+                Span::emphasis("--local"),
+                Span::plain(" to search the current workspace, or "),
+                Span::emphasis("--crate <name>"),
+                Span::plain(" to search a specific crate (e.g., "),
+                Span::emphasis("--crate std"),
+                Span::plain(")."),
+            ]),
+        ]);
+        return (error_doc, true);
+    }
+
     let crate_names: Vec<_> = match crate_ {
         Some(crate_) => vec![crate_],
         None => request
