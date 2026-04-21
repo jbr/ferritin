@@ -8,25 +8,4 @@ Search results for 'trigger line-based truncation'
 fixture-crate::TestTrait  (Trait) - score: 100 (relevance: 100, authority: 0) // A trait for testing extremely long documentation that exceeds line limits. [+3 more lines]
 
 
-std::line  (Macro) - score: 36 (relevance: 36, authority: 0) // Expands to the line number on which it was invoked. [+4 more lines]
-
-
-core::line  (Macro) - score: 36 (relevance: 36, authority: 0) // Expands to the line number on which it was invoked. [+4 more lines]
-
-
-core::arch::x86::_mm_prefetch  (Function) - score: 31 (relevance: 31, authority: 0) // Fetch the cache line that contains address p using the given STRATEGY. [+8 more lines]
-
-
-std::arch::x86::_mm_prefetch  (Function) - score: 31 (relevance: 31, authority: 0) // Fetch the cache line that contains address p using the given STRATEGY. [+8 more lines]
-
-
-alloc::collections::BTreeMap  (Struct) - score: 31 (relevance: 17, authority: 87) // An ordered map based on a B-Tree. [+15 more lines]
-
-
-std::column  (Macro) - score: 30 (relevance: 29, authority: 0) // Expands to the column number at which it was invoked. [+6 more lines]
-
-
-core::column  (Macro) - score: 30 (relevance: 29, authority: 0) // Expands to the column number at which it was invoked. [+6 more lines]
-
-
-std::sync  (Module) - score: 28 (relevance: 28, authority: 0) // Useful synchronization primitives. [+19 more lines]
+fixture-crate::markdown_test  (Module) - score: 24 (relevance: 24, authority: 0) // Markdown: Syntax [+90 more lines]

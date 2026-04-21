@@ -25,7 +25,6 @@ SubStruct // A struct in a submodule
 TestStruct // A simple struct for testing basic functionality. [+6 more lines]
 TupleStruct // A tuple struct for testing
 UnitStruct // A unit struct for testing
-Vec // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+257 more lines]
 
 Enums:
 GenericEnum // A generic enum for testing [+2 more lines]

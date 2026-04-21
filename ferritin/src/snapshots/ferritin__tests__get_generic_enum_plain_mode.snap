@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::GenericEnum\"), OutputMode :: Plain)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::GenericEnum\"), OutputMode ::\nPlain, & get_fixture_crate_path ())"
 ---
 Item: GenericEnum
 Kind: Enum
@@ -37,7 +37,7 @@ Variants:
 
 Trait Implementations
 
-std: From<T>
+From<T>
 
   ◦ impl<T: 'static + ?Sized> Any
 
