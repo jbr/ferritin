@@ -2,12 +2,8 @@
 source: rustdoc-mcp/src/workspace_tests.rs
 expression: result
 ---
-• alloc 1.97.0-nightly
-    The Rust core allocation and collections library
 • anyhow 1.0.99 (crate-b)
     Flexible concrete Error type built on std::error::Error
-• core 1.97.0-nightly
-    The Rust Core Library
 • crate-a (workspace-local)
     First crate in test workspace
 • crate-b (workspace-local, aliased as "crate")
@@ -16,10 +12,4 @@ expression: result
     A logging implementation for `log` which is configured via an environment variable. 
 • link-test (workspace-local)
 • log 0.4.28 (crate-b)
-    A lightweight logging facade for Rust 
-• proc_macro 1.97.0-nightly
-    A support library for macro authors when defining new macros
-• std 1.97.0-nightly
-    The Rust Standard Library
-• test 1.97.0-nightly
-    Support code for rustc's built in unit-test and micro-benchmarking framework
+    A lightweight logging facade for Rust

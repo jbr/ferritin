@@ -29,4 +29,5 @@ where
 }
 ```
 
-std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+Trait Implementations:
+core::any::Any, core::borrow::Borrow, core::borrow::BorrowMut, core::convert::From, core::convert::Into, core::convert::TryFrom, core::convert::TryInto, core::marker::Freeze, core::marker::Send, core::marker::Sync, core::marker::Unpin, core::marker::UnsafeUnpin, core::panic::unwind_safe::RefUnwindSafe, core::panic::unwind_safe::UnwindSafe

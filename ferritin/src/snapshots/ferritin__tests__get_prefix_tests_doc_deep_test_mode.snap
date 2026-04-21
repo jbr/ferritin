@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::prefix_tests::deep::DocDeep\"),\nOutputMode :: TestMode)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::prefix_tests::deep::DocDeep\"),\nOutputMode :: TestMode, & get_fixture_crate_path ())"
 ---
 <p>
 <strong>Item:</strong> DocDeep
@@ -28,7 +28,7 @@ Intra-doc links from a nested module:</p>
 <generated-code>
 <keyword>struct</keyword> <type-name>DocDeep</type-name><punctuation>;</punctuation></generated-code>
 <section><section-title>Trait Implementations</section-title><p>
-std: <type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <type-name>Freeze</type-name><punctuation>,</punctuation> <type-name>Sync</type-name><punctuation>,</punctuation> <type-name>Send</type-name><punctuation>,</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>,</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>,</punctuation> <type-name>UnwindSafe</type-name><punctuation>,</punctuation> <type-name>Unpin</type-name></p>
+<type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <type-name>Freeze</type-name><punctuation>,</punctuation> <type-name>Sync</type-name><punctuation>,</punctuation> <type-name>Send</type-name><punctuation>,</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>,</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>,</punctuation> <type-name>UnwindSafe</type-name><punctuation>,</punctuation> <type-name>Unpin</type-name></p>
 <list>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <lifetime>'static</lifetime> + <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Any</type-name></generated-code>

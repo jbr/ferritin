@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::submodule::TestEnum\"), OutputMode ::\nTty)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::submodule::TestEnum\"),\nOutputMode :: Tty, & get_fixture_crate_path ())"
 ---
 Item: TestEnum
 Kind: Enum
@@ -14,9 +14,9 @@ This is like [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-cr
 
 enum TestEnum {
     VariantA,
-    VariantB([String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)),
+    VariantB(String),
     VariantC {
-        name: [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html),
+        name: String,
         value: i32,
     },
 }
@@ -34,18 +34,18 @@ Variants:
 
 Trait Implementations
 
-std: [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom)<T>, [RefUnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3ARefUnwindSafe), [UnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3AUnwindSafe), [Unpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnpin), [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnsafeUnpin), [Freeze](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AFreeze), [Sync](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASync), [Send](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASend)
+[From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom)<T>, [RefUnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3ARefUnwindSafe), [UnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3AUnwindSafe), [Unpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnpin), [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnsafeUnpin), [Freeze](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AFreeze), [Sync](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASync), [Send](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASend)
 
-  ◦ impl<T: 'static + ?[Sized](http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Any](http://docs.rust-lang.org/nightly/core/any/trait.Any.html)
+  ◦ impl<T: 'static + ?Sized> Any
 
-  ◦ impl<T, U: [Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)<T>> [TryFrom](http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<U>
-        type Error = [Infallible](http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html)
+  ◦ impl<T, U: Into<T>> TryFrom<U>
+        type Error = Infallible
 
-  ◦ impl<T, U: [TryFrom](http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>> [TryInto](http://docs.rust-lang.org/nightly/core/convert/trait.TryInto.html)<U>
-        type Error = <U as [TryFrom](http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>>::Error
+  ◦ impl<T, U: TryFrom<T>> TryInto<U>
+        type Error = <U as TryFrom<T>>::Error
 
-  ◦ impl<T, U: [From](http://docs.rust-lang.org/nightly/core/convert/trait.From.html)<T>> [Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)<U>
+  ◦ impl<T, U: From<T>> Into<U>
 
-  ◦ impl<T: ?[Sized](http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html)> [BorrowMut](http://docs.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html)<T>
+  ◦ impl<T: ?Sized> BorrowMut<T>
 
-  ◦ impl<T: ?[Sized](http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)<T>
+  ◦ impl<T: ?Sized> Borrow<T>

@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::TestTrait\"), OutputMode :: Tty)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::TestTrait\"), OutputMode :: Tty,\n& get_fixture_crate_path ())"
 ---
 Item: TestTrait
 Kind: Trait
@@ -37,16 +37,16 @@ trait TestTrait { ... }
   ◦ const ASSOCIATED_CONSTANT: (); 
     trait associated constant
 
-  ◦ type T: [Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html); 
+  ◦ type T: Clone; 
     trait associated type
 
-  ◦ fn [test_method](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&self) -> [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html); 
+  ◦ fn [test_method](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&self) -> String; 
     A method
 
-  ◦ fn [process](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&mut self, data: &str) -> [Result](http://docs.rust-lang.org/nightly/core/result/enum.Result.html)<(), [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)>; 
+  ◦ fn [process](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&mut self, data: &str) -> Result<(), String>; 
     Another method with parameters
 
 Implementors (this crate)
 
   ◦ [TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html)
-        type T = [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)
+        type T = String

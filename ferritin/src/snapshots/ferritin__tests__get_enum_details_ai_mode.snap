@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::submodule::TestEnum\"), OutputMode ::\nAi)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::submodule::TestEnum\"),\nOutputMode :: Ai, & get_fixture_crate_path ())"
 ---
 Item: TestEnum
 Kind: Enum
@@ -32,7 +32,7 @@ VariantC // Variant C with struct data (name and value)
 
 
 Trait Implementations
-std: From<T>, RefUnwindSafe, UnwindSafe, Unpin, UnsafeUnpin, Freeze, Sync, Send
+From<T>, RefUnwindSafe, UnwindSafe, Unpin, UnsafeUnpin, Freeze, Sync, Send
 impl<T: 'static + ?Sized> Any
 
 impl<T, U: Into<T>> TryFrom<U> //     type Error = Infallible
