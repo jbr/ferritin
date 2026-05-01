@@ -5,42 +5,34 @@ expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), Outpu
 Search results for 'generic struct'
 ================================================================================
 
-  ◦ [fixture-crate::GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.GenericStruct.html)  (Struct) - score: 100 (relevance: 100,
-    authority: 0)
+  ◦ [fixture-crate::GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.GenericStruct.html)  (Struct) - score: 100
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 99 (relevance: 66, authority:
-    50)
+  ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 68
+    A trait for borrowing data. [...]
+
+  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 67
     A generic enum for testing [...]
 
-  ◦ [fixture-crate::generic_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.generic_function.html)  (Function) - score: 66 (relevance: 66,
-    authority: 0)
-    A generic function
+  ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64
+    A trait for borrowing data. [...]
 
-  ◦ [fixture-crate::submodule::TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html)  (Enum) - score: 65 (relevance: 44,
-    authority: 50)
-    An enum for testing [...]
+  ◦ [core::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64
+    A trait for borrowing data. [...]
 
-  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html)  (Struct) - score: 65 (relevance: 33, authority:
-    100)
-    A simple struct for testing basic functionality. [...]
+  ◦ [core::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64
+    Compile-time type information about instantiated generics of structs, enum and
+    union variants.
 
-  ◦ [fixture-crate::submodule::TestEnum::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)  (Variant) - score: 50
-    (relevance: 50, authority: 0)
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
+  ◦ [std::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64
+    Compile-time type information about instantiated generics of structs, enum and
+    union variants.
 
-  ◦ [fixture-crate::GenericEnum::WithData](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)  (Variant) - score: 50 (relevance: 50,
-    authority: 0)
-    Variant with generic data
+  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 63
+    A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [fixture-crate::link_resolution_tests::LinkTestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/struct.LinkTestStruct.html)  (Struct) - score: 33
-    (relevance: 33, authority: 0)
-    Struct in link test module
+  ◦ [core::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62
+    A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [fixture-crate::TupleStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TupleStruct.html)  (Struct) - score: 33 (relevance: 33, authority:
-    0)
-    A tuple struct for testing
-
-  ◦ [fixture-crate::submodule::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html)  (Struct) - score: 33 (relevance: 33,
-    authority: 0)
-    A struct in a submodule
+  ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 61
+    Used for immutable dereferencing operations, like *v. [...]
