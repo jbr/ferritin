@@ -179,6 +179,9 @@ struct Posting {
 struct DocumentInfo {
     path: ItemPath,
     length: DocumentLength,
+    /// Hashes of tokens in this item's last path segment (its own name).
+    /// Used to apply a name-match bonus when query tokens appear here.
+    name_token_hashes: Vec<TermHash>,
 }
 
 #[derive(Default, Debug, Clone)]
@@ -187,6 +190,8 @@ struct Terms<'a> {
     shortest_paths: BTreeMap<(u64, u32), Vec<u32>>,
     document_lengths: BTreeMap<(u64, u32), DocumentLength>,
     crate_hashes: FxHashMap<&'a str, TermHash>,
+    /// Per-document hashes of the leaf item's name tokens
+    name_token_hashes: BTreeMap<(u64, u32), Vec<TermHash>>,
     // Authority scoring fields
     visited_crates: HashSet<CrateName<'a>>,
     link_counts: HashMap<ItemOrSummary<'a>, usize>,
@@ -250,6 +255,7 @@ impl<'a> Terms<'a> {
         let mut total_document_length = 0;
 
         // Build document list and mapping
+        let mut name_token_hashes = self.name_token_hashes;
         for (id, id_path) in self.shortest_paths {
             let doc_length = self
                 .document_lengths
@@ -261,6 +267,7 @@ impl<'a> Terms<'a> {
             documents.push(DocumentInfo {
                 path: ItemPath(id_path),
                 length: doc_length,
+                name_token_hashes: name_token_hashes.remove(&id).unwrap_or_default(),
             });
         }
 
@@ -348,6 +355,14 @@ impl<'a> Terms<'a> {
 
         // Store DocRef for later authority score lookup
         self.docref_by_id.insert(id, item);
+
+        // Record the leaf item's name tokens for last-segment-match bonus
+        if let Some(name) = item.name() {
+            let hashes: Vec<TermHash> = tokenize(name).iter().map(|t| hash_term(t)).collect();
+            if !hashes.is_empty() {
+                self.name_token_hashes.insert(id, hashes);
+            }
+        }
 
         self.add_for_item(item, id);
 
@@ -455,7 +470,7 @@ impl<'a> Terms<'a> {
 }
 
 /// Index format version - increment to invalidate all cached indexes
-const INDEX_FORMAT_VERSION: u32 = 1;
+const INDEX_FORMAT_VERSION: u32 = 2;
 
 #[derive(Debug, Clone, Archive, RkyvSerialize, RkyvDeserialize)]
 struct SearchableTerms {
@@ -519,15 +534,31 @@ impl SearchableTerms {
             }
         }
 
+        // Pre-hash query tokens for name-match check
+        let query_token_hashes: Vec<TermHash> = tokens.iter().map(|t| hash_term(t)).collect();
+
         // Convert to results vec
         let results: Vec<SearchResult<'a>> = doc_term_counts
             .into_iter()
             .filter_map(|(doc_id, term_counts)| {
-                self.documents.get(doc_id.0).map(|doc_info| SearchResult {
-                    id_path: doc_info.path.0.clone(),
-                    doc_length: doc_info.length.0,
-                    term_counts,
-                    authority: self.authority_scores.get(doc_id.0).copied().unwrap_or(0),
+                self.documents.get(doc_id.0).map(|doc_info| {
+                    let name_tokens = &doc_info.name_token_hashes;
+                    let name_match_coverage = if name_tokens.is_empty() {
+                        0.0
+                    } else {
+                        let matched = name_tokens
+                            .iter()
+                            .filter(|nh| query_token_hashes.contains(nh))
+                            .count();
+                        matched as f32 / name_tokens.len() as f32
+                    };
+                    SearchResult {
+                        id_path: doc_info.path.0.clone(),
+                        doc_length: doc_info.length.0,
+                        term_counts,
+                        authority: self.authority_scores.get(doc_id.0).copied().unwrap_or(0),
+                        name_match_coverage,
+                    }
                 })
             })
             .collect();
@@ -669,6 +700,8 @@ pub struct SearchResult<'a> {
     pub term_counts: HashMap<&'a str, usize>,
     /// Authority score (incoming link count)
     pub authority: usize,
+    /// Fraction of the leaf name's tokens that matched a query token (0.0..=1.0)
+    pub name_match_coverage: f32,
 }
 
 /// A scored search result from BM25 scoring
@@ -679,10 +712,6 @@ pub struct ScoredResult<'a> {
     pub id_path: Vec<u32>,
     /// Final combined score (used for sorting)
     pub score: f32,
-    /// BM25 relevance score (how well it matches the query)
-    pub relevance: f32,
-    /// Authority score (normalized 0.0-1.0, based on incoming links)
-    pub authority: f32,
 }
 
 /// BM25 scorer for combining results from multiple crates
@@ -786,16 +815,17 @@ impl<'a> BM25Scorer<'a> {
                 // Normalize authority by crate's max authority
                 let authority = result.authority as f32 / max_authority as f32;
 
-                // Combine relevance and authority
-                // Using multiplicative boost: score = relevance * (1.0 + authority)
-                let score = relevance * (1.0 + authority);
+                // Multiplicative bonus scaled by the fraction of the leaf name's tokens
+                // covered by the query (e.g. "handler" boosts Handler more than delegate_handler)
+                let name_boost = 1.0 + 0.5 * result.name_match_coverage;
+
+                // Combine relevance, name match, and authority
+                let score = relevance * name_boost * (1.0 + authority);
 
                 scored.push(ScoredResult {
                     crate_name,
                     id_path: result.id_path,
                     score,
-                    relevance,
-                    authority,
                 });
             }
         }
