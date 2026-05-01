@@ -25,8 +25,9 @@ impl Navigator {
         let results: Vec<_> = crate_names
             .par_iter()
             .map(|&crate_name| {
+                let bare_name = crate_name.split_once('@').map_or(crate_name, |(n, _)| n);
                 self.get_or_build_search_index(crate_name)
-                    .map(|index| (crate_name, index.search(query)))
+                    .map(|index| (bare_name, index.search(query)))
             })
             .collect();
 
