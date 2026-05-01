@@ -22,9 +22,9 @@ pub(crate) fn execute<'a>(
         Ok(results) => results,
         Err(suggestions) => {
             // No crates could be loaded - show suggestions
-            let mut nodes = vec![DocumentNode::paragraph(vec![Span::plain(format!(
-                "No crates could be loaded for search."
-            ))])];
+            let mut nodes = vec![DocumentNode::paragraph(vec![Span::plain(
+                "No crates could be loaded for search.".to_string(),
+            )])];
 
             if !suggestions.is_empty() {
                 nodes.push(DocumentNode::paragraph(vec![Span::plain(

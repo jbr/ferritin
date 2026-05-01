@@ -123,23 +123,19 @@ impl<'a> super::InteractiveState<'a> {
                 kind: MouseEventKind::Drag(_),
                 row,
                 ..
-            } => {
-                if self.viewport.scrollbar_dragging {
-                    let Ok(size) = terminal.size() else {
-                        return;
-                    };
-                    let content_height = size.height.saturating_sub(2);
-                    self.handle_scrollbar_drag(row, content_height);
-                }
+            } if self.viewport.scrollbar_dragging => {
+                let Ok(size) = terminal.size() else {
+                    return;
+                };
+                let content_height = size.height.saturating_sub(2);
+                self.handle_scrollbar_drag(row, content_height);
             }
 
             MouseEvent {
                 kind: MouseEventKind::Up(_),
                 ..
-            } => {
-                if self.viewport.scrollbar_dragging {
-                    self.viewport.scrollbar_dragging = false;
-                }
+            } if self.viewport.scrollbar_dragging => {
+                self.viewport.scrollbar_dragging = false;
             }
             _ => { /*unhandled*/ }
         }

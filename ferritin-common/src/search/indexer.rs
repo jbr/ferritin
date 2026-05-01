@@ -214,6 +214,9 @@ impl<'a> Terms<'a> {
             .add_assign(count);
     }
 
+    // DocRef hashes by crate name + item id; the interior mutability lives in
+    // Navigator's connection pool and doesn't affect identity.
+    #[allow(clippy::mutable_key_type)]
     fn finalize(self) -> SearchableTerms {
         log::debug!("Filtering link counts to visited crates only");
         log::debug!("Visited crates: {:?}", self.visited_crates);
@@ -278,12 +281,12 @@ impl<'a> Terms<'a> {
 
         for ((crate_hash, item_id), &doc_idx) in &id_set {
             // Look up the DocRef for this document and then its link count
-            if let Some(docref) = self.docref_by_id.get(&(*crate_hash, *item_id)) {
-                if let Some(&count) = filtered_link_counts.get(docref) {
-                    authority_scores[doc_idx] = count;
-                    max_authority = max_authority.max(count);
-                    authority_count += 1;
-                }
+            if let Some(docref) = self.docref_by_id.get(&(*crate_hash, *item_id))
+                && let Some(&count) = filtered_link_counts.get(docref)
+            {
+                authority_scores[doc_idx] = count;
+                max_authority = max_authority.max(count);
+                authority_count += 1;
             }
         }
 
@@ -931,6 +934,7 @@ fn hash_term(term: &str) -> TermHash {
 /// Detection strategy:
 /// - Conservative on fence start: ``` must be only content on line (plus optional language tag)
 /// - Eager on fence end: ``` anywhere on line closes the fence
+///
 /// This biases toward indexing content when ambiguous, which is safer for search quality.
 fn prose_slices(text: &str) -> impl Iterator<Item = &str> {
     let mut slices = Vec::new();
@@ -956,8 +960,7 @@ fn prose_slices(text: &str) -> impl Iterator<Item = &str> {
         } else {
             // Conservative start: ``` must be only content (plus optional lang tag)
             let trimmed = line_content.trim();
-            if trimmed.starts_with("```") {
-                let rest = &trimmed[3..];
+            if let Some(rest) = trimmed.strip_prefix("```") {
                 // Language tags are alphanumeric, comma, underscore (e.g., "rust", "rust,no_run")
                 if rest.is_empty()
                     || rest

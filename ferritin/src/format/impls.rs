@@ -222,10 +222,10 @@ impl Request {
     /// Boring impls are shown compactly; non-boring ones get full signatures.
     fn is_boring_impl(&self, impl_item: &Impl) -> bool {
         for param in &impl_item.generics.params {
-            if let GenericParamDefKind::Type { bounds, .. } = &param.kind {
-                if !bounds.is_empty() {
-                    return false;
-                }
+            if let GenericParamDefKind::Type { bounds, .. } = &param.kind
+                && !bounds.is_empty()
+            {
+                return false;
             }
         }
         impl_item.generics.where_predicates.is_empty()
@@ -430,24 +430,23 @@ impl Request {
     ) -> Vec<DocumentNode<'a>> {
         let mut nodes = vec![];
         for id in &impl_item.items {
-            if let Some(assoc_item) = impl_block.get(id) {
-                if let ItemEnum::AssocType {
+            if let Some(assoc_item) = impl_block.get(id)
+                && let ItemEnum::AssocType {
                     type_: Some(ty), ..
                 } = assoc_item.inner()
-                {
-                    let name = assoc_item.name().unwrap_or("_");
-                    let mut spans = vec![
-                        Span::plain("    "),
-                        Span::keyword("type"),
-                        Span::plain(" "),
-                        Span::type_name(name),
-                        Span::plain(" "),
-                        Span::operator("="),
-                        Span::plain(" "),
-                    ];
-                    spans.extend(self.format_type(impl_block, ty));
-                    nodes.push(DocumentNode::generated_code(spans));
-                }
+            {
+                let name = assoc_item.name().unwrap_or("_");
+                let mut spans = vec![
+                    Span::plain("    "),
+                    Span::keyword("type"),
+                    Span::plain(" "),
+                    Span::type_name(name),
+                    Span::plain(" "),
+                    Span::operator("="),
+                    Span::plain(" "),
+                ];
+                spans.extend(self.format_type(impl_block, ty));
+                nodes.push(DocumentNode::generated_code(spans));
             }
         }
         nodes

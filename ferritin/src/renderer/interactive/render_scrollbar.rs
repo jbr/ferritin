@@ -55,10 +55,10 @@ impl<'a> InteractiveState<'a> {
 
         // Get base scrollbar style and brighten if needed
         let mut scrollbar_style = self.theme.muted_style;
-        if brightness_factor > 0.0 {
-            if let Some(fg) = scrollbar_style.fg {
-                scrollbar_style = scrollbar_style.fg(brighten_color(fg, brightness_factor));
-            }
+        if brightness_factor > 0.0
+            && let Some(fg) = scrollbar_style.fg
+        {
+            scrollbar_style = scrollbar_style.fg(brighten_color(fg, brightness_factor));
         }
 
         // Calculate thumb size (proportional to viewport/document ratio)

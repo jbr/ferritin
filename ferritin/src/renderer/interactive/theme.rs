@@ -158,10 +158,10 @@ fn try_color_pairs(
     fallback_fg: Color,
 ) -> (Color, Color) {
     for (bg_opt, fg_opt) in pairs {
-        if let (Some(bg), Some(fg)) = (bg_opt, fg_opt) {
-            if has_good_contrast(*fg, *bg) {
-                return (*bg, *fg);
-            }
+        if let (Some(bg), Some(fg)) = (bg_opt, fg_opt)
+            && has_good_contrast(*fg, *bg)
+        {
+            return (*bg, *fg);
         }
     }
     (fallback_bg, fallback_fg)

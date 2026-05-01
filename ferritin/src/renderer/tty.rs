@@ -320,7 +320,7 @@ fn build_node_lines<'a>(
         DocumentNode::Paragraph { spans } => {
             // Start a new line for paragraph
             let start_idx = lines.len();
-            let terminal_width = render_context.terminal_width() as usize;
+            let terminal_width = render_context.terminal_width();
 
             // Track current line position for word wrapping (accounting for indent)
             let mut current_line_len = indent;
@@ -384,9 +384,7 @@ fn build_node_lines<'a>(
                             if let Some(wrap_at) = wrap_pos {
                                 let (chunk, rest) = remaining.split_at(wrap_at);
                                 let span_to_add = RatatuiSpan::styled(make_text(chunk), style);
-                                if lines.len() == start_idx {
-                                    lines.push(Line::from(vec![span_to_add]));
-                                } else if current_line_len == indent {
+                                if lines.len() == start_idx || current_line_len == indent {
                                     lines.push(Line::from(vec![span_to_add]));
                                 } else {
                                     lines.last_mut().unwrap().spans.push(span_to_add);
@@ -403,9 +401,7 @@ fn build_node_lines<'a>(
                                         let (chunk, rest) = remaining.split_at(next_space);
                                         let span_to_add =
                                             RatatuiSpan::styled(make_text(chunk), style);
-                                        if lines.len() == start_idx {
-                                            lines.push(Line::from(vec![span_to_add]));
-                                        } else if current_line_len == indent {
+                                        if lines.len() == start_idx || current_line_len == indent {
                                             lines.push(Line::from(vec![span_to_add]));
                                         } else {
                                             lines.last_mut().unwrap().spans.push(span_to_add);
@@ -423,9 +419,7 @@ fn build_node_lines<'a>(
                                     if remaining.len() <= available_width {
                                         let span_to_add =
                                             RatatuiSpan::styled(make_text(remaining), style);
-                                        if lines.len() == start_idx {
-                                            lines.push(Line::from(vec![span_to_add]));
-                                        } else if current_line_len == indent {
+                                        if lines.len() == start_idx || current_line_len == indent {
                                             lines.push(Line::from(vec![span_to_add]));
                                         } else {
                                             lines.last_mut().unwrap().spans.push(span_to_add);

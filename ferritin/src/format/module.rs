@@ -40,6 +40,9 @@ impl Request {
     /// Tracks visited items during recursive descent so cyclic re-export
     /// chains (e.g. a nested module glob-importing its parent) can't send the
     /// traversal into an infinite loop.
+    // DocRef hashes by crate name + item id; the interior mutability lives in
+    // Navigator's connection pool and doesn't affect identity.
+    #[allow(clippy::mutable_key_type)]
     fn collect_flat_items<'a>(
         &'a self,
         collected: &mut Vec<FlatItem<'a>>,
@@ -148,6 +151,7 @@ impl Request {
     }
 
     /// Format a module
+    #[allow(clippy::mutable_key_type)] // see collect_flat_items
     pub(super) fn format_module<'a>(&'a self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
         let mut collected = Vec::new();
         let mut visited = std::collections::HashSet::new();

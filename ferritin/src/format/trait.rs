@@ -257,43 +257,39 @@ impl Request {
                         }
 
                         // If this arg is a generic param that has extra bounds, render inline
-                        if let GenericArg::Type(Type::Generic(name)) = arg {
-                            if let Some(param_def) =
+                        if let GenericArg::Type(Type::Generic(name)) = arg
+                            && let Some(param_def) =
                                 impl_item.generics.params.iter().find(|p| p.name == *name)
+                        {
+                            inner.push(Span::generic(&param_def.name));
+
+                            // Inline bounds from the param definition
+                            let mut bounds_started = false;
+                            if let GenericParamDefKind::Type { bounds, .. } = &param_def.kind
+                                && !bounds.is_empty()
                             {
-                                inner.push(Span::generic(&param_def.name));
-
-                                // Inline bounds from the param definition
-                                let mut bounds_started = false;
-                                if let GenericParamDefKind::Type { bounds, .. } = &param_def.kind {
-                                    if !bounds.is_empty() {
-                                        inner.push(Span::punctuation(":"));
-                                        inner.push(Span::plain(" "));
-                                        inner
-                                            .extend(self.format_generic_bounds(impl_block, bounds));
-                                        bounds_started = true;
-                                    }
-                                }
-
-                                // Append extra bounds from where predicates
-                                for (pred_name, where_bounds) in extra_bounds {
-                                    if *pred_name == name.as_str() {
-                                        for (j, bound) in where_bounds.iter().enumerate() {
-                                            if j == 0 && !bounds_started {
-                                                inner.push(Span::punctuation(":"));
-                                                inner.push(Span::plain(" "));
-                                            } else {
-                                                inner.push(Span::plain(" + "));
-                                            }
-                                            inner.extend(
-                                                self.format_generic_bound(impl_block, bound),
-                                            );
-                                        }
-                                        break;
-                                    }
-                                }
-                                continue;
+                                inner.push(Span::punctuation(":"));
+                                inner.push(Span::plain(" "));
+                                inner.extend(self.format_generic_bounds(impl_block, bounds));
+                                bounds_started = true;
                             }
+
+                            // Append extra bounds from where predicates
+                            for (pred_name, where_bounds) in extra_bounds {
+                                if *pred_name == name.as_str() {
+                                    for (j, bound) in where_bounds.iter().enumerate() {
+                                        if j == 0 && !bounds_started {
+                                            inner.push(Span::punctuation(":"));
+                                            inner.push(Span::plain(" "));
+                                        } else {
+                                            inner.push(Span::plain(" + "));
+                                        }
+                                        inner.extend(self.format_generic_bound(impl_block, bound));
+                                    }
+                                    break;
+                                }
+                            }
+                            continue;
                         }
 
                         // Non-generic arg (concrete type, lifetime, etc.) — render normally

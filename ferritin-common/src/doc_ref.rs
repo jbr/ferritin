@@ -211,18 +211,18 @@ impl<'a> DocRef<'a, Item> {
         // Prefer a path without a discriminator on the parent segment (simpler output).
         // The unqualified key is only present in path_to_id when there is no collision at
         // that path, so its presence is a reliable signal that we can omit the discriminator.
-        if let Some(parent_summary) = parent_ref.crate_docs.paths.get(&parent_ref.item.id) {
-            if let Some(tail) = parent_summary.path.get(1..) {
-                let parent_key = tail.join("::");
-                if parent_ref.crate_docs.path_to_id.contains_key(&parent_key) {
-                    let crate_name = parent_ref.crate_docs.name();
-                    let parent_path = if parent_key.is_empty() {
-                        crate_name.to_string()
-                    } else {
-                        format!("{crate_name}::{parent_key}")
-                    };
-                    return Some(format!("{parent_path}::{disc}@{name}"));
-                }
+        if let Some(parent_summary) = parent_ref.crate_docs.paths.get(&parent_ref.item.id)
+            && let Some(tail) = parent_summary.path.get(1..)
+        {
+            let parent_key = tail.join("::");
+            if parent_ref.crate_docs.path_to_id.contains_key(&parent_key) {
+                let crate_name = parent_ref.crate_docs.name();
+                let parent_path = if parent_key.is_empty() {
+                    crate_name.to_string()
+                } else {
+                    format!("{crate_name}::{parent_key}")
+                };
+                return Some(format!("{parent_path}::{disc}@{name}"));
             }
         }
 
@@ -335,10 +335,10 @@ impl<'a> DocRef<'a, ExternalCrate> {
     /// Get the canonical name of this external crate.
     /// Parses html_root_url if available, falls back to the name field.
     pub fn crate_name(&self) -> &'a str {
-        if let Some(url) = &self.item.html_root_url {
-            if let Some((name, _)) = parse_docsrs_url(url) {
-                return name;
-            }
+        if let Some(url) = &self.item.html_root_url
+            && let Some((name, _)) = parse_docsrs_url(url)
+        {
+            return name;
         }
         &self.item.name
     }

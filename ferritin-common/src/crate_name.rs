@@ -6,7 +6,7 @@ use std::{
     ops::Deref,
 };
 
-#[derive(Clone, Eq, Ord)]
+#[derive(Clone, Eq)]
 pub struct CrateName<'a>(Cow<'a, str>);
 
 impl CrateName<'_> {
@@ -73,29 +73,27 @@ impl Deref for CrateName<'_> {
 
 impl PartialEq for CrateName<'_> {
     fn eq(&self, other: &Self) -> bool {
-        eq_ignoring_dash_underscore(&self.0, &other.0)
+        cmp_ignoring_dash_underscore(&self.0, &other.0).is_eq()
+    }
+}
+
+impl Ord for CrateName<'_> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        cmp_ignoring_dash_underscore(&self.0, &other.0)
     }
 }
 
 impl PartialOrd for CrateName<'_> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        if eq_ignoring_dash_underscore(&self.0, &other.0) {
-            return Some(Ordering::Equal);
-        }
-        self.0.partial_cmp(&other.0)
+        Some(self.cmp(other))
     }
 }
 
-/// Helper function to compare strings ignoring dash/underscore differences
-fn eq_ignoring_dash_underscore(a: &str, b: &str) -> bool {
-    let mut a = a.chars();
-    let mut b = b.chars();
-    loop {
-        match (a.next(), b.next()) {
-            (Some('_'), Some('-')) | (Some('-'), Some('_')) => {}
-            (Some(a_char), Some(b_char)) if a_char == b_char => {}
-            (None, None) => break true,
-            _ => break false,
-        }
-    }
+/// Compare strings treating `-` and `_` as equivalent.
+///
+/// Folds `-` to `_` on both sides, then compares byte-by-byte. This matches
+/// the `Hash` impl (which folds `-` to `_`) so `Eq`, `Ord`, and `Hash` agree.
+fn cmp_ignoring_dash_underscore(a: &str, b: &str) -> Ordering {
+    let normalize = |c: u8| if c == b'-' { b'_' } else { c };
+    a.bytes().map(normalize).cmp(b.bytes().map(normalize))
 }

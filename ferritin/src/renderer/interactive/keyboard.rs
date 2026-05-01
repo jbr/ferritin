@@ -126,26 +126,24 @@ impl<'a> InteractiveState<'a> {
             let theme_count = themes.len();
 
             match key.code {
-                KeyCode::Up | KeyCode::Char('k') => {
+                KeyCode::Up | KeyCode::Char('k')
                     // Move selection up
-                    if *selected_index > 0 {
+                    if *selected_index > 0 => {
                         *selected_index -= 1;
                         // Apply theme immediately for preview
                         if let Some(theme_name) = themes.get(*selected_index) {
                             let _ = self.apply_theme(theme_name);
                         }
                     }
-                }
-                KeyCode::Down | KeyCode::Char('j') => {
+                KeyCode::Down | KeyCode::Char('j')
                     // Move selection down
-                    if *selected_index + 1 < theme_count {
+                    if *selected_index + 1 < theme_count => {
                         *selected_index += 1;
                         // Apply theme immediately for preview
                         if let Some(theme_name) = themes.get(*selected_index) {
                             let _ = self.apply_theme(theme_name);
                         }
                     }
-                }
                 KeyCode::Enter => {
                     // Save current theme and exit
                     let theme_name = self
@@ -568,36 +566,36 @@ impl<'a> InteractiveState<'a> {
     fn handle_activate_focused_link(&mut self) {
         use super::state::KeyboardCursor;
 
-        if let KeyboardCursor::Focused { action_index } = self.viewport.keyboard_cursor {
-            if let Some((_, action)) = self.render_cache.actions.get(action_index) {
-                let action = action.clone();
+        if let KeyboardCursor::Focused { action_index } = self.viewport.keyboard_cursor
+            && let Some((_, action)) = self.render_cache.actions.get(action_index)
+        {
+            let action = action.clone();
 
-                // Handle SelectTheme specially (same as mouse click)
-                if let crate::styled_string::TuiAction::SelectTheme(theme_name) = &action {
-                    let _ = self.apply_theme(theme_name);
-                    if let super::UiMode::ThemePicker {
-                        ref mut selected_index,
-                        ..
-                    } = self.ui_mode
-                    {
-                        let themes = crate::render_context::RenderContext::available_themes();
-                        if let Some(idx) = themes.iter().position(|t| t == theme_name.as_ref()) {
-                            *selected_index = idx;
-                        }
+            // Handle SelectTheme specially (same as mouse click)
+            if let crate::styled_string::TuiAction::SelectTheme(theme_name) = &action {
+                let _ = self.apply_theme(theme_name);
+                if let super::UiMode::ThemePicker {
+                    ref mut selected_index,
+                    ..
+                } = self.ui_mode
+                {
+                    let themes = crate::render_context::RenderContext::available_themes();
+                    if let Some(idx) = themes.iter().position(|t| t == theme_name.as_ref()) {
+                        *selected_index = idx;
                     }
-                    self.ui.debug_message = format!("Selected theme: {theme_name}").into();
-                } else {
-                    match super::events::handle_action(&mut self.document.document, action) {
-                        Some(command) => {
-                            let _ = self.cmd_tx.send(command);
-                            self.loading.start();
-                            // Reset keyboard cursor on navigation
-                            self.viewport.keyboard_cursor = KeyboardCursor::VirtualTop;
-                        }
-                        None => {
-                            // Action mutated document in place (e.g., ExpandBlock)
-                            self.viewport.cached_layout = None;
-                        }
+                }
+                self.ui.debug_message = format!("Selected theme: {theme_name}").into();
+            } else {
+                match super::events::handle_action(&mut self.document.document, action) {
+                    Some(command) => {
+                        let _ = self.cmd_tx.send(command);
+                        self.loading.start();
+                        // Reset keyboard cursor on navigation
+                        self.viewport.keyboard_cursor = KeyboardCursor::VirtualTop;
+                    }
+                    None => {
+                        // Action mutated document in place (e.g., ExpandBlock)
+                        self.viewport.cached_layout = None;
                     }
                 }
             }
