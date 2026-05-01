@@ -21,7 +21,7 @@ path = "src/main.rs"
 ferritin-common = { path = "../ferritin-common", version = "0.8.0" }
 
 anyhow.workspace = true
-clap = { version = "4.6.0", features = ["derive", "cargo", "env"] }
+clap = { version = "4.6.1", features = ["derive", "cargo", "env"] }
 crossbeam-channel = "0.5"
 crossterm = "0.29"
 fieldwork = "0.5.1"
@@ -35,10 +35,10 @@ syntect = { version = "5.3", default-features = false, features = ["parsing", "d
 terminal_size = "0.4"
 thiserror = "2"
 unicode-width = "0.2.2"
-webbrowser = "1.2.0"
+webbrowser = "1.2.1"
 semver = "1.0.28"
 percent-encoding = "2.3"
-mimalloc = "0.1.48"
+mimalloc = "0.1.50"
 
 [build-dependencies]
 syntect = { version = "5.3", default-features = false, features = ["parsing", "plist-load", "dump-load", "dump-create", "regex-onig"] }

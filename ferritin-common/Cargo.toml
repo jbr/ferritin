@@ -15,7 +15,7 @@ cargo_metadata.workspace = true
 elsa.workspace = true
 fieldwork = "0.5.1"
 log = "0.4.29"
-rkyv = "0.8.15"
+rkyv = "0.8.16"
 rustc-hash.workspace = true
 rustdoc-types.workspace = true
 rustdoc-types-56 = { package = "rustdoc-types", version = "0.56" }
