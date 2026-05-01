@@ -119,13 +119,15 @@ pub(crate) fn execute<'a>(
             request.get_item_from_id_path(result.crate_name, &result.id_path)
         {
             let path = path_segments.join("::");
-            let normalized_score = 100.0 * result.score / top_score;
+            // Quantize to 0.1% buckets to match the sort's tiebreak precision
+            // (see BM25Scorer::score) so ordering and display stay in sync.
+            let normalized_score = (1000.0 * result.score / top_score).round() / 10.0;
 
             let mut content = vec![DocumentNode::paragraph(vec![
                 Span::plain(path).with_target(Some(item)),
                 Span::plain(" "),
                 Span::plain(format!(
-                    " ({:?}) - score: {:.0}",
+                    " ({:?}) - score: {:.1}",
                     item.kind(),
                     normalized_score,
                 )),

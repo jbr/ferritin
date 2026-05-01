@@ -803,12 +803,16 @@ impl<'a> BM25Scorer<'a> {
             for result in results.results {
                 let doc_len_norm = result.doc_length as f32 / avgdl;
 
-                let relevance: f32 = result
-                    .term_counts
+                // Sort terms before summing so the f32 sum is deterministic across
+                // processes (HashMap iteration order varies with RandomState seed,
+                // and f32 addition is non-associative).
+                let mut term_entries: Vec<_> = result.term_counts.iter().collect();
+                term_entries.sort_by_key(|(term, _)| *term);
+                let relevance: f32 = term_entries
                     .iter()
                     .map(|(term, count)| {
-                        let idf = global_idf.get(term).copied().unwrap_or(0.0);
-                        let tf = *count as f32;
+                        let idf = global_idf.get(*term).copied().unwrap_or(0.0);
+                        let tf = **count as f32;
                         let numerator = tf * (self.k1 + 1.0);
                         let denominator = tf + self.k1 * (1.0 - self.b + self.b * doc_len_norm);
                         idf * (numerator / denominator)
@@ -835,8 +839,21 @@ impl<'a> BM25Scorer<'a> {
 
         log::debug!("Sorting {} scored results", scored.len());
 
-        // Sort by combined score (descending)
-        scored.sort_by(|a, b| b.score.total_cmp(&a.score));
+        // Sort by display-quantized score (0.1% buckets relative to the top
+        // result) so items that render identically tiebreak deterministically
+        // by crate_name and id_path. Without this, tiny float differences
+        // across platforms (e.g. nightly std doc content) produce flaky
+        // ordering for results that look identical to the user.
+        let max_score = scored.iter().map(|r| r.score).fold(1.0_f32, f32::max);
+        scored.sort_by(|a, b| {
+            let a_bucket = (1000.0 * a.score / max_score).round();
+            let b_bucket = (1000.0 * b.score / max_score).round();
+            b_bucket
+                .total_cmp(&a_bucket)
+                .then_with(|| b.score.total_cmp(&a.score))
+                .then_with(|| a.crate_name.cmp(b.crate_name))
+                .then_with(|| a.id_path.cmp(&b.id_path))
+        });
 
         scored
     }
