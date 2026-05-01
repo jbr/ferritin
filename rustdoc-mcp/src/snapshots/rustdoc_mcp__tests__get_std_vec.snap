@@ -114,6 +114,7 @@ debug_assert // Asserts that a boolean expression is `true` at runtime. [+43 mor
 debug_assert_eq // Asserts that two expressions are equal to each other. [+18 more lines]
 debug_assert_matches // Asserts that an expression matches the provided pattern. [+39 more lines]
 debug_assert_ne // Asserts that two expressions are not equal to each other. [+18 more lines]
+derive // Attribute macro used to apply derive macros. [+4 more lines]
 env // Inspects an environment variable at compile time. [+32 more lines]
 eprint // Prints to the standard error. [+26 more lines]
 eprintln // Prints to the standard error, with a newline. [+27 more lines]
@@ -142,10 +143,7 @@ unreachable // Indicates unreachable code. [+51 more lines]
 write // Writes formatted data into a buffer. [+85 more lines]
 writeln // Writes formatted data into a buffer, with a newline appended. [+24 more lines]
 
-ProcAttribute:
-derive // Attribute macro used to apply derive macros. [+4 more lines]
-
-Primitive:
+Primitives:
 array // A fixed-size array, denoted `[T; N]`, for the element type, `T`, and the [+204 more lines]
 bool // The boolean type. [+55 more lines]
 char // A character type. [+125 more lines]
