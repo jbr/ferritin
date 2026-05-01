@@ -73,8 +73,7 @@ impl<'a> InteractiveState<'a> {
             &display_text
         };
 
-        let mut col = BASELINE_LEFT_MARGIN;
-        for ch in truncated.chars() {
+        for (col, ch) in (BASELINE_LEFT_MARGIN..).zip(truncated.chars()) {
             if col >= area.width {
                 break;
             }
@@ -82,7 +81,6 @@ impl<'a> InteractiveState<'a> {
                 .unwrap()
                 .set_char(ch)
                 .set_style(style);
-            col += 1;
         }
 
         // Render right-justified hint text if present (within margin-adjusted area)
@@ -91,8 +89,7 @@ impl<'a> InteractiveState<'a> {
                 .width
                 .saturating_sub(hint.len() as u16)
                 .max(BASELINE_LEFT_MARGIN);
-            let mut hint_col = hint_start;
-            for ch in hint.chars() {
+            for (hint_col, ch) in (hint_start..).zip(hint.chars()) {
                 if hint_col >= area.width {
                     break;
                 }
@@ -100,7 +97,6 @@ impl<'a> InteractiveState<'a> {
                     .unwrap()
                     .set_char(ch)
                     .set_style(hint_style);
-                hint_col += 1;
             }
         }
     }

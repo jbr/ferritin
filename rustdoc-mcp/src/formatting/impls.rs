@@ -205,22 +205,22 @@ impl Request {
         let crate_prefix = full_path.split("::").next().unwrap_or("");
 
         // Use Navigator's lookup to determine provenance
-        if !crate_prefix.is_empty() {
-            if let Some(lookup_result) = self.lookup_crate(crate_prefix, &VersionReq::STAR) {
-                let provenance = lookup_result.provenance();
-                let category = if provenance.is_workspace() {
-                    TraitCategory::CrateLocal
-                } else if provenance.is_std() {
-                    TraitCategory::Std
-                } else {
-                    TraitCategory::External
-                };
+        if !crate_prefix.is_empty()
+            && let Some(lookup_result) = self.lookup_crate(crate_prefix, &VersionReq::STAR)
+        {
+            let provenance = lookup_result.provenance();
+            let category = if provenance.is_workspace() {
+                TraitCategory::CrateLocal
+            } else if provenance.is_std() {
+                TraitCategory::Std
+            } else {
+                TraitCategory::External
+            };
 
-                return TraitImpl {
-                    category,
-                    name: rendered_path.to_string(),
-                };
-            }
+            return TraitImpl {
+                category,
+                name: rendered_path.to_string(),
+            };
         }
 
         TraitImpl {

@@ -91,8 +91,7 @@ impl<'a> InteractiveState<'a> {
                 format!("{:20} {:width$}", key, desc, width = max_width - 21)
             };
 
-            let mut col = start_col;
-            for ch in text.chars() {
+            for (col, ch) in (start_col..).zip(text.chars()) {
                 if col >= area.width {
                     break;
                 }
@@ -100,7 +99,6 @@ impl<'a> InteractiveState<'a> {
                     .unwrap()
                     .set_char(ch)
                     .set_style(*style);
-                col += 1;
             }
         }
     }

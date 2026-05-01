@@ -415,7 +415,7 @@ impl Navigator {
         for child in item.child_items() {
             if let Some(name) = child.name()
                 && name == segment_name
-                && kind_filter.map_or(true, |k| child.kind() == k)
+                && kind_filter.is_none_or(|k| child.kind() == k)
                 && let Some(child) =
                     self.find_children_recursive(child, path, next_segment_start, suggestions)
             {

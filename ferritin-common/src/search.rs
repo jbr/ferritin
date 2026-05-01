@@ -44,8 +44,10 @@ impl Navigator {
         }
 
         // If no crates succeeded, return the first error
-        if crate_results.is_empty() && first_error.is_some() {
-            return Err(first_error.unwrap());
+        if crate_results.is_empty()
+            && let Some(err) = first_error
+        {
+            return Err(err);
         }
 
         // Aggregate results with BM25 scoring

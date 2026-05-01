@@ -175,8 +175,7 @@ impl<'a> History<'a> {
 
         if history.is_empty() {
             let text = " 🦀  <no history>";
-            let mut col = BASELINE_LEFT_MARGIN;
-            for ch in text.chars() {
+            for (col, ch) in (BASELINE_LEFT_MARGIN..).zip(text.chars()) {
                 if col >= area.width {
                     break;
                 }
@@ -184,7 +183,6 @@ impl<'a> History<'a> {
                     .unwrap()
                     .set_char(ch)
                     .set_style(bg_style);
-                col += 1;
             }
             return;
         }

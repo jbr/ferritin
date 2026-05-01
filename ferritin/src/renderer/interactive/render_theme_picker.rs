@@ -123,11 +123,11 @@ impl<'a> InteractiveState<'a> {
 
             for (i, ch) in instructions.chars().enumerate() {
                 let x = instruction_x + i as u16;
-                if x < modal_area.x + modal_area.width {
-                    if let Some(cell) = buf.cell_mut((x, instruction_y)) {
-                        cell.set_char(ch);
-                        cell.set_style(self.theme.status_hint_style);
-                    }
+                if x < modal_area.x + modal_area.width
+                    && let Some(cell) = buf.cell_mut((x, instruction_y))
+                {
+                    cell.set_char(ch);
+                    cell.set_style(self.theme.status_hint_style);
                 }
             }
         }

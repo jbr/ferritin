@@ -160,41 +160,28 @@ impl MarkdownRenderer {
                             Self::push_to_parent(&mut stack, &mut root, StackItem::Node(para));
                         }
                     }
-                    TagEnd::Heading(_level) => {
-                        if in_heading {
-                            if let Some(level) = heading_level {
-                                let heading = DocumentNode::Heading {
-                                    level,
-                                    spans: std::mem::take(&mut current_spans),
-                                };
-                                Self::push_to_parent(
-                                    &mut stack,
-                                    &mut root,
-                                    StackItem::Node(heading),
-                                );
-                            }
-                            in_heading = false;
-                            heading_level = None;
-                        }
-                    }
-                    TagEnd::CodeBlock => {
-                        if in_code_block {
-                            // Strip hidden lines for Rust code
-                            let code = if matches!(code_block_lang.as_deref(), Some("rust") | None)
-                            {
-                                Self::strip_hidden_lines(&code_block_content)
-                            } else {
-                                code_block_content.clone()
+                    TagEnd::Heading(_level) if in_heading => {
+                        if let Some(level) = heading_level {
+                            let heading = DocumentNode::Heading {
+                                level,
+                                spans: std::mem::take(&mut current_spans),
                             };
-
-                            let code_block = DocumentNode::code_block(code_block_lang.take(), code);
-                            Self::push_to_parent(
-                                &mut stack,
-                                &mut root,
-                                StackItem::Node(code_block),
-                            );
-                            in_code_block = false;
+                            Self::push_to_parent(&mut stack, &mut root, StackItem::Node(heading));
                         }
+                        in_heading = false;
+                        heading_level = None;
+                    }
+                    TagEnd::CodeBlock if in_code_block => {
+                        // Strip hidden lines for Rust code
+                        let code = if matches!(code_block_lang.as_deref(), Some("rust") | None) {
+                            Self::strip_hidden_lines(&code_block_content)
+                        } else {
+                            code_block_content.clone()
+                        };
+
+                        let code_block = DocumentNode::code_block(code_block_lang.take(), code);
+                        Self::push_to_parent(&mut stack, &mut root, StackItem::Node(code_block));
+                        in_code_block = false;
                     }
                     TagEnd::Emphasis => {
                         in_emphasis = false;
@@ -258,10 +245,8 @@ impl MarkdownRenderer {
                         table_header = Some(std::mem::take(&mut current_row));
                         in_table_head = false;
                     }
-                    TagEnd::TableRow => {
-                        if !in_table_head {
-                            table_rows.push(std::mem::take(&mut current_row));
-                        }
+                    TagEnd::TableRow if !in_table_head => {
+                        table_rows.push(std::mem::take(&mut current_row));
                     }
                     TagEnd::Table => {
                         let table = DocumentNode::Table {
