@@ -33,7 +33,7 @@ pub(crate) enum Commands {
         crate_: Option<String>,
 
         /// Maximum number of results
-        #[arg(short, long, default_value = "10")]
+        #[arg(long, default_value = "10")]
         limit: usize,
     },
 
