@@ -25,8 +25,6 @@ Serialize // A **data structure** that can be serialized into any data format su
 Serializer // A **data format** that can serialize any data structure supported by Serde. [+76 more lines]
 
 Macros:
-forward_to_deserialize_any // Helper macro when implementing the `Deserializer` part of a new data format [+104 more lines]
-
-ProcDerive:
 Deserialize
 Serialize
+forward_to_deserialize_any // Helper macro when implementing the `Deserializer` part of a new data format [+104 more lines]
