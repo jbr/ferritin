@@ -6,6 +6,7 @@ pub mod conversions;
 pub mod crate_name;
 pub mod doc_ref;
 pub mod iterators;
+mod lookup;
 mod navigator;
 mod rustdoc_data;
 pub mod search;

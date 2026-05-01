@@ -16,10 +16,6 @@ use std::fmt;
 use std::fmt::Debug;
 use std::path::PathBuf;
 
-// /// Key for identifying crates in the working set
-// /// Version is None for workspace/local crates, Some(semver) for published crates
-// type CrateKey = (String, Option<String>);
-
 #[derive(Fieldwork)]
 #[fieldwork(get)]
 pub struct Suggestion<'a> {
@@ -412,15 +408,20 @@ impl Navigator {
             &path[next_segment_start..]
         );
 
-        for child in item.child_items() {
-            if let Some(name) = child.name()
-                && name == segment_name
-                && kind_filter.is_none_or(|k| child.kind() == k)
-                && let Some(child) =
-                    self.find_children_recursive(child, path, next_segment_start, suggestions)
-            {
-                return Some(child);
+        // Lazy lookup: walk all children matching this segment name without
+        // eagerly resolving every Use's source. Try each candidate — multiple
+        // children can share a name (e.g. a re-export Use plus the real item)
+        // and only one may actually contain the next path segment.
+        if let Some(found) = crate::lookup::for_each_named(item, segment_name, |child| {
+            if !kind_filter.is_none_or(|k| child.kind() == k) {
+                return crate::lookup::Step::Continue;
             }
+            match self.find_children_recursive(child, path, next_segment_start, suggestions) {
+                Some(found) => crate::lookup::Step::Stop(found),
+                None => crate::lookup::Step::Continue,
+            }
+        }) {
+            return Some(found);
         }
 
         suggestions.extend(self.generate_suggestions(item, path, index));

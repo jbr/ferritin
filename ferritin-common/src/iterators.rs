@@ -109,11 +109,145 @@ impl<'a> DocRef<'a, Item> {
     pub fn child_items(&self) -> ChildItems<'a> {
         ChildItems::new(*self)
     }
+
+    /// Iterate children without resolving `Use` sources. Each yielded
+    /// [`LazyChild`] exposes a cheap `name()` (reading `use_item.name` directly
+    /// for non-glob Uses, the item's own name otherwise) and an explicit
+    /// `resolve()` that performs the source lookup only when the caller asks.
+    ///
+    /// Use this for name-based lookups (`find_named`, path traversal). Use
+    /// [`Self::child_items`] when you need the resolved items unconditionally
+    /// (display, indexing).
+    pub fn lazy_children(&self) -> LazyChildren<'a> {
+        LazyChildren::new(*self)
+    }
 }
 
 impl<'a> DocRef<'a, Item> {
     pub fn id_iter(&self, ids: &'a [Id]) -> IdIter<'a> {
         IdIter::new(*self, ids)
+    }
+}
+
+/// A child item where `Use` source resolution is deferred. Yielded by
+/// [`LazyChildren`]; resolve only when the name (or other cheap predicate)
+/// indicates the item is interesting.
+///
+/// `Use` variants carry the parent module so that `self::`/`super::` paths in
+/// the Use's source string resolve against the right scope.
+#[derive(Debug, Clone, Copy)]
+pub enum LazyChild<'a> {
+    /// A non-`Use` direct child (module, struct, function, …).
+    Item(DocRef<'a, Item>),
+    /// A non-glob `Use` item. Its imported name is `use_item.name`; the
+    /// pointed-to item is not yet loaded.
+    NonGlob {
+        use_item: DocRef<'a, Use>,
+        parent: DocRef<'a, Item>,
+    },
+    /// A glob `Use` (`pub use foo::*;`). Has no single name — resolve and walk
+    /// the source's children if you want to look through it.
+    Glob {
+        use_item: DocRef<'a, Use>,
+        parent: DocRef<'a, Item>,
+    },
+}
+
+impl<'a> LazyChild<'a> {
+    /// Cheap name access. `None` for glob Uses (no single imported name).
+    pub fn name(&self) -> Option<&'a str> {
+        match self {
+            LazyChild::Item(item) => item.name(),
+            // Deref `DocRef<Use>` to its inner `&'a Use` to get a `&'a str`
+            // (not borrowed from the temporary DocRef value).
+            LazyChild::NonGlob { use_item, .. } => Some(&use_item.item().name),
+            LazyChild::Glob { .. } => None,
+        }
+    }
+
+    /// Resolve to a concrete item. For `NonGlob`, follows the Use's source
+    /// (preferring `use_item.id` to avoid a string-based path lookup) and
+    /// preserves the imported name. For `Glob`, returns the source module
+    /// itself; the caller walks *its* children. Returns `None` if the source
+    /// can't be resolved.
+    pub fn resolve(self) -> Option<DocRef<'a, Item>> {
+        match self {
+            LazyChild::Item(item) => Some(item),
+            LazyChild::NonGlob { use_item, parent } => {
+                let name: &'a str = &use_item.item().name;
+                resolve_use_target(use_item, parent).map(|item| item.with_name(name))
+            }
+            LazyChild::Glob { use_item, parent } => resolve_use_target(use_item, parent),
+        }
+    }
+}
+
+/// Resolve a `Use` to its target item, using `use_item.id` first and falling
+/// back to a path-based lookup against `parent`'s containing module path
+/// (so `self::`/`super::` resolve correctly).
+fn resolve_use_target<'a>(
+    use_item: DocRef<'a, Use>,
+    parent: DocRef<'a, Item>,
+) -> Option<DocRef<'a, Item>> {
+    let use_inner = use_item.item();
+    use_inner
+        .id
+        .and_then(|id| use_item.crate_docs().get(use_item.navigator(), &id))
+        .or_else(|| {
+            let module_path = parent.containing_module_path();
+            resolve_use_source(use_item.navigator(), &module_path, &use_inner.source)
+        })
+}
+
+/// Lazy iterator over a module/enum's direct children. Does not expand glob
+/// Uses or resolve non-glob Uses; see [`LazyChild`] for what each yielded
+/// variant carries.
+pub struct LazyChildren<'a> {
+    parent: DocRef<'a, Item>,
+    ids: std::slice::Iter<'a, Id>,
+}
+
+impl<'a> LazyChildren<'a> {
+    pub(crate) fn new(parent: DocRef<'a, Item>) -> Self {
+        let ids: &[Id] = match parent.inner() {
+            ItemEnum::Module(m) => &m.items,
+            ItemEnum::Enum(e) => &e.variants,
+            _ => &[],
+        };
+        Self {
+            parent,
+            ids: ids.iter(),
+        }
+    }
+}
+
+impl<'a> Iterator for LazyChildren<'a> {
+    type Item = LazyChild<'a>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        for id in &mut self.ids {
+            let Some(item) = self.parent.get(id) else {
+                continue;
+            };
+            return Some(match item.inner() {
+                ItemEnum::Use(use_item) => {
+                    let use_ref = item.build_ref(use_item);
+                    if use_item.is_glob {
+                        LazyChild::Glob {
+                            use_item: use_ref,
+                            parent: self.parent,
+                        }
+                    } else {
+                        LazyChild::NonGlob {
+                            use_item: use_ref,
+                            parent: self.parent,
+                        }
+                    }
+                }
+                _ => LazyChild::Item(item),
+            });
+        }
+        None
     }
 }
 
