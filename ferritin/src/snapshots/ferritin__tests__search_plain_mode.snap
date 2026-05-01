@@ -5,8 +5,32 @@ expression: "render_for_tests_rooted(Commands::search(\"trigger line-based trunc
 Search results for 'trigger line-based truncation'
 ================================================================================
 
-  ◦ fixture-crate::TestTrait  (Trait) - score: 100 (relevance: 100, authority: 0)
+  ◦ fixture-crate::TestTrait  (Trait) - score: 100
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
-  ◦ fixture-crate::markdown_test  (Module) - score: 24 (relevance: 24, authority: 0)
-    Markdown: Syntax [...]
+  ◦ std::line  (Macro) - score: 55
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ core::line  (Macro) - score: 54
+    Expands to the line number on which it was invoked. [...]
+
+  ◦ proc_macro::Span::line  (Function) - score: 39
+    The one-indexed line of the source file where the span starts. [...]
+
+  ◦ core::panic::Location::line  (Function) - score: 39
+    Returns the line number from which the panic originated. [...]
+
+  ◦ std::panic::Location::line  (Function) - score: 39
+    Returns the line number from which the panic originated. [...]
+
+  ◦ core::arch::x86::_mm_prefetch  (Function) - score: 31
+    Fetch the cache line that contains address p using the given STRATEGY. [...]
+
+  ◦ std::arch::x86::_mm_prefetch  (Function) - score: 31
+    Fetch the cache line that contains address p using the given STRATEGY. [...]
+
+  ◦ std::io::LineWriter  (Struct) - score: 31
+    Wraps a writer and buffers output to it, flushing whenever a newline (0x0a, '\n') is detected. [...]
+
+  ◦ alloc::collections::BTreeMap  (Struct) - score: 31
+    An ordered map based on a B-Tree. [...]
