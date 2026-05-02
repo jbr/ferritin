@@ -34,7 +34,7 @@ Variants:
 
 Trait Implementations
 
-From<T>, RefUnwindSafe, UnwindSafe, Unpin, UnsafeUnpin, Freeze, Sync, Send
+std: From<T>, RefUnwindSafe, UnwindSafe, Unpin, UnsafeUnpin, Freeze, Sync, Send
 
   ◦ impl<T: 'static + ?Sized> Any
 

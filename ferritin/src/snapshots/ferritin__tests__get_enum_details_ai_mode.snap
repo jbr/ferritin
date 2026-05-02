@@ -32,7 +32,7 @@ VariantC // Variant C with struct data (name and value)
 
 
 Trait Implementations
-From<T>, RefUnwindSafe, UnwindSafe, Unpin, UnsafeUnpin, Freeze, Sync, Send
+std: From<T>, RefUnwindSafe, UnwindSafe, Unpin, UnsafeUnpin, Freeze, Sync, Send
 impl<T: 'static + ?Sized> Any
 
 impl<T, U: Into<T>> TryFrom<U> //     type Error = Infallible

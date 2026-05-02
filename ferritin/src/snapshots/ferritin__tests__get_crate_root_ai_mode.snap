@@ -47,6 +47,9 @@ TupleStruct // A tuple struct for testing
 UnitStruct // A unit struct for testing
 
 
+Vec // A contiguous growable array type, written as Vec<T>, short for 'vector'. [+40 more lines]
+
+
 Enums
 GenericEnum // A generic enum for testing [+1 more lines]
 

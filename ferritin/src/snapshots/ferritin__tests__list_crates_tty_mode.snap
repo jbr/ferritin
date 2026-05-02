@@ -5,5 +5,21 @@ expression: "render_for_tests_rooted(Commands::list(), OutputMode :: Tty, &\nget
 Available crates:
 ================================================================================
 
+  ◦ [alloc](https://doc.rust-lang.org/nightly/alloc/index.html)  1.97.0-nightly
+        The Rust core allocation and collections library
+
+  ◦ [core](https://doc.rust-lang.org/nightly/core/index.html)  1.97.0-nightly
+        The Rust Core Library
+
   ◦ [fixture-crate](https://docs.rs/fixture-crate/latest/fixture-crate/index.html)  (workspace-local, aliased as crate)
         this is the crate description
+
+  ◦ [proc_macro](https://doc.rust-lang.org/nightly/proc_macro/index.html)  1.97.0-nightly
+        A support library for macro authors when defining new macros
+
+  ◦ [std](https://doc.rust-lang.org/nightly/std/index.html)  1.97.0-nightly
+        The Rust Standard Library
+
+  ◦ [test](https://docs.rs/test/latest/test/index.html)  1.97.0-nightly
+        Support code for rustc's built in unit-test and micro-benchmarking
+    framework

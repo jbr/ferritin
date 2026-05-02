@@ -49,6 +49,9 @@ Structs
   ◦ [UnitStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.UnitStruct.html) 
     A unit struct for testing
 
+  ◦ [Vec](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html) 
+    A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
+
 Enums
 
   ◦ [GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html) 

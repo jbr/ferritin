@@ -2,4 +2,172 @@
 source: rustdoc-mcp/src/tests.rs
 expression: result_std_root
 ---
-`std` not found. Did you mean one of these?
+Item: std
+Kind: Module
+Visibility: Public
+Defined at: std
+
+# The Rust Standard Library
+
+The Rust Standard Library is the foundation of portable Rust software, a
+set of minimal and battle-tested shared abstractions for the [broader Rust
+ecosystem][crates.io]. It offers core types, like [`Vec<T>`] and
+[`Option<T>`], library-defined [operations on language
+primitives](#primitives), [standard macros](#macros), [I/O] and
+[multithreading], among [many other things][other].
+[+206 lines elided]
+
+
+Modules:
+alloc // Memory allocation APIs. [+60 more lines]
+any // Utilities for dynamic typing or type reflection. [+83 more lines]
+arch // SIMD and vendor intrinsics module. [+355 more lines]
+array // Utilities for the array primitive type. [+2 more lines]
+ascii // Operations on ASCII strings and characters. [+11 more lines]
+async_iter // Composable asynchronous iteration. [+121 more lines]
+autodiff // This module provides support for automatic differentiation. For precise information on [+156 more lines]
+backtrace // Support for capturing a stack backtrace of an OS thread [+58 more lines]
+borrow // A module for working with borrowed data.
+boxed // The `Box<T>` type for heap allocation. [+181 more lines]
+bstr // The `ByteStr` and `ByteString` types and trait implementations.
+cell // Shareable mutable containers. [+247 more lines]
+char // Utilities for the `char` primitive type. [+17 more lines]
+clone // The `Clone` trait for types that cannot be 'implicitly copied'. [+34 more lines]
+cmp // Utilities for comparing and ordering values. [+23 more lines]
+collections // Collection types. [+407 more lines]
+convert // Traits for conversions between types. [+33 more lines]
+default // The `Default` trait for types with a default value.
+env // Inspection and manipulation of the process's environment. [+8 more lines]
+error // Interfaces for working with Errors. [+139 more lines]
+f128 // Constants for the `f128` quadruple-precision floating point type. [+4 more lines]
+f16 // Constants for the `f16` half-precision floating point type. [+4 more lines]
+f32 // Constants for the `f32` single-precision floating point type. [+9 more lines]
+f64 // Constants for the `f64` double-precision floating point type. [+9 more lines]
+ffi // Utilities related to FFI bindings. [+159 more lines]
+field // Field Reflection
+fmt // Utilities for formatting and printing `String`s. [+589 more lines]
+from // Unstable module containing the unstable `From` derive macro.
+fs // Filesystem manipulation operations. [+26 more lines]
+future // Asynchronous basic functionality. [+7 more lines]
+hash // Generic hashing support. [+81 more lines]
+hint // Hints to compiler that affects how code should be emitted or optimized. [+2 more lines]
+i128 // Redundant constants module for the [`i128` primitive type][i128]. [+2 more lines]
+i16 // Redundant constants module for the [`i16` primitive type][i16]. [+2 more lines]
+i32 // Redundant constants module for the [`i32` primitive type][i32]. [+2 more lines]
+i64 // Redundant constants module for the [`i64` primitive type][i64]. [+2 more lines]
+i8 // Redundant constants module for the [`i8` primitive type][i8]. [+2 more lines]
+intrinsics // Compiler intrinsics. [+45 more lines]
+io // Traits, helpers, and type definitions for core I/O functionality. [+292 more lines]
+isize // Redundant constants module for the [`isize` primitive type][isize]. [+2 more lines]
+iter // Composable external iteration. [+353 more lines]
+marker // Primitive traits and types representing basic properties of types. [+4 more lines]
+mem // Basic functions for dealing with memory, values, and types. [+27 more lines]
+net // Networking primitives for TCP/UDP communication. [+20 more lines]
+num // Additional functionality for numerics. [+3 more lines]
+ops // Overloadable operators. [+136 more lines]
+option // Optional values. [+576 more lines]
+os // OS-specific functionality.
+panic // Panic support in the standard library.
+pat // Helper module for exporting the `pattern_type` macro
+path // Cross-platform path manipulation. [+77 more lines]
+pin // Types that pin data to a location in memory. [+916 more lines]
+prelude // # The Rust Prelude [+106 more lines]
+primitive // This module reexports the primitive types to allow usage that is not [+37 more lines]
+process // A module for working with processes. [+145 more lines]
+ptr // Manually manage memory through raw pointers. [+396 more lines]
+random // Random value generation.
+range // # Replacement range types [+15 more lines]
+rc // Single-threaded reference-counting pointers. 'Rc' stands for 'Reference [+239 more lines]
+result // Error handling with the `Result` type. [+535 more lines]
+simd // Portable SIMD module. [+38 more lines]
+slice // Utilities for the slice primitive type. [+8 more lines]
+str // Utilities for the `str` primitive type. [+2 more lines]
+string // A UTF-8–encoded, growable string. [+40 more lines]
+sync // Useful synchronization primitives. [+165 more lines]
+task // Types and Traits for working with asynchronous tasks.
+thread // Native threads. [+151 more lines]
+time // Temporal quantification. [+29 more lines]
+u128 // Redundant constants module for the [`u128` primitive type][u128]. [+2 more lines]
+u16 // Redundant constants module for the [`u16` primitive type][u16]. [+2 more lines]
+u32 // Redundant constants module for the [`u32` primitive type][u32]. [+2 more lines]
+u64 // Redundant constants module for the [`u64` primitive type][u64]. [+2 more lines]
+u8 // Redundant constants module for the [`u8` primitive type][u8]. [+2 more lines]
+unsafe_binder // Operators used to turn types into unsafe binders and back.
+usize // Redundant constants module for the [`usize` primitive type][usize]. [+2 more lines]
+vec // A contiguous growable array type with heap-allocated contents, written [+71 more lines]
+vec // A contiguous growable array type with heap-allocated contents, written [+71 more lines]
+
+Macros:
+assert // Asserts that a boolean expression is `true` at runtime. [+46 more lines]
+assert_eq // Asserts that two expressions are equal to each other (using [`PartialEq`]). [+22 more lines]
+assert_matches // Asserts that an expression matches the provided pattern. [+39 more lines]
+assert_ne // Asserts that two expressions are not equal to each other (using [`PartialEq`]). [+22 more lines]
+cfg // Evaluates boolean combinations of configuration flags at compile-time. [+23 more lines]
+cfg_select // Selects code at compile-time based on `cfg` predicates. [+33 more lines]
+column // Expands to the column number at which it was invoked. [+29 more lines]
+compile_error // Causes compilation to fail with the given error message when encountered. [+32 more lines]
+concat // Concatenates literals into a static string slice. [+14 more lines]
+concat_bytes // Concatenates literals into a byte slice. [+19 more lines]
+const_format_args // Same as [`format_args`], but can be used in some const contexts. [+4 more lines]
+dbg // Prints and returns the value of a given expression for quick and dirty [+123 more lines]
+debug_assert // Asserts that a boolean expression is `true` at runtime. [+43 more lines]
+debug_assert_eq // Asserts that two expressions are equal to each other. [+18 more lines]
+debug_assert_matches // Asserts that an expression matches the provided pattern. [+39 more lines]
+debug_assert_ne // Asserts that two expressions are not equal to each other. [+18 more lines]
+derive // Attribute macro used to apply derive macros. [+4 more lines]
+env // Inspects an environment variable at compile time. [+32 more lines]
+eprint // Prints to the standard error. [+26 more lines]
+eprintln // Prints to the standard error, with a newline. [+27 more lines]
+file // Expands to the file name in which it was invoked. [+28 more lines]
+format // Creates a `String` using interpolation of runtime expressions. [+42 more lines]
+format_args // Constructs parameters for the other string-formatting macros. [+57 more lines]
+hash_map // Creates a [`HashMap`] containing the arguments. [+46 more lines]
+include // Parses a file as an expression or an item according to the context. [+59 more lines]
+include_bytes // Includes a file as a reference to a byte array. [+31 more lines]
+include_str // Includes a UTF-8 encoded file as a string. [+31 more lines]
+line // Expands to the line number on which it was invoked. [+17 more lines]
+log_syntax // Prints passed tokens into the standard output.
+matches // Returns whether the given expression matches the provided pattern. [+18 more lines]
+module_path // Expands to a string that represents the current module path. [+16 more lines]
+option_env // Optionally inspects an environment variable at compile time. [+23 more lines]
+panic // Panics the current thread. [+98 more lines]
+print // Prints to the standard output. [+55 more lines]
+println // Prints to the standard output, with a newline. [+45 more lines]
+stringify // Stringifies its arguments. [+14 more lines]
+thread_local // Declare a new thread local storage key of type [`std::thread::LocalKey`]. [+44 more lines]
+todo // Indicates unfinished code. [+66 more lines]
+trace_macros // Enables or disables tracing functionality used for debugging other macros.
+try // Unwraps a result or propagates its error. [+61 more lines]
+unimplemented // Indicates unimplemented code by panicking with a message of "not implemented". [+73 more lines]
+unreachable // Indicates unreachable code. [+51 more lines]
+write // Writes formatted data into a buffer. [+85 more lines]
+writeln // Writes formatted data into a buffer, with a newline appended. [+24 more lines]
+
+Primitives:
+array // A fixed-size array, denoted `[T; N]`, for the element type, `T`, and the [+204 more lines]
+bool // The boolean type. [+55 more lines]
+char // A character type. [+125 more lines]
+f128 // A 128-bit floating-point type (specifically, the "binary128" type defined in IEEE 754-2008). [+17 more lines]
+f16 // A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE 754-2008). [+14 more lines]
+f32 // A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE 754-2008). [+189 more lines]
+f64 // A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE 754-2008). [+8 more lines]
+fn // Function pointers, like `fn(usize) -> bool`. [+269 more lines]
+i128 // The 128-bit signed integer type. [+12 more lines]
+i16 // The 16-bit signed integer type.
+i32 // The 32-bit signed integer type.
+i64 // The 64-bit signed integer type.
+i8 // The 8-bit signed integer type.
+isize // The pointer-sized signed integer type. [+4 more lines]
+never // The `!` type, also called "never". [+245 more lines]
+pointer // Raw, unsafe pointers, `*const T`, and `*mut T`. [+112 more lines]
+reference // References, `&T` and `&mut T`. [+153 more lines]
+slice // A dynamically-sized view into a contiguous sequence, `[T]`. [+106 more lines]
+str // String slices. [+68 more lines]
+tuple // A finite heterogeneous sequence, `(T, U, ..)`. [+115 more lines]
+u128 // The 128-bit unsigned integer type. [+2 more lines]
+u16 // The 16-bit unsigned integer type.
+u32 // The 32-bit unsigned integer type.
+u64 // The 64-bit unsigned integer type.
+u8 // The 8-bit unsigned integer type.
+unit // The `()` type, also called "unit". [+31 more lines]
+usize // The pointer-sized unsigned integer type. [+4 more lines]

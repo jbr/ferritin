@@ -35,7 +35,7 @@ Mixed // Variant with mixed generics
 
 
 Trait Implementations
-From<T>
+std: From<T>
 impl<T: 'static + ?Sized> Any
 
 impl<T, U: Into<T>> TryFrom<U> //     type Error = Infallible

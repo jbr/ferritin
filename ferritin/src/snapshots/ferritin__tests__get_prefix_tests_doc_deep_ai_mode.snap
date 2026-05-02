@@ -21,7 +21,7 @@ crate::TestStruct — absolute path from crate root.
 struct DocDeep;
 
 Trait Implementations
-UnsafeUnpin, Freeze, Sync, Send, From<T>, RefUnwindSafe, UnwindSafe, Unpin
+std: UnsafeUnpin, Freeze, Sync, Send, From<T>, RefUnwindSafe, UnwindSafe, Unpin
 impl<T: 'static + ?Sized> Any
 
 impl<T, U: Into<T>> TryFrom<U> //     type Error = Infallible

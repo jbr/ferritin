@@ -22,6 +22,7 @@ SubStruct
 TestStruct
 TupleStruct
 UnitStruct
+Vec
 
 Enums:
 GenericEnum
