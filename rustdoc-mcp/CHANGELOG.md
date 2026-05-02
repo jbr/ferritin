@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.2](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.1...rustdoc-mcp-v0.6.2) - 2026-05-02
+
+### Fixed
+
+- address test instability in rustdoc-mcp
+
+### Other
+
+- update snaps to rustc 1.97.0-nightly (f53b654a8 2026-04-30)
+- update snaps to rustc 1.97.0-nightly (f53b654a8 2026-04-30)
+- clippy
+- *(deps)* upgrade deps
+- update rust
+- update snaps to rustc 1.97.0-nightly (66da6cae1 2026-04-20)
+
 ## [0.6.1](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.0...rustdoc-mcp-v0.6.1) - 2026-04-20
 
 ### Fixed
