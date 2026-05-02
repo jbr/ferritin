@@ -82,6 +82,13 @@ A tuple struct for testing</p>
 A unit struct for testing</p>
 </truncated>
 </item>
+  <item><p>
+<type-name>Vec</type-name> </p>
+<truncated level="single-line"><p>
+A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.</p>
+<title>Examples</title>
+ <elided chars="8583"/></truncated>
+</item>
 </list>
 </section><section><section-title>Enums</section-title><list>
   <item><p>

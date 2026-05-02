@@ -61,7 +61,9 @@ Update the count</p>
 </item>
 </list>
 </section><section><section-title>Trait Implementations</section-title><p>
-<type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>,</punctuation> <type-name>TestTrait</type-name><punctuation><</punctuation><type-name>T</type-name> <operator>=</operator> <type-name>String</type-name><punctuation>></punctuation><punctuation>,</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>,</punctuation> <type-name>UnwindSafe</type-name><punctuation>,</punctuation> <type-name>Unpin</type-name><punctuation>,</punctuation> <type-name>Clone</type-name><punctuation>,</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <type-name>Freeze</type-name><punctuation>,</punctuation> <type-name>Sync</type-name><punctuation>,</punctuation> <type-name>Debug</type-name><punctuation>,</punctuation> <type-name>Send</type-name></p>
+<type-name>TestTrait</type-name><punctuation><</punctuation><type-name>T</type-name> <operator>=</operator> <type-name>String</type-name><punctuation>></punctuation></p>
+<p>
+std: <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>,</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>,</punctuation> <type-name>UnwindSafe</type-name><punctuation>,</punctuation> <type-name>Unpin</type-name><punctuation>,</punctuation> <type-name>Clone</type-name><punctuation>,</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <type-name>Freeze</type-name><punctuation>,</punctuation> <type-name>Sync</type-name><punctuation>,</punctuation> <type-name>Debug</type-name><punctuation>,</punctuation> <type-name>Send</type-name></p>
 <list>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <lifetime>'static</lifetime> + <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Any</type-name></generated-code>

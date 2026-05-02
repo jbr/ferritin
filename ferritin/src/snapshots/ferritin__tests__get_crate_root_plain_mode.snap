@@ -49,6 +49,9 @@ Structs
   ◦ UnitStruct 
     A unit struct for testing
 
+  ◦ Vec 
+    A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
+
 Enums
 
   ◦ GenericEnum 

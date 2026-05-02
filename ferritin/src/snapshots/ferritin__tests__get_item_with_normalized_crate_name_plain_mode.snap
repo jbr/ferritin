@@ -43,7 +43,9 @@ Associated Types
 
 Trait Implementations
 
-From<T>, TestTrait<T = String>, RefUnwindSafe, UnwindSafe, Unpin, Clone, UnsafeUnpin, Freeze, Sync, Debug, Send
+TestTrait<T = String>
+
+std: From<T>, RefUnwindSafe, UnwindSafe, Unpin, Clone, UnsafeUnpin, Freeze, Sync, Debug, Send
 
   ◦ impl<T: 'static + ?Sized> Any
 

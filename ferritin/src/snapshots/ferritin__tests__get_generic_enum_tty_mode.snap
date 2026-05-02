@@ -12,10 +12,10 @@ A generic enum for testing
 
 See also [crate::TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html)
 
-enum GenericEnum<T, U = String>
+enum GenericEnum<T, U = [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)>
 where
-    T: Clone + Send,
-    U: std::fmt::Display {
+    T: [Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html) + [Send](http://docs.rust-lang.org/nightly/core/marker/trait.Send.html),
+    U: [std::fmt::Display](http://docs.rust-lang.org/nightly/core/fmt/trait.Display.html) {
     Simple,
     WithData(T),
     Mixed {
@@ -37,32 +37,32 @@ Variants:
 
 Trait Implementations
 
-[From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom)<T>
+std: [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom)<T>
 
-  ◦ impl<T: 'static + ?Sized> Any
+  ◦ impl<T: 'static + ?[Sized](http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Any](http://docs.rust-lang.org/nightly/core/any/trait.Any.html)
 
-  ◦ impl<T, U: Into<T>> TryFrom<U>
-        type Error = Infallible
+  ◦ impl<T, U: [Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)<T>> [TryFrom](http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<U>
+        type Error = [Infallible](http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html)
 
-  ◦ impl<T, U: TryFrom<T>> TryInto<U>
-        type Error = <U as TryFrom<T>>::Error
+  ◦ impl<T, U: [TryFrom](http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>> [TryInto](http://docs.rust-lang.org/nightly/core/convert/trait.TryInto.html)<U>
+        type Error = <U as [TryFrom](http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>>::Error
 
-  ◦ impl<T, U: From<T>> Into<U>
+  ◦ impl<T, U: [From](http://docs.rust-lang.org/nightly/core/convert/trait.From.html)<T>> [Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)<U>
 
-  ◦ impl<T: ?Sized> BorrowMut<T>
+  ◦ impl<T: ?[Sized](http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html)> [BorrowMut](http://docs.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html)<T>
 
-  ◦ impl<T: ?Sized> Borrow<T>
+  ◦ impl<T: ?[Sized](http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)<T>
 
   ◦ impl<T: RefUnwindSafe, U: RefUnwindSafe> RefUnwindSafe
 
   ◦ impl<T: UnwindSafe, U: UnwindSafe> UnwindSafe
 
-  ◦ impl<T: Unpin, U: Unpin> Unpin
+  ◦ impl<T: [Unpin](http://docs.rust-lang.org/nightly/core/marker/trait.Unpin.html), U: [Unpin](http://docs.rust-lang.org/nightly/core/marker/trait.Unpin.html)> [Unpin](http://docs.rust-lang.org/nightly/core/marker/trait.Unpin.html)
 
-  ◦ impl<T: UnsafeUnpin, U: UnsafeUnpin> UnsafeUnpin
+  ◦ impl<T: [UnsafeUnpin](http://docs.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html), U: [UnsafeUnpin](http://docs.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html)> [UnsafeUnpin](http://docs.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html)
 
-  ◦ impl<T: Freeze, U: Freeze> Freeze
+  ◦ impl<T: [Freeze](http://docs.rust-lang.org/nightly/core/marker/trait.Freeze.html), U: [Freeze](http://docs.rust-lang.org/nightly/core/marker/trait.Freeze.html)> [Freeze](http://docs.rust-lang.org/nightly/core/marker/trait.Freeze.html)
 
-  ◦ impl<T: Sync, U: Sync> Sync
+  ◦ impl<T: [Sync](http://docs.rust-lang.org/nightly/core/marker/trait.Sync.html), U: [Sync](http://docs.rust-lang.org/nightly/core/marker/trait.Sync.html)> [Sync](http://docs.rust-lang.org/nightly/core/marker/trait.Sync.html)
 
-  ◦ impl<T, U: Send> Send
+  ◦ impl<T, U: [Send](http://docs.rust-lang.org/nightly/core/marker/trait.Send.html)> [Send](http://docs.rust-lang.org/nightly/core/marker/trait.Send.html)

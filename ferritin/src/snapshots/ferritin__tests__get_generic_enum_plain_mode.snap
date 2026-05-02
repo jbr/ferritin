@@ -37,7 +37,7 @@ Variants:
 
 Trait Implementations
 
-From<T>
+std: From<T>
 
   ◦ impl<T: 'static + ?Sized> Any
 
