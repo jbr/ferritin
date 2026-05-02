@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.8.0...ferritin-common-v0.9.0) - 2026-05-02
+
+### Added
+
+- search bonus for terminal-segment name coverage
+
+### Fixed
+
+- deterministic search order
+- improved resolver
+- handle version specifiers in search
+
+### Other
+
+- clippy
+- *(deps)* upgrade deps
+
 ## [0.8.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.7.0...ferritin-common-v0.8.0) - 2026-04-20
 
 ### Fixed

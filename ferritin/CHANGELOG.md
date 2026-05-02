@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0](https://github.com/jbr/ferritin/compare/ferritin-v0.8.1...ferritin-v0.9.0) - 2026-05-02
+
+### Added
+
+- improved search interface
+- search bonus for terminal-segment name coverage
+
+### Fixed
+
+- deterministic search order
+- address the -l overlap between search --limit and --local
+
+### Other
+
+- update snaps to rustc 1.97.0-nightly (f53b654a8 2026-04-30)
+- update snaps to rustc 1.97.0-nightly (f53b654a8 2026-04-30)
+- clippy
+- *(deps)* upgrade deps
+- update rust
+- update snaps to rustc 1.97.0-nightly (66da6cae1 2026-04-20)
+
 ## [0.8.1](https://github.com/jbr/ferritin/compare/ferritin-v0.8.0...ferritin-v0.8.1) - 2026-04-20
 
 ### Fixed
