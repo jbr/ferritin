@@ -56,11 +56,11 @@ jobs:
         if: steps.test.outcome == 'success' && steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
-          branch: chore/update-snaps
+          branch: chore/update-snaps/${{ github.ref_name }}
           commit-message: "chore: update snaps to ${{ steps.nightly.outputs.version }}"
-          title: "chore: update snaps to ${{ steps.nightly.outputs.version }}"
+          title: "chore: update snaps to ${{ steps.nightly.outputs.version }} (${{ github.ref_name }})"
           body: |
-            Snapshot regeneration for `${{ steps.nightly.outputs.version }}`.
+            Snapshot regeneration for `${{ steps.nightly.outputs.version }}` against `${{ github.ref_name }}`.
 
             Verified passing in [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
           delete-branch: true
