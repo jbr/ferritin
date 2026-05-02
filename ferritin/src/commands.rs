@@ -23,22 +23,44 @@ pub(crate) enum Commands {
         recursive: bool,
     },
 
-    /// Search for items by name or documentation
+    /// Search for items by name or documentation.
+    ///
+    /// Use `ferritin search <CRATE> <QUERY>...` to search a single crate
+    /// (e.g. `ferritin search serde Vec`, `ferritin search serde@1.0 Vec`),
+    /// or `ferritin search all <QUERY>...` to search every available crate.
     Search {
-        /// Search query
-        query: String,
-
-        /// Crate to search
-        #[arg(short, long = "crate")]
-        crate_: Option<String>,
-
         /// Maximum number of results
         #[arg(long, default_value = "10")]
         limit: usize,
+
+        #[command(subcommand)]
+        target: SearchTarget,
     },
 
     /// List available crates
     List,
+}
+
+/// What to search: a single crate, or every available crate.
+///
+/// `All` is a literal subcommand (`ferritin search all foo bar`).
+/// `Crate` uses clap's external-subcommand fallback: any other first word
+/// becomes the crate name and the remaining words are the query
+/// (`ferritin search serde Vec into iter`).
+#[derive(clap::Subcommand, Debug)]
+pub(crate) enum SearchTarget {
+    /// Search across every available crate
+    All {
+        /// Search query (multiple words are joined with spaces; use `--`
+        /// before queries that begin with a hyphen)
+        #[arg(trailing_var_arg = true, required = true)]
+        query: Vec<String>,
+    },
+
+    /// Search a single crate. The first word is the crate name (optionally
+    /// `name@version`); remaining words are the query.
+    #[command(external_subcommand)]
+    Crate(Vec<String>),
 }
 
 impl Commands {
@@ -52,9 +74,10 @@ impl Commands {
 
     pub fn search(query: impl Display) -> Self {
         Self::Search {
-            query: query.to_string(),
             limit: 10,
-            crate_: None,
+            target: SearchTarget::All {
+                query: vec![query.to_string()],
+            },
         }
     }
 
@@ -77,11 +100,19 @@ impl Commands {
 
     pub fn in_crate(self, crate_: impl Display) -> Self {
         match self {
-            Self::Search { query, limit, .. } => Self::Search {
-                query,
-                limit,
-                crate_: Some(crate_.to_string()),
-            },
+            Self::Search { limit, target } => {
+                let query = match target {
+                    SearchTarget::All { query } => query,
+                    SearchTarget::Crate(parts) => parts.into_iter().skip(1).collect(),
+                };
+                let mut parts = Vec::with_capacity(query.len() + 1);
+                parts.push(crate_.to_string());
+                parts.extend(query);
+                Self::Search {
+                    limit,
+                    target: SearchTarget::Crate(parts),
+                }
+            }
             other => other,
         }
     }
@@ -99,11 +130,7 @@ impl Commands {
 
     pub fn with_limit(self, limit: usize) -> Self {
         match self {
-            Self::Search { query, crate_, .. } => Self::Search {
-                query,
-                limit,
-                crate_,
-            },
+            Self::Search { target, .. } => Self::Search { limit, target },
             other => other,
         }
     }
@@ -122,11 +149,27 @@ impl Commands {
                 let history_entry = item_ref.map(HistoryEntry::Item);
                 (doc, is_error, history_entry)
             }
-            Commands::Search {
-                query,
-                limit,
-                crate_,
-            } => {
+            Commands::Search { limit, target } => {
+                let (crate_, query_parts) = match target {
+                    SearchTarget::All { query } => (None, query),
+                    SearchTarget::Crate(mut parts) => {
+                        if parts.is_empty() {
+                            (None, Vec::new())
+                        } else {
+                            let crate_ = parts.remove(0);
+                            (Some(crate_), parts)
+                        }
+                    }
+                };
+                let query = query_parts.join(" ");
+                if query.trim().is_empty() {
+                    let doc = Document::from(vec![crate::styled_string::DocumentNode::paragraph(
+                        vec![crate::styled_string::Span::plain(
+                            "search requires a query (e.g. `ferritin search serde Vec` or `ferritin search all Vec`)",
+                        )],
+                    )]);
+                    return (doc, true, None);
+                }
                 let (doc, is_error) = search::execute(request, &query, limit, crate_.as_deref());
                 let history_entry = Some(HistoryEntry::Search {
                     query,
