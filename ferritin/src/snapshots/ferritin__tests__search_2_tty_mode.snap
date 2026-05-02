@@ -8,31 +8,30 @@ Search results for 'generic struct'
   ◦ [fixture-crate::GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.GenericStruct.html)  (Struct) - score: 100.0
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 68.1
-    A trait for borrowing data. [...]
-
-  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 66.8
+  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 86.9
     A generic enum for testing [...]
 
-  ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.4
-    A trait for borrowing data. [...]
+  ◦ [fixture-crate::generic_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.generic_function.html)  (Function) - score: 58.0
+    A generic function
 
-  ◦ [core::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.1
-    A trait for borrowing data. [...]
+  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html)  (Struct) - score: 55.1
+    A simple struct for testing basic functionality. [...]
 
-  ◦ [core::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64.0
-    Compile-time type information about instantiated generics of structs, enum and
-    union variants.
+  ◦ [fixture-crate::submodule::TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html)  (Enum) - score: 49.0
+    An enum for testing [...]
 
-  ◦ [std::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64.0
-    Compile-time type information about instantiated generics of structs, enum and
-    union variants.
+  ◦ [fixture-crate::GenericEnum::WithData](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)  (Variant) - score: 37.3
+    Variant with generic data
 
-  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 63.0
-    A common trait that allows explicit creation of a duplicate value. [...]
+  ◦ [fixture-crate::submodule::TestEnum::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)  (Variant) - score: 37.3
+    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
 
-  ◦ [core::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 61.6
-    A common trait that allows explicit creation of a duplicate value. [...]
+  ◦ [fixture-crate::TupleStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TupleStruct.html)  (Struct) - score: 28.7
+    A tuple struct for testing
 
-  ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 60.9
-    Used for immutable dereferencing operations, like *v. [...]
+  ◦ [fixture-crate::submodule::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html)  (Struct) - score: 28.5
+    A struct in a submodule
+
+  ◦ [fixture-crate::link_resolution_tests::nested::deeply_nested::DeepStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/nested/deeply_nested/struct.DeepStruct.html) 
+    (Struct) - score: 28.5
+    Struct in deeply nested module
