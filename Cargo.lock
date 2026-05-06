@@ -72,7 +72,7 @@ version = "1.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "40c48f72fd53cd289104fc64099abca73db4166ad86ea0b4341abe65af83dadc"
 dependencies = [
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -83,7 +83,7 @@ checksum = "291e6a250ff86cd4a820112fb8898808a366d8f9f58ce16d1f538353ad55747d"
 dependencies = [
  "anstyle",
  "once_cell_polyfill",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -716,11 +716,12 @@ dependencies = [
 
 [[package]]
 name = "dashmap"
-version = "5.5.3"
+version = "6.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "978747c1d849a7d2ee5e8adc0159961c48fb7e5db2f06af6723b80123bb53856"
+checksum = "5041cc499144891f3790297212f32a74fb938e5136a14943f338ef9e0ae276cf"
 dependencies = [
  "cfg-if",
+ "crossbeam-utils",
  "hashbrown 0.14.5",
  "lock_api",
  "once_cell",
@@ -792,7 +793,7 @@ dependencies = [
  "libc",
  "option-ext",
  "redox_users",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -893,7 +894,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1287,6 +1288,11 @@ name = "hashbrown"
 version = "0.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4f467dd6dccf739c208452f8014c75c18bb8301b050ad1cfb27153803edb0f51"
+dependencies = [
+ "allocator-api2",
+ "equivalent",
+ "foldhash 0.2.0",
+]
 
 [[package]]
 name = "heck"
@@ -1744,6 +1750,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53"
 
 [[package]]
+name = "listenfd"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b87bc54a4629b4294d0b3ef041b64c40c611097a677d9dc07b2c67739fe39dba"
+dependencies = [
+ "libc",
+ "uuid",
+ "winapi",
+]
+
+[[package]]
 name = "litemap"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1976,7 +1993,7 @@ version = "0.50.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7957b9740744892f114936ab4a57b3f487491bbeafaf8083688b16841a4240e5"
 dependencies = [
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2659,6 +2676,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rlimit"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f35ee2729c56bb610f6dba436bf78135f728b7373bdffae2ec815b2d3eb98cc3"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "rustc-hash"
 version = "2.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2736,7 +2762,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2802,7 +2828,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3079,9 +3105,9 @@ checksum = "b2aa850e253778c88a04c3d7323b043aeda9d3e30d5971937c1855769763678e"
 
 [[package]]
 name = "size"
-version = "0.4.1"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9fed904c7fb2856d868b92464fc8fa597fce366edea1a9cbfaa8cb5fe080bd6d"
+checksum = "1b6709c7b6754dca1311b3c73e79fcce40dd414c782c66d88e8823030093b02b"
 
 [[package]]
 name = "slab"
@@ -3241,6 +3267,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
+name = "swansong"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59e547d6edfcd09568f663d6340c48478cec8cac1403db95e8072c9a7e513253"
+dependencies = [
+ "event-listener 5.4.1",
+ "futures-core",
+ "log",
+ "pin-project-lite",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3261,6 +3299,12 @@ dependencies = [
  "quote",
  "unicode-ident",
 ]
+
+[[package]]
+name = "sync_wrapper"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0bf256ce5efdfa370213c1dabab5935a12e49f2c58d15e9eac2870d3b4f27263"
 
 [[package]]
 name = "synstructure"
@@ -3304,7 +3348,7 @@ dependencies = [
  "getrandom 0.4.2",
  "once_cell",
  "rustix",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3314,7 +3358,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "230a1b821ccbd75b185820a1f1ff7b14d21da1e442e22c0863ea5f08771a8874"
 dependencies = [
  "rustix",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3544,26 +3588,40 @@ checksum = "b84b5b14b3b2dda42a660fd7476a00f25c7565c4f1dc63b4322a7855a1c5384f"
 dependencies = [
  "async-trait",
  "log",
- "trillium-http",
+ "trillium-http 0.3.17",
+]
+
+[[package]]
+name = "trillium"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "42555814b00d06d4e3ea4dc1ee1929cfab2d776512b8850a907da51393ef9bc7"
+dependencies = [
+ "futures-lite",
+ "log",
+ "trillium-http 1.1.0",
+ "trillium-macros 0.1.0",
 ]
 
 [[package]]
 name = "trillium-client"
-version = "0.6.2"
+version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6977db194636278cb7b7397887066885e35a040c7e16312c10e29780372a6c5"
+checksum = "3fb7e10b2802fce4bac578ab34040981ddd20f609f7ba522d41599cbb51783ab"
 dependencies = [
  "crossbeam-queue",
  "dashmap",
  "encoding_rs",
+ "fieldwork 0.5.1",
  "futures-lite",
  "httparse",
  "log",
  "memchr",
  "mime",
  "size",
- "trillium-http",
- "trillium-server-common",
+ "trillium-http 1.1.0",
+ "trillium-macros 0.1.0",
+ "trillium-server-common 0.7.0",
 ]
 
 [[package]]
@@ -3585,7 +3643,36 @@ dependencies = [
  "smartstring",
  "stopper",
  "thiserror 1.0.69",
- "trillium-macros",
+ "trillium-macros 0.0.6",
+]
+
+[[package]]
+name = "trillium-http"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "09720465ae91a53d8b7b60d4434e36aff6a79112b1d4ed854939e007b5d87ecf"
+dependencies = [
+ "atomic-waker",
+ "encoding_rs",
+ "event-listener 5.4.1",
+ "fastrand",
+ "fieldwork 0.5.1",
+ "futures-lite",
+ "hashbrown 0.17.0",
+ "httparse",
+ "httpdate",
+ "log",
+ "memchr",
+ "mime",
+ "pin-project-lite",
+ "smallvec",
+ "smartcow",
+ "smartstring",
+ "swansong",
+ "sync_wrapper",
+ "thiserror 2.0.18",
+ "trillium-macros 0.1.0",
+ "type-set",
 ]
 
 [[package]]
@@ -3593,6 +3680,17 @@ name = "trillium-macros"
 version = "0.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "916e37646d33632b88ca02d4b8c4e2e6376f2a89d9888de71b7d82c150ed1f6c"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
+name = "trillium-macros"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3caa8c474e8cfacd96ca0692f57f932891543db2147beca4758a075a7d26a0b2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3609,7 +3707,7 @@ dependencies = [
  "log",
  "rustls-pemfile",
  "rustls-platform-verifier",
- "trillium-server-common",
+ "trillium-server-common 0.5.2",
  "webpki-roots",
 ]
 
@@ -3625,9 +3723,29 @@ dependencies = [
  "futures-lite",
  "log",
  "pin-project-lite",
- "rlimit",
- "trillium",
- "trillium-http",
+ "rlimit 0.10.2",
+ "trillium 0.2.20",
+ "trillium-http 0.3.17",
+ "url",
+]
+
+[[package]]
+name = "trillium-server-common"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2e25af92ce1701de85c077898deb6c3d5f63ac1c4b4c1b3a83c3ede637e99283"
+dependencies = [
+ "async-channel",
+ "async_cell",
+ "fieldwork 0.5.1",
+ "futures-lite",
+ "listenfd",
+ "log",
+ "pin-project-lite",
+ "rlimit 0.11.0",
+ "swansong",
+ "trillium 1.1.0",
+ "trillium-http 1.1.0",
  "url",
 ]
 
@@ -3644,11 +3762,17 @@ dependencies = [
  "futures-lite",
  "log",
  "signal-hook",
- "trillium",
- "trillium-http",
- "trillium-macros",
- "trillium-server-common",
+ "trillium 0.2.20",
+ "trillium-http 0.3.17",
+ "trillium-macros 0.0.6",
+ "trillium-server-common 0.5.2",
 ]
+
+[[package]]
+name = "type-set"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "845e18586b78ef401c37d9d2d2cca631c19816d5aa26af12647e828739bd6614"
 
 [[package]]
 name = "typenum"
@@ -4026,7 +4150,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
