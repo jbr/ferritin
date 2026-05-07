@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1](https://github.com/jbr/ferritin/compare/ferritin-v0.9.0...ferritin-v0.9.1) - 2026-05-07
+
+### Other
+
+- update snaps to rustc 1.97.0-nightly (e95e73209 2026-05-05)
+
 ## [0.9.0](https://github.com/jbr/ferritin/compare/ferritin-v0.8.1...ferritin-v0.9.0) - 2026-05-02
 
 ### Added
