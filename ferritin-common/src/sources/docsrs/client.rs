@@ -52,7 +52,7 @@ pub(super) struct ResolvedMetadata {
 impl DocsRsClient {
     /// Create a new docs.rs client with the specified cache directory
     pub fn new(cache_dir: PathBuf) -> Result<Self> {
-        let http_client = Client::new(RustlsConfig::<ClientConfig>::default()).with_default_pool();
+        let http_client = Client::new(RustlsConfig::<ClientConfig>::default());
 
         Ok(Self {
             http_client,

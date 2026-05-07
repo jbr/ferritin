@@ -8,8 +8,8 @@ repository.workspace = true
 license.workspace = true
 
 [dependencies]
-trillium-rustls = { version = "0.9.0", features = ["client"] }
-trillium-smol = "0.4.2"
+trillium-rustls = { version = "0.11.1", features = ["client"] }
+trillium-smol = "0.6.1"
 anyhow.workspace = true
 cargo_metadata.workspace = true
 elsa.workspace = true
@@ -22,7 +22,7 @@ rustdoc-types-56 = { package = "rustdoc-types", version = "0.56" }
 rustdoc-types-55 = { package = "rustdoc-types", version = "0.55" }
 serde.workspace = true
 strsim.workspace = true
-trillium-client = "0.6.2"
+trillium-client = "0.8.2"
 walkdir.workspace = true
 zstd = "0.13"
 home = "0.5.12"
