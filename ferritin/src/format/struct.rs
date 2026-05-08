@@ -1,9 +1,9 @@
 use super::*;
 use crate::styled_string::DocumentNode;
 
-impl Request {
-    pub(super) fn format_struct<'a>(
-        &'a self,
+impl<'a> Request<'a> {
+    pub(super) fn format_struct(
+        &mut self,
         item: DocRef<'a, Item>,
         r#struct: DocRef<'a, Struct>,
     ) -> Vec<DocumentNode<'a>> {
@@ -19,8 +19,8 @@ impl Request {
     }
 
     /// Categorize struct fields into visible and hidden counts
-    fn categorize_fields<'a>(
-        &'a self,
+    fn categorize_fields(
+        &self,
         item: DocRef<'a, Item>,
         fields: &[Id],
     ) -> (Vec<DocRef<'a, Item>>, usize) {
@@ -38,8 +38,8 @@ impl Request {
         (visible_fields, hidden_count)
     }
 
-    fn format_plain_struct<'a>(
-        &'a self,
+    fn format_plain_struct(
+        &mut self,
         struct_data: DocRef<'a, Struct>,
         item: DocRef<'a, Item>,
         fields: &[Id],
@@ -144,8 +144,8 @@ impl Request {
         doc_nodes
     }
 
-    fn format_tuple_struct<'a>(
-        &'a self,
+    fn format_tuple_struct(
+        &mut self,
         struct_data: DocRef<'a, Struct>,
         item: DocRef<'a, Item>,
         fields: &[Option<Id>],
@@ -253,8 +253,8 @@ impl Request {
         doc_nodes
     }
 
-    fn format_unit_struct<'a>(
-        &'a self,
+    fn format_unit_struct(
+        &mut self,
         struct_data: DocRef<'a, Struct>,
         item: DocRef<'a, Item>,
     ) -> Vec<DocumentNode<'a>> {

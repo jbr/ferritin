@@ -2,7 +2,7 @@ use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModi
 
 use super::*;
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format a function signature
     pub(super) fn format_function(
         &self,

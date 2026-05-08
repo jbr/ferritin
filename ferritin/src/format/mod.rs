@@ -20,9 +20,9 @@ mod r#struct;
 mod r#trait;
 mod types;
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format an item with automatic recursion tracking
-    pub(crate) fn format_item<'a>(&'a self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
+    pub(crate) fn format_item(&mut self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
         let mut doc_nodes = vec![];
 
         // Item metadata (name, kind, visibility, location, crate)
@@ -89,7 +89,7 @@ impl Request {
     }
 
     /// Format item metadata as a compact paragraph (Item, Kind, Visibility, Location, Crate)
-    fn format_item_metadata<'a>(&'a self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
+    fn format_item_metadata(&mut self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
         let mut spans = vec![];
 
         // Item name
@@ -115,16 +115,17 @@ impl Request {
                 spans.push(StyledSpan::plain("Restricted to "));
                 if let Some(parent_summary) = item.get(parent).and_then(|item| item.summary()) {
                     let mut action_item = None;
+                    let nav = self.navigator();
                     for (i, segment) in parent_summary.path.iter().enumerate() {
                         if i == 0 {
                             action_item = item
                                 .crate_docs()
-                                .traverse_to_crate_by_id(self, parent_summary.crate_id)
-                                .map(|x| x.root_item(self));
+                                .traverse_to_crate_by_id(nav, parent_summary.crate_id)
+                                .map(|x| x.root_item(nav));
                         } else {
                             spans.push(StyledSpan::punctuation("::"));
                             if let Some(ai) = action_item {
-                                action_item = ai.find_child(segment);
+                                action_item = self.find_child(ai, segment);
                             }
                         }
                         spans.push(StyledSpan::type_name(segment).with_target(action_item));
@@ -142,17 +143,18 @@ impl Request {
             spans.push(StyledSpan::strong("Defined at:"));
             spans.push(StyledSpan::plain(" "));
 
+            let nav = self.navigator();
             let mut action_item = None;
             for (i, segment) in item_summary.path.iter().enumerate() {
                 if i == 0 {
                     action_item = item
                         .crate_docs()
-                        .traverse_to_crate_by_id(self, item_summary.crate_id)
-                        .map(|x| x.root_item(self));
+                        .traverse_to_crate_by_id(nav, item_summary.crate_id)
+                        .map(|x| x.root_item(nav));
                 } else {
                     spans.push(StyledSpan::punctuation("::"));
                     if let Some(ai) = action_item {
-                        action_item = ai.find_child(segment);
+                        action_item = self.find_child(ai, segment);
                     }
                 }
                 spans.push(StyledSpan::type_name(segment).with_target(action_item));
@@ -178,8 +180,8 @@ impl Request {
     }
 
     /// Returns (defined_at_nodes, crate_info_nodes) with label prefixes
-    fn format_item_summary<'a>(
-        &'a self,
+    fn format_item_summary(
+        &mut self,
         item: DocRef<'a, Item>,
         item_summary: &'a ItemSummary,
     ) -> (Vec<DocumentNode<'a>>, Vec<DocumentNode<'a>>) {
@@ -189,17 +191,18 @@ impl Request {
         let item_crate = item.crate_docs();
 
         // Build "Defined at" path
+        let nav = self.navigator();
         for (i, segment) in item_summary.path.iter().enumerate() {
             if i == 0 {
                 action_item = item
                     .crate_docs()
-                    .traverse_to_crate_by_id(self, item_summary.crate_id)
-                    .map(|x| x.root_item(self));
+                    .traverse_to_crate_by_id(nav, item_summary.crate_id)
+                    .map(|x| x.root_item(nav));
                 source_crate = action_item.map(|i| i.crate_docs());
             } else {
                 defined_at_spans.push(StyledSpan::punctuation("::"));
                 if let Some(ai) = action_item {
-                    action_item = ai.find_child(segment);
+                    action_item = self.find_child(ai, segment);
                 }
             }
 
@@ -237,7 +240,7 @@ impl Request {
     }
 
     /// Format visibility value with label
-    fn format_visibility_value<'a>(&'a self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
+    fn format_visibility_value(&mut self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
         let mut spans = vec![StyledSpan::strong("Visibility:"), StyledSpan::plain(" ")];
 
         match &item.item().visibility {
@@ -248,16 +251,17 @@ impl Request {
                 spans.push(StyledSpan::plain("Restricted to "));
                 if let Some(parent_summary) = item.get(parent).and_then(|item| item.summary()) {
                     let mut action_item = None;
+                    let nav = self.navigator();
                     for (i, segment) in parent_summary.path.iter().enumerate() {
                         if i == 0 {
                             action_item = item
                                 .crate_docs()
-                                .traverse_to_crate_by_id(self, parent_summary.crate_id)
-                                .map(|x| x.root_item(self));
+                                .traverse_to_crate_by_id(nav, parent_summary.crate_id)
+                                .map(|x| x.root_item(nav));
                         } else {
                             spans.push(StyledSpan::punctuation("::"));
                             if let Some(ai) = action_item {
-                                action_item = ai.find_child(segment);
+                                action_item = self.find_child(ai, segment);
                             }
                         }
 

@@ -137,7 +137,7 @@ impl Commands {
 
     pub fn execute<'a>(
         self,
-        request: &'a Request,
+        request: &mut Request<'a>,
     ) -> (Document<'a>, bool, Option<HistoryEntry<'a>>) {
         match self {
             Commands::Get {

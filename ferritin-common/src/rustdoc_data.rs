@@ -97,18 +97,6 @@ impl RustdocData {
         navigator.load_crate(name, &version_req)
     }
 
-    pub(crate) fn get_path<'a>(
-        &'a self,
-        navigator: &'a Navigator,
-        id: Id,
-    ) -> Option<DocRef<'a, Item>> {
-        let item_summary = self.paths.get(&id)?;
-        let crate_ = self.traverse_to_crate_by_id(navigator, item_summary.crate_id)?;
-        crate_
-            .root_item(navigator)
-            .find_by_path(item_summary.path.iter().skip(1))
-    }
-
     /// Build the reverse path index from `paths`, for use by `Navigator::resolve_path`.
     ///
     /// Indexes local items (`crate_id == 0`) by their path string (excluding the crate name

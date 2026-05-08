@@ -34,7 +34,7 @@ struct FlatItem<'a> {
     item: DocRef<'a, Item>,
 }
 
-impl Request {
+impl<'a> Request<'a> {
     /// Collect all items in a module hierarchy as flat qualified paths.
     ///
     /// Tracks visited items during recursive descent so cyclic re-export
@@ -43,14 +43,14 @@ impl Request {
     // DocRef hashes by crate name + item id; the interior mutability lives in
     // Navigator's connection pool and doesn't affect identity.
     #[allow(clippy::mutable_key_type)]
-    fn collect_flat_items<'a>(
-        &'a self,
+    fn collect_flat_items(
+        &mut self,
         collected: &mut Vec<FlatItem<'a>>,
         visited: &mut std::collections::HashSet<DocRef<'a, Item>>,
         path: Option<String>,
         item: DocRef<'a, Item>,
     ) {
-        for child in item.child_items() {
+        for child in self.children(item) {
             if let Some(item_name) = child.name() {
                 let path = path.as_deref().map_or_else(
                     || item_name.to_string(),
@@ -70,7 +70,7 @@ impl Request {
     }
 
     /// Format collected flat items with grouping by type
-    fn format_grouped_flat_items<'a>(&'a self, items: &[FlatItem<'a>]) -> Vec<DocumentNode<'a>> {
+    fn format_grouped_flat_items(&mut self, items: &[FlatItem<'a>]) -> Vec<DocumentNode<'a>> {
         if items.is_empty() {
             return vec![DocumentNode::paragraph(vec![Span::plain(
                 "No items match the current filters.",
@@ -135,7 +135,7 @@ impl Request {
     }
 
     /// Format a single flat item as a ListItem
-    fn format_flat_item<'a>(&'a self, flat_item: &FlatItem<'a>) -> ListItem<'a> {
+    fn format_flat_item(&mut self, flat_item: &FlatItem<'a>) -> ListItem<'a> {
         // Prepend item name as a paragraph
         let mut content = vec![DocumentNode::paragraph(vec![
             Span::type_name(flat_item.path.clone()).with_target(Some(flat_item.item)),
@@ -152,7 +152,7 @@ impl Request {
 
     /// Format a module
     #[allow(clippy::mutable_key_type)] // see collect_flat_items
-    pub(super) fn format_module<'a>(&'a self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
+    pub(super) fn format_module(&mut self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
         let mut collected = Vec::new();
         let mut visited = std::collections::HashSet::new();
         visited.insert(item);

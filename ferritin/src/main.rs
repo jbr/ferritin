@@ -167,13 +167,15 @@ fn main() -> ExitCode {
     };
 
     let format_context = FormatContext::new();
-    let request = Request::new(navigator, format_context);
+    let mut request = Request::new(&navigator, format_context);
 
     // One-shot mode: execute command and render to stdout
     // Use env_logger for CLI mode
     env_logger::init();
-    let (document, is_error, _initial_entry) =
-        cli.command.unwrap_or_else(Commands::list).execute(&request);
+    let (document, is_error, _initial_entry) = cli
+        .command
+        .unwrap_or_else(Commands::list)
+        .execute(&mut request);
 
     // Render to stdout and exit
     if renderer::render(

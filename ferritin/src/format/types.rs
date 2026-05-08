@@ -1,9 +1,9 @@
 use super::*;
 use crate::styled_string::Span;
 
-impl Request {
+impl<'a> Request<'a> {
     /// Enhanced type formatting for signatures
-    pub(crate) fn format_type<'a>(&self, item: DocRef<'a, Item>, type_: &'a Type) -> Vec<Span<'a>> {
+    pub(crate) fn format_type(&mut self, item: DocRef<'a, Item>, type_: &'a Type) -> Vec<Span<'a>> {
         match type_ {
             Type::ResolvedPath(path) => self.format_path(item, path),
             Type::DynTrait(dyn_trait) => {
@@ -78,8 +78,8 @@ impl Request {
         }
     }
 
-    pub(crate) fn format_tuple<'a>(
-        &self,
+    pub(crate) fn format_tuple(
+        &mut self,
         item: DocRef<'a, Item>,
         types: &'a [Type],
     ) -> Vec<Span<'a>> {
@@ -97,8 +97,8 @@ impl Request {
         spans
     }
 
-    pub(crate) fn format_function_pointer<'a>(
-        &self,
+    pub(crate) fn format_function_pointer(
+        &mut self,
         item: DocRef<'a, Item>,
         fp: &'a FunctionPointer,
     ) -> Vec<Span<'a>> {
@@ -139,8 +139,8 @@ impl Request {
         spans
     }
 
-    pub(crate) fn format_qualified_path<'a>(
-        &self,
+    pub(crate) fn format_qualified_path(
+        &mut self,
         item: DocRef<'a, Item>,
         name: &'a str,
         args: Option<&'a GenericArgs>,

@@ -1,10 +1,10 @@
 use super::*;
 use crate::styled_string::{DocumentNode, Span};
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format a type alias
-    pub(crate) fn format_type_alias<'a>(
-        &'a self,
+    pub(crate) fn format_type_alias(
+        &mut self,
         item: DocRef<'a, Item>,
         type_alias: DocRef<'a, TypeAlias>,
     ) -> Vec<DocumentNode<'a>> {
@@ -28,8 +28,8 @@ impl Request {
     }
 
     /// Format a union
-    pub(crate) fn format_union<'a>(
-        &'a self,
+    pub(crate) fn format_union(
+        &mut self,
         _item: DocRef<'a, Item>,
         _union: DocRef<'a, Union>,
     ) -> Vec<DocumentNode<'a>> {
@@ -40,8 +40,8 @@ impl Request {
     }
 
     /// Format a constant
-    pub(crate) fn format_constant<'a>(
-        &'a self,
+    pub(crate) fn format_constant(
+        &mut self,
         item: DocRef<'a, Item>,
         type_: &'a Type,
         const_: &'a Constant,
@@ -72,8 +72,8 @@ impl Request {
     }
 
     /// Format a static
-    pub(crate) fn format_static<'a>(
-        &'a self,
+    pub(crate) fn format_static(
+        &mut self,
         item: DocRef<'a, Item>,
         static_item: &'a Static,
     ) -> Vec<DocumentNode<'a>> {

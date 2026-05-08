@@ -29,12 +29,15 @@ impl WithExamples for ListCrates {
 
 impl Tool<RustdocTools> for ListCrates {
     fn execute(self, state: &mut RustdocTools) -> Result<String> {
-        let request = Request::new(state.working_directory(None)?);
+        let manifest_path = state.working_directory(None)?;
+        let navigator = crate::request::build_navigator(manifest_path);
+        let request = Request::new(&navigator);
 
         let mut result = String::new();
-        let root_crate = request.local_source().and_then(|ls| ls.root_crate());
+        let root_crate = request.navigator().local_source().and_then(|ls| ls.root_crate());
 
         let mut available_crates = request
+            .navigator()
             .list_available_crates()
             .filter(|c| {
                 root_crate.is_none_or(|rc| {

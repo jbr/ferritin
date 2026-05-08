@@ -91,10 +91,6 @@ impl<'a, T> DocRef<'a, T> {
     pub fn build_ref<U>(&self, inner: &'a U) -> DocRef<'a, U> {
         DocRef::new(self.navigator, self.crate_docs, inner)
     }
-
-    pub fn get_path(&self, id: Id) -> Option<DocRef<'a, Item>> {
-        self.crate_docs.get_path(self.navigator, id)
-    }
 }
 
 impl<'a> DocRef<'a, Item> {
@@ -142,29 +138,6 @@ impl<'a> DocRef<'a, Item> {
             };
         }
         vec![self.crate_docs().name()]
-    }
-
-    /// Find a direct or transitively glob-imported child by name.
-    ///
-    /// Two-phase walk: first matches against direct children's names without
-    /// resolving any `Use` source (cheap; handles `pub use self::error;`-style
-    /// self-loops because the real `error` submodule is a direct child and is
-    /// found before the Use is ever inspected). Only if no direct match exists
-    /// do we look through glob Uses — and even then only one step at a time,
-    /// guarded against re-entering the same (module, name) pair.
-    pub fn find_child(&self, child_name: &str) -> Option<DocRef<'a, Item>> {
-        crate::lookup::find_named(*self, child_name)
-    }
-
-    pub fn find_by_path<'b>(
-        &self,
-        mut iter: impl Iterator<Item = &'b String>,
-    ) -> Option<DocRef<'a, Item>> {
-        let Some(next) = iter.next() else {
-            return Some(*self);
-        };
-        let child = self.find_child(next)?;
-        child.find_by_path(iter)
     }
 
     /// Returns the fully-qualified, kind-discriminated path for this item, suitable for

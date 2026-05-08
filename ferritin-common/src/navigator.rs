@@ -1,28 +1,21 @@
-//! Navigator - orchestrates documentation lookup across multiple sources
+//! Navigator — long-lived data store of loaded rustdoc crates.
+//!
+//! Holds the source backends, the working set of cached `RustdocData`, and the
+//! map of external-crate name aliases. All path/name/Use resolution lives on
+//! [`crate::Resolver`], which borrows a `Navigator`.
 
 use crate::CrateName;
-use crate::DocRef;
 use crate::RustdocData;
 use crate::search::SearchIndex;
 use crate::sources::{CrateProvenance, DocsRsSource, LocalSource, Source, StdSource};
-use crate::string_utils::case_aware_jaro_winkler;
 use elsa::sync::FrozenMap;
 use fieldwork::Fieldwork;
-use rustdoc_types::{Id, Item, ItemEnum, ItemKind};
 use semver::Version;
 use semver::VersionReq;
 use std::borrow::Cow;
 use std::fmt;
 use std::fmt::Debug;
 use std::path::PathBuf;
-
-#[derive(Fieldwork)]
-#[fieldwork(get)]
-pub struct Suggestion<'a> {
-    path: String,
-    item: Option<DocRef<'a, Item>>,
-    score: f64,
-}
 
 /// Parse a docs.rs URL to extract crate name and version
 ///
@@ -133,95 +126,6 @@ impl Navigator {
     /// Get the project root path if a local context exists
     pub fn project_root(&self) -> Option<&std::path::Path> {
         self.local_source.as_ref().map(|p| p.project_root())
-    }
-
-    /// Resolve a path like "std::vec::Vec" or "tokio::runtime::Runtime"
-    /// or (custom format for this crate) "tokio@1::runtime::Runtime" or "serde@1.0.228::de"
-    ///
-    /// This is the primary string entrypoint for any user-generated crate or type specification
-    pub fn resolve_path<'a>(
-        &'a self,
-        mut path: &str,
-        suggestions: &mut Vec<Suggestion<'a>>,
-    ) -> Option<DocRef<'a, Item>> {
-        if let Some(p) = path.strip_prefix("::") {
-            path = p;
-        }
-
-        let (crate_specifier, path_start_index) = if let Some(first_scope) = path.find("::") {
-            (&path[..first_scope], Some(first_scope + 2))
-        } else {
-            (path, None)
-        };
-
-        let (crate_name, version_req) = if let Some(at) = crate_specifier.find("@") {
-            (
-                &crate_specifier[..at],
-                VersionReq::parse(&crate_specifier[at + 1..]).unwrap_or(VersionReq::STAR),
-            )
-        } else {
-            (crate_specifier, VersionReq::STAR)
-        };
-
-        let Some(crate_data) = self.load_crate(crate_name, &version_req) else {
-            suggestions.extend(self.list_available_crates().map(|crate_info| Suggestion {
-                path: crate_info.name.clone(),
-                item: None,
-                score: case_aware_jaro_winkler(&crate_info.name, crate_name),
-            }));
-            return None;
-        };
-
-        // Start from crate root
-        let item = crate_data.get(self, &crate_data.root)?;
-        if let Some(path_start_index) = path_start_index {
-            // Try tree traversal first: this returns the canonical public item (e.g. the
-            // re-exported module, not the primitive of the same name).
-            if let Some(item) =
-                self.find_children_recursive(item, path, path_start_index, suggestions)
-            {
-                return Some(item);
-            }
-
-            let suffix = &path[path_start_index..];
-
-            // Fallback: check the reverse path index for items whose ItemSummary::path passes
-            // through private modules that don't appear as children in the public item tree,
-            // making tree traversal fail for those paths.
-            if let Some(item) = crate_data
-                .path_to_id
-                .get(suffix)
-                .and_then(|&id| crate_data.index.get(&id))
-                .map(|item| DocRef::new(self, crate_data, item))
-            {
-                return Some(item);
-            }
-
-            // Second fallback: for items absent from rustdoc's paths map (e.g. inherent
-            // methods; rust-lang/rust#152511) whose parent IS in the index. Strip the last
-            // segment, look up the remainder in path_to_id, then traverse into the child.
-            // One level of stripping is sufficient: only impl-block items are orphaned, and
-            // their parents (structs/enums/traits) always have an ItemSummary entry.
-            if let Some(sep) = suffix.rfind("::") {
-                let parent_suffix = &suffix[..sep];
-                let child_start = path_start_index + sep + 2;
-                if let Some(&parent_id) = crate_data.path_to_id.get(parent_suffix)
-                    && let Some(parent_item) = crate_data.index.get(&parent_id)
-                {
-                    let parent_ref = DocRef::new(self, crate_data, parent_item);
-                    return self.find_children_recursive(
-                        parent_ref,
-                        path,
-                        child_start,
-                        suggestions,
-                    );
-                }
-            }
-
-            None
-        } else {
-            Some(item)
-        }
     }
 
     pub fn canonicalize(&self, name: &str) -> CrateName<'static> {
@@ -351,145 +255,6 @@ impl Navigator {
                     .insert(CrateName::from(external.name.clone()), Box::new(info));
             }
         }
-    }
-
-    /// Get item from ID path
-    pub fn get_item_from_id_path<'a>(
-        &'a self,
-        crate_name: &str,
-        ids: &[u32],
-    ) -> Option<(DocRef<'a, Item>, Vec<&'a str>)> {
-        let mut path = vec![];
-        let crate_docs = self.load_crate(crate_name, &VersionReq::STAR)?;
-        let mut item = crate_docs.get(self, &crate_docs.root)?;
-        path.push(item.crate_docs().name());
-        for id in ids {
-            item = item.get(&Id(*id))?;
-            if let ItemEnum::Use(use_item) = item.inner() {
-                item = use_item
-                    .id
-                    .and_then(|id| item.get(&id))
-                    .or_else(|| item.navigator().resolve_path(&use_item.source, &mut vec![]))?;
-                if !use_item.is_glob {
-                    item.set_name(&use_item.name);
-                }
-            } else if let Some(name) = item.name() {
-                path.push(name);
-            }
-        }
-
-        Some((item, path))
-    }
-
-    fn find_children_recursive<'a>(
-        &'a self,
-        item: DocRef<'a, Item>,
-        path: &str,
-        index: usize,
-        suggestions: &mut Vec<Suggestion<'a>>,
-    ) -> Option<DocRef<'a, Item>> {
-        let remaining = &path[path.len().min(index)..];
-        if remaining.is_empty() {
-            return Some(item);
-        }
-        let segment_end = remaining
-            .find("::")
-            .map(|x| index + x)
-            .unwrap_or(path.len());
-        let segment = &path[index..segment_end];
-        let next_segment_start = path.len().min(segment_end + 2);
-
-        let (kind_filter, segment_name) = parse_discriminated_segment(segment);
-
-        log::trace!(
-            "🔎 searching for {segment_name} (kind={kind_filter:?}) in {} ({:?}) (remaining {})",
-            &path[..index],
-            item.kind(),
-            &path[next_segment_start..]
-        );
-
-        // Lazy lookup: walk all children matching this segment name without
-        // eagerly resolving every Use's source. Try each candidate — multiple
-        // children can share a name (e.g. a re-export Use plus the real item)
-        // and only one may actually contain the next path segment.
-        if let Some(found) = crate::lookup::for_each_named(item, segment_name, |child| {
-            if !kind_filter.is_none_or(|k| child.kind() == k) {
-                return crate::lookup::Step::Continue;
-            }
-            match self.find_children_recursive(child, path, next_segment_start, suggestions) {
-                Some(found) => crate::lookup::Step::Stop(found),
-                None => crate::lookup::Step::Continue,
-            }
-        }) {
-            return Some(found);
-        }
-
-        suggestions.extend(self.generate_suggestions(item, path, index));
-        None
-    }
-
-    fn generate_suggestions<'a>(
-        &'a self,
-        item: DocRef<'a, Item>,
-        path: &str,
-        index: usize,
-    ) -> impl Iterator<Item = Suggestion<'a>> {
-        item.child_items().filter_map(move |item| {
-            item.name().and_then(|name| {
-                let full_path = format!("{}{name}", &path[..index]);
-                if path.starts_with(&full_path) {
-                    None
-                } else {
-                    let score = case_aware_jaro_winkler(path, &full_path);
-                    Some(Suggestion {
-                        path: full_path,
-                        score,
-                        item: Some(item),
-                    })
-                }
-            })
-        })
-    }
-}
-
-/// Parse a path segment that may carry a rustdoc kind discriminator prefix, e.g. `"fn@foo"`.
-///
-/// Returns `(kind_filter, name)` where:
-/// - `kind_filter` is `Some(kind)` to require an exact kind match, or `None` to accept any kind.
-/// - `name` is the item name with the discriminator prefix stripped.
-///
-/// If the text before `@` is not a recognised discriminator, the full segment is returned
-/// unchanged as `(None, segment)` so that `@` in item names doesn't accidentally trigger this.
-///
-/// `value@` is a special case from rustdoc's syntax that matches any value-namespace item
-/// (functions, constants, statics, variants); we strip the prefix but don't filter by kind.
-fn parse_discriminated_segment(segment: &str) -> (Option<ItemKind>, &str) {
-    let Some(at) = segment.find('@') else {
-        return (None, segment);
-    };
-    let (disc, name) = (&segment[..at], &segment[at + 1..]);
-    match disc {
-        "mod" | "module" => (Some(ItemKind::Module), name),
-        "struct" => (Some(ItemKind::Struct), name),
-        "enum" => (Some(ItemKind::Enum), name),
-        "union" => (Some(ItemKind::Union), name),
-        "trait" => (Some(ItemKind::Trait), name),
-        "traitalias" => (Some(ItemKind::TraitAlias), name),
-        "fn" | "function" | "method" => (Some(ItemKind::Function), name),
-        "tyalias" | "typealias" => (Some(ItemKind::TypeAlias), name),
-        "type" => (Some(ItemKind::AssocType), name),
-        "const" | "constant" => (Some(ItemKind::Constant), name),
-        "static" => (Some(ItemKind::Static), name),
-        "macro" => (Some(ItemKind::Macro), name),
-        "attr" => (Some(ItemKind::ProcAttribute), name),
-        "derive" => (Some(ItemKind::ProcDerive), name),
-        "prim" | "primitive" => (Some(ItemKind::Primitive), name),
-        "field" => (Some(ItemKind::StructField), name),
-        "variant" => (Some(ItemKind::Variant), name),
-        // `value@` matches any value-namespace item — strip prefix, no kind filter.
-        "value" => (None, name),
-        // Unrecognised prefix: treat the whole string as the item name.
-        _ => (None, segment),
     }
 }
 

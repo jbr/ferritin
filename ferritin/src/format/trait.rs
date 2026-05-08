@@ -3,10 +3,10 @@ use rustdoc_types::{AssocItemConstraintKind, GenericArg, GenericArgs, GenericPar
 use super::*;
 use crate::styled_string::{DocumentNode, ListItem, Span};
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format a trait
-    pub(super) fn format_trait<'a>(
-        &'a self,
+    pub(super) fn format_trait(
+        &mut self,
         item: DocRef<'a, Item>,
         trait_data: DocRef<'a, Trait>,
     ) -> Vec<DocumentNode<'a>> {
@@ -39,7 +39,7 @@ impl Request {
         // Build list of trait members
         let mut member_items = vec![];
 
-        for trait_item in item.id_iter(&trait_data.item().items) {
+        for trait_item in self.ids(item, &trait_data.item().items) {
             let item_name = trait_item.name().unwrap_or("<unnamed>");
 
             let signature_spans = match &trait_item.item().inner {
@@ -98,7 +98,7 @@ impl Request {
     /// Scans the current crate's index for impl blocks that implement this trait.
     /// Boring impls (no bounds, no assoc types) appear in a compact comma-separated list;
     /// everything else appears as a list item. Capped at 20 total.
-    fn format_implementors<'a>(&self, trait_item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
+    fn format_implementors(&mut self, trait_item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
         const MAX_IMPLEMENTORS: usize = 20;
 
         let mut boring: Vec<(DocRef<'a, Item>, &'a Impl)> = vec![];
@@ -186,8 +186,8 @@ impl Request {
     ///
     /// For boring implementors this is just the `for_` type. For non-boring ones,
     /// bounds from where predicates are merged into the type's generic args display.
-    fn format_implementor_type<'a>(
-        &self,
+    fn format_implementor_type(
+        &mut self,
         impl_block: DocRef<'a, Item>,
         impl_item: &'a Impl,
     ) -> Vec<Span<'a>> {
@@ -234,14 +234,14 @@ impl Request {
     }
 
     /// Format a `ResolvedPath` for_ type, merging extra bounds into the generic args.
-    fn format_implementor_path<'a>(
-        &self,
+    fn format_implementor_path(
+        &mut self,
         impl_block: DocRef<'a, Item>,
         impl_item: &'a Impl,
         path: &'a rustdoc_types::Path,
         extra_bounds: &[(&str, &'a [GenericBound])],
     ) -> Vec<Span<'a>> {
-        let name_span = Span::type_name(&path.path).with_target(impl_block.get_path(path.id));
+        let name_span = Span::type_name(&path.path).with_target(self.get_path(impl_block, path.id));
         let mut inner: Vec<Span<'a>> = vec![];
 
         if let Some(args) = &path.args {
@@ -341,8 +341,8 @@ impl Request {
         spans
     }
 
-    fn format_trait_assoc_const_signature<'a>(
-        &self,
+    fn format_trait_assoc_const_signature(
+        &mut self,
         item: DocRef<'a, Item>,
         type_: &'a Type,
         value: &'a Option<String>,
@@ -369,8 +369,8 @@ impl Request {
         spans
     }
 
-    fn format_trait_assoc_type_signature<'a>(
-        &self,
+    fn format_trait_assoc_type_signature(
+        &mut self,
         item: DocRef<'a, Item>,
         generics: &'a Generics,
         bounds: &'a [GenericBound],
@@ -404,8 +404,8 @@ impl Request {
         spans
     }
 
-    fn format_trait_method_signature<'a>(
-        &self,
+    fn format_trait_method_signature(
+        &mut self,
         item: DocRef<'a, Item>,
         f: &'a Function,
         method_name: &'a str,

@@ -17,7 +17,7 @@ struct TraitImpl {
     category: TraitCategory,
 }
 
-impl Request {
+impl<'a> Request<'a> {
     /// Add associated methods for a struct or enum
     pub(super) fn format_associated_methods(
         &self,
@@ -206,7 +206,9 @@ impl Request {
 
         // Use Navigator's lookup to determine provenance
         if !crate_prefix.is_empty()
-            && let Some(lookup_result) = self.lookup_crate(crate_prefix, &VersionReq::STAR)
+            && let Some(lookup_result) = self
+                .navigator()
+                .lookup_crate(crate_prefix, &VersionReq::STAR)
         {
             let provenance = lookup_result.provenance();
             let category = if provenance.is_workspace() {

@@ -1,7 +1,7 @@
 use crate::request::Request;
 use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span};
 
-pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool, Option<&'a str>) {
+pub(crate) fn execute<'a>(request: &mut Request<'a>) -> (Document<'a>, bool, Option<&'a str>) {
     let mut nodes = vec![DocumentNode::Heading {
         level: HeadingLevel::Title,
         spans: vec![Span::plain("Available crates:")],
@@ -11,7 +11,10 @@ pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool, Option<&
 
     log::info!("Listing available crates");
 
-    let mut available_crates = request.list_available_crates().collect::<Vec<_>>();
+    let mut available_crates = request
+        .navigator()
+        .list_available_crates()
+        .collect::<Vec<_>>();
 
     log::info!(
         "Listing available crates ({} found)",
@@ -27,7 +30,7 @@ pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool, Option<&
         .map(|c| c.name());
 
     // If no local project, show helpful message
-    if request.local_source().is_none() {
+    if request.navigator().local_source().is_none() {
         nodes.push(DocumentNode::paragraph(vec![Span::plain(
             "No Rust project detected. You can still navigate to:",
         )]));
@@ -85,7 +88,7 @@ pub(crate) fn execute<'a>(request: &'a Request) -> (Document<'a>, bool, Option<&
     nodes.push(DocumentNode::List { items: list_items });
 
     // Show usage hints only in interactive mode when no local project
-    if request.local_source().is_none() {
+    if request.navigator().local_source().is_none() {
         nodes.push(DocumentNode::Conditional {
             show_when: ShowWhen::Interactive,
             nodes: vec![DocumentNode::paragraph(vec![Span::plain(
