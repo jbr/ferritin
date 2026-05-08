@@ -1,6 +1,6 @@
 [package]
 name = "ferritin"
-version = "0.9.1"
+version = "0.9.2"
 edition.workspace = true
 description = "Human-friendly CLI for browsing Rust documentation"
 readme = "../README.md"
@@ -18,7 +18,7 @@ name = "ferritin"
 path = "src/main.rs"
 
 [dependencies]
-ferritin-common = { path = "../ferritin-common", version = "0.9.1" }
+ferritin-common = { path = "../ferritin-common", version = "0.10.0" }
 
 anyhow.workspace = true
 clap = { version = "4.6.1", features = ["derive", "cargo", "env"] }

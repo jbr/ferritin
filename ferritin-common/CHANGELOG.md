@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.9.1...ferritin-common-v0.10.0) - 2026-05-08
+
+### Fixed
+
+- introduce a more coherent approach to cycle detection
+
 ## [0.9.1](https://github.com/jbr/ferritin/compare/ferritin-common-v0.9.0...ferritin-common-v0.9.1) - 2026-05-07
 
 ### Other
