@@ -7,8 +7,24 @@
 use std::fmt::{Result, Write};
 
 use crate::styled_string::{
-    Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, TruncationLevel,
+    Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, TableCell, TruncationLevel,
 };
+
+/// Escape characters that have meaning inside a markdown table cell:
+/// `|` ends the cell, `\` escapes the next char, and embedded newlines
+/// would break the row across lines.
+fn escape_md_cell(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    for ch in text.chars() {
+        match ch {
+            '\\' => out.push_str(r"\\"),
+            '|' => out.push_str(r"\|"),
+            '\n' => out.push_str("<br>"),
+            _ => out.push(ch),
+        }
+    }
+    out
+}
 
 /// AI-friendly renderer state
 struct AiRenderer<'w, W: Write> {
@@ -143,19 +159,7 @@ impl<'w, W: Write> AiRenderer<'w, W> {
                 }
                 Ok(())
             }
-            DocumentNode::Table { header, rows } => {
-                let row_count = rows.len();
-                let col_count = header
-                    .as_ref()
-                    .map_or_else(|| rows.first().map_or(0, |r| r.len()), |h| h.len());
-                self.write_indent()?;
-                writeln!(
-                    self.output,
-                    "[Table: {} columns × {} rows]",
-                    col_count, row_count
-                )?;
-                Ok(())
-            }
+            DocumentNode::Table { header, rows } => self.render_table(header.as_deref(), rows),
             DocumentNode::TruncatedBlock { nodes, level } => {
                 match level {
                     TruncationLevel::SingleLine => {
@@ -210,6 +214,62 @@ impl<'w, W: Write> AiRenderer<'w, W> {
                 Ok(())
             }
         }
+    }
+
+    /// Render a table in markdown format (`| col | col |`).
+    ///
+    /// Markdown tables are familiar to LLMs and far more token-efficient than
+    /// box-drawing characters. Pipe and backslash characters in cell content
+    /// are escaped so the table parses unambiguously.
+    fn render_table(&mut self, header: Option<&[TableCell]>, rows: &[Vec<TableCell>]) -> Result {
+        if rows.is_empty() && header.is_none() {
+            return Ok(());
+        }
+
+        let num_cols = header
+            .map(<[_]>::len)
+            .or_else(|| rows.first().map(Vec::len))
+            .unwrap_or(0);
+
+        if num_cols == 0 {
+            return Ok(());
+        }
+
+        // Markdown tables require a header row. If the source table omitted
+        // one, use the first row as the header so the output stays valid.
+        let (header_cells, body_rows): (Vec<&TableCell>, &[Vec<TableCell>]) = match header {
+            Some(h) => (h.iter().collect(), rows),
+            None => (rows[0].iter().collect(), &rows[1..]),
+        };
+
+        self.write_md_row(&header_cells, num_cols)?;
+        self.write_indent()?;
+        write!(self.output, "|")?;
+        for _ in 0..num_cols {
+            write!(self.output, " --- |")?;
+        }
+        writeln!(self.output)?;
+
+        for row in body_rows {
+            let cells: Vec<&TableCell> = row.iter().collect();
+            self.write_md_row(&cells, num_cols)?;
+        }
+        Ok(())
+    }
+
+    fn write_md_row(&mut self, cells: &[&TableCell], num_cols: usize) -> Result {
+        self.write_indent()?;
+        write!(self.output, "|")?;
+        for col_idx in 0..num_cols {
+            write!(self.output, " ")?;
+            if let Some(cell) = cells.get(col_idx) {
+                for span in &cell.spans {
+                    write!(self.output, "{}", escape_md_cell(&span.text))?;
+                }
+            }
+            write!(self.output, " |")?;
+        }
+        writeln!(self.output)
     }
 
     fn render_spans(&mut self, spans: &[Span]) -> Result {
@@ -324,5 +384,44 @@ mod tests {
         assert!(output.contains("Second // "));
         // Should not have bullet points
         assert!(!output.contains("◦"));
+    }
+
+    #[test]
+    fn test_render_table() {
+        let doc = Document::with_nodes(vec![DocumentNode::table(
+            Some(vec![
+                TableCell::from_span(Span::plain("Field")),
+                TableCell::from_span(Span::plain("Type")),
+            ]),
+            vec![vec![
+                TableCell::from_span(Span::plain("x")),
+                TableCell::from_span(Span::plain("u32")),
+            ]],
+        )]);
+
+        let mut output = String::new();
+        render(&doc, &mut output).unwrap();
+
+        // Cell contents should appear, not just "[Table: ...]"
+        assert!(output.contains("Field"));
+        assert!(output.contains("u32"));
+        assert!(!output.contains("[Table:"));
+        // Markdown table syntax
+        assert!(output.contains("| Field | Type |"));
+        assert!(output.contains("| --- | --- |"));
+        assert!(output.contains("| x | u32 |"));
+    }
+
+    #[test]
+    fn test_render_table_escapes_pipes() {
+        let doc = Document::with_nodes(vec![DocumentNode::table(
+            Some(vec![TableCell::from_span(Span::plain("Pat"))]),
+            vec![vec![TableCell::from_span(Span::plain("a | b"))]],
+        )]);
+
+        let mut output = String::new();
+        render(&doc, &mut output).unwrap();
+        // The pipe in cell content must be escaped so it doesn't end the cell.
+        assert!(output.contains(r"a \| b"));
     }
 }

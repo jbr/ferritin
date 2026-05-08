@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"fixture-crate::markdown_test\"), OutputMode ::\nAi)"
+expression: "render_for_tests_rooted(Commands::get(\"fixture-crate::markdown_test\"),\nOutputMode :: Ai, & get_fixture_crate_path ())"
 ---
 Item: markdown_test
 Kind: Module
@@ -296,13 +296,20 @@ Simple Table
 
 Here's a simple two-column table:
 
-[Table: 2 columns × 2 rows]
+| Field | Type |
+| --- | --- |
+| x | u32 |
+| y | u32 |
 
 Complex Table
 --------------------------------------------------------------------------------
 
 And a more complex table with various content:
 
-[Table: 4 columns × 3 rows]
+| Method | Parameters | Return Type | Description |
+| --- | --- | --- | --- |
+| new() | x: i32, y: i32 | Self | Creates a new point at the given coordinates |
+| distance() | &self, other: &Point | f64 | Calculates Euclidean distance to another point |
+| translate() | &mut self, dx: i32, dy: i32 | () | Moves the point by the given offset |
 
 No items match the current filters.

@@ -11,7 +11,7 @@ fixture-crate::GenericStruct  (Struct) - score: 100.0 // A generic struct for te
 alloc::borrow::Borrow  (Trait) - score: 68.1 // A trait for borrowing data. [+19 more lines]
 
 
-fixture-crate::GenericEnum  (Enum) - score: 66.9 // A generic enum for testing [+1 more lines]
+fixture-crate::GenericEnum  (Enum) - score: 66.8 // A generic enum for testing [+1 more lines]
 
 
 std::borrow::Borrow  (Trait) - score: 64.4 // A trait for borrowing data. [+19 more lines]

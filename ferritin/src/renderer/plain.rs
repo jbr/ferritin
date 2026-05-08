@@ -17,9 +17,19 @@
 
 use std::fmt::{Result, Write};
 
+use unicode_width::UnicodeWidthStr;
+
 use crate::styled_string::{
-    Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, TruncationLevel,
+    Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, TableCell, TruncationLevel,
 };
+
+/// Sum of display widths of every span in a cell.
+fn cell_width(cell: &TableCell) -> usize {
+    cell.spans
+        .iter()
+        .map(|span| UnicodeWidthStr::width(span.text.as_ref()))
+        .sum()
+}
 
 /// Plain text renderer state
 struct PlainRenderer<'w, W: Write> {
@@ -154,20 +164,7 @@ impl<'w, W: Write> PlainRenderer<'w, W> {
                 }
                 Ok(())
             }
-            DocumentNode::Table { header, rows } => {
-                // Placeholder for table rendering
-                let row_count = rows.len();
-                let col_count = header
-                    .as_ref()
-                    .map_or_else(|| rows.first().map_or(0, |r| r.len()), |h| h.len());
-                self.write_indent()?;
-                writeln!(
-                    self.output,
-                    "[Table: {} columns × {} rows]",
-                    col_count, row_count
-                )?;
-                Ok(())
-            }
+            DocumentNode::Table { header, rows } => self.render_table(header.as_deref(), rows),
             DocumentNode::TruncatedBlock { nodes, level } => {
                 // Transparent container - just controls truncation
                 match level {
@@ -230,6 +227,91 @@ impl<'w, W: Write> PlainRenderer<'w, W> {
                 Ok(())
             }
         }
+    }
+
+    /// Render a table with Unicode box-drawing borders.
+    ///
+    /// Layout matches the TTY renderer: borders hug content with no padding,
+    /// full cell content is preserved (no truncation) since plain output is
+    /// pipe-friendly and not constrained by terminal width.
+    fn render_table(&mut self, header: Option<&[TableCell]>, rows: &[Vec<TableCell>]) -> Result {
+        if rows.is_empty() && header.is_none() {
+            return Ok(());
+        }
+
+        let num_cols = header
+            .map(<[_]>::len)
+            .or_else(|| rows.first().map(Vec::len))
+            .unwrap_or(0);
+
+        if num_cols == 0 {
+            return Ok(());
+        }
+
+        let mut col_widths = vec![0usize; num_cols];
+        if let Some(header_cells) = header {
+            for (col_idx, cell) in header_cells.iter().enumerate().take(num_cols) {
+                col_widths[col_idx] = col_widths[col_idx].max(cell_width(cell));
+            }
+        }
+        for row in rows {
+            for (col_idx, cell) in row.iter().enumerate().take(num_cols) {
+                col_widths[col_idx] = col_widths[col_idx].max(cell_width(cell));
+            }
+        }
+
+        self.write_horizontal_border(&col_widths, '┌', '┬', '┐')?;
+        if let Some(header_cells) = header {
+            self.write_table_row(header_cells, &col_widths)?;
+            self.write_horizontal_border(&col_widths, '├', '┼', '┤')?;
+        }
+        for row in rows {
+            self.write_table_row(row, &col_widths)?;
+        }
+        self.write_horizontal_border(&col_widths, '└', '┴', '┘')?;
+        Ok(())
+    }
+
+    fn write_horizontal_border(
+        &mut self,
+        col_widths: &[usize],
+        left: char,
+        mid: char,
+        right: char,
+    ) -> Result {
+        self.write_indent()?;
+        write!(self.output, "{left}")?;
+        for (idx, &width) in col_widths.iter().enumerate() {
+            for _ in 0..width {
+                write!(self.output, "─")?;
+            }
+            let sep = if idx == col_widths.len() - 1 {
+                right
+            } else {
+                mid
+            };
+            write!(self.output, "{sep}")?;
+        }
+        writeln!(self.output)
+    }
+
+    fn write_table_row(&mut self, cells: &[TableCell], col_widths: &[usize]) -> Result {
+        self.write_indent()?;
+        write!(self.output, "│")?;
+        for (col_idx, &width) in col_widths.iter().enumerate() {
+            let cell = cells.get(col_idx);
+            let content_width = cell.map_or(0, |c| cell_width(c));
+            if let Some(cell) = cell {
+                for span in &cell.spans {
+                    write!(self.output, "{}", span.text)?;
+                }
+            }
+            for _ in content_width..width {
+                write!(self.output, " ")?;
+            }
+            write!(self.output, "│")?;
+        }
+        writeln!(self.output)
     }
 
     fn render_spans(&mut self, spans: &[Span]) -> Result {
@@ -306,5 +388,38 @@ mod tests {
 
         assert!(output.contains("  ◦ First"));
         assert!(output.contains("  ◦ Second"));
+    }
+
+    #[test]
+    fn test_render_table() {
+        let doc = Document::with_nodes(vec![DocumentNode::table(
+            Some(vec![
+                TableCell::from_span(Span::plain("Field")),
+                TableCell::from_span(Span::plain("Type")),
+            ]),
+            vec![
+                vec![
+                    TableCell::from_span(Span::plain("x")),
+                    TableCell::from_span(Span::plain("u32")),
+                ],
+                vec![
+                    TableCell::from_span(Span::plain("y")),
+                    TableCell::from_span(Span::plain("u32")),
+                ],
+            ],
+        )]);
+
+        let mut output = String::new();
+        render(&doc, &mut output).unwrap();
+
+        // Cell contents should appear, not just "[Table: ...]"
+        assert!(output.contains("Field"));
+        assert!(output.contains("Type"));
+        assert!(output.contains("u32"));
+        assert!(!output.contains("[Table:"));
+        // Box-drawing borders
+        assert!(output.contains("┌"));
+        assert!(output.contains("┼"));
+        assert!(output.contains("└"));
     }
 }
