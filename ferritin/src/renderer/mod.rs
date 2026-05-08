@@ -7,6 +7,7 @@ use std::{
 mod ai;
 mod interactive;
 mod plain;
+mod table_layout;
 mod test_mode;
 mod tty;
 

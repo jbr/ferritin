@@ -374,13 +374,18 @@ Complex Table
 
 And a more complex table with various content:
 
-┌───────────┬───────────────────────────┬───────────┬────────────────────────────────────────┐
+┌───────────┬───────────────────────────┬───────────┬──────────────────────────┐
 │Method     │Parameters                 │Return Type│Description                             │
-├───────────┼───────────────────────────┼───────────┼────────────────────────────────────────┤
-│new()      │x: i32, y: i32             │Self       │Creates a new point at the given coordin│
-│distance() │&self, other: &Point       │f64        │Calculates Euclidean distance to another│
-│translate()│&mut self, dx: i32, dy: i32│()         │Moves the point by the given offset     │
-└───────────┴───────────────────────────┴───────────┴────────────────────────────────────────┘
+├───────────┼───────────────────────────┼───────────┼──────────────────────────┤
+│new()      │x: i32, y: i32             │Self       │Creates a new point at the│
+│           │                           │           │given coordinates         │
+│           │                           │           │                          │
+│distance() │&self, other: &Point       │f64        │Calculates Euclidean      │
+│           │                           │           │distance to another point │
+│           │                           │           │                          │
+│translate()│&mut self, dx: i32, dy: i32│()         │Moves the point by the    │
+│           │                           │           │given offset              │
+└───────────┴───────────────────────────┴───────────┴──────────────────────────┘
 
 
 No items match the current filters.

@@ -17,19 +17,11 @@
 
 use std::fmt::{Result, Write};
 
-use unicode_width::UnicodeWidthStr;
-
 use crate::styled_string::{
     Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, TableCell, TruncationLevel,
 };
 
-/// Sum of display widths of every span in a cell.
-fn cell_width(cell: &TableCell) -> usize {
-    cell.spans
-        .iter()
-        .map(|span| UnicodeWidthStr::width(span.text.as_ref()))
-        .sum()
-}
+use super::table_layout::{self, DEFAULT_FALLBACK_WIDTH, span_display_width};
 
 /// Plain text renderer state
 struct PlainRenderer<'w, W: Write> {
@@ -229,47 +221,49 @@ impl<'w, W: Write> PlainRenderer<'w, W> {
         }
     }
 
-    /// Render a table with Unicode box-drawing borders.
-    ///
-    /// Layout matches the TTY renderer: borders hug content with no padding,
-    /// full cell content is preserved (no truncation) since plain output is
-    /// pipe-friendly and not constrained by terminal width.
+    /// Render a table with Unicode box-drawing borders. Long cells wrap onto
+    /// multiple lines and column widths shrink to fit within
+    /// [`DEFAULT_FALLBACK_WIDTH`] when the natural layout would overflow.
     fn render_table(&mut self, header: Option<&[TableCell]>, rows: &[Vec<TableCell>]) -> Result {
         if rows.is_empty() && header.is_none() {
             return Ok(());
         }
 
-        let num_cols = header
-            .map(<[_]>::len)
-            .or_else(|| rows.first().map(Vec::len))
-            .unwrap_or(0);
-
-        if num_cols == 0 {
+        let available = DEFAULT_FALLBACK_WIDTH.saturating_sub(self.indent.len());
+        let layout = table_layout::lay_out(header, rows, available);
+        if layout.num_cols() == 0 {
             return Ok(());
         }
 
-        let mut col_widths = vec![0usize; num_cols];
-        if let Some(header_cells) = header {
-            for (col_idx, cell) in header_cells.iter().enumerate().take(num_cols) {
-                col_widths[col_idx] = col_widths[col_idx].max(cell_width(cell));
+        self.write_horizontal_border(&layout.col_widths, '┌', '┬', '┐')?;
+        if let Some(header_cells) = layout.header.as_deref() {
+            self.write_table_row(header_cells, &layout.col_widths)?;
+            self.write_horizontal_border(&layout.col_widths, '├', '┼', '┤')?;
+        }
+        let separate_rows = layout.any_wrapped();
+        let last = layout.rows.len().saturating_sub(1);
+        for (idx, row) in layout.rows.iter().enumerate() {
+            self.write_table_row(row, &layout.col_widths)?;
+            if separate_rows && idx < last {
+                self.write_blank_row(&layout.col_widths)?;
             }
         }
-        for row in rows {
-            for (col_idx, cell) in row.iter().enumerate().take(num_cols) {
-                col_widths[col_idx] = col_widths[col_idx].max(cell_width(cell));
-            }
-        }
-
-        self.write_horizontal_border(&col_widths, '┌', '┬', '┐')?;
-        if let Some(header_cells) = header {
-            self.write_table_row(header_cells, &col_widths)?;
-            self.write_horizontal_border(&col_widths, '├', '┼', '┤')?;
-        }
-        for row in rows {
-            self.write_table_row(row, &col_widths)?;
-        }
-        self.write_horizontal_border(&col_widths, '└', '┴', '┘')?;
+        self.write_horizontal_border(&layout.col_widths, '└', '┴', '┘')?;
         Ok(())
+    }
+
+    /// Empty content row preserving the column borders. Used between body
+    /// rows to give wrapped cells visual breathing room.
+    fn write_blank_row(&mut self, col_widths: &[usize]) -> Result {
+        self.write_indent()?;
+        write!(self.output, "│")?;
+        for &w in col_widths {
+            for _ in 0..w {
+                write!(self.output, " ")?;
+            }
+            write!(self.output, "│")?;
+        }
+        writeln!(self.output)
     }
 
     fn write_horizontal_border(
@@ -295,23 +289,39 @@ impl<'w, W: Write> PlainRenderer<'w, W> {
         writeln!(self.output)
     }
 
-    fn write_table_row(&mut self, cells: &[TableCell], col_widths: &[usize]) -> Result {
-        self.write_indent()?;
-        write!(self.output, "│")?;
-        for (col_idx, &width) in col_widths.iter().enumerate() {
-            let cell = cells.get(col_idx);
-            let content_width = cell.map_or(0, |c| cell_width(c));
-            if let Some(cell) = cell {
-                for span in &cell.spans {
-                    write!(self.output, "{}", span.text)?;
-                }
-            }
-            for _ in content_width..width {
-                write!(self.output, " ")?;
-            }
+    /// Write one logical row, expanding to as many physical lines as the
+    /// tallest cell after wrapping.
+    fn write_table_row(
+        &mut self,
+        cells: &[table_layout::LaidOutCell<'_>],
+        col_widths: &[usize],
+    ) -> Result {
+        let row_height = cells
+            .iter()
+            .map(|c| c.lines.len().max(1))
+            .max()
+            .unwrap_or(1);
+        for line_idx in 0..row_height {
+            self.write_indent()?;
             write!(self.output, "│")?;
+            for (col_idx, &width) in col_widths.iter().enumerate() {
+                let cell = cells.get(col_idx);
+                let line: &[Span] = cell
+                    .and_then(|c| c.lines.get(line_idx).map(Vec::as_slice))
+                    .unwrap_or(&[]);
+                let mut written = 0usize;
+                for span in line {
+                    write!(self.output, "{}", span.text)?;
+                    written += span_display_width(span);
+                }
+                for _ in written..width {
+                    write!(self.output, " ")?;
+                }
+                write!(self.output, "│")?;
+            }
+            writeln!(self.output)?;
         }
-        writeln!(self.output)
+        Ok(())
     }
 
     fn render_spans(&mut self, spans: &[Span]) -> Result {
