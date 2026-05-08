@@ -51,12 +51,13 @@ impl Tool<RustdocTools> for Search {
     fn execute(self, state: &mut RustdocTools) -> Result<String> {
         let manifest_path = state.resolve_path("Cargo.toml", None)?;
 
-        let request = Request::new(manifest_path);
+        let navigator = crate::request::build_navigator(manifest_path);
+        let mut request = Request::new(&navigator);
 
         // Perform search using Navigator's built-in search
         let limit = self.limit.unwrap_or(10);
         let crate_names = [self.crate_name.as_str()];
-        let results = match request.search(&self.query, &crate_names) {
+        let results = match request.navigator().search(&self.query, &crate_names) {
             Ok(results) => results,
             Err(mut suggestions) => {
                 let mut result = format!(

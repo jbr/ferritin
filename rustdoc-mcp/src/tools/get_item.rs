@@ -158,7 +158,8 @@ impl WithExamples for GetItem {
 impl Tool<RustdocTools> for GetItem {
     fn execute(self, tools: &mut RustdocTools) -> Result<String> {
         let manifest_path = tools.resolve_path("Cargo.toml", None)?;
-        let request = Request::new(manifest_path);
+        let navigator = crate::request::build_navigator(manifest_path);
+        let mut request = Request::new(&navigator);
 
         let mut suggestions = vec![];
 

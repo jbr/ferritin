@@ -22,9 +22,13 @@ mod r#struct;
 mod r#trait;
 mod types;
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format an item with automatic recursion tracking
-    pub(crate) fn format_item(&self, item: DocRef<'_, Item>, context: &FormatContext) -> String {
+    pub(crate) fn format_item(
+        &mut self,
+        item: DocRef<'a, Item>,
+        context: &FormatContext,
+    ) -> String {
         let mut result = String::new();
 
         // Basic item information
@@ -42,7 +46,7 @@ impl Request {
         };
 
         // Handle different item types
-        let str = match &item.inner {
+        let str = match &item.item().inner {
             ItemEnum::Module(_) => self.format_module(item, context),
             ItemEnum::Struct(struct_data) => {
                 self.format_struct(item, item.build_ref(struct_data), context)

@@ -1,13 +1,11 @@
-use ferritin_common::iterators::IdIter;
-
 use super::*;
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format an enum
     pub(super) fn format_enum(
-        &self,
-        item: DocRef<'_, Item>,
-        enum_data: DocRef<'_, Enum>,
+        &mut self,
+        item: DocRef<'a, Item>,
+        enum_data: DocRef<'a, Enum>,
         context: &FormatContext,
     ) -> String {
         let mut result = String::new();
@@ -27,8 +25,8 @@ impl Request {
             "\n```rust\nenum {enum_name}{generics_str}{where_clause} {{\n"
         ));
 
-        for variant in item.id_iter(&enum_data.variants) {
-            if let ItemEnum::Variant(variant_enum) = &variant.inner {
+        for variant in self.ids(item, &enum_data.item().variants) {
+            if let ItemEnum::Variant(variant_enum) = &variant.item().inner {
                 if let Some(docs) = &variant.docs {
                     result.push_str(&format!("    /// {docs}\n"));
                 }
@@ -43,7 +41,8 @@ impl Request {
                         self.format_tuple_enum(enum_data, &mut result, variant_name, fields)
                     }
                     VariantKind::Struct { fields, .. } => {
-                        self.format_struct_enum(&mut result, variant_name, item.id_iter(fields))
+                        let field_items = self.ids(item, fields);
+                        self.format_struct_enum(&mut result, variant_name, field_items)
                     }
                 }
             }
@@ -56,7 +55,12 @@ impl Request {
         result
     }
 
-    fn format_struct_enum(&self, result: &mut String, variant_name: &str, fields: IdIter<'_>) {
+    fn format_struct_enum(
+        &self,
+        result: &mut String,
+        variant_name: &str,
+        fields: Vec<DocRef<'a, Item>>,
+    ) {
         result.push_str(&format!("    {variant_name} {{\n"));
         for field in fields {
             if let ItemEnum::StructField(field_type) = &field.inner {

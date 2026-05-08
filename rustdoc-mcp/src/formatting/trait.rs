@@ -1,9 +1,9 @@
 use super::*;
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format a trait
-    pub(super) fn format_trait<'a>(
-        &self,
+    pub(super) fn format_trait(
+        &mut self,
         item: DocRef<'a, Item>,
         trait_data: DocRef<'a, Trait>,
         context: &FormatContext,
@@ -25,7 +25,7 @@ impl Request {
             "\n```rust\ntrait {trait_name}{generics_str}{where_clause} {{\n"
         ));
 
-        for trait_item in item.id_iter(&trait_data.items) {
+        for trait_item in self.ids(item, &trait_data.item().items) {
             if let Some(docs) = self.docs_to_show(trait_item, false, context) {
                 result.push_str(&format!("    /// {docs}\n"));
             }

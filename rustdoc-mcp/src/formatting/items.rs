@@ -1,6 +1,6 @@
 use super::*;
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format a type alias
     pub(crate) fn format_type_alias(
         &self,

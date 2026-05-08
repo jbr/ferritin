@@ -149,24 +149,44 @@ pub fn render_interactive(
     log_reader: LogReader,
 ) -> io::Result<()> {
     use crate::format_context::FormatContext;
+    use ferritin_common::Navigator;
+    use std::sync::OnceLock;
 
-    // Create lazy Request - exists immediately but Navigator not built yet
+    // The Navigator outlives the Request: it's populated lazily on the
+    // request thread (slow source loading) and read by the request thread
+    // afterwards. Stash it in an outer OnceLock so the Request can borrow it
+    // for the lifetime of the scope.
+    let navigator_lock: OnceLock<Navigator> = OnceLock::new();
     let format_context = FormatContext::new();
-    let request = Request::lazy(manifest_path, format_context, local);
 
-    // Use scoped threads so request can be borrowed by both threads
     thread::scope(|scope| {
-        render_interactive_impl(scope, &request, render_context, initial_command, log_reader)
+        render_interactive_impl(
+            scope,
+            &navigator_lock,
+            manifest_path,
+            local,
+            format_context,
+            render_context,
+            initial_command,
+            log_reader,
+        )
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 fn render_interactive_impl<'scope, 'env: 'scope>(
     scope: &'scope thread::Scope<'scope, 'env>,
-    request: &'env Request,
+    navigator_lock: &'env std::sync::OnceLock<ferritin_common::Navigator>,
+    manifest_path: std::path::PathBuf,
+    local: bool,
+    format_context: crate::format_context::FormatContext,
     render_context: RenderContext,
     initial_command: Option<Commands>,
     log_reader: LogReader,
 ) -> io::Result<()> {
+    use ferritin_common::Navigator;
+    use ferritin_common::sources::{DocsRsSource, LocalSource, StdSource};
+
     // Build interactive theme from render context
     let interactive_theme = InteractiveTheme::from_render_context(&render_context);
 
@@ -174,8 +194,8 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
     let (cmd_tx, cmd_rx) = crossbeam_channel::unbounded::<UiCommand<'env>>();
     let (resp_tx, resp_rx) = crossbeam_channel::unbounded::<RequestResponse<'env>>();
 
-    // Spawn UI thread - it only renders and handles input
-    // UI thread starts without a document - will receive initial document via channel
+    // Spawn UI thread - it only renders and handles input.
+    // UI thread starts without a document - will receive initial document via channel.
     let ui_handle = scope.spawn(|| -> io::Result<()> {
         ui_thread_loop(
             render_context,
@@ -186,14 +206,51 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
         )
     });
 
-    // Main thread becomes request thread - populate Navigator and do all formatting
-    // This is where the slow source loading happens (after UI thread is running)
-    request.populate();
+    // Main thread becomes the request thread. Navigator construction is the
+    // slow part; do it after the UI thread has started so the loading screen
+    // is responsive.
+    log::info!("Checking for std documentation from rustup");
+    let std_source = StdSource::from_rustup();
+    if let Some(s) = &std_source {
+        log::info!(
+            "Found std docs for {} at {}",
+            s.rustc_version(),
+            s.docs_path().display()
+        );
+    }
+
+    let navigator = if local {
+        log::info!(
+            "Looking for a cargo workspace from {}",
+            manifest_path.display()
+        );
+        let local_source = LocalSource::load(&manifest_path).ok();
+        if let Some(ls) = &local_source {
+            log::info!("Found cargo workspace at {}", ls.manifest_path().display());
+        }
+        Navigator::default()
+            .with_std_source(std_source)
+            .with_local_source(local_source)
+    } else {
+        log::info!("Building a docs.rs client");
+        let docsrs_source = DocsRsSource::from_default_cache();
+        if let Some(d) = &docsrs_source {
+            log::info!(
+                "Built new docs.rs client with cache at {}",
+                d.client().cache_dir().display()
+            );
+        }
+        Navigator::default()
+            .with_std_source(std_source)
+            .with_docsrs_source(docsrs_source)
+    };
+    let navigator = navigator_lock.get_or_init(|| navigator);
+    let mut request = Request::new(navigator, format_context);
 
     // Execute initial command and send to UI
     let (document, _is_error, initial_entry) = initial_command
         .unwrap_or_else(Commands::list)
-        .execute(request);
+        .execute(&mut request);
 
     let _ = resp_tx.send(RequestResponse::Document {
         doc: document,
@@ -201,7 +258,7 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
     });
 
     // Run request thread loop
-    request_thread_loop(request, cmd_rx, resp_tx);
+    request_thread_loop(&mut request, cmd_rx, resp_tx);
 
     // Wait for UI thread to complete and return its result
     ui_handle.join().unwrap()?;

@@ -2,7 +2,7 @@ use rustdoc_types::ItemKind;
 use std::path::PathBuf;
 
 use crate::{
-    CrateName, Navigator, RustdocData,
+    CrateName, Navigator, Resolver, RustdocData,
     sources::{CrateProvenance, LocalSource, StdSource},
 };
 
@@ -18,7 +18,8 @@ fn test_navigator() -> Navigator {
 
 /// Resolve a path, panicking with a helpful message on failure.
 fn resolve<'a>(nav: &'a Navigator, path: &str) -> crate::DocRef<'a, rustdoc_types::Item> {
-    nav.resolve_path(path, &mut vec![])
+    Resolver::new(nav)
+        .resolve_path(path, &mut vec![])
         .unwrap_or_else(|| panic!("failed to resolve {path:?}"))
 }
 
@@ -71,7 +72,7 @@ fn discriminated_path_round_trips() {
         let disc_path = item
             .discriminated_path()
             .unwrap_or_else(|| panic!("no discriminated_path for {path:?}"));
-        let round_tripped = nav
+        let round_tripped = Resolver::new(&nav)
             .resolve_path(&disc_path, &mut vec![])
             .unwrap_or_else(|| panic!("discriminated path {disc_path:?} failed to resolve"));
         assert_eq!(
@@ -90,7 +91,7 @@ fn discriminated_path_round_trips_method() {
     let disc_path = item
         .discriminated_path()
         .expect("discriminated_path should work for methods once the upstream bug is fixed");
-    let round_tripped = nav
+    let round_tripped = Resolver::new(&nav)
         .resolve_path(&disc_path, &mut vec![])
         .unwrap_or_else(|| panic!("discriminated path {disc_path:?} failed to resolve"));
     assert_eq!(item, round_tripped);
@@ -129,7 +130,7 @@ fn discriminated_path_round_trips_through_collision() {
         "fixture-crate::namespace_collisions::mod@both",
         "fixture-crate::namespace_collisions::fn@both",
     ] {
-        let item = nav
+        let item = Resolver::new(&nav)
             .resolve_path(disc_path, &mut vec![])
             .unwrap_or_else(|| panic!("failed to resolve {disc_path:?}"));
         let generated = item
@@ -154,15 +155,19 @@ fn discriminated_path_round_trips_method_on_private_module_struct() {
     let nav = test_navigator();
 
     // Resolve via the public re-export path to get a DocRef with parent set.
-    let struct_item = resolve(&nav, "crate::ReachableViaPrivateModule");
-    let method = struct_item
-        .child_items()
+    let mut resolver = Resolver::new(&nav);
+    let struct_item = resolver
+        .resolve_path("crate::ReachableViaPrivateModule", &mut vec![])
+        .unwrap_or_else(|| panic!("failed to resolve crate::ReachableViaPrivateModule"));
+    let method = resolver
+        .children(struct_item)
+        .into_iter()
         .find(|c| c.name() == Some("private_module_method"))
         .expect("private_module_method not found");
 
     let disc = method
         .discriminated_path()
-        .expect("discriminated_path should work: parent was set during child_items traversal");
+        .expect("discriminated_path should work: parent was set during child traversal");
 
     // The path goes through the private module because that's where ItemSummary::path points.
     assert_eq!(
@@ -170,7 +175,7 @@ fn discriminated_path_round_trips_method_on_private_module_struct() {
         "fixture-crate::private_detail::ReachableViaPrivateModule::fn@private_module_method"
     );
 
-    let round_tripped = nav
+    let round_tripped = resolver
         .resolve_path(&disc, &mut vec![])
         .unwrap_or_else(|| panic!("failed to resolve discriminated path {disc:?}"));
 
@@ -422,7 +427,12 @@ fn cross_crate_prefix_resolves_at_root() {
         .expect("home_crate pre-populated")
         .root_item(&nav);
 
-    let names: Vec<&str> = root.child_items().filter_map(|c| c.name()).collect();
+    let mut resolver = Resolver::new(&nav);
+    let names: Vec<&str> = resolver
+        .children(root)
+        .into_iter()
+        .filter_map(|c| c.name())
+        .collect();
 
     assert_eq!(
         names,
@@ -451,11 +461,16 @@ fn cross_crate_prefix_resolves_at_root() {
 fn cross_crate_prefix_resolves_in_nested_module() {
     let nav = build_prefix_test_navigator();
 
-    let inner = nav
+    let mut resolver = Resolver::new(&nav);
+    let inner = resolver
         .resolve_path("home_crate::inner", &mut vec![])
         .expect("home_crate::inner should resolve");
 
-    let names: Vec<&str> = inner.child_items().filter_map(|c| c.name()).collect();
+    let names: Vec<&str> = resolver
+        .children(inner)
+        .into_iter()
+        .filter_map(|c| c.name())
+        .collect();
 
     assert_eq!(
         names,
@@ -604,7 +619,12 @@ fn iterator_skips_unresolvable_use_items() {
         .expect("pre-populated crate should be loadable")
         .root_item(&nav);
 
-    let names: Vec<&str> = root.child_items().filter_map(|c| c.name()).collect();
+    let mut resolver = Resolver::new(&nav);
+    let names: Vec<&str> = resolver
+        .children(root)
+        .into_iter()
+        .filter_map(|c| c.name())
+        .collect();
 
     assert_eq!(
         names,

@@ -1,6 +1,6 @@
 use super::*;
 
-impl Request {
+impl<'a> Request<'a> {
     /// Enhanced type formatting for signatures
     pub(crate) fn format_type(&self, type_: &Type) -> String {
         match type_ {

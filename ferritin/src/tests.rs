@@ -23,17 +23,13 @@ fn get_test_workspace_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../tests/test-workspace")
 }
 
-/// Create a test state rooted at a given path (expected to be a Cargo workspace root).
-fn create_test_state_at(path: &std::path::Path) -> Request {
-    let navigator = Navigator::default()
+/// Build a navigator rooted at a given path. The Navigator must outlive the
+/// `Request` that borrows it; tests typically stash it in a local then pass
+/// `&navigator` to `Request::new`.
+fn build_test_navigator(path: &std::path::Path) -> Navigator {
+    Navigator::default()
         .with_local_source(LocalSource::load(path).ok())
-        .with_std_source(StdSource::from_rustup());
-    Request::new(navigator, FormatContext::new())
-}
-
-/// Create a test state with isolated session
-fn create_test_state() -> Request {
-    create_test_state_at(&get_fixture_crate_path())
+        .with_std_source(StdSource::from_rustup())
 }
 
 /// Convert OSC8 hyperlinks to markdown-style [text](url) before stripping ANSI
@@ -51,8 +47,9 @@ fn render_for_tests_rooted(
     output_mode: OutputMode,
     project_root: &std::path::Path,
 ) -> String {
-    let request = create_test_state_at(project_root);
-    let (document, _, _) = command.execute(&request);
+    let navigator = build_test_navigator(project_root);
+    let mut request = Request::new(&navigator, FormatContext::new());
+    let (document, _, _) = command.execute(&mut request);
     let mut output = String::new();
     let render_context = RenderContext::new().with_output_mode(output_mode);
     render(&document, &render_context, &mut output).unwrap();
@@ -91,8 +88,9 @@ fn render_interactive_for_tests_rooted(
 ) -> TestBackend {
     use crate::renderer::render_to_test_backend;
 
-    let request = create_test_state_at(project_root);
-    let (document, _, _) = command.execute(&request);
+    let navigator = build_test_navigator(project_root);
+    let mut request = Request::new(&navigator, FormatContext::new());
+    let (document, _, _) = command.execute(&mut request);
     let render_context = RenderContext::new();
 
     render_to_test_backend(document, render_context)

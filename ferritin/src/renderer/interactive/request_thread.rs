@@ -8,14 +8,13 @@ use crossbeam_channel::{Receiver, Sender};
 
 /// Request thread loop - processes commands from UI thread
 pub(super) fn request_thread_loop<'a>(
-    request: &'a Request,
+    request: &mut Request<'a>,
     cmd_rx: Receiver<UiCommand<'a>>,
     resp_tx: Sender<RequestResponse<'a>>,
 ) {
     for cmd in cmd_rx {
         match cmd {
             UiCommand::Navigate(doc_ref) => {
-                // Format the already-resolved item (e.g., from clicking a link)
                 let doc_nodes = request.format_item(doc_ref);
                 let doc = Document::from(doc_nodes);
                 let entry = HistoryEntry::Item(doc_ref);
@@ -54,7 +53,6 @@ pub(super) fn request_thread_loop<'a>(
                     crate_name.as_ref().map(|c| c.as_ref()),
                 );
 
-                // Always create history entry for searches
                 let entry = HistoryEntry::Search {
                     query: query.into_owned(),
                     crate_name: crate_name.map(|c| c.into_owned()),

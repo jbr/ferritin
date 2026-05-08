@@ -5,10 +5,10 @@ use super::*;
 use crate::styled_string::{DocumentNode, ListItem, Span};
 use semver::VersionReq;
 
-impl Request {
+impl<'a> Request<'a> {
     /// Add associated methods for a struct or enum
-    pub(super) fn format_associated_methods<'a>(
-        &'a self,
+    pub(super) fn format_associated_methods(
+        &mut self,
         item: DocRef<'a, Item>,
     ) -> Vec<DocumentNode<'a>> {
         let mut doc_nodes = vec![];
@@ -28,8 +28,8 @@ impl Request {
         doc_nodes
     }
 
-    fn format_item_list<'a>(
-        &'a self,
+    fn format_item_list(
+        &mut self,
         mut items: Vec<DocRef<'a, Item>>,
         title: &'a str,
     ) -> Vec<DocumentNode<'a>> {
@@ -126,8 +126,8 @@ impl Request {
     }
 
     /// Format trait implementations: boring ones as compact lists, non-boring as full signatures
-    fn format_trait_implementations<'a>(
-        &self,
+    fn format_trait_implementations(
+        &mut self,
         trait_impls: &[DocRef<'a, Item>],
     ) -> Vec<DocumentNode<'a>> {
         let mut boring_non_std: Vec<(DocRef<'a, Item>, &'a Impl, &'a Path)> = vec![];
@@ -214,6 +214,7 @@ impl Request {
         let crate_prefix = full_path.split("::").next().unwrap_or("");
         !crate_prefix.is_empty()
             && self
+                .navigator()
                 .lookup_crate(crate_prefix, &VersionReq::STAR)
                 .is_some_and(|info| matches!(info.provenance(), CrateProvenance::Std))
     }
@@ -233,8 +234,8 @@ impl Request {
 
     /// Render `TraitName<GenericArgs, AssocType = Value>` for a boring impl.
     /// Merges the trait path's generic args with any associated type assignments from the impl.
-    fn format_boring_trait_ref<'a>(
-        &self,
+    fn format_boring_trait_ref(
+        &mut self,
         impl_block: DocRef<'a, Item>,
         impl_item: &'a Impl,
         trait_path: &'a Path,
@@ -335,8 +336,8 @@ impl Request {
     /// If all where predicates are simple type-param bounds (no HRTBs, no qualified paths),
     /// merges them into the inline generic params so the signature fits on one line.
     /// Complex predicates fall back to a where clause.
-    fn format_impl_signature<'a>(
-        &self,
+    fn format_impl_signature(
+        &mut self,
         impl_block: DocRef<'a, Item>,
         impl_item: &'a Impl,
         trait_path: &'a Path,
@@ -423,8 +424,8 @@ impl Request {
     }
 
     /// Render associated type assignments from an impl as indented `type Foo = Bar` lines.
-    pub(super) fn format_impl_assoc_types<'a>(
-        &self,
+    pub(super) fn format_impl_assoc_types(
+        &mut self,
         impl_block: DocRef<'a, Item>,
         impl_item: &'a Impl,
     ) -> Vec<DocumentNode<'a>> {

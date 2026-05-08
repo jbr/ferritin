@@ -1,7 +1,7 @@
 use super::*;
 
-impl Request {
-    pub(super) fn format_struct<'a>(
+impl<'a> Request<'a> {
+    pub(super) fn format_struct(
         &self,
         item: DocRef<'a, Item>,
         r#struct: DocRef<'a, Struct>,
@@ -24,8 +24,8 @@ impl Request {
     }
 
     /// Categorize struct fields into visible and hidden counts
-    fn categorize_fields<'a>(
-        &'a self,
+    fn categorize_fields(
+        &self,
         item: DocRef<'a, Item>,
         fields: &[Id],
     ) -> (Vec<DocRef<'a, Item>>, usize) {
@@ -43,8 +43,8 @@ impl Request {
         (visible_fields, hidden_count)
     }
 
-    fn format_plain_struct<'a>(
-        &'a self,
+    fn format_plain_struct(
+        &self,
         struct_data: DocRef<'a, Struct>,
         result: &mut String,
         item: DocRef<'a, Item>,

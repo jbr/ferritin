@@ -29,7 +29,7 @@ impl DocInfo {
     }
 }
 
-impl Request {
+impl<'a> Request<'a> {
     /// Get documentation to show for an item, handling verbosity and truncation
     ///
     /// Returns None if no docs should be shown, Some(docs) if docs should be displayed.

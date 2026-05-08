@@ -3,10 +3,10 @@ use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModi
 use super::*;
 use crate::styled_string::{DocumentNode, Span as StyledSpan};
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format a function signature
-    pub(super) fn format_function<'a>(
-        &'a self,
+    pub(super) fn format_function(
+        &mut self,
         item: DocRef<'a, Item>,
         function: DocRef<'a, Function>,
     ) -> Vec<DocumentNode<'a>> {
@@ -16,8 +16,8 @@ impl Request {
     }
 
     /// Format a function signature
-    pub(super) fn format_function_signature<'a>(
-        &self,
+    pub(super) fn format_function_signature(
+        &mut self,
         item: DocRef<'a, Item>,
         name: &'a str,
         func: &'a Function,
@@ -157,8 +157,8 @@ impl Request {
     }
 
     /// Format a function parameter with idiomatic self shorthand
-    pub(super) fn format_parameter<'a>(
-        &self,
+    pub(super) fn format_parameter(
+        &mut self,
         item: DocRef<'a, Item>,
         param_name: &'a str,
         param_type: &'a Type,
@@ -245,8 +245,8 @@ impl Request {
     }
 
     /// Format generics for signatures
-    pub(super) fn format_generics<'a>(
-        &self,
+    pub(super) fn format_generics(
+        &mut self,
         item: DocRef<'a, Item>,
         generics: &'a Generics,
     ) -> Vec<StyledSpan<'a>> {
@@ -269,8 +269,8 @@ impl Request {
     }
 
     /// Format a single generic parameter
-    pub(super) fn format_generic_param<'a>(
-        &self,
+    pub(super) fn format_generic_param(
+        &mut self,
         item: DocRef<'a, Item>,
         param: &'a GenericParamDef,
     ) -> Vec<StyledSpan<'a>> {
@@ -327,8 +327,8 @@ impl Request {
     }
 
     /// Format generic bounds
-    pub(super) fn format_generic_bounds<'a>(
-        &self,
+    pub(super) fn format_generic_bounds(
+        &mut self,
         item: DocRef<'a, Item>,
         bounds: &'a [GenericBound],
     ) -> Vec<StyledSpan<'a>> {
@@ -343,8 +343,8 @@ impl Request {
     }
 
     /// Format a single generic bound
-    pub(super) fn format_generic_bound<'a>(
-        &self,
+    pub(super) fn format_generic_bound(
+        &mut self,
         item: DocRef<'a, Item>,
         bound: &'a GenericBound,
     ) -> Vec<StyledSpan<'a>> {
@@ -388,8 +388,8 @@ impl Request {
     }
 
     /// Format where clause
-    pub(super) fn format_where_clause<'a>(
-        &self,
+    pub(super) fn format_where_clause(
+        &mut self,
         item: DocRef<'a, Item>,
         predicates: &'a [WherePredicate],
     ) -> Vec<StyledSpan<'a>> {
@@ -425,8 +425,8 @@ impl Request {
     }
 
     /// Format a where predicate
-    pub(super) fn format_where_predicate<'a>(
-        &self,
+    pub(super) fn format_where_predicate(
+        &mut self,
         item: DocRef<'a, Item>,
         predicate: &'a WherePredicate,
     ) -> Vec<StyledSpan<'a>> {
@@ -461,8 +461,8 @@ impl Request {
         }
     }
 
-    fn format_bound_predicate<'a>(
-        &self,
+    fn format_bound_predicate(
+        &mut self,
         item: DocRef<'a, Item>,
         type_: &'a Type,
         bounds: &'a [GenericBound],
@@ -492,8 +492,8 @@ impl Request {
     }
 
     /// Format a term (for associated type equality)
-    pub(super) fn format_term<'a>(
-        &self,
+    pub(super) fn format_term(
+        &mut self,
         item: DocRef<'a, Item>,
         term: &'a Term,
     ) -> Vec<StyledSpan<'a>> {
@@ -504,8 +504,8 @@ impl Request {
     }
 
     /// Format a path
-    pub(super) fn format_path<'a>(
-        &self,
+    pub(super) fn format_path(
+        &mut self,
         item: DocRef<'a, Item>,
         path: &'a Path,
     ) -> Vec<StyledSpan<'a>> {
@@ -513,7 +513,7 @@ impl Request {
             return vec![];
         }
 
-        let type_span = StyledSpan::type_name(&path.path).with_target(item.get_path(path.id));
+        let type_span = StyledSpan::type_name(&path.path).with_target(self.get_path(item, path.id));
 
         let mut spans = vec![type_span];
         if let Some(args) = &path.args {
@@ -523,8 +523,8 @@ impl Request {
     }
 
     /// Format generic arguments
-    pub(super) fn format_generic_args<'a>(
-        &self,
+    pub(super) fn format_generic_args(
+        &mut self,
         item: DocRef<'a, Item>,
         args: &'a GenericArgs,
     ) -> Vec<StyledSpan<'a>> {
@@ -539,8 +539,8 @@ impl Request {
         }
     }
 
-    fn format_generic_parenthesized<'a>(
-        &self,
+    fn format_generic_parenthesized(
+        &mut self,
         item: DocRef<'a, Item>,
         inputs: &'a [Type],
         output: &'a Option<Type>,
@@ -567,8 +567,8 @@ impl Request {
         spans
     }
 
-    fn format_generic_angle_bracket<'a>(
-        &self,
+    fn format_generic_angle_bracket(
+        &mut self,
         item: DocRef<'a, Item>,
         args: &'a [GenericArg],
         constraints: &'a [AssocItemConstraint],

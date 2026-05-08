@@ -2,7 +2,7 @@ use crate::request::Request;
 use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span, TruncationLevel};
 
 pub(crate) fn execute<'a>(
-    request: &'a Request,
+    request: &mut Request<'a>,
     query: &str,
     limit: usize,
     crate_: Option<&str>,
@@ -12,13 +12,14 @@ pub(crate) fn execute<'a>(
     let crate_names: Vec<_> = match crate_ {
         Some(crate_) => vec![crate_],
         None => request
+            .navigator()
             .list_available_crates()
             .map(|ci| ci.name())
             .collect(),
     };
 
     // Search using Navigator's built-in search
-    let scored_results = match request.search(query, &crate_names) {
+    let scored_results = match request.navigator().search(query, &crate_names) {
         Ok(results) => results,
         Err(suggestions) => {
             // No crates could be loaded - show suggestions

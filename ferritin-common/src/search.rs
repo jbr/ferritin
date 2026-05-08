@@ -1,6 +1,6 @@
 pub mod indexer;
 
-use crate::{Navigator, navigator::Suggestion};
+use crate::{Navigator, Suggestion};
 use rayon::prelude::*;
 
 pub use indexer::*;

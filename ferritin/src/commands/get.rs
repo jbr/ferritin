@@ -5,7 +5,7 @@ use crate::request::Request;
 use crate::styled_string::{Document, DocumentNode, ListItem, Span};
 
 pub(crate) fn execute<'a>(
-    request: &'a Request,
+    request: &mut Request<'a>,
     path: &str,
     source: bool,
     recursive: bool,

@@ -34,10 +34,10 @@ impl DocInfo {
     }
 }
 
-impl Request {
+impl<'a> Request<'a> {
     /// Render markdown documentation to structured DocumentNodes
-    pub(crate) fn render_docs<'a>(
-        &'a self,
+    pub(crate) fn render_docs(
+        &self,
         item: DocRef<'a, Item>,
         markdown: &str,
     ) -> Vec<DocumentNode<'a>> {
@@ -51,11 +51,7 @@ impl Request {
     /// Returns either a resolved DocRef (for same-crate items) or an unresolved path string
     /// (for external items), avoiding the need to load external crates just for rendering.
     /// URL generation is deferred to the renderer that needs it.
-    fn extract_link_target<'a>(
-        &'a self,
-        origin: DocRef<'a, Item>,
-        url: &str,
-    ) -> Option<LinkTarget<'a>> {
+    fn extract_link_target(&self, origin: DocRef<'a, Item>, url: &str) -> Option<LinkTarget<'a>> {
         // Handle fragment-only links
         if url.starts_with('#') {
             return None; // Keep as-is
@@ -404,8 +400,8 @@ impl Request {
     ///
     /// Returns None if no docs should be shown, Some(docs) if docs should be displayed.
     /// Docs are wrapped in a TruncatedBlock with appropriate level hint.
-    pub(crate) fn docs_to_show<'a>(
-        &'a self,
+    pub(crate) fn docs_to_show(
+        &self,
         item: DocRef<'a, Item>,
         truncation_level: TruncationLevel,
     ) -> Option<Vec<DocumentNode<'a>>> {

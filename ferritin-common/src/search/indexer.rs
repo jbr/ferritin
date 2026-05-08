@@ -19,11 +19,7 @@ use std::ops::AddAssign;
 use std::path::Path;
 use std::time::SystemTime;
 
-use crate::{
-    crate_name::CrateName,
-    doc_ref::DocRef,
-    navigator::{Navigator, Suggestion},
-};
+use crate::{Resolver, Suggestion, crate_name::CrateName, doc_ref::DocRef, navigator::Navigator};
 
 /// Represents either a resolved Item or an unresolved ItemSummary for link counting
 #[derive(Clone, Copy, Debug)]
@@ -35,7 +31,11 @@ enum ItemOrSummary<'a> {
 impl<'a> ItemOrSummary<'a> {
     /// Try to convert to a resolved Item, filtering by visited crates.
     /// Returns None if the item's crate is not in the visited set.
-    fn try_to_item(self, visited_crates: &HashSet<CrateName>) -> Option<DocRef<'a, Item>> {
+    fn try_to_item(
+        self,
+        resolver: &mut Resolver<'a>,
+        visited_crates: &HashSet<CrateName>,
+    ) -> Option<DocRef<'a, Item>> {
         match self {
             ItemOrSummary::Item(item) => {
                 let crate_name: CrateName = item.crate_docs().name().into();
@@ -66,9 +66,8 @@ impl<'a> ItemOrSummary<'a> {
                     summary.crate_docs()
                 };
 
-                target_crate
-                    .root_item(summary.navigator())
-                    .find_by_path(summary.path.iter().skip(1))
+                let root = target_crate.root_item(summary.navigator());
+                resolver.find_by_path(root, summary.path.iter().skip(1).map(String::as_str))
             }
         }
     }
@@ -217,7 +216,7 @@ impl<'a> Terms<'a> {
     // DocRef hashes by crate name + item id; the interior mutability lives in
     // Navigator's connection pool and doesn't affect identity.
     #[allow(clippy::mutable_key_type)]
-    fn finalize(self) -> SearchableTerms {
+    fn finalize(self, resolver: &mut Resolver<'a>) -> SearchableTerms {
         log::debug!("Filtering link counts to visited crates only");
         log::debug!("Visited crates: {:?}", self.visited_crates);
         log::debug!(
@@ -235,7 +234,7 @@ impl<'a> Terms<'a> {
         let mut skipped_count = 0;
         let mut filtered_link_counts: HashMap<DocRef<Item>, usize> = HashMap::new();
         for (target, count) in self.link_counts {
-            if let Some(item) = target.try_to_item(&self.visited_crates) {
+            if let Some(item) = target.try_to_item(resolver, &self.visited_crates) {
                 filtered_count += 1;
                 *filtered_link_counts.entry(item).or_insert(0) += count;
             } else {
@@ -327,7 +326,13 @@ impl<'a> Terms<'a> {
         }
     }
 
-    fn recurse(&mut self, item: DocRef<'a, Item>, ids: &[u32], add_id: bool) {
+    fn recurse(
+        &mut self,
+        resolver: &mut Resolver<'a>,
+        item: DocRef<'a, Item>,
+        ids: &[u32],
+        add_id: bool,
+    ) {
         let mut ids = ids.to_owned();
         if add_id {
             ids.push(item.id.0);
@@ -378,21 +383,21 @@ impl<'a> Terms<'a> {
                     }
                 }
                 StructKind::Plain { fields, .. } => {
-                    for field in item.id_iter(fields) {
+                    for field in resolver.ids(item, fields) {
                         self.add_for_item(field, id);
                     }
                 }
             },
             ItemEnum::Trait(Trait { items, .. }) => {
-                for field in item.id_iter(items) {
-                    self.recurse(field, &ids, false);
+                for field in resolver.ids(item, items) {
+                    self.recurse(resolver, field, &ids, false);
                 }
             }
             _ => {}
         };
 
-        for child in item.child_items().with_use() {
-            self.recurse(child, &ids, true)
+        for child in resolver.children_including_uses(item) {
+            self.recurse(resolver, child, &ids, true)
         }
     }
 
@@ -581,9 +586,10 @@ impl SearchIndex {
         navigator: &'a Navigator,
         crate_name: &str,
     ) -> Result<Self, Vec<Suggestion<'a>>> {
+        let mut resolver = Resolver::new(navigator);
         let mut suggestions = vec![];
 
-        let item = navigator
+        let item = resolver
             .resolve_path(crate_name, &mut suggestions)
             .ok_or(suggestions)?;
 
@@ -605,8 +611,8 @@ impl SearchIndex {
         } else {
             log::debug!("Building new index for {crate_name}");
             let mut terms = Terms::default();
-            terms.recurse(item, &[], false);
-            let terms = terms.finalize();
+            terms.recurse(&mut resolver, item, &[], false);
+            let terms = terms.finalize(&mut resolver);
             log::debug!("Finished building index for {crate_name}");
             Self::store(&terms, &path);
             Ok(Self { terms, crate_name })

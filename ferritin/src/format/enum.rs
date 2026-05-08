@@ -1,10 +1,10 @@
 use super::*;
 use crate::styled_string::{DocumentNode, ListItem, Span};
 
-impl Request {
+impl<'a> Request<'a> {
     /// Format an enum
-    pub(super) fn format_enum<'a>(
-        &'a self,
+    pub(super) fn format_enum(
+        &mut self,
         item: DocRef<'a, Item>,
         enum_data: DocRef<'a, Enum>,
     ) -> Vec<DocumentNode<'a>> {
@@ -32,7 +32,7 @@ impl Request {
         code_spans.push(Span::plain("\n"));
 
         // Format variants
-        for variant in item.id_iter(&enum_data.item().variants) {
+        for variant in self.ids(item, &enum_data.item().variants) {
             if let ItemEnum::Variant(variant_enum) = &variant.item().inner {
                 let variant_name = variant.name().unwrap_or("<unnamed>");
 
@@ -73,7 +73,7 @@ impl Request {
                         code_spans.push(Span::punctuation("{"));
                         code_spans.push(Span::plain("\n"));
 
-                        for field in item.id_iter(fields) {
+                        for field in self.ids(item, fields) {
                             if let ItemEnum::StructField(field_type) = &field.item().inner {
                                 let field_name = field.name().unwrap_or("<unnamed>");
                                 code_spans.push(Span::plain("        "));
@@ -104,8 +104,9 @@ impl Request {
         doc_nodes.push(DocumentNode::generated_code(code_spans));
 
         // Build variants section with List (collect documented variants)
-        let variant_items: Vec<ListItem> = item
-            .id_iter(&enum_data.item().variants)
+        let variant_items: Vec<ListItem> = self
+            .ids(item, &enum_data.item().variants)
+            .into_iter()
             .filter_map(|variant| {
                 if let ItemEnum::Variant(_) = &variant.inner
                     && let Some(docs) = self.docs_to_show(variant, TruncationLevel::SingleLine)

@@ -33,7 +33,7 @@ struct FlatItem<'a> {
     item: DocRef<'a, Item>,
 }
 
-impl Request {
+impl<'a> Request<'a> {
     /// Collect all items in a module hierarchy as flat qualified paths.
     ///
     /// Tracks visited items so cyclic re-export chains (e.g. a nested module
@@ -42,14 +42,15 @@ impl Request {
     // DocRef hashes by crate name + item id; the interior mutability lives in
     // Navigator's connection pool and doesn't affect identity.
     #[allow(clippy::mutable_key_type)]
-    fn collect_flat_items<'a>(
+    fn collect_flat_items(
+        &mut self,
         collected: &mut Vec<FlatItem<'a>>,
         visited: &mut std::collections::HashSet<DocRef<'a, Item>>,
         path: Option<String>,
         item: DocRef<'a, Item>,
         context: &FormatContext,
     ) {
-        for child in item.child_items() {
+        for child in self.children(item) {
             if let Some(item_name) = child.name()
                 && context.filter_match_kind(child.kind())
             {
@@ -64,7 +65,7 @@ impl Request {
                 });
 
                 if context.is_recursive() && visited.insert(child) {
-                    Self::collect_flat_items(collected, visited, Some(path), child, context);
+                    self.collect_flat_items(collected, visited, Some(path), child, context);
                 }
             }
         }
@@ -139,13 +140,17 @@ impl Request {
 
     /// Format a module
     #[allow(clippy::mutable_key_type)] // see collect_flat_items
-    pub(super) fn format_module(&self, item: DocRef<'_, Item>, context: &FormatContext) -> String {
+    pub(super) fn format_module(
+        &mut self,
+        item: DocRef<'a, Item>,
+        context: &FormatContext,
+    ) -> String {
         let mut result = String::new();
 
         let mut collected = Vec::new();
         let mut visited = std::collections::HashSet::new();
         visited.insert(item);
-        Self::collect_flat_items(&mut collected, &mut visited, None, item, context);
+        self.collect_flat_items(&mut collected, &mut visited, None, item, context);
         result.push_str(&self.format_grouped_flat_items(&collected, context));
 
         result
