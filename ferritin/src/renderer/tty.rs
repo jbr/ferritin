@@ -717,7 +717,8 @@ fn build_node_lines<'a>(
     }
 }
 
-/// Render table with UTF-8 borders
+/// Render table with UTF-8 borders. Column widths fit the terminal; cells
+/// that are too wide wrap to multiple lines via [`super::table_layout`].
 fn render_table<'a>(
     header: Option<&[crate::styled_string::TableCell<'a>]>,
     rows: &[Vec<crate::styled_string::TableCell<'a>>],
@@ -730,163 +731,134 @@ fn render_table<'a>(
     }
 
     let border_style = Style::default().fg(Color::DarkGray);
-
-    // Calculate column widths based on content
-    let num_cols = header
-        .map(|h| h.len())
-        .or_else(|| rows.first().map(|r| r.len()))
-        .unwrap_or(0);
-
-    if num_cols == 0 {
+    let available = render_context.terminal_width().max(20);
+    let layout = super::table_layout::lay_out(header, rows, available);
+    if layout.num_cols() == 0 {
         return lines;
     }
 
-    let mut col_widths = vec![0usize; num_cols];
+    lines.push(border_line(&layout.col_widths, '┌', '┬', '┐', border_style));
 
-    // Measure header widths
-    if let Some(header_cells) = header {
-        for (col_idx, cell) in header_cells.iter().enumerate() {
-            let width = cell.spans.iter().map(|s| s.text.len()).sum::<usize>();
-            col_widths[col_idx] = col_widths[col_idx].max(width);
-        }
-    }
-
-    // Measure row widths
-    for row_cells in rows {
-        for (col_idx, cell) in row_cells.iter().enumerate() {
-            if col_idx < num_cols {
-                let width = cell.spans.iter().map(|s| s.text.len()).sum::<usize>();
-                col_widths[col_idx] = col_widths[col_idx].max(width);
-            }
-        }
-    }
-
-    // Cap column widths to reasonable sizes
-    let max_col_width = 40;
-    for width in &mut col_widths {
-        *width = (*width).min(max_col_width);
-    }
-
-    // Top border: ┌─────┬─────┐
-    let mut top_border = String::new();
-    top_border.push('┌');
-    for (idx, &width) in col_widths.iter().enumerate() {
-        top_border.push_str(&"─".repeat(width));
-        if idx < col_widths.len() - 1 {
-            top_border.push('┬');
-        }
-    }
-    top_border.push('┐');
-    lines.push(Line::from(vec![RatatuiSpan::styled(
-        top_border,
-        border_style,
-    )]));
-
-    // Render header if present
-    if let Some(header_cells) = header {
-        let mut header_spans = vec![RatatuiSpan::styled("│", border_style)];
-
-        for (col_idx, cell) in header_cells.iter().enumerate() {
-            let mut cell_text = String::new();
-            for span in &cell.spans {
-                let span_text = if span.text.len() > col_widths[col_idx] {
-                    &span.text[..col_widths[col_idx]]
-                } else {
-                    &span.text
-                };
-                cell_text.push_str(span_text);
-            }
-
-            // Pad to column width
-            while cell_text.len() < col_widths[col_idx] {
-                cell_text.push(' ');
-            }
-
-            let mut style = span_style_to_ratatui(
-                cell.spans
-                    .first()
-                    .map(|s| s.style)
-                    .unwrap_or(crate::styled_string::SpanStyle::Plain),
-                render_context,
-            );
-            style = style.add_modifier(Modifier::BOLD);
-            header_spans.push(RatatuiSpan::styled(cell_text, style));
-            header_spans.push(RatatuiSpan::styled("│", border_style));
-        }
-        lines.push(Line::from(header_spans));
-
-        // Header separator: ├─────┼─────┤
-        let mut header_sep = String::new();
-        header_sep.push('├');
-        for (idx, &width) in col_widths.iter().enumerate() {
-            header_sep.push_str(&"─".repeat(width));
-            if idx < col_widths.len() - 1 {
-                header_sep.push('┼');
-            }
-        }
-        header_sep.push('┤');
-        lines.push(Line::from(vec![RatatuiSpan::styled(
-            header_sep,
+    if let Some(header_cells) = layout.header.as_deref() {
+        lines.extend(row_lines(
+            header_cells,
+            &layout.col_widths,
             border_style,
-        )]));
+            render_context,
+            true,
+        ));
+        lines.push(border_line(&layout.col_widths, '├', '┼', '┤', border_style));
     }
 
-    // Render rows
-    for row_cells in rows.iter() {
-        let mut row_spans = vec![RatatuiSpan::styled("│", border_style)];
-
-        for (col_idx, cell) in row_cells.iter().enumerate() {
-            if col_idx >= num_cols {
-                break;
-            }
-
-            let mut cell_text = String::new();
-            for span in &cell.spans {
-                let span_text = if span.text.len() > col_widths[col_idx] {
-                    &span.text[..col_widths[col_idx]]
-                } else {
-                    &span.text
-                };
-                cell_text.push_str(span_text);
-            }
-
-            // Pad to column width
-            while cell_text.len() < col_widths[col_idx] {
-                cell_text.push(' ');
-            }
-
-            let style = span_style_to_ratatui(
-                cell.spans
-                    .first()
-                    .map(|s| s.style)
-                    .unwrap_or(crate::styled_string::SpanStyle::Plain),
-                render_context,
-            );
-            row_spans.push(RatatuiSpan::styled(cell_text, style));
-            row_spans.push(RatatuiSpan::styled("│", border_style));
-        }
-        lines.push(Line::from(row_spans));
-    }
-
-    // Bottom border: └─────┴─────┘
-    let mut bottom_border = String::new();
-    bottom_border.push('└');
-    for (idx, &width) in col_widths.iter().enumerate() {
-        bottom_border.push_str(&"─".repeat(width));
-        if idx < col_widths.len() - 1 {
-            bottom_border.push('┴');
+    let separate_rows = layout.any_wrapped();
+    let last = layout.rows.len().saturating_sub(1);
+    for (idx, row) in layout.rows.iter().enumerate() {
+        lines.extend(row_lines(
+            row,
+            &layout.col_widths,
+            border_style,
+            render_context,
+            false,
+        ));
+        if separate_rows && idx < last {
+            lines.push(blank_row_line(&layout.col_widths, border_style));
         }
     }
-    bottom_border.push('┘');
-    lines.push(Line::from(vec![RatatuiSpan::styled(
-        bottom_border,
-        border_style,
-    )]));
 
-    // Add blank line after table
+    lines.push(border_line(&layout.col_widths, '└', '┴', '┘', border_style));
+
+    // Blank line after table
     lines.push(Line::from(vec![]));
 
     lines
+}
+
+/// Build one full-width border row (top, header separator, or bottom).
+fn border_line<'a>(
+    col_widths: &[usize],
+    left: char,
+    mid: char,
+    right: char,
+    border_style: Style,
+) -> Line<'a> {
+    let mut s = String::new();
+    s.push(left);
+    for (idx, &w) in col_widths.iter().enumerate() {
+        for _ in 0..w {
+            s.push('─');
+        }
+        if idx < col_widths.len() - 1 {
+            s.push(mid);
+        }
+    }
+    s.push(right);
+    Line::from(vec![RatatuiSpan::styled(s, border_style)])
+}
+
+/// Empty content row preserving the column borders. Used between body rows
+/// when any cell wrapped, to keep tall cells visually separated.
+fn blank_row_line<'a>(col_widths: &[usize], border_style: Style) -> Line<'a> {
+    let mut spans: Vec<RatatuiSpan<'a>> = Vec::with_capacity(col_widths.len() * 2 + 1);
+    spans.push(RatatuiSpan::styled("│", border_style));
+    for &w in col_widths {
+        spans.push(RatatuiSpan::styled(" ".repeat(w), Style::default()));
+        spans.push(RatatuiSpan::styled("│", border_style));
+    }
+    Line::from(spans)
+}
+
+/// Render one logical row of cells (already wrapped by `table_layout`) into
+/// one or more physical [`Line`]s — as many as the tallest cell in the row.
+///
+/// All text is converted to owned strings here, so the returned lines do not
+/// borrow from the layout (the lifetime parameter is purely for the caller).
+fn row_lines<'a>(
+    cells: &[super::table_layout::LaidOutCell<'_>],
+    col_widths: &[usize],
+    border_style: Style,
+    render_context: &RenderContext,
+    bold: bool,
+) -> Vec<Line<'a>> {
+    let row_height = cells
+        .iter()
+        .map(|c| c.lines.len().max(1))
+        .max()
+        .unwrap_or(1);
+    let mut out = Vec::with_capacity(row_height);
+
+    for line_idx in 0..row_height {
+        let mut spans: Vec<RatatuiSpan<'a>> = Vec::new();
+        spans.push(RatatuiSpan::styled("│", border_style));
+        for (col_idx, &width) in col_widths.iter().enumerate() {
+            let line: &[Span<'_>] = cells
+                .get(col_idx)
+                .and_then(|c| c.lines.get(line_idx).map(Vec::as_slice))
+                .unwrap_or(&[]);
+            let mut written = 0usize;
+            for span in line {
+                let text = if let Some(url) = span.url() {
+                    wrap_with_osc8(span.text.as_ref(), &url)
+                } else {
+                    span.text.to_string()
+                };
+                let mut style = span_style_to_ratatui(span.style, render_context);
+                if bold {
+                    style = style.add_modifier(Modifier::BOLD);
+                }
+                written += super::table_layout::span_display_width(span);
+                spans.push(RatatuiSpan::styled(text, style));
+            }
+            if written < width {
+                spans.push(RatatuiSpan::styled(
+                    " ".repeat(width - written),
+                    Style::default(),
+                ));
+            }
+            spans.push(RatatuiSpan::styled("│", border_style));
+        }
+        out.push(Line::from(spans));
+    }
+    out
 }
 
 /// Render code block with syntax highlighting
