@@ -11,13 +11,13 @@ A trait for testing extremely long documentation that exceeds line limits.</p>
 This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
 </item>
   <item><p>
-std::line  (Macro) - score: 54.5</p>
+std::line  (Macro) - score: 54.6</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-core::line  (Macro) - score: 54.4</p>
+core::line  (Macro) - score: 54.5</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
