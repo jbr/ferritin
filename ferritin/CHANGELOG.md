@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2](https://github.com/jbr/ferritin/compare/ferritin-v0.9.1...ferritin-v0.9.2) - 2026-05-08
+
+### Fixed
+
+- introduce a more coherent approach to cycle detection
+- table rendering
+
+### Other
+
+- update snaps to rustc 1.97.0-nightly (f964de49b 2026-05-07)
+- update snaps to rustc 1.97.0-nightly (f964de49b 2026-05-07)
+- update snaps to rustc 1.97.0-nightly (f964de49b 2026-05-07)
+
 ## [0.9.1](https://github.com/jbr/ferritin/compare/ferritin-v0.9.0...ferritin-v0.9.1) - 2026-05-07
 
 ### Other

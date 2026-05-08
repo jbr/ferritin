@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.4](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.3...rustdoc-mcp-v0.6.4) - 2026-05-08
+
+### Fixed
+
+- introduce a more coherent approach to cycle detection
+
 ## [0.6.3](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.2...rustdoc-mcp-v0.6.3) - 2026-05-07
 
 ### Other
