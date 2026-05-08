@@ -29,8 +29,8 @@ Search results for 'trigger line-based truncation'
   ◦ std::arch::x86::_mm_prefetch  (Function) - score: 31.0
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ alloc::collections::BTreeMap  (Struct) - score: 30.9
-    An ordered map based on a B-Tree. [...]
-
   ◦ std::io::LineWriter  (Struct) - score: 30.9
     Wraps a writer and buffers output to it, flushing whenever a newline (0x0a, '\n') is detected. [...]
+
+  ◦ alloc::collections::BTreeMap  (Struct) - score: 30.8
+    An ordered map based on a B-Tree. [...]
