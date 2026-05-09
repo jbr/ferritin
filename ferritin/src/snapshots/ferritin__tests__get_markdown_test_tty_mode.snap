@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"fixture-crate::markdown_test\"), OutputMode ::\nTty)"
+expression: "render_for_tests_rooted(Commands::get(\"fixture-crate::markdown_test\"),\nOutputMode :: Tty, & get_fixture_crate_path ())"
 ---
 Item: markdown_test
 Kind: Module
@@ -375,7 +375,7 @@ Complex Table
 And a more complex table with various content:
 
 ┌───────────┬───────────────────────────┬───────────┬──────────────────────────┐
-│Method     │Parameters                 │Return Type│Description                             │
+│Method     │Parameters                 │Return Type│Description               │
 ├───────────┼───────────────────────────┼───────────┼──────────────────────────┤
 │new()      │x: i32, y: i32             │Self       │Creates a new point at the│
 │           │                           │           │given coordinates         │

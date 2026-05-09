@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_interactive_for_tests(Commands::get(\"fixture-crate::markdown_test\"))"
+expression: "render_interactive_for_tests_rooted(Commands::get(\"fixture-crate::markdown_test\"),\n& get_fixture_crate_path ())"
 ---
 "   Item: markdown_test                                                         ╻"
 "   Kind: Module                                                                ┃"
@@ -100,8 +100,8 @@ expression: "render_interactive_for_tests(Commands::get(\"fixture-crate::markdow
 "   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┃"
 "                                                                               ┃"
 "   Markdown uses email-style > characters for blockquoting. If you're familiar ┃"
-"   with quoting passages of text in an email message, then you know how to     ┃"
-"   create a blockquote in Markdown. It looks best if you hard wrap the text    ╹"
+"   with quoting passages of text in an email message, then you know how to     ╹"
+"   create a blockquote in Markdown. It looks best if you hard wrap the text     "
 "   and put a > before every line:                                               "
 "                                                                                "
 "     ┃ This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,    "

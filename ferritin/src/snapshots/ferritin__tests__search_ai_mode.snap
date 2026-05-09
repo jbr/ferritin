@@ -17,10 +17,10 @@ core::line  (Macro) - score: 54.5 // Expands to the line number on which it was 
 proc_macro::Span::line  (Function) - score: 39.5 // The one-indexed line of the source file where the span starts. [+1 more lines]
 
 
-core::panic::Location::line  (Function) - score: 39.3 // Returns the line number from which the panic originated. [+2 more lines]
+core::panic::Location::line  (Function) - score: 39.4 // Returns the line number from which the panic originated. [+2 more lines]
 
 
-std::panic::Location::line  (Function) - score: 39.3 // Returns the line number from which the panic originated. [+2 more lines]
+std::panic::Location::line  (Function) - score: 39.4 // Returns the line number from which the panic originated. [+2 more lines]
 
 
 core::arch::x86::_mm_prefetch  (Function) - score: 31.0 // Fetch the cache line that contains address p using the given STRATEGY. [+8 more lines]
