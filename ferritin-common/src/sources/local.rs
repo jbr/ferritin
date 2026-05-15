@@ -193,7 +193,7 @@ impl LocalSource {
                 });
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
-                if self.rebuild_docs(&crate_name, None).is_ok() {
+                if self.rebuild_docs(&crate_name, None, true).is_ok() {
                     continue;
                 }
             }
@@ -245,7 +245,7 @@ impl LocalSource {
                 });
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
-                if self.rebuild_docs(&crate_name, version).is_ok() {
+                if self.rebuild_docs(&crate_name, version, false).is_ok() {
                     continue;
                 }
             }
@@ -253,12 +253,26 @@ impl LocalSource {
         }
     }
 
-    /// Rebuild documentation for a crate
-    fn rebuild_docs(&self, crate_name: &CrateName<'_>, version: Option<&Version>) -> Result<()> {
+    /// Rebuild documentation for a crate.
+    ///
+    /// `document_private` enables `--document-private-items`, which is desirable for
+    /// workspace crates (you're editing them) but not for local dependencies (you want
+    /// their public API surface).
+    fn rebuild_docs(
+        &self,
+        crate_name: &CrateName<'_>,
+        version: Option<&Version>,
+        document_private: bool,
+    ) -> Result<()> {
         let package_spec = match version {
             Some(v) => format!("{}@{}", crate_name, v),
             None => crate_name.to_string(),
         };
+
+        let mut rustdocflags = String::from("-Z unstable-options --output-format=json");
+        if document_private {
+            rustdocflags.push_str(" --document-private-items");
+        }
 
         let output = Command::new("rustup")
             .arg("run")
@@ -270,7 +284,7 @@ impl LocalSource {
                 "--package",
                 &package_spec,
             ])
-            .env("RUSTDOCFLAGS", "-Z unstable-options --output-format=json")
+            .env("RUSTDOCFLAGS", rustdocflags)
             .current_dir(self.project_root())
             .output()?;
 
