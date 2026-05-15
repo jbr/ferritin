@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0](https://github.com/jbr/ferritin/compare/ferritin-v0.9.2...ferritin-v0.10.0) - 2026-05-15
+
+### Added
+
+- ai mode improvements
+- improved table rendering
+
+### Other
+
+- update snaps to rustc 1.97.0-nightly (7c3c88f42 2026-05-14)
+- update snaps
+- clippy
+- update snaps
+- update snaps to rustc 1.97.0-nightly (8b03437a8 2026-05-12)
+- update snaps to rustc 1.97.0-nightly (fb0a5a5a9 2026-05-08)
+
 ## [0.9.2](https://github.com/jbr/ferritin/compare/ferritin-v0.9.1...ferritin-v0.9.2) - 2026-05-08
 
 ### Fixed

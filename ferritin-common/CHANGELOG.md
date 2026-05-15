@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.10.0...ferritin-common-v0.11.0) - 2026-05-15
+
+### Added
+
+- document private types when using --local on workspace crates
+
+### Other
+
+- clippy
+
 ## [0.10.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.9.1...ferritin-common-v0.10.0) - 2026-05-08
 
 ### Fixed
