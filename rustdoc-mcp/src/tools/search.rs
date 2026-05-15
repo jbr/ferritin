@@ -62,7 +62,7 @@ impl Tool<RustdocTools> for Search {
             Err(mut suggestions) => {
                 let mut result = format!(
                     "`{}` not found. Did you mean one of these?\n\n",
-                    &self.crate_name
+                    self.crate_name
                 );
                 suggestions.sort_by(|a, b| b.score().total_cmp(&a.score()));
                 for suggestion in suggestions.into_iter().take(5).filter(|s| s.score() > 0.8) {

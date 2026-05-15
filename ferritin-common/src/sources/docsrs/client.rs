@@ -191,7 +191,7 @@ impl DocsRsClient {
 
         let url = format!("https://crates.io/api/v1/crates/{crate_name}?include={include}");
 
-        log::debug!("Resolving latest version from crates.io: {}", &url);
+        log::debug!("Resolving latest version from crates.io: {}", url);
 
         let conn = self.http_client.get(url).await?;
 

@@ -342,6 +342,7 @@ impl<'a> Resolver<'a> {
         self.find_named_dyn(parent, target, &mut accept)
     }
 
+    #[allow(clippy::type_complexity, reason = "it's fine")]
     fn find_named_dyn(
         &mut self,
         parent: DocRef<'a, Item>,
