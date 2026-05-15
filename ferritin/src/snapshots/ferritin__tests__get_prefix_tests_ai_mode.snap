@@ -1,12 +1,8 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::prefix_tests\"), OutputMode :: Ai)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::prefix_tests\"), OutputMode ::\nAi, & get_fixture_crate_path ())"
 ---
-Item: prefix_tests
-Kind: Module
-Visibility: Public
-Defined at: fixture_crate::prefix_tests
-In crate: fixture-crate (0.1.0)
+Module fixture_crate::prefix_tests — in fixture-crate (0.1.0)
 
 Edge cases for path-prefix resolution in use-item sources and intra-doc links.
 
@@ -14,12 +10,11 @@ Rustdoc emits Use::source and intra-doc link targets verbatim from the Rust sour
 
 The intra-doc links in this module's docs and its members' docs exercise the same prefix handling on the extract_link_target side (rendered in snapshots).
 
-Modules
-deep // A nested module to exercise self::, super::, and super::super::.
+## Modules
 
+- deep — A nested module to exercise self::, super::, and super::super::.
 
-Structs
-DocOuter // Intra-doc links from the outer module: [+1 more lines]
+## Structs
 
-
-PrefixMarker // A sibling target for self:: / super::PrefixMarker references.
+- DocOuter — Intra-doc links from the outer module: [+1 lines]
+- PrefixMarker — A sibling target for self:: / super::PrefixMarker references.

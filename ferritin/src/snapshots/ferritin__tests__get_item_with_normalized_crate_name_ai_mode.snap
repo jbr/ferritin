@@ -2,11 +2,7 @@
 source: ferritin/src/tests.rs
 expression: "render_for_tests_rooted(Commands::get(\"fixture-crate::TestStruct\"), OutputMode\n:: Ai, & get_fixture_crate_path ())"
 ---
-Item: TestStruct
-Kind: Struct
-Visibility: Public
-Defined at: fixture_crate::TestStruct
-In crate: fixture-crate (0.1.0)
+Struct fixture_crate::TestStruct — in fixture-crate (0.1.0)
 
 A simple struct for testing basic functionality.
 
@@ -19,43 +15,29 @@ struct TestStruct {
     pub count: u32,
 }
 
-Fields:
-field: String // A public field
+## Fields
 
+- field: String — A public field
+- count: u32 — Another public field
 
-count: u32 // Another public field
+## Methods
 
+- pub const ASSOCIATED_CONST — This is an associated constant for a struct
+- pub fn new(field: String, count: u32) -> Self — Create a new TestStruct
+- pub fn get_field(&self) -> &str — Get the field value
+- pub fn increment_count(&mut self) — Update the count
 
-Associated Types
-pub const ASSOCIATED_CONST // This is an associated constant for a struct
+## Trait Implementations
 
-
-pub fn new(field: String, count: u32) -> Self // Create a new TestStruct
-
-
-pub fn get_field(&self) -> &str // Get the field value
-
-
-pub fn increment_count(&mut self) // Update the count
-
-
-Trait Implementations
 TestTrait<T = String>
+
 std: From<T>, RefUnwindSafe, UnwindSafe, Unpin, Clone, UnsafeUnpin, Freeze, Sync, Debug, Send
-impl<T: 'static + ?Sized> Any
 
-impl<T, U: Into<T>> TryFrom<U> //     type Error = Infallible
-
-
-impl<T, U: TryFrom<T>> TryInto<U> //     type Error = <U as TryFrom<T>>::Error
-
-
-impl<T, U: From<T>> Into<U>
-
-impl<T: Clone> CloneToUninit
-
-impl<T: ?Sized> BorrowMut<T>
-
-impl<T: ?Sized> Borrow<T>
-
-impl<T: Clone> ToOwned //     type Owned = T
+- impl<T: 'static + ?Sized> Any
+- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
+- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl<T, U: From<T>> Into<U>
+- impl<T: Clone> CloneToUninit
+- impl<T: ?Sized> BorrowMut<T>
+- impl<T: ?Sized> Borrow<T>
+- impl<T: Clone> ToOwned — type Owned = T

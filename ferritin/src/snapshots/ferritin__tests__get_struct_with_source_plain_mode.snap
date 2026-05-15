@@ -27,7 +27,7 @@ Fields:
   ◦ count: u32
     Another public field
 
-Associated Types
+Methods
 
   ◦ pub const ASSOCIATED_CONST
     This is an associated constant for a struct

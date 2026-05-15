@@ -1,13 +1,14 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::prefix_tests::deep::glob_reexport\"),\nOutputMode :: TestMode)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::prefix_tests::deep::glob_reexport\"),\nOutputMode :: TestMode, & get_fixture_crate_path ())"
 ---
-<p>
-<strong>Item:</strong> glob_reexport
-<strong>Kind:</strong> Module
-<strong>Visibility:</strong> Public
-<strong>Defined at:</strong> <type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>prefix_tests</type-name><punctuation>::</punctuation><type-name>deep</type-name><punctuation>::</punctuation><type-name>glob_reexport</type-name>
-<strong>In crate:</strong> fixture-crate (0.1.0)</p>
+<metadata>
+  <field name="Item">glob_reexport</field>
+  <field name="Kind">Module</field>
+  <field name="Visibility">Public</field>
+  <field name="Defined at"><type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>prefix_tests</type-name><punctuation>::</punctuation><type-name>deep</type-name><punctuation>::</punctuation><type-name>glob_reexport</type-name></field>
+  <field name="In crate">fixture-crate (0.1.0)</field>
+</metadata>
 <truncated level="full"><p>
 Exercises the "glob brings a name into scope, then re-export that name" pattern, all within the same crate.</p>
 </truncated>

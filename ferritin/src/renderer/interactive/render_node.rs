@@ -1,7 +1,9 @@
 use ratatui::{buffer::Buffer, layout::Rect, style::Modifier};
 
 use super::{state::InteractiveState, utils::find_paragraph_truncation_point};
-use crate::styled_string::{DocumentNode, HeadingLevel, ShowWhen, TruncationLevel, TuiAction};
+use crate::styled_string::{
+    DocumentNode, HeadingLevel, ShowWhen, Span, TruncationLevel, TuiAction,
+};
 
 // Truncated block borders are outdented (to the left of content) so that content
 // doesn't shift when expanding/collapsing the block. The border is purely decorative.
@@ -38,6 +40,21 @@ impl<'a> InteractiveState<'a> {
 
                 // Block element: increment y when done
                 self.layout.pos.y += 1;
+            }
+
+            DocumentNode::Metadata { fields } => {
+                // Render each field on its own line: bold label + styled value.
+                for field in fields {
+                    self.layout.pos.x = self.layout.indent;
+                    self.draw_blockquote_markers(buf);
+
+                    let label_span = Span::plain(format!("{}: ", field.label));
+                    self.render_span_with_modifier(&label_span, Modifier::BOLD, buf);
+                    for span in &field.value {
+                        self.render_span(span, buf);
+                    }
+                    self.layout.pos.y += 1;
+                }
             }
 
             DocumentNode::Heading { level, spans } => {
