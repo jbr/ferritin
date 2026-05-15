@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.5](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.4...rustdoc-mcp-v0.6.5) - 2026-05-15
+
+### Other
+
+- update snaps to rustc 1.97.0-nightly (7c3c88f42 2026-05-14)
+- clippy
+
 ## [0.6.4](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.3...rustdoc-mcp-v0.6.4) - 2026-05-08
 
 ### Fixed
