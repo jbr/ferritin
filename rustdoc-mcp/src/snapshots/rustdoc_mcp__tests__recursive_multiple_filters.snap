@@ -17,5 +17,6 @@ TestTrait // A trait for testing extremely long documentation that exceeds line 
 Functions:
 async_function // An async function
 generic_function // A generic function
+private_function // A private function
 sub_function // A function in a submodule
 test_function // A public function

@@ -21,6 +21,8 @@ where
     U: std::fmt::Display {
     pub data: T,
     pub metadata: U,
+    inner: Vec<T>,
+    secret: String,
 }
 ```
 
@@ -31,6 +33,12 @@ Fields:
 
 • metadata: U
     Generic field with default
+
+• inner: Vec<T>
+    Private generic field  
+
+• secret: String
+    Another private field
 
 
 std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]

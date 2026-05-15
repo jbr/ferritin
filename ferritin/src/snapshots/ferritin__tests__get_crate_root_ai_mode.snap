@@ -12,6 +12,7 @@ A minimal test crate for rustdoc JSON testing
 - markdown_test — Markdown: Syntax [+90 lines]
 - namespace_collisions — Module for testing namespace disambiguation with kind discriminators. [+1 lines]
 - prefix_tests — Edge cases for path-prefix resolution in use-item sources and intra-doc links. [+2 lines]
+- private_detail — Private module whose items are accessible only via re-export. [+1 lines]
 - reexport_mod
 - submodule — A module with items
 
@@ -39,6 +40,7 @@ A minimal test crate for rustdoc JSON testing
 
 - async_function — An async function
 - generic_function — A generic function
+- private_function — A private function
 - sub_function — A function in a submodule
 - test_function — A public function
 
