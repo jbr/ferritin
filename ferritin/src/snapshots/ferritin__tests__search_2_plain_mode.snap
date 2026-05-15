@@ -11,7 +11,7 @@ Search results for 'generic struct'
   ◦ alloc::borrow::Borrow  (Trait) - score: 68.1
     A trait for borrowing data. [...]
 
-  ◦ fixture-crate::GenericEnum  (Enum) - score: 66.9
+  ◦ fixture-crate::GenericEnum  (Enum) - score: 66.8
     A generic enum for testing [...]
 
   ◦ std::borrow::Borrow  (Trait) - score: 64.4

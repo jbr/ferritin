@@ -26,7 +26,7 @@ expression: "render_interactive_for_tests_rooted(Commands::search(\"generic stru
 "     │ immutable string.                                                        "
 "     ╰─[...]                                                                    "
 "                                                                                "
-"     ◦ fixture-crate::GenericEnum  (Enum) - score: 66.9                         "
+"     ◦ fixture-crate::GenericEnum  (Enum) - score: 66.8                         "
 "       A generic enum for testing                                               "
 "                                                                                "
 "       See also crate::TestEnum                                                 "
