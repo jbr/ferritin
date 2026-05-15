@@ -37,6 +37,12 @@ Edge cases for path-prefix resolution in use-item sources and intra-doc links.</
 Ru<inline-code>Us</inline-code> so<inline-code>cr</inline-code>, <inline-code>se</inline-code>,<inline-code>su</inline-code> th<emphasis>lo</emphasis> th<inline-code>pu</inline-code>s to <inline-code>te</inline-code> <elided chars="595"/></truncated>
 </item>
   <item><p>
+<type-name>private_detail</type-name> </p>
+<truncated level="single-line"><p>
+Private module whose items are accessible only via re-export.</p>
+Items here appear<inline-code>paths</inline-code> map with a path private module<inline-code>fixture_crate::priv</inline-code>), which tree<inline-code>private_detail</inline-code> is not a public They should be<inline-code>path_to_id</inline-code> reverse index <elided chars="281"/></truncated>
+</item>
+  <item><p>
 <type-name>reexport_mod</type-name> </p>
 </item>
   <item><p>
@@ -134,6 +140,12 @@ An async function</p>
 <type-name>generic_function</type-name> </p>
 <truncated level="single-line"><p>
 A generic function</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>private_function</type-name> </p>
+<truncated level="single-line"><p>
+A private function</p>
 </truncated>
 </item>
   <item><p>

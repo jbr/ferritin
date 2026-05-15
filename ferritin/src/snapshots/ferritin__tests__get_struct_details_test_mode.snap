@@ -20,6 +20,7 @@ It uses <inline-code>Vector</inline-code> for testing intra-doc link resolution 
 <keyword>struct</keyword> <type-name>TestStruct</type-name> <punctuation>{</punctuation>
     <keyword>pub</keyword> <field-name>field</field-name><punctuation>:</punctuation> <type-name>String</type-name><punctuation>,</punctuation>
     <keyword>pub</keyword> <field-name>count</field-name><punctuation>:</punctuation> <type-name>u32</type-name><punctuation>,</punctuation>
+    <field-name>private_field</field-name><punctuation>:</punctuation> <type-name>bool</type-name><punctuation>,</punctuation>
 <punctuation>}</punctuation></generated-code>
 <section><section-title>Fields:</section-title><list>
   <item><generated-code>
@@ -32,6 +33,12 @@ A public field</p>
 <field-name>count</field-name><punctuation>:</punctuation> <type-name>u32</type-name></generated-code>
 <truncated level="single-line"><p>
 Another public field</p>
+</truncated>
+</item>
+  <item><generated-code>
+<field-name>private_field</field-name><punctuation>:</punctuation> <type-name>bool</type-name></generated-code>
+<truncated level="single-line"><p>
+A private field</p>
 </truncated>
 </item>
 </list>

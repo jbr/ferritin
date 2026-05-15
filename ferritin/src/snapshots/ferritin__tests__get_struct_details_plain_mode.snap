@@ -17,6 +17,7 @@ It uses Vector for testing intra-doc link resolution with renamed imports. Also 
 struct TestStruct {
     pub field: String,
     pub count: u32,
+    private_field: bool,
 }
 
 Fields:
@@ -26,6 +27,9 @@ Fields:
 
   ◦ count: u32
     Another public field
+
+  ◦ private_field: bool
+    A private field
 
 Methods
 

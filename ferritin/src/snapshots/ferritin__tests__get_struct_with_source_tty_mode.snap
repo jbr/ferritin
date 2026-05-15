@@ -19,6 +19,7 @@ tests [HashMap](https://doc.rust-lang.org/nightly/std/collections/hash/map/index
 struct TestStruct {
     pub field: [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html),
     pub count: u32,
+    private_field: bool,
 }
 
 Fields:
@@ -28,6 +29,9 @@ Fields:
 
   ◦ count: u32
     Another public field
+
+  ◦ private_field: bool
+    A private field
 
 Methods
 

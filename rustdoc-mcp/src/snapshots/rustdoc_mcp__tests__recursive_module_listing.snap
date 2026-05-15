@@ -21,6 +21,7 @@ prefix_tests // Edge cases for path-prefix resolution in use-item sources and in
 prefix_tests::deep // A nested module to exercise `self::`, `super::`, and `super::super::`.
 prefix_tests::deep::glob_reexport // Exercises the "glob brings a name into scope, then re-export that [+1 more lines]
 prefix_tests::deep::glob_reexport::deep // A nested module to exercise `self::`, `super::`, and `super::super::`.
+private_detail // Private module whose items are accessible only via re-export. [+5 more lines]
 reexport_mod
 submodule // A module with items
 
@@ -52,6 +53,7 @@ prefix_tests::deep::SuperSuperAlias // A simple struct for testing basic functio
 prefix_tests::deep::glob_reexport::DocOuter // Intra-doc links from the outer module: [+4 more lines]
 prefix_tests::deep::glob_reexport::GlobReexportedMarker // A sibling target for `self::` / `super::PrefixMarker` references.
 prefix_tests::deep::glob_reexport::PrefixMarker // A sibling target for `self::` / `super::PrefixMarker` references.
+private_detail::ReachableViaPrivateModule // A struct accessible only via re-export from a private module.
 reexport_mod::SubStruct // A struct in a submodule
 submodule::SubStruct // A struct in a submodule
 
@@ -67,7 +69,6 @@ TestTrait // A trait for testing extremely long documentation that exceeds line 
 link_resolution_tests::nested::TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 
 Functions:
-ReachableViaPrivateModule::private_module_method // A method on a struct whose module is private. [+5 more lines]
 Vec::allocator // Returns a reference to the underlying allocator.
 Vec::append // Moves all the elements of `other` into `self`, leaving `other` empty. [+14 more lines]
 Vec::as_mut_ptr // Returns a raw mutable pointer to the vector's buffer, or a dangling [+72 more lines]
@@ -268,6 +269,8 @@ link_resolution_tests::nested::Str::try_reserve_exact // Tries to reserve the mi
 link_resolution_tests::nested::Str::try_with_capacity // Creates a new empty `String` with at least the specified capacity. [+5 more lines]
 link_resolution_tests::nested::Str::with_capacity // Creates a new empty `String` with at least the specified capacity. [+38 more lines]
 namespace_collisions::both // A function sharing its name with the [`both`] module above.
+private_detail::ReachableViaPrivateModule::private_module_method // A method on a struct whose module is private. [+5 more lines]
+private_function // A private function
 reexport_mod::sub_function // A function in a submodule
 sub_function // A function in a submodule
 submodule::SubStruct::double // Double the value

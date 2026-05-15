@@ -43,6 +43,9 @@ Modules
   ◦ [prefix_tests::deep::glob_reexport::deep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html) 
     A nested module to exercise self::, super::, and super::super::.
 
+  ◦ [private_detail](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/index.html) 
+    Private module whose items are accessible only via re-export. [...]
+
   ◦ [reexport_mod](https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html) 
 
   ◦ [submodule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html) 
@@ -131,6 +134,9 @@ Structs
   ◦ [prefix_tests::deep::glob_reexport::PrefixMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html) 
     A sibling target for self:: / super::PrefixMarker references.
 
+  ◦ [private_detail::ReachableViaPrivateModule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html) 
+    A struct accessible only via re-export from a private module.
+
   ◦ [reexport_mod::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
@@ -163,9 +169,6 @@ Traits
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
 Functions
-
-  ◦ [ReachableViaPrivateModule::private_module_method](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html#method.private_module_method) 
-    A method on a struct whose module is private. [...]
 
   ◦ [Vec::allocator](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.allocator) 
     Returns a reference to the underlying allocator.
@@ -903,6 +906,12 @@ Functions
 
   ◦ [namespace_collisions::both](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/fn.both.html) 
     A function sharing its name with the [both](https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3Aboth) module above.
+
+  ◦ [private_detail::ReachableViaPrivateModule::private_module_method](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html#method.private_module_method) 
+    A method on a struct whose module is private. [...]
+
+  ◦ [private_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.private_function.html) 
+    A private function
 
   ◦ [reexport_mod::sub_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html) 
     A function in a submodule

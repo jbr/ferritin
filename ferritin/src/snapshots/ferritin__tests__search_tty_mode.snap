@@ -17,10 +17,10 @@ Search results for 'trigger line-based truncation'
   ◦ [proc_macro::Span::line](http://docs.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line)  (Function) - score: 39.5
     The one-indexed line of the source file where the span starts. [...]
 
-  ◦ [core::panic::Location::line](http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function) - score: 39.4
+  ◦ [core::panic::Location::line](http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function) - score: 39.3
     Returns the line number from which the panic originated. [...]
 
-  ◦ [std::panic::Location::line](http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function) - score: 39.4
+  ◦ [std::panic::Location::line](http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function) - score: 39.3
     Returns the line number from which the panic originated. [...]
 
   ◦ [core::arch::x86::_mm_prefetch](http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 31.0

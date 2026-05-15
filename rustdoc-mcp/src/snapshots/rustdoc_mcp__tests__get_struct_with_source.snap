@@ -18,6 +18,7 @@ since it only has one paragraph of documentation.
 struct TestStruct {
     pub field: String,
     pub count: u32,
+    private_field: bool,
 }
 ```
 
@@ -28,6 +29,9 @@ Fields:
 
 • count: u32
     Another public field
+
+• private_field: bool
+    A private field
 
 
 Associated Types:

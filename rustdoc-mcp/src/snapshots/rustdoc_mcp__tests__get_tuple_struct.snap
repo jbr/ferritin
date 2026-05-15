@@ -13,7 +13,7 @@ A tuple struct for testing
 ```rust
 struct TupleStruct(
     pub String, // field 0
-    // ... 1 private field hidden
+    u32, // field 1
 );
 ```
 Fields:

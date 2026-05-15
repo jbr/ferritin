@@ -42,6 +42,9 @@ Modules
   ◦ prefix_tests::deep::glob_reexport::deep 
     A nested module to exercise self::, super::, and super::super::.
 
+  ◦ private_detail 
+    Private module whose items are accessible only via re-export. [...]
+
   ◦ reexport_mod 
 
   ◦ submodule 
@@ -130,6 +133,9 @@ Structs
   ◦ prefix_tests::deep::glob_reexport::PrefixMarker 
     A sibling target for self:: / super::PrefixMarker references.
 
+  ◦ private_detail::ReachableViaPrivateModule 
+    A struct accessible only via re-export from a private module.
+
   ◦ reexport_mod::SubStruct 
     A struct in a submodule
 
@@ -162,9 +168,6 @@ Traits
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
 Functions
-
-  ◦ ReachableViaPrivateModule::private_module_method 
-    A method on a struct whose module is private. [...]
 
   ◦ Vec::allocator 
     Returns a reference to the underlying allocator.
@@ -765,6 +768,12 @@ Functions
 
   ◦ namespace_collisions::both 
     A function sharing its name with the both module above.
+
+  ◦ private_detail::ReachableViaPrivateModule::private_module_method 
+    A method on a struct whose module is private. [...]
+
+  ◦ private_function 
+    A private function
 
   ◦ reexport_mod::sub_function 
     A function in a submodule

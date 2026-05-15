@@ -24,6 +24,9 @@ Modules
   ◦ [prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html) 
     Edge cases for path-prefix resolution in use-item sources and intra-doc links. [...]
 
+  ◦ [private_detail](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/index.html) 
+    Private module whose items are accessible only via re-export. [...]
+
   ◦ [reexport_mod](https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html) 
 
   ◦ [submodule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html) 
@@ -75,6 +78,9 @@ Functions
 
   ◦ [generic_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.generic_function.html) 
     A generic function
+
+  ◦ [private_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.private_function.html) 
+    A private function
 
   ◦ [sub_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html) 
     A function in a submodule

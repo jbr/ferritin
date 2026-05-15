@@ -24,6 +24,9 @@ Modules
   ◦ prefix_tests 
     Edge cases for path-prefix resolution in use-item sources and intra-doc links. [...]
 
+  ◦ private_detail 
+    Private module whose items are accessible only via re-export. [...]
+
   ◦ reexport_mod 
 
   ◦ submodule 
@@ -75,6 +78,9 @@ Functions
 
   ◦ generic_function 
     A generic function
+
+  ◦ private_function 
+    A private function
 
   ◦ sub_function 
     A function in a submodule
