@@ -2,12 +2,13 @@
 source: ferritin/src/tests.rs
 expression: "render_for_tests_rooted(Commands::get(\"fixture-crate::TestStruct\"), OutputMode\n:: TestMode, & get_fixture_crate_path ())"
 ---
-<p>
-<strong>Item:</strong> TestStruct
-<strong>Kind:</strong> Struct
-<strong>Visibility:</strong> Public
-<strong>Defined at:</strong> <type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>TestStruct</type-name>
-<strong>In crate:</strong> fixture-crate (0.1.0)</p>
+<metadata>
+  <field name="Item">TestStruct</field>
+  <field name="Kind">Struct</field>
+  <field name="Visibility">Public</field>
+  <field name="Defined at"><type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>TestStruct</type-name></field>
+  <field name="In crate">fixture-crate (0.1.0)</field>
+</metadata>
 <truncated level="full"><p>
 A simple struct for testing basic functionality.</p>
 <p>
@@ -34,7 +35,7 @@ Another public field</p>
 </truncated>
 </item>
 </list>
-</section><section><section-title>Associated Types</section-title><list>
+</section><section><section-title>Methods</section-title><list>
   <item><generated-code>
 <keyword>pub</keyword> <keyword>const</keyword> ASSOCIATED_CONST</generated-code>
 <truncated level="single-line"><p>

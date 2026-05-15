@@ -151,11 +151,35 @@ pub enum ShowWhen {
     NonInteractive,
 }
 
+/// A single labeled field within a [`DocumentNode::Metadata`] block.
+///
+/// Holds styled spans for the value so renderers can preserve navigation
+/// actions on path segments (e.g. "Defined at: tokio::sync::mpsc" links).
+#[derive(Debug, Clone)]
+pub struct MetadataField<'a> {
+    pub label: Cow<'a, str>,
+    pub value: Vec<Span<'a>>,
+}
+
+impl<'a> MetadataField<'a> {
+    pub fn new(label: impl Into<Cow<'a, str>>, value: Vec<Span<'a>>) -> Self {
+        Self {
+            label: label.into(),
+            value,
+        }
+    }
+}
+
 /// A node in the documentation tree
 #[derive(Debug, Clone)]
 pub enum DocumentNode<'a> {
     /// Block-level paragraph
     Paragraph { spans: Vec<Span<'a>> },
+
+    /// Structured key-value metadata block (item kind, visibility, path,
+    /// crate, etc). Renderers choose layout: verbose labeled lines for
+    /// human-facing modes, compact single-line summary for the AI mode.
+    Metadata { fields: Vec<MetadataField<'a>> },
 
     /// Block-level heading
     Heading {
@@ -468,6 +492,11 @@ impl<'a> DocumentNode<'a> {
     /// Convenience constructor for a paragraph
     pub fn paragraph(spans: Vec<Span<'a>>) -> Self {
         DocumentNode::Paragraph { spans }
+    }
+
+    /// Convenience constructor for a metadata block
+    pub fn metadata(fields: Vec<MetadataField<'a>>) -> Self {
+        DocumentNode::Metadata { fields }
     }
 
     /// Convenience constructor for a heading

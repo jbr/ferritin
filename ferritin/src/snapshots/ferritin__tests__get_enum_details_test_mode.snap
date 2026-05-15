@@ -2,12 +2,13 @@
 source: ferritin/src/tests.rs
 expression: "render_for_tests_rooted(Commands::get(\"crate::submodule::TestEnum\"),\nOutputMode :: TestMode, & get_fixture_crate_path ())"
 ---
-<p>
-<strong>Item:</strong> TestEnum
-<strong>Kind:</strong> Enum
-<strong>Visibility:</strong> Public
-<strong>Defined at:</strong> <type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>submodule</type-name><punctuation>::</punctuation><type-name>TestEnum</type-name>
-<strong>In crate:</strong> fixture-crate (0.1.0)</p>
+<metadata>
+  <field name="Item">TestEnum</field>
+  <field name="Kind">Enum</field>
+  <field name="Visibility">Public</field>
+  <field name="Defined at"><type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>submodule</type-name><punctuation>::</punctuation><type-name>TestEnum</type-name></field>
+  <field name="In crate">fixture-crate (0.1.0)</field>
+</metadata>
 <truncated level="full"><p>
 An enum for testing</p>
 <p>

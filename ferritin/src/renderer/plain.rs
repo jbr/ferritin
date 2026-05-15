@@ -73,6 +73,18 @@ impl<'w, W: Write> PlainRenderer<'w, W> {
                 writeln!(self.output)?; // Single newline
                 Ok(())
             }
+            DocumentNode::Metadata { fields } => {
+                // Render as labeled lines, matching the long-standing
+                // appearance ("Item: foo\nKind: Struct\n..."). The label is
+                // bold-style historically but plain text here.
+                for field in fields {
+                    self.write_indent()?;
+                    write!(self.output, "{}: ", field.label)?;
+                    self.render_spans(&field.value)?;
+                    writeln!(self.output)?;
+                }
+                Ok(())
+            }
             DocumentNode::Heading { level, spans } => {
                 self.write_indent()?;
                 self.render_spans(spans)?;

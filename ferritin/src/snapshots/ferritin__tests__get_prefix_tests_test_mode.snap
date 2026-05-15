@@ -1,13 +1,14 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::prefix_tests\"), OutputMode :: TestMode)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::prefix_tests\"), OutputMode ::\nTestMode, & get_fixture_crate_path ())"
 ---
-<p>
-<strong>Item:</strong> prefix_tests
-<strong>Kind:</strong> Module
-<strong>Visibility:</strong> Public
-<strong>Defined at:</strong> <type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>prefix_tests</type-name>
-<strong>In crate:</strong> fixture-crate (0.1.0)</p>
+<metadata>
+  <field name="Item">prefix_tests</field>
+  <field name="Kind">Module</field>
+  <field name="Visibility">Public</field>
+  <field name="Defined at"><type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>prefix_tests</type-name></field>
+  <field name="In crate">fixture-crate (0.1.0)</field>
+</metadata>
 <truncated level="full"><p>
 Edge cases for path-prefix resolution in use-item sources and intra-doc links.</p>
 <p>

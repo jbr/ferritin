@@ -1,5 +1,5 @@
 use crate::request::Request;
-use crate::styled_string::{DocumentNode, Span as StyledSpan, TruncationLevel};
+use crate::styled_string::{DocumentNode, MetadataField, Span as StyledSpan, TruncationLevel};
 use ferritin_common::doc_ref::DocRef;
 use rustdoc_types::{
     Abi, Constant, Enum, Function, FunctionPointer, GenericArg, GenericArgs, GenericBound,
@@ -88,31 +88,32 @@ impl<'a> Request<'a> {
         doc_nodes
     }
 
-    /// Format item metadata as a compact paragraph (Item, Kind, Visibility, Location, Crate)
+    /// Format item metadata as a structured `Metadata` node so each renderer
+    /// can pick its own layout. Plain/TTY/Interactive show labeled lines;
+    /// the AI renderer collapses to a single-line summary.
     fn format_item_metadata(&mut self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
-        let mut spans = vec![];
+        let mut fields: Vec<MetadataField<'a>> = vec![];
 
-        // Item name
-        spans.push(StyledSpan::strong("Item:"));
-        spans.push(StyledSpan::plain(" "));
-        spans.push(StyledSpan::plain(item.name().unwrap_or("unnamed")));
-        spans.push(StyledSpan::plain("\n"));
+        // Item
+        fields.push(MetadataField::new(
+            "Item",
+            vec![StyledSpan::plain(item.name().unwrap_or("unnamed"))],
+        ));
 
         // Kind
-        spans.push(StyledSpan::strong("Kind:"));
-        spans.push(StyledSpan::plain(" "));
-        spans.push(StyledSpan::plain(format!("{:?}", item.kind())));
-        spans.push(StyledSpan::plain("\n"));
+        fields.push(MetadataField::new(
+            "Kind",
+            vec![StyledSpan::plain(format!("{:?}", item.kind()))],
+        ));
 
         // Visibility
-        spans.push(StyledSpan::strong("Visibility:"));
-        spans.push(StyledSpan::plain(" "));
+        let mut vis_spans = vec![];
         match &item.item().visibility {
-            Visibility::Public => spans.push(StyledSpan::plain("Public")),
-            Visibility::Default => spans.push(StyledSpan::plain("Private")),
-            Visibility::Crate => spans.push(StyledSpan::plain("Crate")),
+            Visibility::Public => vis_spans.push(StyledSpan::plain("Public")),
+            Visibility::Default => vis_spans.push(StyledSpan::plain("Private")),
+            Visibility::Crate => vis_spans.push(StyledSpan::plain("Crate")),
             Visibility::Restricted { parent, path } => {
-                spans.push(StyledSpan::plain("Restricted to "));
+                vis_spans.push(StyledSpan::plain("Restricted to "));
                 if let Some(parent_summary) = item.get(parent).and_then(|item| item.summary()) {
                     let mut action_item = None;
                     let nav = self.navigator();
@@ -123,26 +124,23 @@ impl<'a> Request<'a> {
                                 .traverse_to_crate_by_id(nav, parent_summary.crate_id)
                                 .map(|x| x.root_item(nav));
                         } else {
-                            spans.push(StyledSpan::punctuation("::"));
+                            vis_spans.push(StyledSpan::punctuation("::"));
                             if let Some(ai) = action_item {
                                 action_item = self.find_child(ai, segment);
                             }
                         }
-                        spans.push(StyledSpan::type_name(segment).with_target(action_item));
+                        vis_spans.push(StyledSpan::type_name(segment).with_target(action_item));
                     }
                 } else {
-                    spans.push(StyledSpan::plain(path));
+                    vis_spans.push(StyledSpan::plain(path));
                 }
             }
         }
-        spans.push(StyledSpan::plain("\n"));
+        fields.push(MetadataField::new("Visibility", vis_spans));
 
-        // Location and Crate (from item_summary if available)
         if let Some(item_summary) = item.summary() {
             // Defined at
-            spans.push(StyledSpan::strong("Defined at:"));
-            spans.push(StyledSpan::plain(" "));
-
+            let mut path_spans = vec![];
             let nav = self.navigator();
             let mut action_item = None;
             for (i, segment) in item_summary.path.iter().enumerate() {
@@ -152,31 +150,29 @@ impl<'a> Request<'a> {
                         .traverse_to_crate_by_id(nav, item_summary.crate_id)
                         .map(|x| x.root_item(nav));
                 } else {
-                    spans.push(StyledSpan::punctuation("::"));
+                    path_spans.push(StyledSpan::punctuation("::"));
                     if let Some(ai) = action_item {
                         action_item = self.find_child(ai, segment);
                     }
                 }
-                spans.push(StyledSpan::type_name(segment).with_target(action_item));
+                path_spans.push(StyledSpan::type_name(segment).with_target(action_item));
             }
-            spans.push(StyledSpan::plain("\n"));
+            fields.push(MetadataField::new("Defined at", path_spans));
 
             // In crate
-            spans.push(StyledSpan::strong("In crate:"));
-            spans.push(StyledSpan::plain(" "));
-
+            let mut crate_spans = vec![];
             let item_crate = item.crate_docs();
-            spans.push(StyledSpan::plain(item_crate.name()));
+            crate_spans.push(StyledSpan::plain(item_crate.name()));
             if let Some(version) = item_crate.crate_version.as_deref() {
-                spans.push(StyledSpan::plain(" ("));
-                // Replace tabs with spaces for consistent rendering across output modes
+                crate_spans.push(StyledSpan::plain(" ("));
                 let version_normalized = version.replace('\t', " ");
-                spans.push(StyledSpan::plain(version_normalized));
-                spans.push(StyledSpan::plain(")"));
+                crate_spans.push(StyledSpan::plain(version_normalized));
+                crate_spans.push(StyledSpan::plain(")"));
             }
+            fields.push(MetadataField::new("In crate", crate_spans));
         }
 
-        vec![DocumentNode::paragraph(spans)]
+        vec![DocumentNode::metadata(fields)]
     }
 
     /// Returns (defined_at_nodes, crate_info_nodes) with label prefixes

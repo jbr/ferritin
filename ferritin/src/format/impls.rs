@@ -16,7 +16,7 @@ impl<'a> Request<'a> {
         let inherent_methods = item.methods().collect::<Vec<_>>();
         // Show inherent methods first
         if !inherent_methods.is_empty() {
-            doc_nodes.extend(self.format_item_list(inherent_methods, "Associated Types"));
+            doc_nodes.extend(self.format_item_list(inherent_methods, "Methods"));
         }
 
         let trait_impls = item.traits().collect::<Vec<_>>();

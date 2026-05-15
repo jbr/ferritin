@@ -2,94 +2,56 @@
 source: ferritin/src/tests.rs
 expression: "render_for_tests_rooted(Commands::get(\"crate\"), OutputMode :: Ai, &\nget_fixture_crate_path ())"
 ---
-Item: fixture_crate
-Kind: Module
-Visibility: Public
-Defined at: fixture_crate
-In crate: fixture-crate (0.1.0)
+Module fixture_crate — in fixture-crate (0.1.0)
 
 A minimal test crate for rustdoc JSON testing
 
-Modules
-link_resolution_tests // Module for testing intra-doc link resolution
+## Modules
 
+- link_resolution_tests — Module for testing intra-doc link resolution
+- markdown_test — Markdown: Syntax [+90 lines]
+- namespace_collisions — Module for testing namespace disambiguation with kind discriminators. [+1 lines]
+- prefix_tests — Edge cases for path-prefix resolution in use-item sources and intra-doc links. [+2 lines]
+- reexport_mod
+- submodule — A module with items
 
-markdown_test // Markdown: Syntax [+90 more lines]
+## Structs
 
+- GenericStruct — A generic struct for testing multi-paragraph documentation. [+6 lines]
+- ReachableViaPrivateModule — A struct accessible only via re-export from a private module.
+- SubStruct — A struct in a submodule
+- TestStruct — A simple struct for testing basic functionality. [+2 lines]
+- TupleStruct — A tuple struct for testing
+- UnitStruct — A unit struct for testing
+- Vec — A contiguous growable array type, written as Vec<T>, short for 'vector'. [+40 lines]
 
-namespace_collisions // Module for testing namespace disambiguation with kind discriminators. [+1 more lines]
+## Enums
 
+- GenericEnum — A generic enum for testing [+1 lines]
+- TestEnum — An enum for testing [+1 lines]
 
-prefix_tests // Edge cases for path-prefix resolution in use-item sources and intra-doc links. [+2 more lines]
+## Traits
 
+- ComplexTrait — A more complex trait demonstrating various features
+- TestTrait — A trait for testing extremely long documentation that exceeds line limits. [+3 lines]
 
-reexport_mod
+## Functions
 
-submodule // A module with items
+- async_function — An async function
+- generic_function — A generic function
+- sub_function — A function in a submodule
+- test_function — A public function
 
+## Constants
 
-Structs
-GenericStruct // A generic struct for testing multi-paragraph documentation. [+6 more lines]
+- TEST_CONSTANT — A const for testing
 
+## Statics
 
-ReachableViaPrivateModule // A struct accessible only via re-export from a private module.
+- TEST_STATIC — A static for testing
 
+## Variants
 
-SubStruct // A struct in a submodule
-
-
-TestStruct // A simple struct for testing basic functionality. [+2 more lines]
-
-
-TupleStruct // A tuple struct for testing
-
-
-UnitStruct // A unit struct for testing
-
-
-Vec // A contiguous growable array type, written as Vec<T>, short for 'vector'. [+40 more lines]
-
-
-Enums
-GenericEnum // A generic enum for testing [+1 more lines]
-
-
-TestEnum // An enum for testing [+1 more lines]
-
-
-Traits
-ComplexTrait // A more complex trait demonstrating various features
-
-
-TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+3 more lines]
-
-
-Functions
-async_function // An async function
-
-
-generic_function // A generic function
-
-
-sub_function // A function in a submodule
-
-
-test_function // A public function
-
-
-Constants
-TEST_CONSTANT // A const for testing
-
-
-Statics
-TEST_STATIC // A static for testing
-
-
-Variants
-VariantA // Variant A (see also crate::GenericEnum)
-
-
-VariantB // Variant B with data
-
-
-VariantC // Variant C with struct data (name and value)
+- VariantA — Variant A (see also crate::GenericEnum)
+- VariantB — Variant B with data
+- VariantC — Variant C with struct data (name and value)

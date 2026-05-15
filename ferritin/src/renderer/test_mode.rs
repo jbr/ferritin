@@ -24,6 +24,16 @@ fn render_node(node: &DocumentNode, output: &mut impl Write) -> Result {
             writeln!(output, "</p>")?;
             Ok(())
         }
+        DocumentNode::Metadata { fields } => {
+            writeln!(output, "<metadata>")?;
+            for field in fields {
+                write!(output, "  <field name=\"{}\">", field.label)?;
+                render_spans(&field.value, output)?;
+                writeln!(output, "</field>")?;
+            }
+            writeln!(output, "</metadata>")?;
+            Ok(())
+        }
         DocumentNode::Heading { level, spans } => {
             let tag = match level {
                 HeadingLevel::Title => "title",
@@ -207,6 +217,10 @@ fn count_chars_in_nodes(nodes: &[DocumentNode]) -> usize {
 fn count_chars_in_node(node: &DocumentNode) -> usize {
     match node {
         DocumentNode::Paragraph { spans } => spans.iter().map(|s| s.text.len()).sum(),
+        DocumentNode::Metadata { fields } => fields
+            .iter()
+            .map(|f| f.label.len() + 2 + f.value.iter().map(|s| s.text.len()).sum::<usize>())
+            .sum(),
         DocumentNode::Heading { spans, .. } => spans.iter().map(|s| s.text.len()).sum(),
         DocumentNode::Section { title, nodes } => {
             let title_len = title

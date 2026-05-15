@@ -460,6 +460,22 @@ fn build_node_lines<'a>(
 
             // Single newline after paragraph (spacing between blocks handled by containers)
         }
+        DocumentNode::Metadata { fields } => {
+            // One line per field, with a bold label followed by the styled
+            // value spans. Matches the historic appearance of the metadata
+            // paragraph block.
+            for field in fields {
+                let mut line_spans: Vec<RatatuiSpan> = Vec::new();
+                line_spans.push(RatatuiSpan::styled(
+                    format!("{}: ", field.label),
+                    Style::default().add_modifier(Modifier::BOLD),
+                ));
+                for span in &field.value {
+                    line_spans.push(convert_span(span, render_context));
+                }
+                lines.push(Line::from(line_spans));
+            }
+        }
         DocumentNode::Heading { level, spans } => {
             if matches!(budget, RenderBudget::Characters { .. }) {
                 return;
