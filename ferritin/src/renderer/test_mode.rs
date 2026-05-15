@@ -185,7 +185,7 @@ fn render_span(span: &Span, output: &mut impl Write) -> Result {
         SpanStyle::Generic => "generic",
         SpanStyle::Plain => {
             // Plain text has no tag
-            write!(output, "{}", &span.text)?;
+            write!(output, "{}", span.text)?;
             return Ok(());
         }
         SpanStyle::Punctuation => "punctuation",

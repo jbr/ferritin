@@ -55,7 +55,7 @@ impl<'a> Request<'a> {
         let result = format!(
             "\n```rust\nstatic {}: {type_str} = {};\n```\n",
             item.name().unwrap_or("<unnamed>"),
-            &static_item.expr
+            static_item.expr
         );
         result
     }
