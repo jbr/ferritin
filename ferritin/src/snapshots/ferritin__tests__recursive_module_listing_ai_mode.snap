@@ -18,6 +18,7 @@ A minimal test crate for rustdoc JSON testing
 - prefix_tests::deep — A nested module to exercise self::, super::, and super::super::.
 - prefix_tests::deep::glob_reexport — Exercises the "glob brings a name into scope, then re-export that name" pattern, all within the same crate.
 - prefix_tests::deep::glob_reexport::deep — A nested module to exercise self::, super::, and super::super::.
+- private_detail — Private module whose items are accessible only via re-export. [+1 lines]
 - reexport_mod
 - submodule — A module with items
 
@@ -50,6 +51,7 @@ A minimal test crate for rustdoc JSON testing
 - prefix_tests::deep::glob_reexport::DocOuter — Intra-doc links from the outer module: [+1 lines]
 - prefix_tests::deep::glob_reexport::GlobReexportedMarker — A sibling target for self:: / super::PrefixMarker references.
 - prefix_tests::deep::glob_reexport::PrefixMarker — A sibling target for self:: / super::PrefixMarker references.
+- private_detail::ReachableViaPrivateModule — A struct accessible only via re-export from a private module.
 - reexport_mod::SubStruct — A struct in a submodule
 - submodule::SubStruct — A struct in a submodule
 
@@ -68,7 +70,6 @@ A minimal test crate for rustdoc JSON testing
 
 ## Functions
 
-- ReachableViaPrivateModule::private_module_method — A method on a struct whose module is private. [+1 lines]
 - Vec::allocator — Returns a reference to the underlying allocator.
 - Vec::append — Moves all the elements of other into self, leaving other empty. [+4 lines]
 - Vec::as_mut_ptr — Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer valid for zero sized reads if the vector didn't allocate. [+9 lines]
@@ -269,6 +270,8 @@ A minimal test crate for rustdoc JSON testing
 - link_resolution_tests::nested::Str::try_with_capacity — Creates a new empty String with at least the specified capacity. [+2 lines]
 - link_resolution_tests::nested::Str::with_capacity — Creates a new empty String with at least the specified capacity. [+6 lines]
 - namespace_collisions::both — A function sharing its name with the both module above.
+- private_detail::ReachableViaPrivateModule::private_module_method — A method on a struct whose module is private. [+1 lines]
+- private_function — A private function
 - reexport_mod::sub_function — A function in a submodule
 - sub_function — A function in a submodule
 - submodule::SubStruct::double — Double the value

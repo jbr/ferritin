@@ -71,6 +71,12 @@ A nested module to exercise <inline-code>self::</inline-code>, <inline-code>supe
 </truncated>
 </item>
   <item><p>
+<type-name>private_detail</type-name> </p>
+<truncated level="single-line"><p>
+Private module whose items are accessible only via re-export.</p>
+Items here appear<inline-code>paths</inline-code> map with a path private module<inline-code>fixture_crate::priv</inline-code>), which tree<inline-code>private_detail</inline-code> is not a public They should be<inline-code>path_to_id</inline-code> reverse index <elided chars="281"/></truncated>
+</item>
+  <item><p>
 <type-name>reexport_mod</type-name> </p>
 </item>
   <item><p>
@@ -245,6 +251,12 @@ A sibling target for <inline-code>self::</inline-code> / <inline-code>super::Pre
 </truncated>
 </item>
   <item><p>
+<type-name>private_detail::ReachableViaPrivateModule</type-name> </p>
+<truncated level="single-line"><p>
+A struct accessible only via re-export from a private module.</p>
+</truncated>
+</item>
+  <item><p>
 <type-name>reexport_mod::SubStruct</type-name> </p>
 <truncated level="single-line"><p>
 A struct in a submodule</p>
@@ -312,12 +324,6 @@ This It error flexib Each The error many doesn' goes This Line Line Line Line Li
 </item>
 </list>
 </section><section><section-title>Functions</section-title><list>
-  <item><p>
-<type-name>ReachableViaPrivateModule::private_module_method</type-name> </p>
-<truncated level="single-line"><p>
-A method on a struct whose module is private.</p>
-This exercises the combined case: <inline-code>paths</inline-code> map (rust-lang/rust#152511), and <inline-code>ItemSummary::path</inline-code> passes through this private traversal cannot anchor on the <elided chars="201"/></truncated>
-</item>
   <item><p>
 <type-name>Vec::allocator</type-name> </p>
 <truncated level="single-line"><p>
@@ -1372,6 +1378,18 @@ Creates a new empty <inline-code>String</inline-code> with at least the specifie
 <type-name>namespace_collisions::both</type-name> </p>
 <truncated level="single-line"><p>
 A function sharing its name with the <inline-code>both</inline-code> module above.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>private_detail::ReachableViaPrivateModule::private_module_method</type-name> </p>
+<truncated level="single-line"><p>
+A method on a struct whose module is private.</p>
+This exercises the combined case: <inline-code>paths</inline-code> map (rust-lang/rust#152511), and <inline-code>ItemSummary::path</inline-code> passes through this private traversal cannot anchor on the <elided chars="201"/></truncated>
+</item>
+  <item><p>
+<type-name>private_function</type-name> </p>
+<truncated level="single-line"><p>
+A private function</p>
 </truncated>
 </item>
   <item><p>

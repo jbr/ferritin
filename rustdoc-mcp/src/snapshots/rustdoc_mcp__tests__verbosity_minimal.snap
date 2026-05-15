@@ -12,6 +12,7 @@ link_resolution_tests
 markdown_test
 namespace_collisions
 prefix_tests
+private_detail
 reexport_mod
 submodule
 
@@ -35,6 +36,7 @@ TestTrait
 Functions:
 async_function
 generic_function
+private_function
 sub_function
 test_function
 
