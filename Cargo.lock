@@ -953,7 +953,7 @@ dependencies = [
  "crossterm",
  "env_logger",
  "ferritin-common",
- "fieldwork 0.5.1",
+ "fieldwork 0.5.2",
  "insta",
  "log",
  "mimalloc",
@@ -981,7 +981,7 @@ dependencies = [
  "cargo_metadata",
  "elsa",
  "env_logger",
- "fieldwork 0.5.1",
+ "fieldwork 0.5.2",
  "home",
  "log",
  "memchr",
@@ -1014,11 +1014,11 @@ dependencies = [
 
 [[package]]
 name = "fieldwork"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e4ce2198f558616d979bf4e13c0684f695ffeebe1a541ca466c928ddf42185b"
+checksum = "16b5ff57d22899405076c15dd38c2735eb8ff261a37fd0d1b0e841f3fd298433"
 dependencies = [
- "fieldwork-derive 0.5.1",
+ "fieldwork-derive 0.5.2",
 ]
 
 [[package]]
@@ -1034,9 +1034,9 @@ dependencies = [
 
 [[package]]
 name = "fieldwork-derive"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31f4ce202eae2f2828b8f461bb6e8c40ed5358db1c3dce9e34108c94e68fe580"
+checksum = "d9aca8417ff665ef605a5d6f8f7670df33f74f3226003a1021582940878730b3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2672,7 +2672,7 @@ dependencies = [
  "dirs",
  "env_logger",
  "ferritin-common",
- "fieldwork 0.5.1",
+ "fieldwork 0.5.2",
  "insta",
  "log",
  "mcplease",
@@ -3564,7 +3564,7 @@ dependencies = [
  "crossbeam-queue",
  "dashmap",
  "encoding_rs",
- "fieldwork 0.5.1",
+ "fieldwork 0.5.2",
  "futures-lite",
  "httparse",
  "log",
@@ -3586,7 +3586,7 @@ dependencies = [
  "encoding_rs",
  "event-listener",
  "fastrand",
- "fieldwork 0.5.1",
+ "fieldwork 0.5.2",
  "futures-lite",
  "hashbrown 0.17.0",
  "httparse",
@@ -3638,7 +3638,7 @@ checksum = "2e25af92ce1701de85c077898deb6c3d5f63ac1c4b4c1b3a83c3ede637e99283"
 dependencies = [
  "async-channel",
  "async_cell",
- "fieldwork 0.5.1",
+ "fieldwork 0.5.2",
  "futures-lite",
  "listenfd",
  "log",
