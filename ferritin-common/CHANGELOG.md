@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.1](https://github.com/jbr/ferritin/compare/ferritin-common-v0.11.0...ferritin-common-v0.11.1) - 2026-05-22
+
+### Fixed
+
+- *(deps)* update rust crate trillium-client to 0.9.0
+- render trait methods and associated items
+
 ### Added
 
 - resolve trait-declared associated items (methods, associated types, and

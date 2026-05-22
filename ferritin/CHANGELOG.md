@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.1](https://github.com/jbr/ferritin/compare/ferritin-v0.10.0...ferritin-v0.10.1) - 2026-05-22
+
+### Fixed
+
+- render trait methods and associated items
+
+### Other
+
+- fmt
+- update snaps to rustc 1.97.0-nightly (b954122bb 2026-05-20)
+- update snaps to rustc 1.97.0-nightly (9eb3be26b 2026-05-18)
+
 ### Added
 
 - render individual trait associated items fetched with `get`: methods,
