@@ -10,7 +10,7 @@ In crate: fixture-crate (0.1.0)
 
 A more complex trait demonstrating various features
 
-trait ComplexTrait<T> where T: [Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html) + [Send](http://docs.rust-lang.org/nightly/core/marker/trait.Send.html) { ... }
+trait ComplexTrait<T>: [PartialEq](http://docs.rust-lang.org/nightly/core/cmp/trait.PartialEq.html) + [std::fmt::Debug](http://docs.rust-lang.org/nightly/core/fmt/trait.Debug.html) where T: [Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html) + [Send](http://docs.rust-lang.org/nightly/core/marker/trait.Send.html) { ... }
 
   ◦ type Output: [std::fmt::Display](http://docs.rust-lang.org/nightly/core/fmt/trait.Display.html); 
     An associated type

@@ -13,7 +13,7 @@ expression: "render_for_tests_rooted(Commands::get(\"crate::ComplexTrait\"), Out
 A more complex trait demonstrating various features</p>
 </truncated>
 <generated-code>
-<keyword>trait</keyword> <type-name>ComplexTrait</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation> <keyword>where</keyword> <generic>T</generic><punctuation>:</punctuation> <type-name>Clone</type-name> + <type-name>Send</type-name> <punctuation>{</punctuation> ... <punctuation>}</punctuation></generated-code>
+<keyword>trait</keyword> <type-name>ComplexTrait</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>:</punctuation> <type-name>PartialEq</type-name> + <type-name>std::fmt::Debug</type-name> <keyword>where</keyword> <generic>T</generic><punctuation>:</punctuation> <type-name>Clone</type-name> + <type-name>Send</type-name> <punctuation>{</punctuation> ... <punctuation>}</punctuation></generated-code>
 <list>
   <item><p>
 <keyword>type</keyword> <type-name>Output</type-name><punctuation>:</punctuation> <type-name>std::fmt::Display</type-name><punctuation>;</punctuation> </p>

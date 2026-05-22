@@ -23,6 +23,13 @@ impl<'a> Request<'a> {
             signature_spans.extend(self.format_generics(item, &trait_data.item().generics));
         }
 
+        // Supertraits: `trait Ord: Eq + PartialOrd`
+        if !trait_data.bounds.is_empty() {
+            signature_spans.push(Span::punctuation(":"));
+            signature_spans.push(Span::plain(" "));
+            signature_spans.extend(self.format_generic_bounds(item, &trait_data.item().bounds));
+        }
+
         if !trait_data.generics.where_predicates.is_empty() {
             signature_spans.extend(
                 self.format_where_clause(item, &trait_data.item().generics.where_predicates),

@@ -6,7 +6,7 @@ Trait fixture_crate::ComplexTrait — in fixture-crate (0.1.0)
 
 A more complex trait demonstrating various features
 
-trait ComplexTrait<T> where T: Clone + Send { ... }
+trait ComplexTrait<T>: PartialEq + std::fmt::Debug where T: Clone + Send { ... }
 
 - type Output: std::fmt::Display; — An associated type
 - const MAX_SIZE: usize = 100; — An associated constant

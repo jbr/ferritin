@@ -257,11 +257,6 @@ Functions
     Inserts an element at position index within the vector, shifting all elements
     after it to the right, and returning a reference to the new element. [...]
 
-  ◦ [Vec::into_array](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_array) 
-    Converts the Vec into a boxed array. This conversion will discard any spare
-    capacity, if there is any, see [Vec::shrink_to_fit](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to_fit). If you merely wish for a
-    reference to an array, use [as_array](https://doc.rust-lang.org/stable/std/primitive.slice.html#method.as_array). [...]
-
   ◦ [Vec::into_boxed_slice](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_boxed_slice) 
     Converts the vector into [Box<[T]>](http://docs.rust-lang.org/nightly/alloc/boxed/struct.Box.html). [...]
 
