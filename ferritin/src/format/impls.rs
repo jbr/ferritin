@@ -292,8 +292,10 @@ impl<'a> Request<'a> {
                 }
                 // For fn-trait syntax like Fn(A, B) -> C, fall back to format_generic_args
                 _ => {
-                    let mut spans =
-                        vec![Span::type_name(&trait_path.path).with_path(full_path.clone())];
+                    let mut spans = vec![
+                        Span::type_name(super::display_path_name(trait_path))
+                            .with_path(full_path.clone()),
+                    ];
                     spans.extend(self.format_generic_args(impl_block, args));
                     return spans;
                 }
@@ -322,7 +324,8 @@ impl<'a> Request<'a> {
             }
         }
 
-        let mut spans = vec![Span::type_name(&trait_path.path).with_path(full_path)];
+        let mut spans =
+            vec![Span::type_name(super::display_path_name(trait_path)).with_path(full_path)];
         if !inner.is_empty() {
             spans.push(Span::punctuation("<"));
             spans.extend(inner);
@@ -407,13 +410,17 @@ impl<'a> Request<'a> {
                 }
                 spans.push(Span::punctuation(">"));
             } else {
-                // Has complex predicates (HRTBs, qualified paths, etc.) — use where clause
+                // Has complex predicates (HRTBs, qualified paths, etc.) — emit
+                // generics + trait on the header line, then where clause below.
                 spans.extend(self.format_generics(impl_block, &impl_item.generics));
+                spans.push(Span::plain(" "));
+                spans.extend(self.format_path(impl_block, trait_path));
                 if !impl_item.generics.where_predicates.is_empty() {
                     spans.extend(
                         self.format_where_clause(impl_block, &impl_item.generics.where_predicates),
                     );
                 }
+                return spans;
             }
         }
 

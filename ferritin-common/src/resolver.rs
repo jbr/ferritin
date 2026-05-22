@@ -270,7 +270,14 @@ impl<'a> Resolver<'a> {
         // &mut self, so we can't return a borrowing iterator.
         let prefix = path[..index].to_owned();
         let path_owned = path.to_owned();
-        self.children(item)
+        let mut candidates = self.children(item);
+        // Trait-declared associated items aren't part of `children()` (see
+        // `find_named_dyn`); include them so a mistyped member like
+        // `Deref::derefx` suggests the real members rather than only siblings.
+        if let ItemEnum::Trait(trait_) = item.inner() {
+            candidates.extend(trait_.items.iter().filter_map(|id| item.get(id)));
+        }
+        candidates
             .into_iter()
             .filter_map(move |item| {
                 item.name().and_then(|name| {
@@ -359,6 +366,20 @@ impl<'a> Resolver<'a> {
                 for method in parent.methods() {
                     if method.name() == Some(target)
                         && let Some(found) = accept(resolver, method)
+                    {
+                        return Some(found);
+                    }
+                }
+            }
+
+            // Trait-declared associated items (required/provided methods, assoc
+            // types, assoc consts) live in `Trait.items`, not in impl blocks, so
+            // `methods()` above misses them. They're always real items, never
+            // re-exports.
+            if let ItemEnum::Trait(trait_) = parent.inner() {
+                for assoc in trait_.items.iter().filter_map(|id| parent.get(id)) {
+                    if assoc.name() == Some(target)
+                        && let Some(found) = accept(resolver, assoc.with_parent(parent))
                     {
                         return Some(found);
                     }

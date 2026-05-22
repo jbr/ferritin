@@ -221,6 +221,25 @@ test_all_modes!(get_trait_simple, Commands::get("crate::TestTrait"));
 
 test_all_modes!(get_trait_complex, Commands::get("crate::ComplexTrait"));
 
+// Resolving and rendering individual trait-declared associated items
+// (method, assoc type, assoc const) directly by path.
+test_all_modes!(
+    get_trait_method,
+    Commands::get("crate::TestTrait::test_method")
+);
+
+test_all_modes!(get_trait_assoc_type, Commands::get("crate::TestTrait::T"));
+
+test_all_modes!(
+    get_trait_assoc_const,
+    Commands::get("crate::TestTrait::ASSOCIATED_CONSTANT")
+);
+
+test_all_modes!(
+    fuzzy_matching_trait_member,
+    Commands::get("crate::TestTrait::test_methid")
+); // typo: should suggest "test_method" and other trait members
+
 // Prefix-resolution fixtures: every `pub use` inside `prefix_tests` has a
 // `use.id` that is present in the local index (same-crate), so the iterator
 // resolves via the id fast-path and never reaches the prefix-rewriting

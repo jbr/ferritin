@@ -1,0 +1,14 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::TestTrait::test_method\"),\nOutputMode :: TestMode, & get_fixture_crate_path ())"
+---
+<metadata>
+  <field name="Item">test_method</field>
+  <field name="Kind">Function</field>
+  <field name="Visibility">Private</field>
+</metadata>
+<truncated level="full"><p>
+A method</p>
+</truncated>
+<generated-code>
+<keyword>fn</keyword> test_method<punctuation>(</punctuation><punctuation>&</punctuation>self<punctuation>)</punctuation> <operator>-></operator> <type-name>String</type-name></generated-code>

@@ -241,7 +241,8 @@ impl<'a> Request<'a> {
         path: &'a rustdoc_types::Path,
         extra_bounds: &[(&str, &'a [GenericBound])],
     ) -> Vec<Span<'a>> {
-        let name_span = Span::type_name(&path.path).with_target(self.get_path(impl_block, path.id));
+        let name_span = Span::type_name(super::display_path_name(path))
+            .with_target(self.get_path(impl_block, path.id));
         let mut inner: Vec<Span<'a>> = vec![];
 
         if let Some(args) = &path.args {
@@ -341,7 +342,7 @@ impl<'a> Request<'a> {
         spans
     }
 
-    fn format_trait_assoc_const_signature(
+    pub(super) fn format_trait_assoc_const_signature(
         &mut self,
         item: DocRef<'a, Item>,
         type_: &'a Type,
@@ -369,7 +370,7 @@ impl<'a> Request<'a> {
         spans
     }
 
-    fn format_trait_assoc_type_signature(
+    pub(super) fn format_trait_assoc_type_signature(
         &mut self,
         item: DocRef<'a, Item>,
         generics: &'a Generics,

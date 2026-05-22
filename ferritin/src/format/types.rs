@@ -190,15 +190,30 @@ impl<'a> Request<'a> {
             }
         }
 
-        // For other types, use full qualified syntax
+        // For other types, use full qualified syntax: <Type as Trait>::name
+        // If the trait path is empty (rustdoc sometimes omits it), fall back to
+        // the bare `Type::name` form rather than emitting `<Type as >::name`.
+        let trait_spans = trait_
+            .as_ref()
+            .map(|trait_path| self.format_path(item, trait_path))
+            .unwrap_or_default();
+
+        if trait_spans.is_empty() {
+            spans.extend(self.format_type(item, self_type));
+            spans.push(Span::punctuation("::"));
+            spans.push(Span::plain(name));
+            if let Some(args) = args {
+                spans.extend(self.format_generic_args(item, args));
+            }
+            return spans;
+        }
+
         spans.push(Span::punctuation("<"));
         spans.extend(self.format_type(item, self_type));
-        if let Some(trait_path) = trait_ {
-            spans.push(Span::plain(" "));
-            spans.push(Span::keyword("as"));
-            spans.push(Span::plain(" "));
-            spans.extend(self.format_path(item, trait_path));
-        }
+        spans.push(Span::plain(" "));
+        spans.push(Span::keyword("as"));
+        spans.push(Span::plain(" "));
+        spans.extend(trait_spans);
         spans.push(Span::punctuation(">"));
         spans.push(Span::punctuation("::"));
         spans.push(Span::plain(name));
