@@ -236,7 +236,7 @@ where
 }
 
 /// A more complex trait demonstrating various features
-pub trait ComplexTrait<T>
+pub trait ComplexTrait<T>: PartialEq + std::fmt::Debug
 where
     T: Clone + Send,
 {

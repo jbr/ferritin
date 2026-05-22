@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::ComplexTrait\"), OutputMode :: Plain)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::ComplexTrait\"), OutputMode ::\nPlain, & get_fixture_crate_path ())"
 ---
 Item: ComplexTrait
 Kind: Trait
@@ -10,7 +10,7 @@ In crate: fixture-crate (0.1.0)
 
 A more complex trait demonstrating various features
 
-trait ComplexTrait<T> where T: Clone + Send { ... }
+trait ComplexTrait<T>: PartialEq + std::fmt::Debug where T: Clone + Send { ... }
 
   ◦ type Output: std::fmt::Display; 
     An associated type
