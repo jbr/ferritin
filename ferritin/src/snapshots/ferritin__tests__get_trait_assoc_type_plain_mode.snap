@@ -1,0 +1,11 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::TestTrait::T\"), OutputMode ::\nPlain, & get_fixture_crate_path ())"
+---
+Item: T
+Kind: AssocType
+Visibility: Private
+
+trait associated type
+
+type T: Clone;

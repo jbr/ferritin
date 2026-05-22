@@ -9,6 +9,18 @@ use rustdoc_types::{
 };
 use std::{collections::HashMap, fs};
 
+/// Display name for a [`Path`], stripping the rustdoc-leaked `$crate::` prefix
+/// that appears in derive-generated impls. Returns the trailing segment in that
+/// case (e.g. `$crate::cmp::Eq` → `Eq`), matching what hand-written bounds and
+/// rustdoc's HTML output show. Falls back to the original string otherwise.
+pub(crate) fn display_path_name(path: &Path) -> &str {
+    if let Some(rest) = path.path.strip_prefix("$crate::") {
+        rest.rsplit("::").next().unwrap_or(rest)
+    } else {
+        &path.path
+    }
+}
+
 mod documentation;
 mod r#enum;
 mod functions;
@@ -61,6 +73,26 @@ impl<'a> Request<'a> {
             }
             ItemEnum::Static(static_data) => {
                 doc_nodes.extend(self.format_static(item, static_data));
+            }
+            ItemEnum::AssocType {
+                generics,
+                bounds,
+                type_,
+            } => {
+                let name = item.name().unwrap_or("<unnamed>");
+                let sig = self.format_trait_assoc_type_signature(
+                    item,
+                    generics,
+                    bounds,
+                    type_.as_ref(),
+                    name,
+                );
+                doc_nodes.push(DocumentNode::generated_code(sig));
+            }
+            ItemEnum::AssocConst { type_, value } => {
+                let name = item.name().unwrap_or("<unnamed>");
+                let sig = self.format_trait_assoc_const_signature(item, type_, value, name);
+                doc_nodes.push(DocumentNode::generated_code(sig));
             }
             ItemEnum::Macro(macro_def) => {
                 doc_nodes.push(DocumentNode::paragraph(vec![StyledSpan::plain(

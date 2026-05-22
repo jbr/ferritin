@@ -509,11 +509,12 @@ impl<'a> Request<'a> {
         item: DocRef<'a, Item>,
         path: &'a Path,
     ) -> Vec<StyledSpan<'a>> {
-        if path.path.is_empty() {
+        let display_name = super::display_path_name(path);
+        if display_name.is_empty() {
             return vec![];
         }
 
-        let type_span = StyledSpan::type_name(&path.path).with_target(self.get_path(item, path.id));
+        let type_span = StyledSpan::type_name(display_name).with_target(self.get_path(item, path.id));
 
         let mut spans = vec![type_span];
         if let Some(args) = &path.args {

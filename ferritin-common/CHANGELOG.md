@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- resolve trait-declared associated items (methods, associated types, and
+  associated constants) by path, e.g. `std::ops::Deref::deref`
+- include trait associated items in "did you mean" suggestions for mistyped
+  trait member paths
+
 ## [0.11.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.10.0...ferritin-common-v0.11.0) - 2026-05-15
 
 ### Added

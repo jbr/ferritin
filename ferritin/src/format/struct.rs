@@ -10,7 +10,10 @@ impl<'a> Request<'a> {
         let mut doc_nodes = match &r#struct.kind {
             StructKind::Unit => self.format_unit_struct(r#struct, item),
             StructKind::Tuple(fields) => self.format_tuple_struct(r#struct, item, fields),
-            StructKind::Plain { fields, .. } => self.format_plain_struct(r#struct, item, fields),
+            StructKind::Plain {
+                fields,
+                has_stripped_fields,
+            } => self.format_plain_struct(r#struct, item, fields, *has_stripped_fields),
         };
 
         doc_nodes.extend(self.format_associated_methods(item));
@@ -43,6 +46,7 @@ impl<'a> Request<'a> {
         struct_data: DocRef<'a, Struct>,
         item: DocRef<'a, Item>,
         fields: &[Id],
+        has_stripped_fields: bool,
     ) -> Vec<DocumentNode<'a>> {
         use crate::styled_string::{DocumentNode, ListItem, Span};
 
@@ -97,6 +101,12 @@ impl<'a> Request<'a> {
                 hidden_count,
                 if hidden_count == 1 { "" } else { "s" }
             )));
+            code_spans.push(Span::plain("\n"));
+        } else if visible_fields.is_empty() && has_stripped_fields {
+            // Rustdoc stripped all fields from the public view but the struct
+            // still has a body — surface that explicitly.
+            code_spans.push(Span::plain("    "));
+            code_spans.push(Span::comment("/* private fields */"));
             code_spans.push(Span::plain("\n"));
         }
 

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- render individual trait associated items fetched with `get`: methods,
+  associated types (`type T: Clone;`), and associated constants
+
 ## [0.10.0](https://github.com/jbr/ferritin/compare/ferritin-v0.9.2...ferritin-v0.10.0) - 2026-05-15
 
 ### Added
