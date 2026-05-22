@@ -514,7 +514,8 @@ impl<'a> Request<'a> {
             return vec![];
         }
 
-        let type_span = StyledSpan::type_name(display_name).with_target(self.get_path(item, path.id));
+        let type_span =
+            StyledSpan::type_name(display_name).with_target(self.get_path(item, path.id));
 
         let mut spans = vec![type_span];
         if let Some(args) = &path.args {
