@@ -29,14 +29,14 @@ The one-indexed line of the source file where the span starts.</p>
 To obtain the<inline-code>span.end().line()</inline-code>. <elided chars="42"/></truncated>
 </item>
   <item><p>
-core::panic::Location::line  (Function) - score: 39.4</p>
+core::panic::Location::line  (Function) - score: 39.3</p>
 <truncated level="single-line"><p>
 Returns the line number from which the panic originated.</p>
 <title>Examples</title>
  <elided chars="279"/></truncated>
 </item>
   <item><p>
-std::panic::Location::line  (Function) - score: 39.4</p>
+std::panic::Location::line  (Function) - score: 39.3</p>
 <truncated level="single-line"><p>
 Returns the line number from which the panic originated.</p>
 <title>Examples</title>
