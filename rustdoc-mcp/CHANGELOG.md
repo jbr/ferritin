@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.7](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.6...rustdoc-mcp-v0.6.7) - 2026-05-24
+
+### Fixed
+
+- display trait bounds
+
+### Other
+
+- update snaps to rustc 1.98.0-nightly (23a3312d9 2026-05-23)
+- update snaps to rustc 1.98.0-nightly (54333ff07 2026-05-22)
+
 ## [0.6.6](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.5...rustdoc-mcp-v0.6.6) - 2026-05-22
 
 ### Other
