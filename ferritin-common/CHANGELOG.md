@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.2](https://github.com/jbr/ferritin/compare/ferritin-common-v0.11.1...ferritin-common-v0.11.2) - 2026-05-24
+
+### Fixed
+
+- display trait bounds
+
 ## [0.11.1](https://github.com/jbr/ferritin/compare/ferritin-common-v0.11.0...ferritin-common-v0.11.1) - 2026-05-22
 
 ### Fixed
