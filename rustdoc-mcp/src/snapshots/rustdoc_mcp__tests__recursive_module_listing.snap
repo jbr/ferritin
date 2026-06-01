@@ -93,7 +93,7 @@ Vec::from_raw_parts // Creates a `Vec<T>` directly from a pointer, a length, and
 Vec::from_raw_parts_in // Creates a `Vec<T, A>` directly from a pointer, a length, a capacity, [+98 more lines]
 Vec::insert // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
 Vec::insert_mut // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
-Vec::into_array // Converts the Vec into a boxed array. This conversion will discard any spare capacity, if there is any, see [`Vec::shrink_to_fit`]. [+13 more lines]
+Vec::into_array // Converts the Vec into a boxed array. This conversion will discard any spare capacity, [+16 more lines]
 Vec::into_boxed_slice // Converts the vector into [`Box<[T]>`][owned slice]. [+24 more lines]
 Vec::into_chunks // Groups every `N` elements in the `Vec<T>` into chunks to produce a `Vec<[T; N]>`, dropping [+23 more lines]
 Vec::into_flattened // Takes a `Vec<[T; N]>` and flattens it into a `Vec<T>`. [+18 more lines]

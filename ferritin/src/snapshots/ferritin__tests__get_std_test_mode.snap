@@ -239,7 +239,7 @@ Rust's standard collection library provides efficient most common general purpos
 <type-name>convert</type-name> </p>
 <truncated level="single-line"><p>
 Traits for conversions between types.</p>
-The traits in this module provide a way to Each trait serves a different purpose: <elided chars="1457"/></truncated>
+The traits in this module provide a way to Each trait serves a different purpose: <elided chars="1458"/></truncated>
 </item>
   <item><p>
 <type-name>default</type-name> </p>
@@ -409,6 +409,10 @@ This module provides networking Datagram Protocols, as well as to network proper
 <truncated level="single-line"><p>
 Additional functionality for numerics.</p>
 This module provides some extra types work. See the individual documentation <elided chars="108"/></truncated>
+</item>
+  <item><p>
+<type-name>offload</type-name> </p>
+<truncated level="single-line">This module provides support for gpu offloading. For technical details<inline-code>offload_kernel</inline-code> and how to use it, see their respective documentation. <elided chars="1303"/></truncated>
 </item>
   <item><p>
 <type-name>ops</type-name> </p>

@@ -94,7 +94,7 @@ A minimal test crate for rustdoc JSON testing
 - Vec::from_raw_parts_in — Creates a Vec<T, A> directly from a pointer, a length, a capacity, and an allocator. [+10 lines]
 - Vec::insert — Inserts an element at position index within the vector, shifting all elements after it to the right. [+6 lines]
 - Vec::insert_mut — Inserts an element at position index within the vector, shifting all elements after it to the right, and returning a reference to the new element. [+6 lines]
-- Vec::into_array — Converts the Vec into a boxed array. This conversion will discard any spare capacity, if there is any, see Vec::shrink_to_fit. If you merely wish for a reference to an array, use as_array. [+3 lines]
+- Vec::into_array — Converts the Vec into a boxed array. This conversion will discard any spare capacity, if there is any, see Vec::shrink_to_fit. If you merely wish for a reference to an array, use as_array. [+4 lines]
 - Vec::into_boxed_slice — Converts the vector into Box<[T]>. [+5 lines]
 - Vec::into_chunks — Groups every N elements in the Vec<T> into chunks to produce a Vec<[T; N]>, dropping elements in the remainder. N must be greater than zero. [+4 lines]
 - Vec::into_flattened — Takes a Vec<[T; N]> and flattens it into a Vec<T>. [+5 lines]

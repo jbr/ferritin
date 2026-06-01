@@ -258,6 +258,9 @@ Modules
   ◦ num 
     Additional functionality for numerics. [...]
 
+  ◦ offload 
+    This module provides support for gpu offloading. For technical details regarding the offload_kernel and how to use it, see their respective documentation. [...]
+
   ◦ ops 
     Overloadable operators. [...]
 

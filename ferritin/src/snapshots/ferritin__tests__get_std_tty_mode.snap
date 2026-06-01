@@ -331,6 +331,11 @@ Modules
   ◦ [num](http://docs.rust-lang.org/nightly/std/num/index.html) 
     Additional functionality for numerics. [...]
 
+  ◦ [offload](http://docs.rust-lang.org/nightly/std/offload/index.html) 
+    This module provides support for gpu offloading. For technical details
+    regarding the offload_kernel and how to use it, see their respective
+    documentation. [...]
+
   ◦ [ops](http://docs.rust-lang.org/nightly/core/ops/index.html) 
     Overloadable operators. [...]
 

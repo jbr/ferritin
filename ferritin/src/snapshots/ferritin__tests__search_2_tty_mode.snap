@@ -11,7 +11,7 @@ Search results for 'generic struct'
   ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 67.9
     A trait for borrowing data. [...]
 
-  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 66.7
+  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 66.8
     A generic enum for testing [...]
 
   ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.3
@@ -28,7 +28,7 @@ Search results for 'generic struct'
     Compile-time type information about instantiated generics of structs, enum and
     union variants.
 
-  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.8
+  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 63.0
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ [core::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 61.5

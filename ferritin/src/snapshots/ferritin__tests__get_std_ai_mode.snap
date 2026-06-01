@@ -148,6 +148,7 @@ Non-exhaustive list of known limitations:
 - mem — Basic functions for dealing with memory, values, and types. [+3 lines]
 - net — Networking primitives for TCP/UDP communication. [+4 lines]
 - num — Additional functionality for numerics. [+1 lines]
+- offload — This module provides support for gpu offloading. For technical details regarding the offload_kernel and how to use it, see their respective documentation. [+8 lines]
 - ops — Overloadable operators. [+16 lines]
 - option — Optional values. [+82 lines]
 - os — OS-specific functionality.
