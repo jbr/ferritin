@@ -110,7 +110,7 @@ where
     Converts the vector into [`Box<[T]>`][owned slice]. [+24 more lines]
 
 • pub fn into_array<const N: usize>(self) -> Result<Box<[T; N], A>, Self>
-    Converts the Vec into a boxed array. This conversion will discard any spare capacity, if there is any, see [`Vec::shrink_to_fit`]. [+13 more lines]
+    Converts the Vec into a boxed array. This conversion will discard any spare capacity, [+16 more lines]
 
 • pub fn truncate(&mut self, len: usize)
     Shortens the vector, keeping the first `len` elements and dropping [+41 more lines]

@@ -448,7 +448,7 @@ This checked <elided chars="3068"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::into_array</type-name> </p>
-<truncated level="single-line">Converts the Vec into a boxed array. This conversion will discard any spare<inline-code>Vec::shrink_to_fit</inline-code>. If you merely wish for a reference to an array, use <inline-code>as_array</inline-code>. <elided chars="456"/></truncated>
+<truncated level="single-line">Converts the Vec into a boxed array. This conversion will discard any spare if there is any, see <inline-code>Vec::shrink_to_fit</inline-code>. If you merely wish for a reference to an array, use <inline-code>as_array</inline-code>. <elided chars="469"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::into_boxed_slice</type-name> </p>
