@@ -10,6 +10,8 @@ pub(crate) struct FormatContext {
     include_source: AtomicBool,
     /// Whether to show recursive/nested content
     recursive: AtomicBool,
+    /// Whether to hide non-public items (private fields, methods, module items)
+    public: AtomicBool,
 }
 
 impl FormatContext {
@@ -17,6 +19,7 @@ impl FormatContext {
         Self {
             include_source: AtomicBool::new(false),
             recursive: AtomicBool::new(false),
+            public: AtomicBool::new(false),
         }
     }
 
@@ -45,6 +48,23 @@ impl FormatContext {
     /// Builder method for recursive
     pub(crate) fn with_recursion(self, value: bool) -> Self {
         self.set_recursive(value);
+        self
+    }
+
+    /// Check if non-public items should be hidden
+    pub(crate) fn public(&self) -> bool {
+        self.public.load(Ordering::Relaxed)
+    }
+
+    /// Set hiding of non-public items (thread-safe)
+    pub(crate) fn set_public(&self, value: bool) -> &Self {
+        self.public.store(value, Ordering::Relaxed);
+        self // For chaining
+    }
+
+    /// Builder method for hiding non-public items
+    pub(crate) fn with_public(self, value: bool) -> Self {
+        self.set_public(value);
         self
     }
 }

@@ -13,7 +13,10 @@ impl<'a> Request<'a> {
     ) -> Vec<DocumentNode<'a>> {
         let mut doc_nodes = vec![];
 
-        let inherent_methods = item.methods().collect::<Vec<_>>();
+        let inherent_methods = item
+            .methods()
+            .filter(|&method| !self.hidden_by_visibility(method))
+            .collect::<Vec<_>>();
         // Show inherent methods first
         if !inherent_methods.is_empty() {
             doc_nodes.extend(self.format_item_list(inherent_methods, "Methods"));

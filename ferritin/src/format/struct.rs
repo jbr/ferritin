@@ -31,10 +31,11 @@ impl<'a> Request<'a> {
         let mut hidden_count = 0;
 
         for field_id in fields {
-            if let Some(field) = item.get(field_id) {
-                visible_fields.push(field);
-            } else {
-                hidden_count += 1;
+            match item.get(field_id) {
+                Some(field) if !self.hidden_by_visibility(field) => {
+                    visible_fields.push(field);
+                }
+                _ => hidden_count += 1,
             }
         }
 
@@ -167,6 +168,7 @@ impl<'a> Request<'a> {
         for (i, field_id_opt) in fields.iter().enumerate() {
             if let Some(field_id) = field_id_opt
                 && let Some(field) = struct_data.get(field_id)
+                && !self.hidden_by_visibility(field)
             {
                 visible_fields.push((i, field));
             } else {

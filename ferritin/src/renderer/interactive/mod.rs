@@ -147,6 +147,7 @@ pub fn render_interactive(
     render_context: RenderContext,
     initial_command: Option<Commands>,
     log_reader: LogReader,
+    public: bool,
 ) -> io::Result<()> {
     use crate::format_context::FormatContext;
     use ferritin_common::Navigator;
@@ -157,7 +158,7 @@ pub fn render_interactive(
     // afterwards. Stash it in an outer OnceLock so the Request can borrow it
     // for the lifetime of the scope.
     let navigator_lock: OnceLock<Navigator> = OnceLock::new();
-    let format_context = FormatContext::new();
+    let format_context = FormatContext::new().with_public(public);
 
     thread::scope(|scope| {
         render_interactive_impl(

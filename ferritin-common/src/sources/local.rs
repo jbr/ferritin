@@ -16,6 +16,7 @@ use std::borrow::Cow;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::SystemTime;
 use walkdir::WalkDir;
 
@@ -28,6 +29,12 @@ pub struct LocalSource {
     crates: FxHashMap<CrateName<'static>, CrateInfo>,
     root_crate: Option<CrateName<'static>>,
     can_rebuild: bool,
+    /// One-shot flag: when set, the next crate loaded is rebuilt unconditionally,
+    /// bypassing the freshness/version cache checks. Consumed on first use so that
+    /// only the crate the user queried is forced — cross-crate dependencies loaded
+    /// afterward fall back to normal caching.
+    #[field = false]
+    force_rebuild: AtomicBool,
 }
 
 impl LocalSource {
@@ -111,9 +118,18 @@ impl LocalSource {
             manifest_path,
             target_dir,
             can_rebuild: true,
+            force_rebuild: AtomicBool::new(false),
             crates,
             root_crate,
         })
+    }
+
+    /// Force the next loaded crate to be rebuilt, ignoring the cache.
+    ///
+    /// Only the first crate loaded is affected; see [`Self::force_rebuild`].
+    pub fn with_force_rebuild(self, force: bool) -> Self {
+        self.force_rebuild.store(force, Ordering::Relaxed);
+        self
     }
 
     /// Check if a crate name is a workspace package
@@ -157,20 +173,23 @@ impl LocalSource {
     pub fn load_workspace_crate(&self, crate_name: CrateName<'_>) -> Option<RustdocData> {
         let json_path = self.json_path(crate_name.as_ref());
         let mut tried_rebuilding = false;
+        let mut force_rebuild = self.force_rebuild.swap(false, Ordering::Relaxed);
 
         loop {
-            let needs_rebuild = json_path
-                .metadata()
-                .ok()
-                .and_then(|m| m.modified().ok())
-                .is_none_or(|docs_updated| {
-                    WalkDir::new(self.project_root().join("src"))
-                        .into_iter()
-                        .filter_map(|entry| -> Option<SystemTime> {
-                            entry.ok()?.metadata().ok()?.modified().ok()
-                        })
-                        .any(|file_updated| file_updated > docs_updated)
-                });
+            let needs_rebuild = force_rebuild
+                || json_path
+                    .metadata()
+                    .ok()
+                    .and_then(|m| m.modified().ok())
+                    .is_none_or(|docs_updated| {
+                        WalkDir::new(self.project_root().join("src"))
+                            .into_iter()
+                            .filter_map(|entry| -> Option<SystemTime> {
+                                entry.ok()?.metadata().ok()?.modified().ok()
+                            })
+                            .any(|file_updated| file_updated > docs_updated)
+                    });
+            force_rebuild = false;
 
             if !needs_rebuild
                 && let Ok(content) = std::fs::read(&json_path)
@@ -219,9 +238,11 @@ impl LocalSource {
         }
 
         let mut tried_rebuilding = false;
+        let mut force_rebuild = self.force_rebuild.swap(false, Ordering::Relaxed);
 
         loop {
-            if let Ok(content) = std::fs::read(json_path)
+            if !force_rebuild
+                && let Ok(content) = std::fs::read(json_path)
                 && let Ok(RustdocVersion {
                     format_version,
                     crate_version,
@@ -245,6 +266,7 @@ impl LocalSource {
                 });
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
+                force_rebuild = false;
                 if self.rebuild_docs(&crate_name, version, false).is_ok() {
                     continue;
                 }

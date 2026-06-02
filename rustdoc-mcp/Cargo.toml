@@ -17,7 +17,7 @@ clap = { version = "4.6.1", features = ["derive"] }
 dirs = "6.0.0"
 env_logger = "0.11.10"
 fieldwork = "0.5.2"
-log = "0.4.29"
+log = "0.4.30"
 mcplease = "0.2.3"
 rustdoc-types.workspace = true
 schemars = { version = "1.2.1", features = ["derive"] }

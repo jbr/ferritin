@@ -66,6 +66,16 @@ struct Cli {
     #[arg(short = 'l', long, global = true)]
     local: bool,
 
+    /// Force rebuilding rustdoc for the queried local crate, ignoring the cache.
+    /// Useful when cached docs are stale (e.g. after switching branches).
+    #[arg(long, global = true)]
+    rebuild: bool,
+
+    /// Hide non-public items (private fields, methods, and module items) when
+    /// documenting local crates.
+    #[arg(long, global = true)]
+    public: bool,
+
     /// Output in LLM-friendly format (also enabled by CLAUDECODE or GEMINI_CLI env vars)
     #[arg(long, global = true)]
     ai: bool,
@@ -139,9 +149,14 @@ fn main() -> ExitCode {
             return ExitCode::FAILURE;
         }
 
-        if let Err(e) =
-            renderer::render_interactive(path, use_local, render_context, cli.command, log_reader)
-        {
+        if let Err(e) = renderer::render_interactive(
+            path,
+            use_local,
+            render_context,
+            cli.command,
+            log_reader,
+            cli.public,
+        ) {
             eprintln!("Interactive mode error: {}", e);
             return ExitCode::FAILURE;
         }
@@ -159,14 +174,18 @@ fn main() -> ExitCode {
         }
         Navigator::default()
             .with_std_source(std_source)
-            .with_local_source(local_source.ok())
+            .with_local_source(
+                local_source
+                    .ok()
+                    .map(|ls| ls.with_force_rebuild(cli.rebuild)),
+            )
     } else {
         Navigator::default()
             .with_std_source(std_source)
             .with_docsrs_source(DocsRsSource::from_default_cache())
     };
 
-    let format_context = FormatContext::new();
+    let format_context = FormatContext::new().with_public(cli.public);
     let mut request = Request::new(&navigator, format_context);
 
     // One-shot mode: execute command and render to stdout

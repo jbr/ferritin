@@ -47,8 +47,17 @@ fn render_for_tests_rooted(
     output_mode: OutputMode,
     project_root: &std::path::Path,
 ) -> String {
+    render_with_context(command, output_mode, project_root, FormatContext::new())
+}
+
+fn render_with_context(
+    command: Commands,
+    output_mode: OutputMode,
+    project_root: &std::path::Path,
+    format_context: FormatContext,
+) -> String {
     let navigator = build_test_navigator(project_root);
-    let mut request = Request::new(&navigator, FormatContext::new());
+    let mut request = Request::new(&navigator, format_context);
     let (document, _, _) = command.execute(&mut request);
     let mut output = String::new();
     let render_context = RenderContext::new().with_output_mode(output_mode);
@@ -157,6 +166,32 @@ macro_rules! test_all_modes {
 }
 
 test_all_modes!(get_crate_root, Commands::get("crate"));
+
+/// `--public` on the crate root: truly-private items (`private_function`,
+/// the private `private_detail` module, private `use` imports) drop out, while
+/// public re-exports and glob-re-exported enum variants are preserved. Filtering
+/// is output-mode-independent, so TestMode alone locks the behavior.
+#[test]
+fn get_crate_root_public_test_mode() {
+    insta::assert_snapshot!(render_with_context(
+        Commands::get("crate"),
+        OutputMode::TestMode,
+        &get_fixture_crate_path(),
+        FormatContext::new().with_public(true),
+    ));
+}
+
+/// `--public` on a struct: non-`pub` fields fold into the
+/// "private field hidden" count rather than being listed.
+#[test]
+fn get_struct_public_test_mode() {
+    insta::assert_snapshot!(render_with_context(
+        Commands::get("crate::TestStruct"),
+        OutputMode::TestMode,
+        &get_fixture_crate_path(),
+        FormatContext::new().with_public(true),
+    ));
+}
 
 // Using macro to test across all modes
 test_all_modes!(get_struct_details, Commands::get("crate::TestStruct"));
