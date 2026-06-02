@@ -43,7 +43,7 @@ The `Navigator` is the main entry point for all documentation operations. It coo
 Three sources provide documentation:
 
 1. **StdSource** - Standard library crates (std, core, alloc) from rustup's `rust-docs-json` component
-2. **LocalSource** - Workspace crates and dependencies, built on demand with nightly toolchain
+2. **LocalSource** - Workspace crates and dependencies, built on demand with nightly toolchain. Workspace crates are rebuilt when their JSON is older than any `src/` file; dependencies when the cached format/crate version no longer matches. The CLI `--rebuild` flag forces a one-shot rebuild of the first crate loaded (the queried one), bypassing those checks — useful when cached docs go stale across branch switches.
 3. **DocsRsSource** - Published crates fetched from docs.rs and cached locally
 
 Each source implements the `Source` trait, providing name canonicalization, metadata lookup, and crate loading.
@@ -126,7 +126,8 @@ pub struct DocRef<'a, T> {
     crate_docs: &'a RustdocData,
     item: &'a T,
     navigator: &'a Navigator,
-    name: Option<&'a str>,  // For renamed imports
+    name: Option<&'a str>,        // For renamed imports
+    visibility: Option<&'a Visibility>,  // For re-exports (see below)
 }
 ```
 
@@ -134,6 +135,12 @@ pub struct DocRef<'a, T> {
 - Which crate the item comes from
 - Access to the `Navigator` for cross-crate traversal
 - Optional name override for renamed imports
+- Optional visibility override for re-exports: an item reached through a `use`
+  has the *use's* visibility, not the target's (a `pub use` of a private item is
+  publicly reachable). Set during use resolution and read via
+  `effective_visibility()`. This is what lets `--public` filtering keep
+  publicly-re-exported items while dropping genuinely private ones. (Glob
+  re-exports are best-effort — expanded items keep their own visibility.)
 
 It derefs to the inner item for convenience. The presence of `navigator` enables cross-crate operations without requiring mutable state or re-borrowing.
 
@@ -286,7 +293,9 @@ Example - Plain renderer handles truncation:
 
 ### Format Context & Render Context
 
-The architecture separates formatting concerns (what to include in a `Document`) from rendering concerns (how to display it). `FormatContext` holds thread-safe formatting preferences (source inclusion, recursion) that can be mutated at runtime. `RenderContext` holds immutable display configuration (colors, terminal width, output mode, themes) used by renderers.
+The architecture separates formatting concerns (what to include in a `Document`) from rendering concerns (how to display it). `FormatContext` holds thread-safe formatting preferences (source inclusion, recursion, hiding non-public items) that can be mutated at runtime. `RenderContext` holds immutable display configuration (colors, terminal width, output mode, themes) used by renderers.
+
+The `public` preference (CLI `--public`) filters non-`pub` items at format time rather than at build time: workspace crates are always built with `--document-private-items`, and the formatters skip items whose `DocRef::effective_visibility()` isn't public (module children, struct fields, inherent methods). Enum variants are exempt — they carry `Visibility::Default` in rustdoc JSON but are as public as their enum.
 
 ## Intra-doc Link Resolution
 

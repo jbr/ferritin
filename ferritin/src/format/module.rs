@@ -51,6 +51,9 @@ impl<'a> Request<'a> {
         item: DocRef<'a, Item>,
     ) {
         for child in self.children(item) {
+            if self.hidden_by_visibility(child) {
+                continue;
+            }
             if let Some(item_name) = child.name() {
                 let path = path.as_deref().map_or_else(
                     || item_name.to_string(),

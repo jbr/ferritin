@@ -8,13 +8,13 @@ repository.workspace = true
 license.workspace = true
 
 [dependencies]
-trillium-rustls = { version = "0.11.1", features = ["client"] }
-trillium-smol = "0.6.1"
+trillium-rustls = { version = "0.11.2", features = ["client"] }
+trillium-smol = "0.6.2"
 anyhow.workspace = true
 cargo_metadata.workspace = true
 elsa.workspace = true
 fieldwork = "0.5.2"
-log = "0.4.29"
+log = "0.4.30"
 rkyv = "0.8.16"
 rustc-hash.workspace = true
 rustdoc-types.workspace = true
@@ -22,7 +22,7 @@ rustdoc-types-56 = { package = "rustdoc-types", version = "0.56" }
 rustdoc-types-55 = { package = "rustdoc-types", version = "0.55" }
 serde.workspace = true
 strsim.workspace = true
-trillium-client = "0.9.1"
+trillium-client = "0.9.3"
 walkdir.workspace = true
 zstd = "0.13"
 home = "0.5.12"
@@ -30,7 +30,7 @@ async-fs = "2.2.0"
 semver = { version = "1.0.28", features = ["serde"] }
 sonic-rs = "0.5.8"
 rayon = "1.12.0"
-memchr = "2.8.0"
+memchr = "2.8.1"
 
 [dev-dependencies]
 env_logger = "0.11.10"

@@ -38,7 +38,7 @@ use crate::iterators::{LazyChild, LazyChildren};
 use crate::string_utils::case_aware_jaro_winkler;
 use crate::{DocRef, Navigator, RustdocData};
 use fieldwork::Fieldwork;
-use rustdoc_types::{Id, Item, ItemEnum, ItemKind, Use};
+use rustdoc_types::{Id, Item, ItemEnum, ItemKind, Use, Visibility};
 use semver::VersionReq;
 
 /// Suggestion produced when path resolution fails — a near-miss path the user
@@ -559,7 +559,13 @@ impl<'a> Resolver<'a> {
             }
             ItemEnum::Use(use_item) => {
                 let use_ref = item.build_ref(use_item);
-                self.collect_use_children(use_ref, item, include_uses, out);
+                self.collect_use_children(
+                    use_ref,
+                    item,
+                    &item.item().visibility,
+                    include_uses,
+                    out,
+                );
             }
             _ => {}
         }
@@ -581,7 +587,13 @@ impl<'a> Resolver<'a> {
                     continue;
                 }
                 let use_ref = item.build_ref(use_item);
-                self.collect_use_children(use_ref, parent, include_uses, out);
+                self.collect_use_children(
+                    use_ref,
+                    parent,
+                    &item.item().visibility,
+                    include_uses,
+                    out,
+                );
             } else {
                 let item = match parent_ref {
                     Some(p) => item.with_parent(p),
@@ -596,6 +608,7 @@ impl<'a> Resolver<'a> {
         &mut self,
         use_ref: DocRef<'a, Use>,
         parent: DocRef<'a, Item>,
+        use_visibility: &'a Visibility,
         include_uses: bool,
         out: &mut Vec<DocRef<'a, Item>>,
     ) {
@@ -604,6 +617,10 @@ impl<'a> Resolver<'a> {
         };
         let use_item = use_ref.item();
         if use_item.is_glob {
+            // Glob re-export: the expanded items keep their own visibility. A
+            // `pub use foo::*` of items that are themselves `pub` shows them
+            // correctly; propagating the glob's visibility onto every
+            // descendant (for `pub use private_mod::*`) is left as best-effort.
             match source_item.inner() {
                 ItemEnum::Module(module) => {
                     self.collect_ids(source_item, &module.items, include_uses, None, out);
@@ -614,11 +631,16 @@ impl<'a> Resolver<'a> {
                 _ => {}
             }
         } else {
-            // Non-glob Use: yield the source item with the imported name. We
-            // intentionally don't chain through nested `pub use`s here — if
-            // the source is itself a Use, that's what the caller sees. The
-            // user can follow the link to walk further.
-            out.push(source_item.with_name(&use_item.name));
+            // Non-glob Use: yield the source item with the imported name and the
+            // `use`'s visibility (a `pub use` of a private item is publicly
+            // reachable). We intentionally don't chain through nested `pub use`s
+            // here — if the source is itself a Use, that's what the caller sees.
+            // The user can follow the link to walk further.
+            out.push(
+                source_item
+                    .with_name(&use_item.name)
+                    .with_visibility(use_visibility),
+            );
         }
     }
 }

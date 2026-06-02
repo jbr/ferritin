@@ -1,0 +1,188 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_with_context(Commands::get(\"crate\"), OutputMode::TestMode,\n&get_fixture_crate_path(), FormatContext::new().with_public(true),)"
+---
+<metadata>
+  <field name="Item">fixture_crate</field>
+  <field name="Kind">Module</field>
+  <field name="Visibility">Public</field>
+  <field name="Defined at"><type-name>fixture_crate</type-name></field>
+  <field name="In crate">fixture-crate (0.1.0)</field>
+</metadata>
+<truncated level="full"><p>
+A minimal test crate for rustdoc JSON testing</p>
+</truncated>
+<section><section-title>Modules</section-title><list>
+  <item><p>
+<type-name>link_resolution_tests</type-name> </p>
+<truncated level="single-line"><p>
+Module for testing intra-doc link resolution</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>markdown_test</type-name> </p>
+<truncated level="single-line"><title>Markdown: Syntax</title>
+ <elided chars="8712"/></truncated>
+</item>
+  <item><p>
+<type-name>namespace_collisions</type-name> </p>
+<truncated level="single-line"><p>
+Module for testing namespace disambiguation with kind discriminators.</p>
+Contains a genuine <elided chars="120"/></truncated>
+</item>
+  <item><p>
+<type-name>prefix_tests</type-name> </p>
+<truncated level="single-line"><p>
+Edge cases for path-prefix resolution in use-item sources and intra-doc links.</p>
+Ru<inline-code>Us</inline-code> so<inline-code>cr</inline-code>, <inline-code>se</inline-code>,<inline-code>su</inline-code> th<emphasis>lo</emphasis> th<inline-code>pu</inline-code>s to <inline-code>te</inline-code> <elided chars="595"/></truncated>
+</item>
+  <item><p>
+<type-name>reexport_mod</type-name> </p>
+</item>
+  <item><p>
+<type-name>submodule</type-name> </p>
+<truncated level="single-line"><p>
+A module with items</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Structs</section-title><list>
+  <item><p>
+<type-name>GenericStruct</type-name> </p>
+<truncated level="single-line"><p>
+A generic struct for testing multi-paragraph documentation.</p>
+This struct and provides a <elided chars="401"/></truncated>
+</item>
+  <item><p>
+<type-name>ReachableViaPrivateModule</type-name> </p>
+<truncated level="single-line"><p>
+A struct accessible only via re-export from a private module.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>SubStruct</type-name> </p>
+<truncated level="single-line"><p>
+A struct in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestStruct</type-name> </p>
+<truncated level="single-line"><p>
+A simple struct for testing basic functionality.</p>
+This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>
+</item>
+  <item><p>
+<type-name>TupleStruct</type-name> </p>
+<truncated level="single-line"><p>
+A tuple struct for testing</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>UnitStruct</type-name> </p>
+<truncated level="single-line"><p>
+A unit struct for testing</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>Vec</type-name> </p>
+<truncated level="single-line"><p>
+A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.</p>
+<title>Examples</title>
+ <elided chars="8583"/></truncated>
+</item>
+</list>
+</section><section><section-title>Enums</section-title><list>
+  <item><p>
+<type-name>GenericEnum</type-name> </p>
+<truncated level="single-line"><p>
+A generic enum for testing</p>
+<p>
+See also <inline-code>crate::TestEnum</inline-code></p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestEnum</type-name> </p>
+<truncated level="single-line"><p>
+An enum for testing</p>
+<p>
+This is like <inline-code>crate::GenericEnum</inline-code> but without the generic</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Traits</section-title><list>
+  <item><p>
+<type-name>ComplexTrait</type-name> </p>
+<truncated level="single-line"><p>
+A more complex trait demonstrating various features</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestTrait</type-name> </p>
+<truncated level="single-line"><p>
+A trait for testing extremely long documentation that exceeds line limits.</p>
+This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
+</item>
+</list>
+</section><section><section-title>Functions</section-title><list>
+  <item><p>
+<type-name>async_function</type-name> </p>
+<truncated level="single-line"><p>
+An async function</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generic_function</type-name> </p>
+<truncated level="single-line"><p>
+A generic function</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>sub_function</type-name> </p>
+<truncated level="single-line"><p>
+A function in a submodule</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>test_function</type-name> </p>
+<truncated level="single-line"><p>
+A public function</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Constants</section-title><list>
+  <item><p>
+<type-name>TEST_CONSTANT</type-name> </p>
+<truncated level="single-line"><p>
+A const for testing</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Statics</section-title><list>
+  <item><p>
+<type-name>TEST_STATIC</type-name> </p>
+<truncated level="single-line"><p>
+A static for testing</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Variants</section-title><list>
+  <item><p>
+<type-name>VariantA</type-name> </p>
+<truncated level="single-line"><p>
+Variant A (see also <inline-code>crate::GenericEnum</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantB</type-name> </p>
+<truncated level="single-line"><p>
+Variant B with data</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>VariantC</type-name> </p>
+<truncated level="single-line"><p>
+Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+</list>
+</section>
