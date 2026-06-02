@@ -56,13 +56,13 @@ Associated Types:
     Returns the number of elements the map can hold without reallocating. [+11 more lines]
 
 • pub fn keys(&self) -> Keys<'_, K, V>
-    An iterator visiting all keys in arbitrary order. [+23 more lines]
+    An iterator visiting all keys in arbitrary order. [+22 more lines]
 
 • pub fn into_keys(self) -> IntoKeys<K, V, A>
     Creates a consuming iterator visiting all the keys in arbitrary order. [+25 more lines]
 
 • pub fn values(&self) -> Values<'_, K, V>
-    An iterator visiting all values in arbitrary order. [+23 more lines]
+    An iterator visiting all values in arbitrary order. [+22 more lines]
 
 • pub fn values_mut(&mut self) -> ValuesMut<'_, K, V>
     An iterator visiting all values mutably in arbitrary order. [+26 more lines]
@@ -71,7 +71,7 @@ Associated Types:
     Creates a consuming iterator visiting all the values in arbitrary order. [+25 more lines]
 
 • pub fn iter(&self) -> Iter<'_, K, V>
-    An iterator visiting all key-value pairs in arbitrary order. [+26 more lines]
+    An iterator visiting all key-value pairs in arbitrary order. [+22 more lines]
 
 • pub fn iter_mut(&mut self) -> IterMut<'_, K, V>
     An iterator visiting all key-value pairs in arbitrary order, [+28 more lines]
@@ -156,7 +156,7 @@ where
     Inserts a key-value pair into the map. [+23 more lines]
 
 • pub fn try_insert(&mut self, key: K, value: V) -> Result<&mut V, OccupiedError<'_, K, V, A>>
-    Tries to insert a key-value pair into the map, and returns [+23 more lines]
+    Tries to insert a key-value pair into the map, and returns [+22 more lines]
 
 • pub fn remove<Q>(&mut self, k: &Q) -> Option<V>
 where

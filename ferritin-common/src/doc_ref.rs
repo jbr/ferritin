@@ -3,7 +3,7 @@ use crate::{
 };
 use fieldwork::Fieldwork;
 use rustdoc_types::{
-    ExternalCrate, Id, Item, ItemEnum, ItemKind, ItemSummary, MacroKind, ProcMacro, Use,
+    ExternalCrate, Id, Item, ItemEnum, ItemKind, ItemSummary, MacroKind, ProcMacro, Use, Visibility,
 };
 
 /// A lightweight, `Copy` reference to a parent item set during tree traversal.
@@ -45,6 +45,14 @@ pub struct DocRef<'a, T> {
 
     #[field(get = false, with, set)]
     name: Option<&'a str>,
+
+    /// Visibility override for re-exports. When an item is reached through a
+    /// `use`, its effective visibility is the `use`'s visibility (a `pub use`
+    /// of a private item is publicly reachable), not the target's own. Set
+    /// alongside [`name`](Self::name) during use resolution; read via
+    /// [`DocRef::effective_visibility`].
+    #[field(get = false, with)]
+    visibility: Option<&'a Visibility>,
 
     /// Parent item set during tree traversal; used by [`DocRef::discriminated_path`] as a
     /// fallback for items absent from rustdoc's `paths` map (rust-lang/rust#152511).
@@ -102,6 +110,15 @@ impl<'a> DocRef<'a, Item> {
 
     pub fn inner(&self) -> &'a ItemEnum {
         &self.item.inner
+    }
+
+    /// The item's effective visibility, accounting for re-exports.
+    ///
+    /// Returns the [`visibility`](Self::visibility) override when the item was
+    /// reached through a `use` (so a `pub use` of a private item reports as
+    /// public), otherwise the item's own declared visibility.
+    pub fn effective_visibility(&self) -> &'a Visibility {
+        self.visibility.unwrap_or(&self.item.visibility)
     }
 
     pub fn path(&self) -> Option<Path<'a>> {
@@ -275,6 +292,7 @@ impl<'a, T> DocRef<'a, T> {
             crate_docs,
             item,
             name: None,
+            visibility: None,
             parent: None,
         }
     }

@@ -3,9 +3,9 @@ use crate::styled_string::{DocumentNode, MetadataField, Span as StyledSpan, Trun
 use ferritin_common::doc_ref::DocRef;
 use rustdoc_types::{
     Abi, Constant, Enum, Function, FunctionPointer, GenericArg, GenericArgs, GenericBound,
-    GenericParamDef, GenericParamDefKind, Generics, Id, Item, ItemEnum, ItemSummary, Path, Span,
-    Static, Struct, StructKind, Term, Trait, Type, TypeAlias, Union, VariantKind, Visibility,
-    WherePredicate,
+    GenericParamDef, GenericParamDefKind, Generics, Id, Item, ItemEnum, ItemKind, ItemSummary,
+    Path, Span, Static, Struct, StructKind, Term, Trait, Type, TypeAlias, Union, VariantKind,
+    Visibility, WherePredicate,
 };
 use std::{collections::HashMap, fs};
 
@@ -33,6 +33,28 @@ mod r#trait;
 mod types;
 
 impl<'a> Request<'a> {
+    /// Whether `item` should be omitted because `--public` is active and
+    /// the item is not `pub`.
+    ///
+    /// Uses [`DocRef::effective_visibility`], so a `pub use` of a non-`pub` item
+    /// is correctly treated as public (and a non-`pub` `use` as hidden). Glob
+    /// re-exports are best-effort — see `collect_use_children`.
+    pub(super) fn hidden_by_visibility(&self, item: DocRef<'a, Item>) -> bool {
+        if !self.format_context().public() {
+            return false;
+        }
+
+        // Enum variants always carry `Visibility::Default` in rustdoc JSON but
+        // are exactly as visible as their enum, so never hide them by their own
+        // visibility — they only reach module listings via `pub use Enum::*`,
+        // where hiding them would drop genuinely public API.
+        if item.kind() == ItemKind::Variant {
+            return false;
+        }
+
+        !matches!(item.effective_visibility(), Visibility::Public)
+    }
+
     /// Format an item with automatic recursion tracking
     pub(crate) fn format_item(&mut self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
         let mut doc_nodes = vec![];
