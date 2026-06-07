@@ -80,7 +80,7 @@ jobs:
       - name: Collect coverage data
         run: cargo llvm-cov nextest --codecov --output-path codecov.json
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: codecov.json
