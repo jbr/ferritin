@@ -8,7 +8,7 @@ mod themes {
 }
 use ferritin_common::{
     Navigator,
-    sources::{DocsRsSource, LocalSource, StdSource},
+    sources::{DocsRsSource, FeatureSelection, LocalSource, StdSource},
 };
 use std::{path::PathBuf, process::ExitCode};
 use terminal_size::{Width, terminal_size};
@@ -76,6 +76,20 @@ struct Cli {
     #[arg(long, global = true)]
     public: bool,
 
+    /// Build local docs with these cargo features (comma-separated or repeated).
+    /// Requires --local; ignored for docs.rs. The selection sticks: later bare
+    /// invocations reuse it until you pass different features or --rebuild.
+    #[arg(long, global = true, value_delimiter = ',')]
+    features: Vec<String>,
+
+    /// Build local docs with all cargo features enabled. Requires --local.
+    #[arg(long, global = true)]
+    all_features: bool,
+
+    /// Build local docs without the default cargo features. Requires --local.
+    #[arg(long, global = true)]
+    no_default_features: bool,
+
     /// Output in LLM-friendly format (also enabled by CLAUDECODE or GEMINI_CLI env vars)
     #[arg(long, global = true)]
     ai: bool,
@@ -121,6 +135,23 @@ fn main() -> ExitCode {
         .manifest_path
         .unwrap_or_else(|| std::env::current_dir().unwrap());
 
+    // A feature selection is requested only when the user passed at least one
+    // feature flag; otherwise `None` lets the cached (sticky) selection stand.
+    let requested_features = (!cli.features.is_empty() || cli.all_features || cli.no_default_features)
+        .then(|| FeatureSelection {
+            no_default: cli.no_default_features,
+            all: cli.all_features,
+            list: cli.features.clone(),
+        });
+
+    if requested_features.is_some() && !use_local {
+        eprintln!(
+            "--features, --all-features, and --no-default-features require --local: \
+             docs.rs builds are not under ferritin's control."
+        );
+        return ExitCode::FAILURE;
+    }
+
     let mut output_mode = OutputMode::detect();
     if cli.ai {
         output_mode = OutputMode::Ai;
@@ -156,6 +187,7 @@ fn main() -> ExitCode {
             cli.command,
             log_reader,
             cli.public,
+            requested_features,
         ) {
             eprintln!("Interactive mode error: {}", e);
             return ExitCode::FAILURE;
@@ -177,7 +209,7 @@ fn main() -> ExitCode {
             .with_local_source(
                 local_source
                     .ok()
-                    .map(|ls| ls.with_force_rebuild(cli.rebuild)),
+                    .map(|ls| ls.with_force_rebuild(cli.rebuild).with_features(requested_features)),
             )
     } else {
         Navigator::default()

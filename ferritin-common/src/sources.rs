@@ -6,16 +6,56 @@
 //! - DocsRsSource: fetched from docs.rs and cached
 use crate::{CrateName, RustdocData, navigator::CrateInfo};
 use semver::{Version, VersionReq};
-use serde::{Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize};
 
 mod docsrs;
 mod local;
 mod std;
+mod workspace_metadata;
 
 use ::std::borrow::Cow;
 pub use docsrs::DocsRsSource;
 pub use local::LocalSource;
 pub use std::StdSource;
+
+/// A cargo feature selection for a local documentation build.
+///
+/// Mirrors cargo's `--features`/`--all-features`/`--no-default-features` trio.
+/// Only meaningful for [`LocalSource`]: docs.rs builds are not under our control.
+///
+/// This doubles as build provenance — the selection a cached rustdoc JSON was
+/// built with is persisted in `<target-dir>/ferritin.json` so the cache can be
+/// invalidated when the requested features change. See [`workspace_metadata`].
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FeatureSelection {
+    /// Disable the `default` feature (`--no-default-features`).
+    #[serde(default)]
+    pub no_default: bool,
+    /// Enable all features (`--all-features`).
+    #[serde(default)]
+    pub all: bool,
+    /// Explicitly enabled features (`--features a,b`).
+    #[serde(default)]
+    pub list: Vec<String>,
+}
+
+impl FeatureSelection {
+    /// The cargo arguments this selection expands to, in cargo's own order.
+    fn cargo_args(&self) -> Vec<String> {
+        let mut args = Vec::new();
+        if self.no_default {
+            args.push("--no-default-features".to_string());
+        }
+        if self.all {
+            args.push("--all-features".to_string());
+        }
+        if !self.list.is_empty() {
+            args.push("--features".to_string());
+            args.push(self.list.join(","));
+        }
+        args
+    }
+}
 
 #[derive(Deserialize, Debug)]
 struct RustdocVersion {

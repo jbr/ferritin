@@ -141,6 +141,7 @@ fn initial_document() -> Document<'static> {
 }
 
 /// Render a document in interactive mode with scrolling and hover tracking
+#[allow(clippy::too_many_arguments)]
 pub fn render_interactive(
     manifest_path: std::path::PathBuf,
     local: bool,
@@ -148,6 +149,7 @@ pub fn render_interactive(
     initial_command: Option<Commands>,
     log_reader: LogReader,
     public: bool,
+    features: Option<ferritin_common::sources::FeatureSelection>,
 ) -> io::Result<()> {
     use crate::format_context::FormatContext;
     use ferritin_common::Navigator;
@@ -170,6 +172,7 @@ pub fn render_interactive(
             render_context,
             initial_command,
             log_reader,
+            features,
         )
     })
 }
@@ -184,6 +187,7 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
     render_context: RenderContext,
     initial_command: Option<Commands>,
     log_reader: LogReader,
+    features: Option<ferritin_common::sources::FeatureSelection>,
 ) -> io::Result<()> {
     use ferritin_common::Navigator;
     use ferritin_common::sources::{DocsRsSource, LocalSource, StdSource};
@@ -225,7 +229,9 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
             "Looking for a cargo workspace from {}",
             manifest_path.display()
         );
-        let local_source = LocalSource::load(&manifest_path).ok();
+        let local_source = LocalSource::load(&manifest_path)
+            .ok()
+            .map(|ls| ls.with_features(features));
         if let Some(ls) = &local_source {
             log::info!("Found cargo workspace at {}", ls.manifest_path().display());
         }
