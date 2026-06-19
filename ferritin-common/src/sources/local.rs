@@ -1,4 +1,6 @@
 use super::CrateProvenance;
+use super::FeatureSelection;
+use super::workspace_metadata::WorkspaceMetadata;
 use crate::RustdocData;
 use crate::crate_name::CrateName;
 use crate::navigator::CrateInfo;
@@ -16,6 +18,7 @@ use std::borrow::Cow;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
+use std::sync::Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::SystemTime;
 use walkdir::WalkDir;
@@ -35,6 +38,12 @@ pub struct LocalSource {
     /// afterward fall back to normal caching.
     #[field = false]
     force_rebuild: AtomicBool,
+    /// One-shot cargo feature selection for the next crate loaded (the queried
+    /// one). `Some` means the user passed feature flags this invocation; consumed
+    /// on first use, like [`Self::force_rebuild`], because features are per-crate
+    /// — cross-crate dependencies loaded afterward use their own cached selection.
+    #[field = false]
+    requested_features: Mutex<Option<FeatureSelection>>,
 }
 
 impl LocalSource {
@@ -119,6 +128,7 @@ impl LocalSource {
             target_dir,
             can_rebuild: true,
             force_rebuild: AtomicBool::new(false),
+            requested_features: Mutex::new(None),
             crates,
             root_crate,
         })
@@ -130,6 +140,44 @@ impl LocalSource {
     pub fn with_force_rebuild(self, force: bool) -> Self {
         self.force_rebuild.store(force, Ordering::Relaxed);
         self
+    }
+
+    /// Request a cargo feature selection for the next crate loaded.
+    ///
+    /// `None` (no feature flags given) leaves the sticky cached selection in
+    /// place; see [`Self::requested_features`] and [`Self::resolve_features`].
+    pub fn with_features(self, features: Option<FeatureSelection>) -> Self {
+        *self.requested_features.lock().unwrap() = features;
+        self
+    }
+
+    /// Decide which feature selection to build with and whether the requested
+    /// selection alone forces a rebuild (independent of source freshness).
+    ///
+    /// The model is *sticky*: a build's feature selection is persisted as
+    /// provenance (`cached`) and inherited by later bare invocations, so you only
+    /// type `--features` once and subsequent lookups ride the cache.
+    ///
+    /// - **`--rebuild`** → a clean build at the *requested* selection, or plain
+    ///   default if none were given. This is the escape hatch back to default.
+    /// - **explicit features** → build with them; rebuild only if they differ
+    ///   from what the cache was last built with (`cached`).
+    /// - **no features** → inherit `cached` (sticky); never rebuild on this
+    ///   account. This is what survives `--features` across `src` edits: an
+    ///   mtime-triggered rebuild still uses the inherited selection.
+    fn resolve_features(
+        requested: Option<FeatureSelection>,
+        cached: Option<&FeatureSelection>,
+        force_rebuild: bool,
+    ) -> (FeatureSelection, bool) {
+        match (force_rebuild, requested) {
+            (true, requested) => (requested.unwrap_or_default(), true),
+            (false, Some(requested)) => {
+                let differs = cached != Some(&requested);
+                (requested, differs)
+            }
+            (false, None) => (cached.cloned().unwrap_or_default(), false),
+        }
     }
 
     /// Check if a crate name is a workspace package
@@ -172,11 +220,19 @@ impl LocalSource {
     /// Load a workspace crate (may rebuild if needed)
     pub fn load_workspace_crate(&self, crate_name: CrateName<'_>) -> Option<RustdocData> {
         let json_path = self.json_path(crate_name.as_ref());
-        let mut tried_rebuilding = false;
-        let mut force_rebuild = self.force_rebuild.swap(false, Ordering::Relaxed);
+        let force_rebuild = self.force_rebuild.swap(false, Ordering::Relaxed);
+        let requested = self.requested_features.lock().unwrap().take();
 
+        let mut metadata = WorkspaceMetadata::load(&self.target_dir);
+        let (features, mut feature_rebuild) = Self::resolve_features(
+            requested,
+            metadata.features(crate_name.as_ref()),
+            force_rebuild,
+        );
+
+        let mut tried_rebuilding = false;
         loop {
-            let needs_rebuild = force_rebuild
+            let needs_rebuild = feature_rebuild
                 || json_path
                     .metadata()
                     .ok()
@@ -189,7 +245,7 @@ impl LocalSource {
                             })
                             .any(|file_updated| file_updated > docs_updated)
                     });
-            force_rebuild = false;
+            feature_rebuild = false;
 
             if !needs_rebuild
                 && let Ok(content) = std::fs::read(&json_path)
@@ -212,7 +268,8 @@ impl LocalSource {
                 });
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
-                if self.rebuild_docs(&crate_name, None, true).is_ok() {
+                if self.rebuild_docs(&crate_name, None, true, &features).is_ok() {
+                    metadata.set_features(crate_name.as_ref(), features.clone());
                     continue;
                 }
             }
@@ -237,11 +294,19 @@ impl LocalSource {
             return None;
         }
 
-        let mut tried_rebuilding = false;
-        let mut force_rebuild = self.force_rebuild.swap(false, Ordering::Relaxed);
+        let force_rebuild = self.force_rebuild.swap(false, Ordering::Relaxed);
+        let requested = self.requested_features.lock().unwrap().take();
 
+        let mut metadata = WorkspaceMetadata::load(&self.target_dir);
+        let (features, mut feature_rebuild) = Self::resolve_features(
+            requested,
+            metadata.features(crate_name.as_ref()),
+            force_rebuild,
+        );
+
+        let mut tried_rebuilding = false;
         loop {
-            if !force_rebuild
+            if !feature_rebuild
                 && let Ok(content) = std::fs::read(json_path)
                 && let Ok(RustdocVersion {
                     format_version,
@@ -266,8 +331,9 @@ impl LocalSource {
                 });
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
-                force_rebuild = false;
-                if self.rebuild_docs(&crate_name, version, false).is_ok() {
+                feature_rebuild = false;
+                if self.rebuild_docs(&crate_name, version, false, &features).is_ok() {
+                    metadata.set_features(crate_name.as_ref(), features.clone());
                     continue;
                 }
             }
@@ -285,6 +351,7 @@ impl LocalSource {
         crate_name: &CrateName<'_>,
         version: Option<&Version>,
         document_private: bool,
+        features: &FeatureSelection,
     ) -> Result<()> {
         let package_spec = match version {
             Some(v) => format!("{}@{}", crate_name, v),
@@ -306,6 +373,7 @@ impl LocalSource {
                 "--package",
                 &package_spec,
             ])
+            .args(features.cargo_args())
             .env("RUSTDOCFLAGS", rustdocflags)
             .current_dir(self.project_root())
             .output()?;
