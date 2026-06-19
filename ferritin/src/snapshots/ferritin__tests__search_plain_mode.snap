@@ -8,29 +8,29 @@ Search results for 'trigger line-based truncation'
   ◦ fixture-crate::TestTrait  (Trait) - score: 100.0
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
-  ◦ std::line  (Macro) - score: 54.6
+  ◦ std::line  (Macro) - score: 54.4
     Expands to the line number on which it was invoked. [...]
 
-  ◦ core::line  (Macro) - score: 54.5
+  ◦ core::line  (Macro) - score: 54.3
     Expands to the line number on which it was invoked. [...]
 
-  ◦ proc_macro::Span::line  (Function) - score: 39.5
+  ◦ proc_macro::Span::line  (Function) - score: 39.3
     The one-indexed line of the source file where the span starts. [...]
 
-  ◦ core::panic::Location::line  (Function) - score: 39.3
+  ◦ core::panic::Location::line  (Function) - score: 39.2
     Returns the line number from which the panic originated. [...]
 
-  ◦ std::panic::Location::line  (Function) - score: 39.3
+  ◦ std::panic::Location::line  (Function) - score: 39.2
     Returns the line number from which the panic originated. [...]
 
-  ◦ core::arch::x86::_mm_prefetch  (Function) - score: 31.0
-    Fetch the cache line that contains address p using the given STRATEGY. [...]
-
-  ◦ std::arch::x86::_mm_prefetch  (Function) - score: 31.0
-    Fetch the cache line that contains address p using the given STRATEGY. [...]
-
-  ◦ alloc::collections::BTreeMap  (Struct) - score: 30.9
+  ◦ alloc::collections::BTreeMap  (Struct) - score: 31.0
     An ordered map based on a B-Tree. [...]
 
-  ◦ std::io::LineWriter  (Struct) - score: 30.9
+  ◦ core::arch::x86::_mm_prefetch  (Function) - score: 30.9
+    Fetch the cache line that contains address p using the given STRATEGY. [...]
+
+  ◦ std::arch::x86::_mm_prefetch  (Function) - score: 30.9
+    Fetch the cache line that contains address p using the given STRATEGY. [...]
+
+  ◦ std::io::LineWriter  (Struct) - score: 30.7
     Wraps a writer and buffers output to it, flushing whenever a newline (0x0a, '\n') is detected. [...]

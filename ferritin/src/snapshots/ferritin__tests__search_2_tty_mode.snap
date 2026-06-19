@@ -11,8 +11,16 @@ Search results for 'generic struct'
   ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 67.9
     A trait for borrowing data. [...]
 
-  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 66.8
+  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 67.4
     A generic enum for testing [...]
+
+  ◦ [core::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64.5
+    Compile-time type information about instantiated generics of structs, enum and
+    union variants.
+
+  ◦ [std::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64.5
+    Compile-time type information about instantiated generics of structs, enum and
+    union variants.
 
   ◦ [std::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.3
     A trait for borrowing data. [...]
@@ -20,19 +28,11 @@ Search results for 'generic struct'
   ◦ [core::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.0
     A trait for borrowing data. [...]
 
-  ◦ [core::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 63.9
-    Compile-time type information about instantiated generics of structs, enum and
-    union variants.
-
-  ◦ [std::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 63.9
-    Compile-time type information about instantiated generics of structs, enum and
-    union variants.
-
-  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 63.0
+  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.9
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ [core::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 61.5
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 60.8
+  ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 60.7
     Used for immutable dereferencing operations, like *v. [...]

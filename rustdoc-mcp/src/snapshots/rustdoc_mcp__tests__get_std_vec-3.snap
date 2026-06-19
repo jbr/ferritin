@@ -133,7 +133,7 @@ where
 • pub const fn allocator(&self) -> &A
     Returns a reference to the underlying allocator.
 
-• pub unsafe fn set_len(&mut self, new_len: usize)
+• pub const unsafe fn set_len(&mut self, new_len: usize)
     Forces the length of the vector to `new_len`. [+85 more lines]
 
 • pub fn swap_remove(&mut self, index: usize) -> T
