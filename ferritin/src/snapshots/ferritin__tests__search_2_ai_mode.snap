@@ -6,11 +6,11 @@ expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), Outpu
 
 - fixture-crate::GenericStruct  (Struct) - score: 100.0 — A generic struct for testing multi-paragraph documentation. [+6 lines]
 - alloc::borrow::Borrow  (Trait) - score: 67.9 — A trait for borrowing data. [+19 lines]
-- fixture-crate::GenericEnum  (Enum) - score: 66.8 — A generic enum for testing [+1 lines]
+- fixture-crate::GenericEnum  (Enum) - score: 67.4 — A generic enum for testing [+1 lines]
+- core::mem::type_info::Generic  (Enum) - score: 64.5 — Compile-time type information about instantiated generics of structs, enum and union variants.
+- std::mem::type_info::Generic  (Enum) - score: 64.5 — Compile-time type information about instantiated generics of structs, enum and union variants.
 - std::borrow::Borrow  (Trait) - score: 64.3 — A trait for borrowing data. [+19 lines]
 - core::borrow::Borrow  (Trait) - score: 64.0 — A trait for borrowing data. [+19 lines]
-- core::mem::type_info::Generic  (Enum) - score: 63.9 — Compile-time type information about instantiated generics of structs, enum and union variants.
-- std::mem::type_info::Generic  (Enum) - score: 63.9 — Compile-time type information about instantiated generics of structs, enum and union variants.
-- std::clone::Clone  (Trait) - score: 63.0 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
+- std::clone::Clone  (Trait) - score: 62.9 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
 - core::clone::Clone  (Trait) - score: 61.5 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
-- std::ops::Deref  (Trait) - score: 60.8 — Used for immutable dereferencing operations, like *v. [+23 lines]
+- std::ops::Deref  (Trait) - score: 60.7 — Used for immutable dereferencing operations, like *v. [+23 lines]

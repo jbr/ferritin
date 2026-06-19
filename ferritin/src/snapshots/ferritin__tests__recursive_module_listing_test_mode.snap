@@ -1178,19 +1178,19 @@ This is checked: <elided chars="955"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::from_utf16be</type-name> </p>
-<truncated level="single-line">Decode a UTF-16BE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <inline-code>Err</inline-code> if <inline-code>v</inline-code> contains any invalid data. <elided chars="443"/></truncated>
+<truncated level="single-line">Decode a UTF-16BE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <inline-code>Err</inline-code> if <inline-code>v</inline-code> contains any invalid data. <elided chars="408"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::from_utf16be_lossy</type-name> </p>
-<truncated level="single-line">Decode a UTF-16BE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with the replacement character (<inline-code>U+FFFD</inline-code>). <elided chars="511"/></truncated>
+<truncated level="single-line">Decode a UTF-16BE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with the replacement character (<inline-code>U+FFFD</inline-code>). <elided chars="476"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::from_utf16le</type-name> </p>
-<truncated level="single-line">Decode a UTF-16LE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <inline-code>Err</inline-code> if <inline-code>v</inline-code> contains any invalid data. <elided chars="443"/></truncated>
+<truncated level="single-line">Decode a UTF-16LE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <inline-code>Err</inline-code> if <inline-code>v</inline-code> contains any invalid data. <elided chars="408"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::from_utf16le_lossy</type-name> </p>
-<truncated level="single-line">Decode a UTF-16LE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with the replacement character (<inline-code>U+FFFD</inline-code>). <elided chars="511"/></truncated>
+<truncated level="single-line">Decode a UTF-16LE–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with the replacement character (<inline-code>U+FFFD</inline-code>). <elided chars="476"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::from_utf8</type-name> </p>
