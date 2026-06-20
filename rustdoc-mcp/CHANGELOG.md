@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.7...rustdoc-mcp-v0.7.0) - 2026-06-20
+
+### Added
+
+- feature selection and cached metadata
+- --rebuild and --public
+
+### Fixed
+
+- resolve aliased cross-crate re-exports by use.id instead of source path
+
+### Other
+
+- *(deps)* upgrade/update
+- update snaps
+- update snaps to rustc 1.98.0-nightly (bc2112ed5 2026-06-18)
+- update snaps to rustc 1.98.0-nightly (14210df0e 2026-05-31)
+
 ## [0.6.7](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.6...rustdoc-mcp-v0.6.7) - 2026-05-24
 
 ### Fixed
