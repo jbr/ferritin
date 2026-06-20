@@ -137,7 +137,9 @@ fn main() -> ExitCode {
 
     // A feature selection is requested only when the user passed at least one
     // feature flag; otherwise `None` lets the cached (sticky) selection stand.
-    let requested_features = (!cli.features.is_empty() || cli.all_features || cli.no_default_features)
+    let requested_features = (!cli.features.is_empty()
+        || cli.all_features
+        || cli.no_default_features)
         .then(|| FeatureSelection {
             no_default: cli.no_default_features,
             all: cli.all_features,
@@ -206,11 +208,10 @@ fn main() -> ExitCode {
         }
         Navigator::default()
             .with_std_source(std_source)
-            .with_local_source(
-                local_source
-                    .ok()
-                    .map(|ls| ls.with_force_rebuild(cli.rebuild).with_features(requested_features)),
-            )
+            .with_local_source(local_source.ok().map(|ls| {
+                ls.with_force_rebuild(cli.rebuild)
+                    .with_features(requested_features)
+            }))
     } else {
         Navigator::default()
             .with_std_source(std_source)
