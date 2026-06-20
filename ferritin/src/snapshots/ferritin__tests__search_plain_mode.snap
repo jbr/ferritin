@@ -23,14 +23,14 @@ Search results for 'trigger line-based truncation'
   ◦ std::panic::Location::line  (Function) - score: 39.2
     Returns the line number from which the panic originated. [...]
 
+  ◦ alloc::collections::BTreeMap  (Struct) - score: 31.0
+    An ordered map based on a B-Tree. [...]
+
   ◦ core::arch::x86::_mm_prefetch  (Function) - score: 30.9
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
   ◦ std::arch::x86::_mm_prefetch  (Function) - score: 30.9
     Fetch the cache line that contains address p using the given STRATEGY. [...]
-
-  ◦ alloc::collections::BTreeMap  (Struct) - score: 30.9
-    An ordered map based on a B-Tree. [...]
 
   ◦ std::io::LineWriter  (Struct) - score: 30.7
     Wraps a writer and buffers output to it, flushing whenever a newline (0x0a, '\n') is detected. [...]
