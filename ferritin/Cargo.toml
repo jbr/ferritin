@@ -44,6 +44,6 @@ mimalloc = "0.1.52"
 syntect = { version = "5.3", default-features = false, features = ["parsing", "plist-load", "dump-load", "dump-create", "regex-onig"] }
 
 [dev-dependencies]
-insta = { version = "1.47.2", features = ["filters"] }
+insta = { version = "1.48.0", features = ["filters"] }
 paste = "1.0.15"
 strip-ansi-escapes = "0.2.1"
