@@ -10,6 +10,18 @@ license.workspace = true
 keywords = ["mcp"]
 categories = []
 
+# dist tags releases per-package as `{crate}-v{version}` (workspace with multiple
+# publishable crates), but cargo-binstall's built-in dist auto-detection only
+# guesses `v{version}`/`{version}` tags. These templates point binstall at the
+# real prefixed tag and the binary's path inside the tarball.
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/{ name }-v{ version }/{ name }-{ target }{ archive-suffix }"
+pkg-fmt = "txz"
+bin-dir = "{ name }-{ target }/{ bin }{ binary-ext }"
+
+[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]
+pkg-fmt = "zip"
+
 [dependencies]
 ferritin-common = { path = "../ferritin-common", version = "0.12.0" }
 anyhow.workspace = true
