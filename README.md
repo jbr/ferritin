@@ -27,6 +27,42 @@ Ferritin reads rustdoc JSON output to display Rust documentation directly in you
 
 ## Installation
 
+### Prebuilt binary (recommended)
+
+Prebuilt binaries skip compilation and are available for x86_64/aarch64 macOS, x86_64 Linux,
+and x86_64 Windows.
+
+If you have [cargo-binstall](https://github.com/cargo-bins/cargo-binstall), it reads the
+release metadata and installs the right binary for your platform:
+
+```bash
+cargo binstall ferritin
+```
+
+Otherwise, the installer scripts detect your platform, download the matching binary, and
+place it in `~/.cargo/bin`:
+
+**macOS and Linux:**
+
+```bash
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/jbr/ferritin/releases/download/ferritin-latest/ferritin-installer.sh | sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+powershell -c "irm https://github.com/jbr/ferritin/releases/download/ferritin-latest/ferritin-installer.ps1 | iex"
+```
+
+Both of the above always install the most recent release. You can also pick a specific
+version or download archives directly from the [releases page].
+
+[releases page]: https://github.com/jbr/ferritin/releases
+
+### From source
+
+To build from source (or for a platform without a prebuilt binary):
+
 ```bash
 cargo install ferritin
 ```
@@ -106,7 +142,7 @@ Ferritin is at version 0.x and actively used by the author as a primary document
 
 ## Platform Support
 
-Ferritin is developed and tested on Unix-like systems. Windows compatibility is untested. If you encounter issues on Windows or other platforms, please open an issue or pull request.
+Ferritin is developed primarily on Unix-like systems and is also tested on Windows, where both the CLI and interactive TUI work (prebuilt x86_64 Windows binaries are provided). If you encounter issues on any platform, please open an issue or pull request.
 
 ## Related Projects
 
