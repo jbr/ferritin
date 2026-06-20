@@ -268,7 +268,10 @@ impl LocalSource {
                 });
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
-                if self.rebuild_docs(&crate_name, None, true, &features).is_ok() {
+                if self
+                    .rebuild_docs(&crate_name, None, true, &features)
+                    .is_ok()
+                {
                     metadata.set_features(crate_name.as_ref(), features.clone());
                     continue;
                 }
@@ -332,7 +335,10 @@ impl LocalSource {
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
                 feature_rebuild = false;
-                if self.rebuild_docs(&crate_name, version, false, &features).is_ok() {
+                if self
+                    .rebuild_docs(&crate_name, version, false, &features)
+                    .is_ok()
+                {
                     metadata.set_features(crate_name.as_ref(), features.clone());
                     continue;
                 }
