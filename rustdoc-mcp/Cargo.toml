@@ -28,4 +28,4 @@ semver = "1.0.28"
 
 [dev-dependencies]
 tempfile = "3.27.0"
-insta = { version = "1.47", features = ["yaml", "filters"] }
+insta = { version = "1.48", features = ["yaml", "filters"] }
