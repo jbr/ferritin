@@ -447,6 +447,10 @@ This checked <elided chars="3068"/></truncated>
 <truncated level="single-line">Inserts an element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the right, and returning a reference to the new element. <elided chars="385"/></truncated>
 </item>
   <item><p>
+<type-name>Vec::into_array</type-name> </p>
+<truncated level="single-line">Converts the Vec into a boxed array. This conversion will discard any spare if there is any, see <inline-code>Vec::shrink_to_fit</inline-code>. If you merely wish for a reference to an array, use <inline-code>as_array</inline-code>. <elided chars="469"/></truncated>
+</item>
+  <item><p>
 <type-name>Vec::into_boxed_slice</type-name> </p>
 <truncated level="single-line"><p>
 Converts the vector into <inline-code>Box<[T]></inline-code>.</p>
@@ -1076,7 +1080,7 @@ In other words, remove all<inline-code>(k, v)</inline-code> for which <inline-co
 </item>
   <item><p>
 <type-name>link_resolution_tests::Tree::try_insert</type-name> </p>
-<truncated level="single-line">Tries to insert a key-value pair into the map, and returns a mutable reference to the value in the entry. <elided chars="453"/></truncated>
+<truncated level="single-line">Tries to insert a key-value pair into the map, and returns a mutable reference to the value in the entry. <elided chars="484"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::Tree::upper_bound</type-name> </p>
