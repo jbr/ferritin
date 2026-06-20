@@ -431,9 +431,6 @@ Modules
   ◦ [vec](http://docs.rust-lang.org/nightly/alloc/vec/index.html) 
     A contiguous growable array type with heap-allocated contents, written Vec<T>. [...]
 
-  ◦ [vec](http://docs.rust-lang.org/nightly/alloc/vec/index.html) 
-    A contiguous growable array type with heap-allocated contents, written Vec<T>. [...]
-
 Macros
 
   ◦ [assert](http://docs.rust-lang.org/nightly/core/macro.assert.html) 
@@ -562,6 +559,9 @@ Macros
 
   ◦ [unreachable](http://docs.rust-lang.org/nightly/core/macro.unreachable.html) 
     Indicates unreachable code. [...]
+
+  ◦ [vec](http://docs.rust-lang.org/nightly/alloc/macro.vec.html) 
+    Creates a [Vec](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html) containing the arguments. [...]
 
   ◦ [write](http://docs.rust-lang.org/nightly/core/macro.write.html) 
     Writes formatted data into a buffer. [...]

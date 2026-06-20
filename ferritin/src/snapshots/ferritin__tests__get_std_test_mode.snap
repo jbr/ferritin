@@ -601,12 +601,6 @@ New code should use the <elided chars="52"/></truncated>
 A contiguous growable array type with heap-allocated contents, written <inline-code>Vec<T></inline-code>.</p>
 Ve<emphasis>O</emphasis>(1<emphasis>O</emphasis>(1 <emphasis>O</emphasis>(1 <elided chars="1654"/></truncated>
 </item>
-  <item><p>
-<type-name>vec</type-name> </p>
-<truncated level="single-line"><p>
-A contiguous growable array type with heap-allocated contents, written <inline-code>Vec<T></inline-code>.</p>
-Ve<emphasis>O</emphasis>(1<emphasis>O</emphasis>(1 <emphasis>O</emphasis>(1 <elided chars="1654"/></truncated>
-</item>
 </list>
 </section><section><section-title>Macros</section-title><list>
   <item><p>
@@ -861,6 +855,12 @@ Th im <elided chars="1789"/></truncated>
 <truncated level="single-line"><p>
 Indicates unreachable code.</p>
 This is useful any time that the compiler can't example: <elided chars="1145"/></truncated>
+</item>
+  <item><p>
+<type-name>vec</type-name> </p>
+<truncated level="single-line"><p>
+Creates a <inline-code>Vec</inline-code> containing the arguments.</p>
+<inline-code>vec!</inline-code> allows <inline-code>Vec</inline-code>s to be defined with the same syntax as There are two forms of this macro: <elided chars="926"/></truncated>
 </item>
   <item><p>
 <type-name>write</type-name> </p>
