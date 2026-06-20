@@ -5,11 +5,19 @@ use fieldwork::Fieldwork;
 use rustdoc_types::FORMAT_VERSION;
 use semver::{Version, VersionReq};
 use serde::Deserialize;
-use trillium_client::{Client, Status};
+use std::{
+    path::PathBuf,
+    time::{Duration, Instant},
+};
+use trillium_client::{Client, HeaderValue, KnownHeaderName, Status};
+use trillium_client_retry::RetryHandler;
+use trillium_compression::client::Compression;
+use trillium_logger::{Target, client::ClientLogger};
+use trillium_redirect::client::FollowRedirects;
 use trillium_rustls::RustlsConfig;
 use trillium_smol::ClientConfig;
 
-use std::path::PathBuf;
+pub const FERRITIN_USER_AGENT: &str = concat!("ferritin/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Deserialize)]
 struct CratesIoResponse {
@@ -50,9 +58,27 @@ pub(super) struct ResolvedMetadata {
 }
 
 impl DocsRsClient {
+    fn user_agent() -> HeaderValue {
+        use std::sync::LazyLock;
+        static USER_AGENT: LazyLock<HeaderValue> = LazyLock::new(|| {
+            let s: &'static str =
+                format!("{FERRITIN_USER_AGENT} {}", trillium_client::USER_AGENT).leak();
+            s.into()
+        });
+        USER_AGENT.clone()
+    }
+
     /// Create a new docs.rs client with the specified cache directory
     pub fn new(cache_dir: PathBuf) -> Result<Self> {
-        let http_client = Client::new(RustlsConfig::<ClientConfig>::default());
+        let http_client = Client::new(RustlsConfig::<ClientConfig>::default())
+            .with_handler((
+                ClientLogger::new().with_target(Target::Logger(log::Level::Info)),
+                Compression::new(),
+                FollowRedirects::new(),
+                RetryHandler::new(),
+            ))
+            .with_timeout(Duration::from_secs(2))
+            .with_default_header(KnownHeaderName::UserAgent, Self::user_agent());
 
         Ok(Self {
             http_client,
@@ -256,7 +282,7 @@ impl DocsRsClient {
                 path.display()
             );
 
-            let start = std::time::Instant::now();
+            let start = Instant::now();
             let json = async_fs::read(&path)
                 .await
                 .context("Failed to read cached file")?;
@@ -269,7 +295,7 @@ impl DocsRsClient {
             );
 
             // Normalize to current format version
-            let start = std::time::Instant::now();
+            let start = Instant::now();
             let crate_data = crate::conversions::load_and_normalize(&json, Some(source_format))
                 .context("Failed to normalize cached JSON")?;
             let parse_elapsed = start.elapsed();
@@ -311,27 +337,11 @@ impl DocsRsClient {
 
         log::debug!("Fetching from docs.rs: {}", url);
 
-        let mut conn = self.http_client.get(url).await?;
+        let conn = self.http_client.get(url).await?;
 
         // Check if we got a 404 (crate/version not found)
         if let Some(Status::NotFound) = conn.status() {
             return Ok(None);
-        }
-
-        // Handle redirects (docs.rs redirects to resolved version)
-        if let Some(status) = conn.status()
-            && status.is_redirection()
-            && let Some(location) = conn.response_headers().get("location")
-        {
-            let location_str = location.to_string();
-            // Location might be relative, construct full URL
-            let redirect_url = if location_str.starts_with("http") {
-                location_str
-            } else {
-                format!("https://docs.rs{}", location_str)
-            };
-            log::debug!("Following redirect to: {}", redirect_url);
-            conn = self.http_client.get(redirect_url).await?;
         }
 
         // Check for success after following redirects
