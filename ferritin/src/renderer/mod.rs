@@ -55,11 +55,33 @@ impl OutputMode {
         {
             OutputMode::Ai
         } else if io::stdout().is_terminal() {
-            OutputMode::Tty
+            detect_tty_mode()
         } else {
             OutputMode::Plain
         }
     }
+}
+
+/// Decide the output mode once we know stdout is a TTY.
+///
+/// On Windows the classic console (conhost) prints ANSI escape sequences
+/// literally until a program enables virtual-terminal processing.
+/// `crossterm::ansi_support::supports_ansi()` enables it as a side effect and
+/// reports whether ANSI is usable, so we fall back to plain text when it isn't
+/// (e.g. `TERM=dumb`).
+#[cfg(windows)]
+fn detect_tty_mode() -> OutputMode {
+    if crossterm::ansi_support::supports_ansi() {
+        OutputMode::Tty
+    } else {
+        OutputMode::Plain
+    }
+}
+
+/// On Unix a TTY always takes the ANSI path.
+#[cfg(not(windows))]
+fn detect_tty_mode() -> OutputMode {
+    OutputMode::Tty
 }
 
 /// Render a document to a string based on the output mode
