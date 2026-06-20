@@ -11,57 +11,57 @@ A trait for testing extremely long documentation that exceeds line limits.</p>
 This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
 </item>
   <item><p>
-std::line  (Macro) - score: 54.6</p>
+std::line  (Macro) - score: 54.4</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-core::line  (Macro) - score: 54.5</p>
+core::line  (Macro) - score: 54.3</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-proc_macro::Span::line  (Function) - score: 39.5</p>
+proc_macro::Span::line  (Function) - score: 39.3</p>
 <truncated level="single-line"><p>
 The one-indexed line of the source file where the span starts.</p>
 To obtain the<inline-code>span.end().line()</inline-code>. <elided chars="42"/></truncated>
 </item>
   <item><p>
-core::panic::Location::line  (Function) - score: 39.4</p>
+core::panic::Location::line  (Function) - score: 39.2</p>
 <truncated level="single-line"><p>
 Returns the line number from which the panic originated.</p>
 <title>Examples</title>
  <elided chars="279"/></truncated>
 </item>
   <item><p>
-std::panic::Location::line  (Function) - score: 39.4</p>
+std::panic::Location::line  (Function) - score: 39.2</p>
 <truncated level="single-line"><p>
 Returns the line number from which the panic originated.</p>
 <title>Examples</title>
  <elided chars="279"/></truncated>
 </item>
   <item><p>
-core::arch::x86::_mm_prefetch  (Function) - score: 31.0</p>
+core::arch::x86::_mm_prefetch  (Function) - score: 30.9</p>
 <truncated level="single-line"><p>
 Fetch the cache line that contains address <inline-code>p</inline-code> using the given <inline-code>STRATEGY</inline-code>.</p>
 The <inline-code>STRATEGY</inline-code> must be <elided chars="1362"/></truncated>
 </item>
   <item><p>
-std::arch::x86::_mm_prefetch  (Function) - score: 31.0</p>
+std::arch::x86::_mm_prefetch  (Function) - score: 30.9</p>
 <truncated level="single-line"><p>
 Fetch the cache line that contains address <inline-code>p</inline-code> using the given <inline-code>STRATEGY</inline-code>.</p>
 The <inline-code>STRATEGY</inline-code> must be <elided chars="1362"/></truncated>
-</item>
-  <item><p>
-std::io::LineWriter  (Struct) - score: 30.9</p>
-<truncated level="single-line">Wraps a writer and buffers output to it, flushing whenever a newline (<inline-code>0x0a</inline-code>, <inline-code>'\n'</inline-code>) is detected. <elided chars="1914"/></truncated>
 </item>
   <item><p>
 alloc::collections::BTreeMap  (Struct) - score: 30.9</p>
 <truncated level="single-line"><p>
 An ordered map based on a B-Tree.</p>
 Given a key type with a total order, an ordered map stores its entries in key That means that keys must be of a type that<inline-code>Ord</inline-code> trait, such that two keys can always be compared to<inline-code>Ordering</inline-code>. Examples of keys with a total order are and numbers with their natural order. <elided chars="5721"/></truncated>
+</item>
+  <item><p>
+std::io::LineWriter  (Struct) - score: 30.7</p>
+<truncated level="single-line">Wraps a writer and buffers output to it, flushing whenever a newline (<inline-code>0x0a</inline-code>, <inline-code>'\n'</inline-code>) is detected. <elided chars="1914"/></truncated>
 </item>
 </list>
