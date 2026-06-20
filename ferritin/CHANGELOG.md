@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.1](https://github.com/jbr/ferritin/compare/ferritin-v0.11.0...ferritin-v0.11.1) - 2026-06-20
+
+### Fixed
+
+- *(windows)* address some failures
+
+### Other
+
+- update readme installation instructions
+
 ## [0.11.0](https://github.com/jbr/ferritin/compare/ferritin-v0.10.2...ferritin-v0.11.0) - 2026-06-20
 
 ### Added
