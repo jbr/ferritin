@@ -295,11 +295,10 @@ test_all_modes!(
 );
 
 // Cross-crate prefix fixtures live in the multi-crate workspace. crate-b
-// re-exports from crate-a via every prefix shape; the `use.id` always points
-// foreign, forcing the Navigator to resolve via source. These snapshots
-// capture today's (partly broken) behavior: self:: and super:: prefix re-
-// exports are silently dropped. When the prefix rewriter lands, these
-// snapshots will gain the missing re-exports.
+// re-exports from crate-a via every prefix shape (`self::`, `super::`,
+// `crate::`); each `use.id` points foreign (into crate-a). `follow_use`
+// resolves them through the id/`paths` map, so they appear as resolved structs
+// rather than being dropped. These snapshots guard that cross-crate resolution.
 test_all_modes_rooted!(
     get_crate_b_root,
     Commands::get("crate_b"),
@@ -310,3 +309,26 @@ test_all_modes_rooted!(
     Commands::get("crate_b::prefix_inner"),
     get_test_workspace_path
 );
+
+/// Regression for cross-crate re-exports through a *renamed* crate. crate-b
+/// re-exports `crate_a::CrateAStruct` via a source-level alias
+/// (`use crate_a as aliased_a`), so rustdoc records the re-export's
+/// `Use::source` as `aliased_a::CrateAStruct` — a path whose leading segment is
+/// not a real crate. Resolution must follow the re-export's `use.id` (which the
+/// `paths` map points into the real `crate-a`) rather than trying to load a
+/// crate literally named `aliased_a`. This is the same shape as quinn's `proto`
+/// (= quinn_proto) / `udp` (= quinn_udp) re-exports that originally surfaced the
+/// bug; pre-fix the item was silently dropped.
+#[test]
+fn cross_crate_aliased_reexport_resolves() {
+    let output = render_for_tests_rooted(
+        Commands::get("crate_b::AliasedCrateAStruct"),
+        OutputMode::Plain,
+        &get_test_workspace_path(),
+    );
+    assert!(
+        output.contains("crate_a::CrateAStruct"),
+        "aliased re-export should resolve into crate-a, not load a crate named \
+         `aliased_a`; got:\n{output}"
+    );
+}

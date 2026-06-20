@@ -12,5 +12,5 @@ expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), Outpu
 - core::mem::type_info::Generic  (Enum) - score: 63.9 — Compile-time type information about instantiated generics of structs, enum and union variants.
 - std::mem::type_info::Generic  (Enum) - score: 63.9 — Compile-time type information about instantiated generics of structs, enum and union variants.
 - std::clone::Clone  (Trait) - score: 63.0 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
+- std::ops::Deref  (Trait) - score: 62.3 — Used for immutable dereferencing operations, like *v. [+23 lines]
 - core::clone::Clone  (Trait) - score: 61.5 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
-- std::ops::Deref  (Trait) - score: 60.8 — Used for immutable dereferencing operations, like *v. [+23 lines]

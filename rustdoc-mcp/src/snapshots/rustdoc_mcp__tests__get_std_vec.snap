@@ -96,7 +96,6 @@ u8 // Redundant constants module for the [`u8` primitive type][u8]. [+2 more lin
 unsafe_binder // Operators used to turn types into unsafe binders and back.
 usize // Redundant constants module for the [`usize` primitive type][usize]. [+2 more lines]
 vec // A contiguous growable array type with heap-allocated contents, written [+71 more lines]
-vec // A contiguous growable array type with heap-allocated contents, written [+71 more lines]
 
 Macros:
 assert // Asserts that a boolean expression is `true` at runtime. [+46 more lines]
@@ -141,6 +140,7 @@ trace_macros // Enables or disables tracing functionality used for debugging oth
 try // Unwraps a result or propagates its error. [+61 more lines]
 unimplemented // Indicates unimplemented code by panicking with a message of "not implemented". [+73 more lines]
 unreachable // Indicates unreachable code. [+51 more lines]
+vec // Creates a [`Vec`] containing the arguments. [+35 more lines]
 write // Writes formatted data into a buffer. [+85 more lines]
 writeln // Writes formatted data into a buffer, with a newline appended. [+24 more lines]
 

@@ -51,15 +51,15 @@ A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4423"/></truncated>
 </item>
   <item><p>
+std::ops::Deref  (Trait) - score: 62.3</p>
+<truncated level="single-line"><p>
+Used for immutable dereferencing operations, like <inline-code>*v</inline-code>.</p>
+In addition to being used (unary) <inline-code>*</inline-code> operator in immutable<inline-code>Deref</inline-code> is also used implicitly by the compiler in many "<inline-code>Deref</inline-code> coercion". In mutable contexts, <inline-code>DerefMut</inline-code> is used and mutable deref coercion <elided chars="4481"/></truncated>
+</item>
+  <item><p>
 core::clone::Clone  (Trait) - score: 61.5</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4423"/></truncated>
-</item>
-  <item><p>
-std::ops::Deref  (Trait) - score: 60.8</p>
-<truncated level="single-line"><p>
-Used for immutable dereferencing operations, like <inline-code>*v</inline-code>.</p>
-In addition to being used (unary) <inline-code>*</inline-code> operator in immutable<inline-code>Deref</inline-code> is also used implicitly by the compiler in many "<inline-code>Deref</inline-code> coercion". In mutable contexts, <inline-code>DerefMut</inline-code> is used and mutable deref coercion <elided chars="4481"/></truncated>
 </item>
 </list>

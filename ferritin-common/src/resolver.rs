@@ -466,10 +466,24 @@ impl<'a> Resolver<'a> {
         parent_module: DocRef<'a, Item>,
     ) -> Option<DocRef<'a, Item>> {
         let use_inner = use_item.item();
-        if let Some(id) = use_inner.id
-            && let Some(target) = use_item.crate_docs().get(self.navigator, &id)
-        {
-            return Some(target);
+        // An id present in this crate's index *is* a local item — index
+        // membership is the definitive locality test, so this is deterministic,
+        // not a guess. If the id is absent from the index it's a foreign
+        // reference; `get_path` reads the `paths` summary to cross into the
+        // owning crate and resolve there. Only when neither succeeds (no id, or
+        // an id that names no reachable item) do we fall through to parsing the
+        // `source` string. That string is the last resort precisely because its
+        // leading segment can be a local alias: quinn re-exports `quinn_proto`
+        // as `proto` and `quinn_udp` as `udp`, so a `source` of
+        // `proto::ServerConfig` / `udp` would otherwise load the unrelated
+        // `proto` / `udp` crates from crates.io.
+        if let Some(id) = use_inner.id {
+            if let Some(target) = use_item.crate_docs().get(self.navigator, &id) {
+                return Some(target);
+            }
+            if let Some(target) = self.get_path(parent_module, id) {
+                return Some(target);
+            }
         }
 
         self.with_pushed(use_item.into(), None, |resolver| {
@@ -657,8 +671,14 @@ impl<'a> Resolver<'a> {
         let crate_ = origin
             .crate_docs()
             .traverse_to_crate_by_id(self.navigator, item_summary.crate_id)?;
-        let root = crate_.root_item(self.navigator);
-        self.find_by_path(root, item_summary.path.iter().skip(1).map(String::as_str))
+        // The `paths` summary gives the item's definition path; resolve it in
+        // the target crate's reverse index. This reaches definitions behind
+        // private modules that a public-tree walk can't see.
+        crate_.lookup_definition_path(
+            self.navigator,
+            item_summary.path.get(1..).unwrap_or_default(),
+            item_summary.kind,
+        )
     }
 
     /// Get an item from a sequence of `Id`s starting at the named crate's

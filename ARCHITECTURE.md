@@ -218,12 +218,44 @@ Returns appropriate items based on item type:
 - Use → follows to source and returns source children
 
 **Key feature:** When encountering a `Use` item (re-export or glob import):
-1. Resolve the source (by Id if same crate, or by path string for cross-crate)
+1. Resolve the source — see *Resolving a `Use` target* below
 2. For glob imports (`pub use foo::*`), recursively expand to iterate all source items
 3. For regular imports, return source item with the imported/renamed name
 4. Chain through multiple layers of re-exports
 
 **Why this matters:** Module children appear to "just work" even when they're re-exports from other crates. The iterator transparently loads external crates and follows import chains, making `std::vec::Vec` (re-exported from `alloc`) appear as a natural child of the `std::vec` module.
+
+### Resolving a `Use` target
+
+A `Use` carries both a target `id` and a `source` *string* (the path as written
+in Rust source). `Resolver::follow_use` resolves them in this order, and the
+order matters for correctness:
+
+1. **`id` in the local index** → a same-crate target; return it directly. Index
+   membership is the definitive test for locality, so this is deterministic, not
+   a guess: within one crate an `id` is either a local item (in `index`) or a
+   foreign reference (in the `paths` map with a non-zero `crate_id`), never both.
+2. **`id` via the `paths` map** (`Resolver::get_path`) → a cross-crate re-export.
+   The summary names the owning crate and the item's *definition path*; we cross
+   into that crate and resolve there.
+3. **The `source` string** → last resort only (the `id` is absent, or names no
+   reachable item).
+
+The `source` string is the fallback rather than the primary key because **its
+leading segment can be a local alias, not a real crate name.** rustdoc emits
+`source` verbatim from the Rust source, so a renamed dependency
+(`use quinn_proto as proto; pub use proto::ServerConfig`) yields
+`source = "proto::ServerConfig"`. Resolving that string would try to load a
+crate literally named `proto` (an unrelated crate on docs.rs) and fail; the
+`use.id`, by contrast, points through the `paths` map at the real
+`quinn_proto`. The fixture `tests/test-workspace/crate-b` reproduces this with a
+source-level alias (`use crate_a as aliased_a`).
+
+`get_path` resolves the cross-crate definition path through the target crate's
+reverse path index (`RustdocData::lookup_definition_path`) rather than a
+public-tree walk, so it reaches items defined behind a private module but
+re-exported at the crate root — e.g. `quinn_proto::config::ServerConfig`, where
+`config` is private. The same helper backs the search indexer's link resolution.
 
 ### IdIter
 

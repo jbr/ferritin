@@ -16,6 +16,9 @@ expression: "render_for_tests_rooted(Commands::get(\"crate_b\"), OutputMode :: T
 </list>
 </section><section><section-title>Structs</section-title><list>
   <item><p>
+<type-name>AliasedCrateAStruct</type-name> </p>
+</item>
+  <item><p>
 <type-name>CrateBProcessor</type-name> </p>
 </item>
   <item><p>

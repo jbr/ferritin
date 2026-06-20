@@ -180,7 +180,6 @@ Non-exhaustive list of known limitations:
 - unsafe_binder — Operators used to turn types into unsafe binders and back.
 - usize — Redundant constants module for the usize primitive type. [+1 lines]
 - vec — A contiguous growable array type with heap-allocated contents, written Vec<T>. [+16 lines]
-- vec — A contiguous growable array type with heap-allocated contents, written Vec<T>. [+16 lines]
 
 ## Macros
 
@@ -226,6 +225,7 @@ Non-exhaustive list of known limitations:
 - try — Unwraps a result or propagates its error. [+6 lines]
 - unimplemented — Indicates unimplemented code by panicking with a message of "not implemented". [+12 lines]
 - unreachable — Indicates unreachable code. [+12 lines]
+- vec — Creates a Vec containing the arguments. [+8 lines]
 - write — Writes formatted data into a buffer. [+10 lines]
 - writeln — Writes formatted data into a buffer, with a newline appended. [+4 lines]
 
