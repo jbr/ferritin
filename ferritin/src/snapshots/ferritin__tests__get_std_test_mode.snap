@@ -544,7 +544,7 @@ Types and Traits for working with asynchronous tasks.</p>
 <truncated level="single-line"><p>
 Native threads.</p>
 <section-heading>The threading model</section-heading>
-An executing Rust program consists of a each with their own stack and local state. provide some built-in support for low-level <elided chars="5082"/></truncated>
+An executing Rust program consists of a each with their own stack and local state. provide some built-in support for low-level <elided chars="5157"/></truncated>
 </item>
   <item><p>
 <type-name>time</type-name> </p>
@@ -902,7 +902,7 @@ The <inline-code>char</inline-code> type represents a single character. More spe
 </item>
   <item><p>
 <type-name>f32</type-name> </p>
-<truncated level="single-line">A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE <elided chars="9237"/></truncated>
+<truncated level="single-line">A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE <elided chars="9241"/></truncated>
 </item>
   <item><p>
 <type-name>f64</type-name> </p>

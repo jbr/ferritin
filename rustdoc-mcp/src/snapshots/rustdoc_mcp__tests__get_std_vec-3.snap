@@ -109,6 +109,9 @@ where
 • pub fn into_boxed_slice(self) -> Box<[T], A>
     Converts the vector into [`Box<[T]>`][owned slice]. [+24 more lines]
 
+• pub fn into_array<const N: usize>(self) -> Result<Box<[T; N], A>, Self>
+    Converts the Vec into a boxed array. This conversion will discard any spare capacity, [+16 more lines]
+
 • pub fn truncate(&mut self, len: usize)
     Shortens the vector, keeping the first `len` elements and dropping [+41 more lines]
 
@@ -130,7 +133,7 @@ where
 • pub const fn allocator(&self) -> &A
     Returns a reference to the underlying allocator.
 
-• pub unsafe fn set_len(&mut self, new_len: usize)
+• pub const unsafe fn set_len(&mut self, new_len: usize)
     Forces the length of the vector to `new_len`. [+85 more lines]
 
 • pub fn swap_remove(&mut self, index: usize) -> T
