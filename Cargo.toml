@@ -18,3 +18,13 @@ serde = { version = "1.0.228", features = ["derive"] }
 shellexpand = "3.1.2"
 strsim = "0.11.1"
 walkdir = "2.5.0"
+
+# The profile that 'dist' will build with. dist defaults to thin LTO to keep CI
+# build time/memory bounded, but the whole point of shipping a prebuilt binary is
+# paying the optimization cost once so users don't. ferritin does multi-second
+# CPU-bound work (per-crate search indexing), so fat LTO + single codegen unit
+# is worth the longer release build.
+[profile.dist]
+inherits = "release"
+lto = true
+codegen-units = 1
