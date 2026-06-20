@@ -1,0 +1,74 @@
+name: Update latest installers
+
+# Keeps a per-binary rolling release (`ferritin-latest`, `rustdoc-mcp-latest`)
+# whose installer scripts always point at the most recent versioned release, so
+# the README can use a stable `curl | sh` URL that never needs bumping.
+#
+# Why workflow_run rather than `on: release`: dist undrafts releases with the
+# default GITHUB_TOKEN, and GitHub deliberately won't let a GITHUB_TOKEN action
+# trigger `release: published`. So we hang off dist's "Release" workflow
+# finishing instead, and reconcile from current release state rather than
+# trusting the triggering tag (workflow_run reports head_branch unreliably for
+# tag pushes). workflow_dispatch is provided to bootstrap the rolling releases.
+on:
+  workflow_run:
+    workflows: ["Release"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push') }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Mirror installer scripts into rolling -latest releases
+        run: |
+          set -euo pipefail
+
+          mirror() {
+            local name="$1"
+            local prefix="${name}-v"
+            local rolling="${name}-latest"
+
+            # Newest real (non-draft, non-prerelease) release for this binary.
+            # The rolling release is itself a prerelease, so it's excluded.
+            local tag
+            tag=$(gh release list --limit 100 \
+              --json tagName,isDraft,isPrerelease,createdAt \
+              --jq "[.[] | select(.isDraft==false and .isPrerelease==false and (.tagName | startswith(\"${prefix}\")))]
+                    | sort_by(.createdAt) | reverse | .[0].tagName // empty")
+
+            if [ -z "$tag" ]; then
+              echo "No published ${prefix}* release found, skipping ${rolling}"
+              return
+            fi
+            echo "Latest ${prefix}* release is ${tag}"
+
+            local tmp
+            tmp=$(mktemp -d)
+            # Installer scripts have version-independent names and embed the
+            # versioned archive URLs, so mirroring just the scripts is enough.
+            if ! gh release download "$tag" --pattern "${name}-installer.*" --dir "$tmp"; then
+              echo "No installer scripts on ${tag}, skipping ${rolling}"
+              return
+            fi
+
+            if ! gh release view "$rolling" >/dev/null 2>&1; then
+              gh release create "$rolling" \
+                --prerelease \
+                --title "${name} (latest installers)" \
+                --notes "Rolling installer scripts that always install the most recent ${name} release. See the versioned releases for changelogs, archives, and checksums."
+            fi
+
+            gh release upload "$rolling" "$tmp"/"${name}"-installer.* --clobber
+            echo "Updated ${rolling} from ${tag}"
+          }
+
+          mirror ferritin
+          mirror rustdoc-mcp
