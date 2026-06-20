@@ -31,11 +31,7 @@ enum ItemOrSummary<'a> {
 impl<'a> ItemOrSummary<'a> {
     /// Try to convert to a resolved Item, filtering by visited crates.
     /// Returns None if the item's crate is not in the visited set.
-    fn try_to_item(
-        self,
-        resolver: &mut Resolver<'a>,
-        visited_crates: &HashSet<CrateName>,
-    ) -> Option<DocRef<'a, Item>> {
+    fn try_to_item(self, visited_crates: &HashSet<CrateName>) -> Option<DocRef<'a, Item>> {
         match self {
             ItemOrSummary::Item(item) => {
                 let crate_name: CrateName = item.crate_docs().name().into();
@@ -66,8 +62,11 @@ impl<'a> ItemOrSummary<'a> {
                     summary.crate_docs()
                 };
 
-                let root = target_crate.root_item(summary.navigator());
-                resolver.find_by_path(root, summary.path.iter().skip(1).map(String::as_str))
+                target_crate.lookup_definition_path(
+                    summary.navigator(),
+                    summary.path.get(1..).unwrap_or_default(),
+                    summary.kind,
+                )
             }
         }
     }
@@ -216,7 +215,7 @@ impl<'a> Terms<'a> {
     // DocRef hashes by crate name + item id; the interior mutability lives in
     // Navigator's connection pool and doesn't affect identity.
     #[allow(clippy::mutable_key_type)]
-    fn finalize(self, resolver: &mut Resolver<'a>) -> SearchableTerms {
+    fn finalize(self) -> SearchableTerms {
         log::debug!("Filtering link counts to visited crates only");
         log::debug!("Visited crates: {:?}", self.visited_crates);
         log::debug!(
@@ -234,7 +233,7 @@ impl<'a> Terms<'a> {
         let mut skipped_count = 0;
         let mut filtered_link_counts: HashMap<DocRef<Item>, usize> = HashMap::new();
         for (target, count) in self.link_counts {
-            if let Some(item) = target.try_to_item(resolver, &self.visited_crates) {
+            if let Some(item) = target.try_to_item(&self.visited_crates) {
                 filtered_count += 1;
                 *filtered_link_counts.entry(item).or_insert(0) += count;
             } else {
@@ -477,8 +476,14 @@ impl<'a> Terms<'a> {
     }
 }
 
-/// Index format version - increment to invalidate all cached indexes
-const INDEX_FORMAT_VERSION: u32 = 2;
+/// Index format version - increment to invalidate all cached indexes.
+///
+/// v3: link resolution in `ItemOrSummary::try_to_item` switched from a
+/// public-tree walk to `RustdocData::lookup_definition_path`, which resolves
+/// cross-crate and private-module re-export targets the walk previously
+/// dropped. This changes the `authority_scores` baked into the index, so caches
+/// built by earlier versions must be rebuilt rather than reused on mtime alone.
+const INDEX_FORMAT_VERSION: u32 = 3;
 
 #[derive(Debug, Clone, Archive, RkyvSerialize, RkyvDeserialize)]
 struct SearchableTerms {
@@ -612,7 +617,7 @@ impl SearchIndex {
             log::debug!("Building new index for {crate_name}");
             let mut terms = Terms::default();
             terms.recurse(&mut resolver, item, &[], false);
-            let terms = terms.finalize(&mut resolver);
+            let terms = terms.finalize();
             log::debug!("Finished building index for {crate_name}");
             Self::store(&terms, &path);
             Ok(Self { terms, crate_name })

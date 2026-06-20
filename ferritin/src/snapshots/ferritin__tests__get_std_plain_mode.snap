@@ -354,9 +354,6 @@ Modules
   ◦ vec 
     A contiguous growable array type with heap-allocated contents, written Vec<T>. [...]
 
-  ◦ vec 
-    A contiguous growable array type with heap-allocated contents, written Vec<T>. [...]
-
 Macros
 
   ◦ assert 
@@ -484,6 +481,9 @@ Macros
 
   ◦ unreachable 
     Indicates unreachable code. [...]
+
+  ◦ vec 
+    Creates a Vec containing the arguments. [...]
 
   ◦ write 
     Writes formatted data into a buffer. [...]

@@ -11,6 +11,7 @@ Modules:
 prefix_inner
 
 Structs:
+AliasedCrateAStruct
 CrateBProcessor
 PrefixCrateAAlias
 SelfPrefixAlias

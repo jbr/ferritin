@@ -60,6 +60,40 @@ impl RustdocData {
         Some(DocRef::new(navigator, self, item))
     }
 
+    /// Resolve a local item by its definition path (the `paths` path with the
+    /// crate-name prefix already stripped) and kind, via the reverse path
+    /// index. Unlike a public-tree walk, this reaches items whose definition
+    /// path passes through private modules — e.g. `quinn_proto`'s
+    /// `config::ServerConfig`, where `config` is private but `ServerConfig` is
+    /// re-exported at the crate root. An empty `tail` resolves to the crate
+    /// root module.
+    ///
+    /// The lookup is kind-qualified (the `paths` summary carries the kind), so
+    /// it stays unambiguous even where a module and a value share a path and
+    /// [`build_path_index`](Self::build_path_index) therefore omitted the plain
+    /// key.
+    pub(crate) fn lookup_definition_path<'a>(
+        &'a self,
+        navigator: &'a Navigator,
+        tail: &[String],
+        kind: ItemKind,
+    ) -> Option<DocRef<'a, Item>> {
+        if tail.is_empty() {
+            return Some(self.root_item(navigator));
+        }
+        let unqualified = tail.join("::");
+        let (prefix, last_name) = match unqualified.rfind("::") {
+            Some(sep) => (&unqualified[..sep + 2], &unqualified[sep + 2..]),
+            None => ("", unqualified.as_str()),
+        };
+        let qualified = format!("{prefix}{}@{last_name}", kind_discriminator(kind));
+        let id = self
+            .path_to_id
+            .get(&qualified)
+            .or_else(|| self.path_to_id.get(&unqualified))?;
+        self.get(navigator, id)
+    }
+
     pub fn path<'a>(&'a self, id: &Id) -> Option<doc_ref::Path<'a>> {
         self.paths.get(id).map(|summary| summary.into())
     }
