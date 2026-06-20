@@ -358,7 +358,10 @@ fn ui_thread_loop<'a>(
             // Keyboard and mouse events
             recv(event_rx) -> event => {
                 match event {
-                    Ok(Event::Key(key)) => {
+                    // On Windows, crossterm emits Press, Repeat, and Release
+                    // events for every keystroke; Unix sends only Press. Drop
+                    // Release events so input isn't applied twice per key.
+                    Ok(Event::Key(key)) if !key.is_release() => {
                         if state.handle_key_event(key, &mut terminal) {
                             break Ok(());
                         }
