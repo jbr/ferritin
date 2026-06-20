@@ -1,2 +1,15 @@
 [workspace]
 features_always_increment_minor = true
+# Leave the GitHub Release as a draft with the changelog as its body. dist's
+# release workflow (create-release = false in dist-workspace.toml) then uploads
+# the prebuilt binaries/installers to it and undrafts when the upload completes.
+git_release_draft = true
+
+# ferritin-common is a library with no binaries, so dist can't build a release
+# for it. Suppress its git tag and GitHub release entirely — otherwise a
+# `ferritin-common-v*` tag would trigger dist's release.yml and fail. It still
+# publishes to crates.io as a dependency of the two binaries.
+[[package]]
+name = "ferritin-common"
+git_tag_enable = false
+git_release_enable = false
