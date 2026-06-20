@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.11.2...ferritin-common-v0.12.0) - 2026-06-20
+
+### Added
+
+- feature selection and cached metadata
+- --rebuild and --public
+
+### Fixed
+
+- resolve aliased cross-crate re-exports by use.id instead of source path
+
+### Other
+
+- fmt
+- *(deps)* upgrade/update
+
 ## [0.11.2](https://github.com/jbr/ferritin/compare/ferritin-common-v0.11.1...ferritin-common-v0.11.2) - 2026-05-24
 
 ### Fixed

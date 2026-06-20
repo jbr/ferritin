@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0](https://github.com/jbr/ferritin/compare/ferritin-v0.10.2...ferritin-v0.11.0) - 2026-06-20
+
+### Added
+
+- feature selection and cached metadata
+- --rebuild and --public
+
+### Fixed
+
+- resolve aliased cross-crate re-exports by use.id instead of source path
+
+### Other
+
+- update snaps to rustc 1.98.0-nightly (bc2112ed5 2026-06-18)
+- fmt
+- *(deps)* upgrade/update
+- update snaps
+- update snaps to rustc 1.98.0-nightly (bc2112ed5 2026-06-18)
+- update snaps to rustc 1.98.0-nightly (14210df0e 2026-05-31)
+
 ## [0.10.2](https://github.com/jbr/ferritin/compare/ferritin-v0.10.1...ferritin-v0.10.2) - 2026-05-24
 
 ### Fixed
