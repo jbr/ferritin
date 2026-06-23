@@ -142,7 +142,8 @@ impl DocsRsClient {
         }
 
         // Fetch from docs.rs
-        // Try format versions in descending order (newest we support first)
+        // Try format versions in descending order (newest we support first).
+        // These exact-format URLs guarantee a format we can parse directly.
         let mut bytes = None;
         for format_ver in (MIN_FORMAT_VERSION..=self.format_version).rev() {
             log::debug!(
@@ -152,17 +153,29 @@ impl DocsRsClient {
                 format_ver
             );
 
-            if let Some(fetched) = self
-                .fetch_from_docsrs(crate_name, version, format_ver)
-                .await?
-            {
+            let url = format!("https://docs.rs/crate/{crate_name}/{version}/json/{format_ver}");
+            if let Some(fetched) = self.fetch_bytes(url).await? {
                 bytes = Some(fetched);
                 break;
             }
         }
 
-        let Some(bytes) = bytes else {
-            return Ok(None);
+        // Fallback: a freshly-published crate only has docs.rs's newest format,
+        // which may be newer than the one we were built against (so none of the
+        // exact-format URLs above exist yet). The suffix-less URL serves docs.rs's
+        // latest format; we read its actual `format_version` from the JSON below
+        // and let `load_and_normalize` parse it (additive formats are forward
+        // compatible with the current rustdoc-types).
+        let bytes = match bytes {
+            Some(bytes) => bytes,
+            None => {
+                let url = format!("https://docs.rs/crate/{crate_name}/{version}/json");
+                log::debug!("Exact-format URLs missed; trying latest format: {url}");
+                match self.fetch_bytes(url).await? {
+                    Some(bytes) => bytes,
+                    None => return Ok(None),
+                }
+            }
         };
 
         // Decompress
@@ -259,6 +272,25 @@ impl DocsRsClient {
             .join(format!("{version}.json"))
     }
 
+    /// Format-version directories currently present in the cache, newest first.
+    ///
+    /// The cache is laid out as `cache_dir/{format_version}/...`, so the set of
+    /// supported formats is whatever directories exist — including formats newer
+    /// than [`FORMAT_VERSION`] that were fetched via the latest-format fallback.
+    /// Directories older than [`MIN_FORMAT_VERSION`] (which we can't normalize)
+    /// are skipped.
+    fn cached_formats(&self) -> Vec<u32> {
+        let mut formats: Vec<u32> = std::fs::read_dir(&self.cache_dir)
+            .into_iter()
+            .flatten()
+            .flatten()
+            .filter_map(|entry| entry.file_name().to_str()?.parse::<u32>().ok())
+            .filter(|format| *format >= MIN_FORMAT_VERSION)
+            .collect();
+        formats.sort_unstable_by(|a, b| b.cmp(a));
+        formats
+    }
+
     /// Load from cache if available and valid
     ///
     /// Tries to find the crate in cache across different format versions.
@@ -268,8 +300,11 @@ impl DocsRsClient {
         crate_name: &str,
         version: &Version,
     ) -> Result<Option<RustdocData>> {
-        // Try format versions in descending order (prefer newer versions)
-        for source_format in (MIN_FORMAT_VERSION..=self.format_version).rev() {
+        // Try format versions in descending order (prefer newer versions).
+        // We enumerate the format directories actually present rather than a
+        // fixed range so that formats newer than the one we were built against
+        // (fetched via the latest-format fallback) are still found on read.
+        for source_format in self.cached_formats() {
             let path = self.cache_path(crate_name, version, source_format);
 
             if !path.exists() {
@@ -321,25 +356,14 @@ impl DocsRsClient {
         Ok(None)
     }
 
-    /// Fetch from docs.rs
-    /// Returns Ok(None) if the crate/version is not found (404)
-    /// Returns Err for other errors
-    async fn fetch_from_docsrs(
-        &self,
-        crate_name: &str,
-        version: &Version,
-        format_version: u32,
-    ) -> Result<Option<Vec<u8>>> {
-        // Construct URL with format version to ensure compatibility
-        // https://docs.rs/crate/{crate_name}/{version}/json/{format_version}
-        // (zstd compression is default)
-        let url = format!("https://docs.rs/crate/{crate_name}/{version}/json/{format_version}");
-
-        log::debug!("Fetching from docs.rs: {}", url);
-
+    /// GET a docs.rs JSON URL, returning the raw (zstd-compressed) body.
+    ///
+    /// Returns Ok(None) if the URL is a 404 (crate/version/format not found),
+    /// Err for other failures.
+    async fn fetch_bytes(&self, url: String) -> Result<Option<Vec<u8>>> {
         let conn = self.http_client.get(url).await?;
 
-        // Check if we got a 404 (crate/version not found)
+        // Check if we got a 404 (crate/version/format not found)
         if let Some(Status::NotFound) = conn.status() {
             return Ok(None);
         }

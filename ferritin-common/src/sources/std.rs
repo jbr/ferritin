@@ -5,7 +5,6 @@ use crate::sources::CrateProvenance;
 use crate::sources::Source;
 use fieldwork::Fieldwork;
 use rustc_hash::FxHashMap;
-use rustdoc_types::{Crate, FORMAT_VERSION};
 use semver::Version;
 use semver::VersionReq;
 use std::borrow::Cow;
@@ -110,15 +109,11 @@ impl Source for StdSource {
         let json_path = crate_info.json_path.as_ref()?.to_owned();
         let content = std::fs::read(&json_path).ok()?;
 
-        let Ok(FORMAT_VERSION) = sonic_rs::get_from_slice(&content, &["format_version"])
-            .ok()?
-            .as_raw_str()
-            .parse()
-        else {
-            return None;
-        };
-
-        let crate_data: Crate = sonic_rs::serde::from_slice(&content).ok()?;
+        // Normalize through the conversions module like the other sources, so
+        // older (55/56) and newer additive (58+) rustdoc formats both load.
+        // rustup's std JSON tracks the nightly toolchain, which can be ahead of
+        // the rustdoc-types we build against.
+        let crate_data = crate::conversions::load_and_normalize(&content, None).ok()?;
         Some(RustdocData {
             crate_data,
             name: crate_name.to_string(),
