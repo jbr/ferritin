@@ -55,11 +55,18 @@ pub fn load_and_normalize(json: &[u8], format_version: Option<u32>) -> Result<Cr
             )
         }
         v => {
-            anyhow::bail!(
-                "Format version {} is too new. Maximum supported version: {}",
-                v,
-                FORMAT_VERSION
-            )
+            // Newer than the rustdoc-types we were built against. rustdoc JSON
+            // format bumps are usually additive, and rustdoc-types does not
+            // `deny_unknown_fields`, so newer additive formats deserialize
+            // cleanly with the current types (the extra fields are ignored).
+            // Attempt it; a genuinely breaking change surfaces as a parse error.
+            sonic_rs::serde::from_slice(json).with_context(|| {
+                format!(
+                    "Format version {v} is newer than supported ({FORMAT_VERSION}) and could \
+                     not be parsed with the current rustdoc-types. ferritin needs to be updated \
+                     to read this format."
+                )
+            })
         }
     }
 }

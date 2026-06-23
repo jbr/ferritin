@@ -11,7 +11,6 @@ use cargo_metadata::MetadataCommand;
 use fieldwork::Fieldwork;
 use rustc_hash::FxHashMap;
 use rustc_hash::FxHashSet;
-use rustdoc_types::{Crate, FORMAT_VERSION};
 use semver::Version;
 use semver::VersionReq;
 use std::borrow::Cow;
@@ -249,10 +248,8 @@ impl LocalSource {
 
             if !needs_rebuild
                 && let Ok(content) = std::fs::read(&json_path)
-                && let Ok(format_version) = sonic_rs::get_from_slice(&content, &["format_version"])
-                && let Ok(FORMAT_VERSION) = format_version.as_raw_str().parse()
+                && let Ok(crate_data) = crate::conversions::load_and_normalize(&content, None)
             {
-                let crate_data: Crate = sonic_rs::serde::from_slice(&content).ok()?;
                 let version = crate_data
                     .crate_version
                     .as_ref()
@@ -311,14 +308,11 @@ impl LocalSource {
         loop {
             if !feature_rebuild
                 && let Ok(content) = std::fs::read(json_path)
-                && let Ok(RustdocVersion {
-                    format_version,
-                    crate_version,
-                }) = sonic_rs::serde::from_slice(&content)
-                && format_version == FORMAT_VERSION
+                && let Ok(RustdocVersion { crate_version, .. }) =
+                    sonic_rs::serde::from_slice(&content)
                 && crate_version.as_ref() == version
+                && let Ok(crate_data) = crate::conversions::load_and_normalize(&content, None)
             {
-                let crate_data: Crate = sonic_rs::serde::from_slice(&content).ok()?;
                 let version = crate_data
                     .crate_version
                     .as_ref()
