@@ -37,7 +37,7 @@ clap = { version = "4.6.1", features = ["derive", "cargo", "env"] }
 crossbeam-channel = "0.5"
 crossterm = "0.29"
 fieldwork = "0.5.2"
-log = "0.4.32"
+log = "0.4.33"
 env_logger = "0.11.10"
 pulldown-cmark = "0.13"
 ratatui = "0.30"
