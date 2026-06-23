@@ -60,10 +60,15 @@ impl<'a> Request<'a> {
                     |path| format!("{path}::{item_name}"),
                 );
 
-                collected.push(FlatItem {
-                    path: path.clone(),
-                    item: child,
-                });
+                // Filter what's *collected*, not what's *descended into*: a
+                // `--kind fn` listing should still recurse through modules to
+                // reach nested functions, just without listing the modules.
+                if self.format_context().should_display(child) {
+                    collected.push(FlatItem {
+                        path: path.clone(),
+                        item: child,
+                    });
+                }
 
                 if self.format_context().is_recursive() && visited.insert(child) {
                     self.collect_flat_items(collected, visited, Some(path), child);

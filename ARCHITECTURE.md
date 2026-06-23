@@ -312,18 +312,21 @@ The `SpanStyle` enum represents semantic categories (Keyword, TypeName, Function
 
 ### Stage 2: Render IR to Output
 
-Four distinct renderers transform the same IR:
+Five distinct renderers transform the same IR:
 
 1. **Plain** - Plain text output (no colors, no interactivity)
 2. **TTY** - Single-shot CLI with colors and OSC8 hyperlinks
 3. **TestMode** - Normalized output for snapshot testing
-4. **Interactive** - ratatui-based TUI with mouse/keyboard navigation
+4. **Agent** - Token-efficient, markdown-flavored output for coding agents and
+   other LLM consumers. Selected by `--agent` (hidden `--ai` alias) or
+   auto-detected from the `CLAUDECODE`/`GEMINI_CLI`/`CODEX_SANDBOX` env vars
+5. **Interactive** - ratatui-based TUI with mouse/keyboard navigation
 
 **Renderer differences:**
-- **Styling:** Plain ignores SpanStyle; TTY/Interactive map to terminal colors; TestMode normalizes
-- **Actions:** Plain/TestMode ignore TuiActions; TTY renders OSC8 hyperlinks; Interactive makes clickable regions
+- **Styling:** Plain ignores SpanStyle; TTY/Interactive map to terminal colors; TestMode normalizes; Agent leans on markdown conventions (`#` headers, `-` bullets) instead of ANSI
+- **Actions:** Plain/TestMode/Agent ignore TuiActions; TTY renders OSC8 hyperlinks; Interactive makes clickable regions
 - **Truncation:** Each interprets TruncationLevel hints differently (SingleLine, Brief, Full)
-- **Layout:** Plain/TTY stream to stdout; Interactive uses ratatui for scrolling/paging
+- **Layout:** Plain/TTY/Agent stream to stdout; Interactive uses ratatui for scrolling/paging
 
 Example - Plain renderer handles truncation:
 - **SingleLine:** Render until first newline, append `[...]`
@@ -333,6 +336,10 @@ Example - Plain renderer handles truncation:
 ### Format Context & Render Context
 
 The architecture separates formatting concerns (what to include in a `Document`) from rendering concerns (how to display it). `FormatContext` holds thread-safe formatting preferences (source inclusion, recursion, hiding non-public items) that can be mutated at runtime. `RenderContext` holds immutable display configuration (colors, terminal width, output mode, themes) used by renderers.
+
+`FormatContext` also carries an optional **display predicate** (`DisplayPredicate` — a boxed `for<'a> Fn(DocRef<'a, Item>) -> bool + Send + Sync`), the erased internal contract behind item filtering. The CLI `--kind` flag (`get`/`search`) parses a typed `Kind` `ValueEnum` whose only job is to *build* such a predicate; the listing code never sees the enum, only the predicate, so other narrowing terms (name substrings, `as Trait`) can compose into the same mechanism later. It's boxed rather than a generic parameter because the closure type is unnameable and the predicate is set *after* construction (like the atomics), and lives behind a `RwLock` rather than an atomic because a closure can't be atomic. Module listings filter what's *collected* but still descend into modules, so `--kind fn --recursive` reaches nested functions without listing the intervening modules.
+
+`FormatContext` also carries a `DocLevel` (CLI `--docs <full|brief|none>`, `get`-local, default `full`) controlling how much of the resolved item's *own* doc prose renders ahead of its body. `none` omits it — the pure-listing case (e.g. you want a module's items, not its essay); `brief` renders only the leading paragraph. It maps to the existing `TruncationLevel`, stored as an `AtomicU8` to stay atomic like the other prefs. Note this is orthogonal to `--kind`: `--kind` selects *which items* list, `--docs` controls *how much prose* precedes them.
 
 The `public` preference (CLI `--public`) filters non-`pub` items at format time rather than at build time: workspace crates are always built with `--document-private-items`, and the formatters skip items whose `DocRef::effective_visibility()` isn't public (module children, struct fields, inherent methods). Enum variants are exempt — they carry `Visibility::Default` in rustdoc JSON but are as public as their enum.
 
@@ -403,6 +410,23 @@ Multi-crate search with BM25 scoring:
 3. BM25 scorer aggregates global statistics (document frequencies, average document length) across all crates for consistent cross-crate ranking
 4. Results sorted by BM25 score descending, with early stopping thresholds
 5. Resolves items via `Navigator::get_item_from_id_path` and shows doc preview
+
+### Agent skill (`skills/SKILL.md`)
+
+`skills/SKILL.md` is a Claude Code [Agent Skill](https://code.claude.com/docs/en/skills)
+documenting the CLI surface for coding agents, so they reach for `ferritin`
+to look up Rust APIs instead of guessing. Its `description` (a semantic
+trigger) and `paths` globs (Rust-context scoping) are what make ferritin
+discoverable to an agent without an MCP server.
+
+It is consumed two ways: symlinked into `~/.claude/skills/ferritin` for local
+dogfooding, and (eventually) `include_str!`'d into the binary by a generator
+subcommand that installs it into other projects. The body is deliberately
+*hybrid* — it pins a stable core of examples but defers churny flags to
+`ferritin <cmd> --help` — so most CLI tweaks need no edit here.
+
+**When you change the CLI surface (commands or their stable flags), update
+`skills/SKILL.md` to match.**
 
 ## Markdown Rendering
 

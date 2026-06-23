@@ -111,14 +111,20 @@ pub(crate) fn execute<'a>(
     // Display up to `limit` results
     let mut list_items = vec![];
 
-    for (i, result) in scored_results.into_iter().enumerate() {
-        if i >= limit {
+    for result in scored_results {
+        if list_items.len() >= limit {
             break;
         }
 
         if let Some((item, path_segments)) =
             request.get_item_from_id_path(result.crate_name, &result.id_path)
         {
+            // Skip results the active `--kind` filter excludes; only displayed
+            // items count toward `limit`.
+            if !request.format_context().should_display(item) {
+                continue;
+            }
+
             let path = path_segments.join("::");
             // Quantize to 0.1% buckets to match the sort's tiebreak precision
             // (see BM25Scorer::score) so ordering and display stay in sync.

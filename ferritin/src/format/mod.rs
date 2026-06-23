@@ -62,8 +62,11 @@ impl<'a> Request<'a> {
         // Item metadata (name, kind, visibility, location, crate)
         doc_nodes.extend(self.format_item_metadata(item));
 
-        // Add documentation if available
-        if let Some(docs) = self.docs_to_show(item, TruncationLevel::Full) {
+        // Add the item's own documentation, at the level set by `--docs`
+        // (omitted entirely when `--docs none`).
+        if let Some(truncation) = self.format_context().doc_truncation()
+            && let Some(docs) = self.docs_to_show(item, truncation)
+        {
             doc_nodes.extend(docs);
         };
 
