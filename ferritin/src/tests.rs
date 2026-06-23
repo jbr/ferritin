@@ -129,8 +129,8 @@ macro_rules! test_all_modes_rooted {
             }
 
             #[test]
-            fn [<$name _ai_mode>]() {
-                insta::assert_snapshot!(render_for_tests_rooted($cmd, OutputMode::Ai, &$path_fn()));
+            fn [<$name _agent_mode>]() {
+                insta::assert_snapshot!(render_for_tests_rooted($cmd, OutputMode::Agent, &$path_fn()));
             }
 
             #[test]

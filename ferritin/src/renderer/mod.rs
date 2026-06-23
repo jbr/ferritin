@@ -4,7 +4,7 @@ use std::{
     io::{self, IsTerminal},
 };
 
-mod ai;
+mod agent;
 mod interactive;
 mod plain;
 mod table_layout;
@@ -40,8 +40,8 @@ pub enum OutputMode {
     Plain,
     /// Pseudo-XML tags for testing (e.g., <keyword>struct</keyword>)
     TestMode,
-    /// Token-efficient format for AI/LLM consumption
-    Ai,
+    /// Token-efficient format for coding agents and other LLM consumers
+    Agent,
 }
 
 impl OutputMode {
@@ -53,7 +53,7 @@ impl OutputMode {
             || std::env::var("GEMINI_CLI").is_ok()
             || std::env::var("CODEX_SANDBOX").is_ok()
         {
-            OutputMode::Ai
+            OutputMode::Agent
         } else if io::stdout().is_terminal() {
             detect_tty_mode()
         } else {
@@ -94,7 +94,7 @@ pub fn render(
         OutputMode::Tty => tty::render(document, render_context, output),
         OutputMode::Plain => plain::render(document, output),
         OutputMode::TestMode => test_mode::render(document, output),
-        OutputMode::Ai => ai::render(document, output),
+        OutputMode::Agent => agent::render(document, output),
     }
 }
 

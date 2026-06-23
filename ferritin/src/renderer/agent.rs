@@ -1,4 +1,4 @@
-//! Token-efficient renderer for AI/LLM consumption.
+//! Token-efficient renderer for coding agents and other LLM consumers.
 //!
 //! Produces compact, markdown-flavored output optimized for LLM readers.
 //! LLMs are heavily trained on markdown, so we lean into markdown conventions

@@ -24,6 +24,7 @@ mod format;
 mod format_context;
 mod generate_docsrs_url;
 mod indent;
+mod kind;
 mod logging;
 mod markdown;
 mod render_context;
@@ -90,9 +91,10 @@ struct Cli {
     #[arg(long, global = true)]
     no_default_features: bool,
 
-    /// Output in LLM-friendly format (also enabled by CLAUDECODE or GEMINI_CLI env vars)
-    #[arg(long, global = true)]
-    ai: bool,
+    /// Output in agent-friendly format for coding agents and other LLM readers
+    /// (also auto-enabled by the CLAUDECODE, GEMINI_CLI, or CODEX_SANDBOX env vars)
+    #[arg(long, global = true, alias = "ai")]
+    agent: bool,
 
     #[command(subcommand)]
     command: Option<Commands>,
@@ -155,8 +157,8 @@ fn main() -> ExitCode {
     }
 
     let mut output_mode = OutputMode::detect();
-    if cli.ai {
-        output_mode = OutputMode::Ai;
+    if cli.agent {
+        output_mode = OutputMode::Agent;
     }
 
     let mut render_context = RenderContext::new()

@@ -1,3 +1,5 @@
+use crate::format_context::DocLevel;
+use crate::kind::Kind;
 use crate::renderer::HistoryEntry;
 use crate::request::Request;
 use crate::styled_string::Document;
@@ -21,6 +23,17 @@ pub(crate) enum Commands {
         /// Recursively show nested items
         #[arg(short, long)]
         recursive: bool,
+
+        /// Only list items of these kinds (comma-separated or repeated).
+        /// Filters listings; modules are still descended for nested matches.
+        #[arg(short, long, value_enum, value_delimiter = ',')]
+        kind: Vec<Kind>,
+
+        /// How much of the item's own documentation prose to show. `none`
+        /// drops it entirely (handy when you want just a module's listing);
+        /// `brief` shows only the leading paragraph.
+        #[arg(long, value_enum, default_value_t)]
+        docs: DocLevel,
     },
 
     /// Search for items by name or documentation.
@@ -32,6 +45,10 @@ pub(crate) enum Commands {
         /// Maximum number of results
         #[arg(long, default_value = "10")]
         limit: usize,
+
+        /// Only return results of these kinds (comma-separated or repeated)
+        #[arg(short, long, value_enum, value_delimiter = ',')]
+        kind: Vec<Kind>,
 
         #[command(subcommand)]
         target: SearchTarget,
@@ -69,12 +86,15 @@ impl Commands {
             path: path.to_string(),
             source: false,
             recursive: false,
+            kind: vec![],
+            docs: DocLevel::default(),
         }
     }
 
     pub fn search(query: impl Display) -> Self {
         Self::Search {
             limit: 10,
+            kind: vec![],
             target: SearchTarget::All {
                 query: vec![query.to_string()],
             },
@@ -88,11 +108,17 @@ impl Commands {
     pub fn with_source(self) -> Self {
         match self {
             Self::Get {
-                path, recursive, ..
+                path,
+                recursive,
+                kind,
+                docs,
+                ..
             } => Self::Get {
                 path,
                 source: true,
                 recursive,
+                kind,
+                docs,
             },
             other => other,
         }
@@ -100,7 +126,11 @@ impl Commands {
 
     pub fn in_crate(self, crate_: impl Display) -> Self {
         match self {
-            Self::Search { limit, target } => {
+            Self::Search {
+                limit,
+                kind,
+                target,
+            } => {
                 let query = match target {
                     SearchTarget::All { query } => query,
                     SearchTarget::Crate(parts) => parts.into_iter().skip(1).collect(),
@@ -110,6 +140,7 @@ impl Commands {
                 parts.extend(query);
                 Self::Search {
                     limit,
+                    kind,
                     target: SearchTarget::Crate(parts),
                 }
             }
@@ -119,10 +150,18 @@ impl Commands {
 
     pub fn recursive(self) -> Self {
         match self {
-            Self::Get { path, source, .. } => Self::Get {
+            Self::Get {
+                path,
+                source,
+                kind,
+                docs,
+                ..
+            } => Self::Get {
                 path,
                 source,
                 recursive: true,
+                kind,
+                docs,
             },
             other => other,
         }
@@ -130,7 +169,11 @@ impl Commands {
 
     pub fn with_limit(self, limit: usize) -> Self {
         match self {
-            Self::Search { target, .. } => Self::Search { limit, target },
+            Self::Search { target, kind, .. } => Self::Search {
+                limit,
+                kind,
+                target,
+            },
             other => other,
         }
     }
@@ -144,12 +187,25 @@ impl Commands {
                 path,
                 source,
                 recursive,
+                kind,
+                docs,
             } => {
+                request
+                    .format_context()
+                    .set_filter(crate::kind::predicate(&kind))
+                    .set_doc_level(docs);
                 let (doc, is_error, item_ref) = get::execute(request, &path, source, recursive);
                 let history_entry = item_ref.map(HistoryEntry::Item);
                 (doc, is_error, history_entry)
             }
-            Commands::Search { limit, target } => {
+            Commands::Search {
+                limit,
+                kind,
+                target,
+            } => {
+                request
+                    .format_context()
+                    .set_filter(crate::kind::predicate(&kind));
                 let (crate_, query_parts) = match target {
                     SearchTarget::All { query } => (None, query),
                     SearchTarget::Crate(mut parts) => {
