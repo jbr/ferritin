@@ -14,7 +14,7 @@ anyhow.workspace = true
 cargo_metadata.workspace = true
 elsa.workspace = true
 fieldwork = "0.5.2"
-log = "0.4.32"
+log = "0.4.33"
 rkyv = "0.8.16"
 rustc-hash.workspace = true
 rustdoc-types.workspace = true
@@ -22,7 +22,7 @@ rustdoc-types-56 = { package = "rustdoc-types", version = "0.56" }
 rustdoc-types-55 = { package = "rustdoc-types", version = "0.55" }
 serde.workspace = true
 strsim.workspace = true
-trillium-client = "0.9.6"
+trillium-client = "0.9.7"
 walkdir.workspace = true
 zstd = "0.13"
 home = "0.5.12"
@@ -32,7 +32,7 @@ sonic-rs = "0.5.8"
 rayon = "1.12.0"
 memchr = "2.8.2"
 trillium-redirect = { version = "0.3.0", features = ["client"] }
-trillium-logger = { version = "0.5.3", features = ["client"] }
+trillium-logger = { version = "0.5.4", features = ["client"] }
 trillium-compression = { version = "0.3.1", features = ["client"] }
 trillium-client-retry = "0.0.1"
 
