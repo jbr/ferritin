@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.12.0...ferritin-common-v0.13.0) - 2026-06-24
+
+### Added
+
+- attempt to parse newer format versions than we're compiled against
+- improve http client
+
+### Other
+
+- *(deps)* update log, trillium-client, and trillium-logger
+
 ## [0.12.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.11.2...ferritin-common-v0.12.0) - 2026-06-20
 
 ### Added

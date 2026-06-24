@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0](https://github.com/jbr/ferritin/compare/ferritin-v0.11.1...ferritin-v0.12.0) - 2026-06-24
+
+### Added
+
+- add type filtering
+- attempt to parse newer format versions than we're compiled against
+
+### Other
+
+- *(deps)* update log, trillium-client, and trillium-logger
+- update snaps to rustc 1.98.0-nightly (4429659e4 2026-06-22)
+- update binstall templates
+
 ## [0.11.1](https://github.com/jbr/ferritin/compare/ferritin-v0.11.0...ferritin-v0.11.1) - 2026-06-20
 
 ### Fixed

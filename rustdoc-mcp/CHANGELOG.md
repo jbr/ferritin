@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.7.0...rustdoc-mcp-v0.7.1) - 2026-06-24
+
+### Other
+
+- *(deps)* update log, trillium-client, and trillium-logger
+- update binstall templates
+
 ## [0.7.0](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.6.7...rustdoc-mcp-v0.7.0) - 2026-06-20
 
 ### Added
