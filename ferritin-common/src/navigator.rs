@@ -241,7 +241,7 @@ impl Navigator {
     /// Index external crates from a loaded crate
     fn index_external_crates(&self, crate_data: &RustdocData) {
         log::debug!("Indexing external crates from {}", crate_data.name());
-        for external in crate_data.external_crates.values() {
+        for external in crate_data.external_crates_iter() {
             if let Some(url) = &external.html_root_url
                 && let Some((real_name, version)) = parse_docsrs_url(url)
                 && let Ok(version) = Version::parse(version)

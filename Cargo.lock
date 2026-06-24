@@ -1112,6 +1112,7 @@ dependencies = [
  "home",
  "log",
  "memchr",
+ "memmap2",
  "pulldown-cmark",
  "rayon",
  "rkyv",
@@ -1922,6 +1923,15 @@ name = "memchr"
 version = "2.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "88904434abc2901f197fe8cc55f0445e7ded921dba5911dad2e2b39b48e663c4"
+
+[[package]]
+name = "memmap2"
+version = "0.9.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d1219ed1b7f229ee7104d281dd01d6802fe28bb6e95d292942c4daacdeb798c0"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "memmem"
@@ -2870,6 +2880,7 @@ version = "0.58.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "691bf02c1aea90386d0eda370969473a56e738b5278d3cbeed12eebaf4ec4f55"
 dependencies = [
+ "rkyv",
  "rustc-hash",
  "serde",
  "serde_derive",

@@ -220,7 +220,7 @@ impl<'a> Request<'a> {
             let mut crate_spans = vec![];
             let item_crate = item.crate_docs();
             crate_spans.push(StyledSpan::plain(item_crate.name()));
-            if let Some(version) = item_crate.crate_version.as_deref() {
+            if let Some(version) = item_crate.crate_version() {
                 crate_spans.push(StyledSpan::plain(" ("));
                 let version_normalized = version.replace('\t', " ");
                 crate_spans.push(StyledSpan::plain(version_normalized));
@@ -264,7 +264,7 @@ impl<'a> Request<'a> {
 
         // Add version if re-exported from different crate
         if let Some(source_crate) = source_crate
-            && source_crate != item_crate
+            && !std::ptr::eq(source_crate, item_crate)
             && let Some(version) = source_crate.version()
         {
             defined_at_spans.push(StyledSpan::plain(" ("));
@@ -278,7 +278,7 @@ impl<'a> Request<'a> {
             StyledSpan::plain(" "),
             StyledSpan::plain(item_crate.name()),
         ];
-        if let Some(version) = item_crate.crate_version.as_deref() {
+        if let Some(version) = item_crate.crate_version() {
             crate_info_spans.push(StyledSpan::plain(" ("));
             // Replace tabs with spaces for consistent rendering across output modes
             let version_normalized = version.replace('\t', " ");

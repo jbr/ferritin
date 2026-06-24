@@ -437,7 +437,7 @@ impl<'a> Terms<'a> {
             let target = if let Some(item) = item.get(link_id) {
                 // Same-crate item
                 ItemOrSummary::Item(item)
-            } else if let Some(summary) = item.crate_docs().paths.get(link_id) {
+            } else if let Some(summary) = item.crate_docs().path_summary(link_id) {
                 // External item summary
                 ItemOrSummary::Summary(item.build_ref(summary))
             } else {

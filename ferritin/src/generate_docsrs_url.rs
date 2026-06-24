@@ -4,7 +4,7 @@ use rustdoc_types::{Item, ItemEnum};
 pub(crate) fn generate_docsrs_url(item: DocRef<'_, Item>) -> String {
     let docs = item.crate_docs();
     let crate_name = docs.name();
-    let version = docs.crate_version.as_deref().unwrap_or("latest");
+    let version = docs.crate_version().unwrap_or("latest");
     let is_std = docs.provenance().is_std();
 
     // Check if this item has its own page (has a path in the paths map)
@@ -119,7 +119,7 @@ fn generate_url_for_associated_item(
     let kind = item.kind();
 
     // Search through all impl blocks to find which one contains this item
-    for impl_item in docs.index.values() {
+    for impl_item in docs.all_items() {
         if let ItemEnum::Impl(impl_block) = &impl_item.inner
             && impl_block.items.contains(item_id)
         {
@@ -158,7 +158,7 @@ fn generate_url_for_associated_item(
     // Check if this is an enum variant
     if matches!(kind, rustdoc_types::ItemKind::Variant) {
         // Find the parent enum
-        for enum_item in docs.index.values() {
+        for enum_item in docs.all_items() {
             if let ItemEnum::Enum(enum_data) = &enum_item.inner
                 && enum_data.variants.contains(item_id)
             {
@@ -172,7 +172,7 @@ fn generate_url_for_associated_item(
     // Check if this is a struct field
     if matches!(kind, rustdoc_types::ItemKind::StructField) {
         // Find the parent struct
-        for struct_item in docs.index.values() {
+        for struct_item in docs.all_items() {
             if let ItemEnum::Struct(struct_data) = &struct_item.inner
                 && matches!(&struct_data.kind, rustdoc_types::StructKind::Plain { fields, .. } if fields.contains(item_id))
             {
