@@ -178,7 +178,7 @@ impl<'a> Resolver<'a> {
             return None;
         };
 
-        let item = crate_data.get(self.navigator, &crate_data.root)?;
+        let item = crate_data.get(self.navigator, crate_data.root_id())?;
         let Some(path_start_index) = path_start_index else {
             return Some(item);
         };
@@ -195,7 +195,7 @@ impl<'a> Resolver<'a> {
         if let Some(item) = crate_data
             .path_to_id
             .get(suffix)
-            .and_then(|id| crate_data.index.get(id))
+            .and_then(|id| crate_data.get_item(id))
             .map(|item| DocRef::new(self.navigator, crate_data, item))
         {
             return Some(item);
@@ -208,7 +208,7 @@ impl<'a> Resolver<'a> {
             let parent_suffix = &suffix[..sep];
             let child_start = path_start_index + sep + 2;
             if let Some(parent_id) = crate_data.path_to_id.get(parent_suffix)
-                && let Some(parent_item) = crate_data.index.get(parent_id)
+                && let Some(parent_item) = crate_data.get_item(parent_id)
             {
                 let parent_ref = DocRef::new(self.navigator, crate_data, parent_item);
                 return self.find_children_recursive(parent_ref, path, child_start, suggestions);
@@ -667,7 +667,7 @@ impl<'a> Resolver<'a> {
     /// crosses the crate boundary, loading the target crate if needed and
     /// walking its public path.
     pub fn get_path(&mut self, origin: DocRef<'a, Item>, id: Id) -> Option<DocRef<'a, Item>> {
-        let item_summary = origin.crate_docs().paths.get(&id)?;
+        let item_summary = origin.crate_docs().path_summary(&id)?;
         let crate_ = origin
             .crate_docs()
             .traverse_to_crate_by_id(self.navigator, item_summary.crate_id)?;
@@ -690,7 +690,7 @@ impl<'a> Resolver<'a> {
     ) -> Option<(DocRef<'a, Item>, Vec<&'a str>)> {
         let mut path = vec![];
         let crate_docs = self.navigator.load_crate(crate_name, &VersionReq::STAR)?;
-        let mut item = crate_docs.get(self.navigator, &crate_docs.root)?;
+        let mut item = crate_docs.get(self.navigator, crate_docs.root_id())?;
         path.push(item.crate_docs().name());
         for id in ids {
             item = item.get(&Id(*id))?;

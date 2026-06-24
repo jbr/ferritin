@@ -16,7 +16,9 @@ This document focuses primarily on ferritin-common and ferritin, as rustdoc-mcp 
 
 ### Zero-Copy Architecture
 
-Throughout the codebase, data is borrowed from the rustdoc JSON rather than copied. The `Navigator` owns all `RustdocData` instances in a `FrozenMap`, and all references (`&'a RustdocData`, `DocRef<'a>`) borrow from this single source. String data uses `Cow<'a, str>` to borrow from JSON wherever possible, minimizing allocations and memory pressure.
+Throughout the codebase, data is borrowed rather than copied. The `Navigator` owns all `RustdocData` instances in a `FrozenMap`, and all references (`&'a RustdocData`, `DocRef<'a>`) borrow from this single source. String data uses `Cow<'a, str>` to borrow wherever possible, minimizing allocations and memory pressure.
+
+The per-item data those references point at is *materialized lazily* from a memory-mapped rkyv archive (see [Sparse Storage](#rustdocdata---per-crate-documentation) and [rkyv Sidecar Cache](#rkyv-sidecar-cache)) and cached in an append-only `FrozenMap<Id, Box<Item>>`, so a lookup that touches one item out of a huge crate (e.g. one type from the 61 MB `core`) does not pay to parse the whole thing. The `FrozenMap` hands out stable addresses, so `&'a Item` borrows stay valid as more items are materialized — the same interior-mutability trick the `working_set` itself uses.
 
 ### Cross-Crate Transparency
 
@@ -146,9 +148,33 @@ pub struct DocRef<'a, T> {
 
 It derefs to the inner item for convenience. The presence of `navigator` enables cross-crate operations without requiring mutable state or re-borrowing.
 
+**Identity is logical, not pointer-based.** `DocRef`'s `Eq` and `Hash` both key on
+`(crate name, item id)` — *not* on the `&item` address. This matters because the warm
+path can materialize one logical item at two different addresses (see [Sparse
+Storage](#sparse-storage)): once lazily in `item_cache` via `get_item`, and again in
+`full_index` via `all_items()`. Pointer equality would therefore treat the same item as
+distinct depending on which path produced it, silently breaking any `HashSet`/`HashMap`
+keyed on `DocRef` — e.g. the recursive-listing `visited` dedup set and the search
+indexer's link-count aggregation. Crate name maps 1:1 to a `RustdocData` within a
+`Navigator` (one version per crate name), and `id` is unique within a crate's index, so
+`(crate name, id)` is a sound identity.
+
 ## RustdocData - Per-Crate Documentation
 
-`RustdocData` wraps `rustdoc_types::Crate` with convenience methods. The key method is `traverse_to_crate_by_id`:
+### Sparse Storage
+
+`RustdocData` provides query methods over a rustdoc `Crate`, but does not hold one. Storage is sparse:
+
+- **`archive: Option<Archive>`** — a memory-mapped rkyv archive (see [rkyv Sidecar Cache](#rkyv-sidecar-cache)). `Archive::krate()` is an O(1) pointer cast yielding `&ArchivedCrate`; the OS pages in only the bytes actually touched.
+- **`item_cache: FrozenMap<Id, Box<Item>>`** — point lookups (`get_item`) deserialize one item from the archive on first access and cache it here with a stable address.
+- **`full_index: OnceLock<FxHashMap<Id, Item>>`** — the whole item index, materialized only when a caller must iterate *every* item (the impl-block scans in `MethodIter`/`TraitIter`/`generate_docsrs_url`, reached via `all_items()`). Set up-front on the eager path (a freshly-parsed `Crate`); deserialized from the archive on first use otherwise. This is a *separate* store from `item_cache` (the `FrozenMap` deliberately can't be iterated behind `&self`, which is why a plain map is needed for whole-index scans), so on the warm path a single logical item can be resident at two distinct addresses — once here and once in `item_cache`. Code must therefore compare items by logical identity rather than pointer (see [`DocRef` identity](#docrefa-t---smart-reference)).
+- **Eager small maps** — `paths` (`ItemSummary`), `external_crates`, `root`, and `crate_version` are materialized up front (they are small and consulted constantly for cross-crate and link resolution), so accessors can hand out borrows cheaply.
+
+Two constructors: `from_crate` (cold path — keeps the parsed index resident and best-effort writes the sidecar) and `try_from_sidecar` (warm path — mmaps the archive, deserializes only the small maps, leaves items lazy). All access goes through accessor methods (`get_item`, `path_summary`, `root_id`, `external_crate`, `all_items`, `crate_version`) rather than field access; there is deliberately no `Deref` to `Crate`, so the storage strategy stays an implementation detail.
+
+### Cross-crate traversal
+
+The key method is `traverse_to_crate_by_id`:
 
 ```rust
 pub fn traverse_to_crate_by_id(&self, navigator: &Navigator, crate_id: u32)
@@ -193,6 +219,18 @@ $CARGO_HOME/rustdoc-json/{format-version}/{crate}/{version}.json
 The `conversions` module chains format conversions to normalize older rustdoc JSON formats to the current version on read. This allows caching older format JSON and avoiding re-fetches when normalization logic changes.
 
 Formats *newer* than the `rustdoc-types` we build against are handled in the opposite direction: rustdoc JSON bumps are typically additive and `rustdoc-types` does not `deny_unknown_fields`, so a newer additive format (e.g. a future format that only adds a field per item, as 58 did with `stability`) deserializes cleanly with the current types — the extra fields are ignored. `load_and_normalize` attempts this parse for any version above `FORMAT_VERSION` and surfaces a clear "needs an update" error only if a genuinely breaking change prevents it. This lets ferritin read crates built with a newer docs.rs toolchain before a matching `rustdoc-types` release exists.
+
+### rkyv Sidecar Cache
+
+JSON parsing dominates load time — even a single-item lookup parses the whole file (e.g. ~410 ms to parse the 61 MB `core.json`). To avoid re-parsing on every invocation, the first load of a crate serializes the parsed `Crate` to an rkyv archive beside the JSON, and subsequent loads memory-map that archive instead (see [Sparse Storage](#sparse-storage)). On the warm path, `core` loads in ~7 ms instead of ~500 ms and a `std::vec::Vec` lookup drops from ~880 ms to ~190 ms wall.
+
+The archive (`archive` module) is a purely local, derived cache — docs.rs only serves JSON:
+
+- **Filename tag.** The sidecar is `{json}.rkyv{N}-fmt{FORMAT_VERSION}-{arch}-{ptr_width}.rkyv`. An rkyv archive is not portable across rustdoc/rkyv layout, target architecture, or pointer width, so all of those go in the name: a foreign or stale archive simply isn't found and is regenerated. `N` (`ARCHIVE_SCHEMA`) is bumped on any other layout-affecting change.
+- **Fail-safe, never authoritative.** Writes go through a temp file + atomic rename (no torn reads); freshness is checked against the JSON mtime. *Any* miss, staleness, or error falls back to parsing the JSON, which is kept as the source of truth (and for `format_version` peeking and regeneration). This best-effort fallback is why there is no feature flag — a bad or absent archive behaves exactly like the pre-archive code.
+- **Cost.** Roughly doubles cache disk usage (JSON + archive) and adds a one-time serialize (~180 ms for `core`) on the first load after a cache fill.
+
+Because the read path uses `access_unchecked` (no validation pass) over a file keyed by the layout tag and written atomically, the archived bytes are trusted as something this exact build produced.
 
 ## Search - Lazy TF-IDF Indexing
 

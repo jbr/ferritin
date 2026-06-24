@@ -60,14 +60,23 @@ pub struct DocRef<'a, T> {
     parent: Option<ParentRef<'a>>,
 }
 
-// Equality based on item pointer and crate provenance
-impl<'a, T> PartialEq for DocRef<'a, T> {
+// Logical identity: crate name + item id, consistent with `Hash` below.
+//
+// This deliberately is *not* pointer identity. A single logical item can be
+// materialized at more than one address on the warm (rkyv sidecar) path — once
+// lazily in `item_cache` (via `get_item`) and once in the full-index scan store
+// (via `all_items`) — so comparing `&item` pointers would treat the same item as
+// distinct depending on which path produced it, breaking `HashSet`/`HashMap`
+// dedup keyed on `DocRef`. Crate name maps 1:1 to a `RustdocData` within a
+// `Navigator` (one version per crate name), and `id` is unique within a crate's
+// index, so `(name, id)` is a sound identity.
+impl PartialEq for DocRef<'_, Item> {
     fn eq(&self, other: &Self) -> bool {
-        std::ptr::eq(self.item, other.item) && std::ptr::eq(self.crate_docs, other.crate_docs)
+        self.id == other.id && self.crate_docs.name() == other.crate_docs.name()
     }
 }
 
-impl<'a, T> Eq for DocRef<'a, T> {}
+impl Eq for DocRef<'_, Item> {}
 
 impl Hash for DocRef<'_, Item> {
     fn hash<H: Hasher>(&self, state: &mut H) {
@@ -126,7 +135,7 @@ impl<'a> DocRef<'a, Item> {
     }
 
     pub fn summary(&self) -> Option<&'a ItemSummary> {
-        self.crate_docs().paths.get(&self.id)
+        self.crate_docs().path_summary(&self.id)
     }
 
     /// The fully-qualified path of this item's module, for use in resolving
@@ -200,7 +209,7 @@ impl<'a> DocRef<'a, Item> {
         // Prefer a path without a discriminator on the parent segment (simpler output).
         // The unqualified key is only present in path_to_id when there is no collision at
         // that path, so its presence is a reliable signal that we can omit the discriminator.
-        if let Some(parent_summary) = parent_ref.crate_docs.paths.get(&parent_ref.item.id)
+        if let Some(parent_summary) = parent_ref.crate_docs.path_summary(&parent_ref.item.id)
             && let Some(tail) = parent_summary.path.get(1..)
         {
             let parent_key = tail.join("::");
@@ -316,7 +325,7 @@ impl<'a> DocRef<'a, ItemSummary> {
             return None;
         }
 
-        let external = self.crate_docs().external_crates.get(&self.crate_id)?;
+        let external = self.crate_docs().external_crate(&self.crate_id)?;
         Some(self.build_ref(external))
     }
 }

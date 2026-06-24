@@ -146,7 +146,7 @@ pub struct TraitIter<'a> {
 }
 impl<'a> TraitIter<'a> {
     fn new(item: DocRef<'a, Item>) -> Self {
-        let item_iter = item.crate_docs().index.values();
+        let item_iter = item.crate_docs().all_items();
         Self { item, item_iter }
     }
 }
@@ -175,7 +175,7 @@ pub struct ImplementorIter<'a> {
 
 impl<'a> ImplementorIter<'a> {
     fn new(trait_item: DocRef<'a, Item>) -> Self {
-        let item_iter = trait_item.crate_docs().index.values();
+        let item_iter = trait_item.crate_docs().all_items();
         Self {
             trait_item,
             item_iter,
@@ -231,7 +231,7 @@ pub(crate) struct InherentImplBlockIter<'a> {
 
 impl<'a> InherentImplBlockIter<'a> {
     pub(crate) fn new(item: DocRef<'a, Item>) -> Self {
-        let item_iter = item.crate_docs().index.values();
+        let item_iter = item.crate_docs().all_items();
         Self { item, item_iter }
     }
 }

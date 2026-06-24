@@ -202,15 +202,14 @@ impl DocsRsClient {
         let crate_data = crate::conversions::load_and_normalize(&json, Some(format_version))
             .context("Failed to normalize rustdoc JSON")?;
 
-        // Build RustdocData
-        let data = RustdocData {
+        // Build RustdocData (also writes the rkyv sidecar for next time)
+        let data = RustdocData::from_crate(
             crate_data,
-            name: crate_name.to_string(),
-            provenance: CrateProvenance::DocsRs,
+            crate_name.to_string(),
+            CrateProvenance::DocsRs,
             fs_path,
-            version: Some(crate_version),
-            path_to_id: Default::default(),
-        };
+            Some(crate_version),
+        );
 
         Ok(Some(data))
     }
@@ -317,6 +316,16 @@ impl DocsRsClient {
                 path.display()
             );
 
+            // Warm path: memory-map the rkyv sidecar instead of parsing JSON.
+            if let Some(data) = RustdocData::try_from_sidecar(
+                &path,
+                crate_name.to_string(),
+                CrateProvenance::LocalDependency,
+                None,
+            ) {
+                return Ok(Some(data));
+            }
+
             let start = Instant::now();
             let json = async_fs::read(&path)
                 .await
@@ -341,14 +350,13 @@ impl DocsRsClient {
                 .as_ref()
                 .and_then(|v| Version::parse(v).ok());
 
-            let data = RustdocData {
+            let data = RustdocData::from_crate(
                 crate_data,
-                name: crate_name.to_string(),
-                provenance: CrateProvenance::LocalDependency,
-                fs_path: path,
+                crate_name.to_string(),
+                CrateProvenance::LocalDependency,
+                path,
                 version,
-                path_to_id: Default::default(),
-            };
+            );
 
             return Ok(Some(data));
         }
