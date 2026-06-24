@@ -2,6 +2,7 @@
 // Re-export rustdoc_types for convenience
 pub use rustdoc_types;
 
+mod archive;
 pub mod conversions;
 pub mod crate_name;
 pub mod doc_ref;

@@ -107,6 +107,18 @@ impl Source for StdSource {
     fn load(&self, crate_name: &str, _version: Option<&Version>) -> Option<RustdocData> {
         let crate_info = self.lookup(crate_name, &VersionReq::STAR)?;
         let json_path = crate_info.json_path.as_ref()?.to_owned();
+        let version = Some(self.rustc_version.clone());
+
+        // Warm path: memory-map the rkyv sidecar instead of parsing JSON.
+        if let Some(data) = RustdocData::try_from_sidecar(
+            &json_path,
+            crate_name.to_string(),
+            CrateProvenance::Std,
+            version.clone(),
+        ) {
+            return Some(data);
+        }
+
         let content = std::fs::read(&json_path).ok()?;
 
         // Normalize through the conversions module like the other sources, so
@@ -114,14 +126,13 @@ impl Source for StdSource {
         // rustup's std JSON tracks the nightly toolchain, which can be ahead of
         // the rustdoc-types we build against.
         let crate_data = crate::conversions::load_and_normalize(&content, None).ok()?;
-        Some(RustdocData {
+        Some(RustdocData::from_crate(
             crate_data,
-            name: crate_name.to_string(),
-            provenance: CrateProvenance::Std,
-            fs_path: json_path,
-            version: Some(self.rustc_version.clone()),
-            path_to_id: Default::default(),
-        })
+            crate_name.to_string(),
+            CrateProvenance::Std,
+            json_path,
+            version,
+        ))
     }
 
     fn list_available<'a>(&'a self) -> Box<dyn Iterator<Item = &'a CrateInfo> + '_> {

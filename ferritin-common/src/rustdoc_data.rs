@@ -1,20 +1,60 @@
+use elsa::sync::FrozenMap;
 use fieldwork::Fieldwork;
-use rustdoc_types::{Crate, ExternalCrate, Id, Item, ItemKind};
+use rkyv::rancor::Error;
+use rustc_hash::FxHashMap;
+use rustdoc_types::{ArchivedId, Crate, ExternalCrate, Id, Item, ItemKind, ItemSummary};
 use semver::{Version, VersionReq};
 use std::collections::HashMap;
+use std::collections::hash_map::Values;
 use std::fmt::{self, Debug, Formatter};
-use std::ops::Deref;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+use std::sync::{Arc, OnceLock};
+use std::thread::JoinHandle;
 
 use crate::CrateProvenance;
+use crate::archive::{self, Archive};
 use crate::doc_ref::{self, DocRef};
 use crate::navigator::{Navigator, parse_docsrs_url};
 
-/// Wrapper around rustdoc JSON data that provides convenient query methods
-#[derive(Clone, Fieldwork, PartialEq, Eq)]
+/// Wrapper around a rustdoc `Crate` with convenient query methods.
+///
+/// Storage has two shapes:
+///
+/// - **Cold path** (a freshly-parsed `Crate`): the whole crate is kept `resident`
+///   behind an `Arc`, and a background thread serializes it to an rkyv sidecar for
+///   next time (`write_handle`, joined on drop). Accessors read straight from the
+///   resident `Crate`.
+/// - **Warm path** (an existing sidecar): the heavy item `index` stays in the
+///   memory-mapped `archive` and individual items are deserialized on demand into
+///   `item_cache`, so a lookup that touches one item out of a large crate does not
+///   pay to parse the whole thing. The small structural maps (`paths`,
+///   `external_crates`, `root`, `crate_version`) are materialized eagerly so
+///   accessors can hand out borrows; `full_index` holds the entire index once a
+///   caller must iterate every item (impl-block scans).
+#[derive(Fieldwork)]
 #[fieldwork(get, rename_predicates)]
 pub struct RustdocData {
-    pub(crate) crate_data: Crate,
+    #[field = false]
+    resident: Option<Arc<Crate>>,
+    #[field = false]
+    write_handle: Option<JoinHandle<()>>,
+    #[field = false]
+    archive: Option<Archive>,
+    #[field = false]
+    item_cache: FrozenMap<Id, Box<Item>>,
+    #[field = false]
+    full_index: OnceLock<FxHashMap<Id, Item>>,
+    // The eager small maps below are populated only on the warm path; on the cold
+    // path the resident `Crate` is consulted instead and these stay empty.
+    #[field = false]
+    pub(crate) paths: FxHashMap<Id, ItemSummary>,
+    #[field = false]
+    external_crates: FxHashMap<u32, ExternalCrate>,
+    #[field = false]
+    root: Id,
+    #[field = false]
+    crate_version: Option<String>,
+
     pub(crate) name: String,
     pub(crate) provenance: CrateProvenance,
     pub(crate) fs_path: PathBuf,
@@ -46,17 +86,189 @@ impl Debug for RustdocData {
     }
 }
 
-impl Deref for RustdocData {
-    type Target = Crate;
+impl Drop for RustdocData {
+    /// Wait for the background sidecar write (if any) to finish, so a short-lived
+    /// process doesn't exit before the write completes — the result has already
+    /// been rendered, so this only delays teardown, not user-visible output.
+    fn drop(&mut self) {
+        if let Some(handle) = self.write_handle.take() {
+            let _ = handle.join();
+        }
+    }
+}
 
-    fn deref(&self) -> &Self::Target {
-        &self.crate_data
+#[cfg(test)]
+impl RustdocData {
+    /// Insert an extra path summary into the resident crate (synthetic test crates
+    /// are always resident and uniquely owned, since no sidecar write is spawned).
+    pub(crate) fn insert_path_for_test(&mut self, id: Id, summary: ItemSummary) {
+        self.resident
+            .as_mut()
+            .and_then(Arc::get_mut)
+            .expect("test crate must be uniquely resident")
+            .paths
+            .insert(id, summary);
     }
 }
 
 impl RustdocData {
+    /// Construct from a freshly-parsed `Crate` (the cold path). The crate is kept
+    /// resident so this load is fully materialized, while a background thread
+    /// serializes it to an rkyv sidecar beside `fs_path` so the next load can take
+    /// the warm path. The write thread is joined on drop.
+    pub(crate) fn from_crate(
+        crate_data: Crate,
+        name: String,
+        provenance: CrateProvenance,
+        fs_path: PathBuf,
+        version: Option<Version>,
+    ) -> Self {
+        let resident = Arc::new(crate_data);
+        let write_handle = archive::write_archive_async(Arc::clone(&resident), fs_path.clone());
+        Self {
+            resident: Some(resident),
+            write_handle,
+            archive: None,
+            item_cache: FrozenMap::new(),
+            full_index: OnceLock::new(),
+            paths: FxHashMap::default(),
+            external_crates: FxHashMap::default(),
+            root: Id(0),
+            crate_version: None,
+            name,
+            provenance,
+            fs_path,
+            version,
+            path_to_id: HashMap::new(),
+        }
+    }
+
+    /// Try to construct from an existing rkyv sidecar (the warm fast path). Returns
+    /// `None` if the sidecar is missing, stale, or unreadable, so the caller falls
+    /// back to parsing JSON. `version`, if not supplied, is taken from the archived
+    /// crate-version string.
+    pub(crate) fn try_from_sidecar(
+        fs_path: &Path,
+        name: String,
+        provenance: CrateProvenance,
+        version: Option<Version>,
+    ) -> Option<Self> {
+        let archive = Archive::open(fs_path)?;
+        let parts = archive.eager_parts()?;
+        let version = version.or_else(|| {
+            parts
+                .crate_version
+                .as_deref()
+                .and_then(|v| Version::parse(v).ok())
+        });
+        Some(Self {
+            resident: None,
+            write_handle: None,
+            archive: Some(archive),
+            item_cache: FrozenMap::new(),
+            full_index: OnceLock::new(),
+            paths: parts.paths,
+            external_crates: parts.external_crates,
+            root: parts.root,
+            crate_version: parts.crate_version,
+            name,
+            provenance,
+            fs_path: fs_path.to_owned(),
+            version,
+            path_to_id: HashMap::new(),
+        })
+    }
+
+    // ---- Accessors ----
+    //
+    // Each consults the resident `Crate` (cold path) when present, otherwise the
+    // eager maps / lazily-materialized archive (warm path). Point lookups are
+    // cheap; `all_items` forces full materialization and is used only by the
+    // impl-block scans.
+
+    /// The eagerly-available `paths` map — the resident crate's, or the small map
+    /// deserialized from the archive on the warm path.
+    fn paths_map(&self) -> &FxHashMap<Id, ItemSummary> {
+        self.resident.as_ref().map_or(&self.paths, |c| &c.paths)
+    }
+
+    /// The eagerly-available `external_crates` map (resident or warm).
+    fn external_map(&self) -> &FxHashMap<u32, ExternalCrate> {
+        self.resident
+            .as_ref()
+            .map_or(&self.external_crates, |c| &c.external_crates)
+    }
+
+    /// Look up a single item by `Id`, deserializing it from the archive on first
+    /// access (and caching it) on the warm path.
+    pub fn get_item(&self, id: &Id) -> Option<&Item> {
+        if let Some(crate_data) = &self.resident {
+            return crate_data.index.get(id);
+        }
+        if let Some(index) = self.full_index.get() {
+            return index.get(id);
+        }
+        if let Some(item) = self.item_cache.get(id) {
+            return Some(item);
+        }
+        let archived = self.archive.as_ref()?.krate();
+        let archived_item = archived
+            .index
+            .get(&ArchivedId(rkyv::rend::u32_le::from_native(id.0)))?;
+        let item = rkyv::deserialize::<Item, Error>(archived_item).ok()?;
+        Some(self.item_cache.insert(*id, Box::new(item)))
+    }
+
+    /// Look up an item's summary (definition path, kind, owning crate) by `Id`.
+    pub fn path_summary(&self, id: &Id) -> Option<&ItemSummary> {
+        self.paths_map().get(id)
+    }
+
+    /// The `Id` of this crate's root module.
+    pub fn root_id(&self) -> &Id {
+        self.resident.as_ref().map_or(&self.root, |c| &c.root)
+    }
+
+    /// Look up an external-crate entry by its `crate_id`.
+    pub fn external_crate(&self, crate_id: &u32) -> Option<&ExternalCrate> {
+        self.external_map().get(crate_id)
+    }
+
+    /// Iterate every external-crate entry.
+    pub fn external_crates_iter(&self) -> impl Iterator<Item = &ExternalCrate> {
+        self.external_map().values()
+    }
+
+    /// Iterate every item in the crate. On the warm path this forces full
+    /// materialization of the index (deserializing it from the archive on first
+    /// use); used only for whole-index impl-block scans.
+    pub fn all_items(&self) -> Values<'_, Id, Item> {
+        match &self.resident {
+            Some(crate_data) => crate_data.index.values(),
+            None => self.materialized_index().values(),
+        }
+    }
+
+    /// The rustdoc JSON's own crate-version string, if present.
+    pub fn crate_version(&self) -> Option<&str> {
+        self.resident
+            .as_ref()
+            .map_or(self.crate_version.as_deref(), |c| {
+                c.crate_version.as_deref()
+            })
+    }
+
+    /// The fully-materialized item index, deserialized from the archive on first
+    /// use and cached. Warm path only — the cold path reads the resident crate.
+    fn materialized_index(&self) -> &FxHashMap<Id, Item> {
+        self.full_index.get_or_init(|| match &self.archive {
+            Some(archive) => archive.full_index(),
+            None => FxHashMap::default(),
+        })
+    }
+
     pub(crate) fn get<'a>(&'a self, navigator: &'a Navigator, id: &Id) -> Option<DocRef<'a, Item>> {
-        let item = self.crate_data.index.get(id)?;
+        let item = self.get_item(id)?;
         Some(DocRef::new(navigator, self, item))
     }
 
@@ -95,11 +307,14 @@ impl RustdocData {
     }
 
     pub fn path<'a>(&'a self, id: &Id) -> Option<doc_ref::Path<'a>> {
-        self.paths.get(id).map(|summary| summary.into())
+        self.paths_map().get(id).map(|summary| summary.into())
     }
 
     pub fn root_item<'a>(&'a self, navigator: &'a Navigator) -> DocRef<'a, Item> {
-        DocRef::new(navigator, self, &self.index[&self.root])
+        let item = self
+            .get_item(self.root_id())
+            .expect("crate root item must exist in the index");
+        DocRef::new(navigator, self, item)
     }
 
     pub fn traverse_to_crate_by_id<'a>(
@@ -116,7 +331,7 @@ impl RustdocData {
             name,
             html_root_url,
             ..
-        } = self.external_crates.get(&id)?;
+        } = self.external_crate(&id)?;
 
         let (name, version_req) = html_root_url.as_deref().and_then(parse_docsrs_url).map_or(
             (&**name, VersionReq::STAR),
@@ -141,7 +356,7 @@ impl RustdocData {
     pub(crate) fn build_path_index(&mut self) {
         // Collect all local items grouped by their unqualified path.
         let mut by_unqualified: HashMap<String, Vec<(Id, ItemKind)>> = HashMap::new();
-        for (id, summary) in &self.crate_data.paths {
+        for (id, summary) in self.paths_map() {
             if summary.crate_id != 0 {
                 continue;
             }

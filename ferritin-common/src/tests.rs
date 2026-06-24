@@ -263,26 +263,26 @@ fn synth_crate(
         index.insert(item.id, item);
     }
 
-    RustdocData {
-        crate_data: Crate {
-            root: Id(root_id),
-            crate_version: None,
-            includes_private: false,
-            index,
-            paths,
-            external_crates: Default::default(),
-            target: Target {
-                triple: String::new(),
-                target_features: vec![],
-            },
-            format_version: rustdoc_types::FORMAT_VERSION,
+    let crate_data = Crate {
+        root: Id(root_id),
+        crate_version: None,
+        includes_private: false,
+        index,
+        paths,
+        external_crates: Default::default(),
+        target: Target {
+            triple: String::new(),
+            target_features: vec![],
         },
-        name: name.to_owned(),
-        provenance: CrateProvenance::DocsRs,
-        fs_path: PathBuf::new(),
-        version: None,
-        path_to_id: std::collections::HashMap::new(),
-    }
+        format_version: rustdoc_types::FORMAT_VERSION,
+    };
+    RustdocData::from_crate(
+        crate_data,
+        name.to_owned(),
+        CrateProvenance::DocsRs,
+        PathBuf::new(),
+        None,
+    )
 }
 
 #[cfg(test)]
@@ -365,7 +365,7 @@ fn build_prefix_test_navigator() -> Navigator {
         vec![(1, None, vec![100])],
         vec![synth_item(100, Some("TargetStruct"), synth_unit_struct())],
     );
-    target.crate_data.paths.insert(
+    target.insert_path_for_test(
         Id(100),
         ItemSummary {
             crate_id: 0,
@@ -597,14 +597,13 @@ fn iterator_skips_unresolvable_use_items() {
         format_version: rustdoc_types::FORMAT_VERSION,
     };
 
-    let data = RustdocData {
+    let data = RustdocData::from_crate(
         crate_data,
-        name: "fake_crate".into(),
-        provenance: CrateProvenance::DocsRs,
-        fs_path: PathBuf::new(),
-        version: None,
-        path_to_id: HashMap::new(),
-    };
+        "fake_crate".into(),
+        CrateProvenance::DocsRs,
+        PathBuf::new(),
+        None,
+    );
 
     // Build a Navigator with no real sources; load_crate is stubbed by pre-populating
     // working_set. resolve_path of the broken sources will try to look them up via

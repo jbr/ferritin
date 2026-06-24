@@ -45,16 +45,13 @@ fn main() -> Result<()> {
                     println!("✓ Successfully fetched rustdoc data!");
                     println!();
                     println!("Crate: {}", data.name());
-                    println!(
-                        "Version: {}",
-                        data.crate_version.as_deref().unwrap_or("unknown")
-                    );
-                    println!("Items in index: {}", data.index.len());
-                    println!("External crates: {}", data.external_crates.len());
+                    println!("Version: {}", data.crate_version().unwrap_or("unknown"));
+                    println!("Items in index: {}", data.all_items().len());
+                    println!("External crates: {}", data.external_crates_iter().count());
                     println!("Cache path: {}", data.fs_path().display());
 
                     // Print the root module name
-                    if let Some(root_item) = data.index.get(&data.root) {
+                    if let Some(root_item) = data.get_item(data.root_id()) {
                         println!(
                             "Root module: {}",
                             root_item.name.as_deref().unwrap_or("(unnamed)")

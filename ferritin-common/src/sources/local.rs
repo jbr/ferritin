@@ -247,6 +247,15 @@ impl LocalSource {
             feature_rebuild = false;
 
             if !needs_rebuild
+                && let Some(data) = RustdocData::try_from_sidecar(
+                    &json_path,
+                    crate_name.to_string(),
+                    CrateProvenance::Workspace,
+                    None,
+                )
+            {
+                break Some(data);
+            } else if !needs_rebuild
                 && let Ok(content) = std::fs::read(&json_path)
                 && let Ok(crate_data) = crate::conversions::load_and_normalize(&content, None)
             {
@@ -255,14 +264,13 @@ impl LocalSource {
                     .as_ref()
                     .and_then(|v| Version::parse(v).ok());
 
-                break Some(RustdocData {
+                break Some(RustdocData::from_crate(
                     crate_data,
-                    name: crate_name.to_string(),
-                    provenance: CrateProvenance::Workspace,
-                    fs_path: json_path,
+                    crate_name.to_string(),
+                    CrateProvenance::Workspace,
+                    json_path,
                     version,
-                    path_to_id: Default::default(),
-                });
+                ));
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
                 if self
@@ -307,6 +315,16 @@ impl LocalSource {
         let mut tried_rebuilding = false;
         loop {
             if !feature_rebuild
+                && let Some(data) = RustdocData::try_from_sidecar(
+                    json_path,
+                    crate_name.to_string(),
+                    CrateProvenance::LocalDependency,
+                    None,
+                )
+                && data.version() == version
+            {
+                break Some(data);
+            } else if !feature_rebuild
                 && let Ok(content) = std::fs::read(json_path)
                 && let Ok(RustdocVersion { crate_version, .. }) =
                     sonic_rs::serde::from_slice(&content)
@@ -318,14 +336,13 @@ impl LocalSource {
                     .as_ref()
                     .and_then(|v| Version::parse(v).ok());
 
-                break Some(RustdocData {
+                break Some(RustdocData::from_crate(
                     crate_data,
-                    name: crate_name.to_string(),
-                    provenance: CrateProvenance::LocalDependency,
-                    fs_path: json_path.to_owned(),
+                    crate_name.to_string(),
+                    CrateProvenance::LocalDependency,
+                    json_path.to_owned(),
                     version,
-                    path_to_id: Default::default(),
-                });
+                ));
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
                 feature_rebuild = false;

@@ -105,7 +105,7 @@ impl<'a> Request<'a> {
 
             log::trace!("  → Not in same crate index, checking external paths");
             // It's in an external crate - extract path from item_summary without loading
-            if let Some(item_summary) = origin.crate_docs().paths.get(link_id) {
+            if let Some(item_summary) = origin.crate_docs().path_summary(link_id) {
                 log::trace!(
                     "  ✓ Found in paths map: {:?}, kind: {:?}",
                     item_summary.path,
