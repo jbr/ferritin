@@ -83,7 +83,9 @@ Local crate documentation requires a nightly toolchain:
 rustup toolchain install nightly
 ```
 
-Note: There is a relationship between ferritin's version and the nightly toolchain version. Ferritin currently supports rustdoc JSON format versions 55, 56, and 57. If your nightly generates a newer format, ferritin won't be able to build local documentation until support is added.
+Note: There is a relationship between ferritin's version and the nightly toolchain version. Ferritin
+currently supports rustdoc JSON format versions 55, 56, 57, and 58. If your nightly generates a
+newer format, ferritin will make a best effort at parsing it.
 
 ## Usage
 

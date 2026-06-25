@@ -235,6 +235,7 @@ fn synth_crate(
                 links: Default::default(),
                 attrs: vec![],
                 deprecation: None,
+                stability: None,
                 inner: ItemEnum::Module(Module {
                     is_crate: id == root_id,
                     items: ids,
@@ -299,6 +300,7 @@ fn synth_item(id: u32, name: Option<&str>, inner: rustdoc_types::ItemEnum) -> ru
         attrs: vec![],
         deprecation: None,
         inner,
+        stability: None,
     }
 }
 
@@ -510,6 +512,7 @@ fn iterator_skips_unresolvable_use_items() {
             attrs: vec![],
             deprecation: None,
             inner,
+            stability: None,
         }
     }
 

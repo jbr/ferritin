@@ -1,10 +1,11 @@
 //! Version conversions for rustdoc-types formats
 //!
-//! Each module (e.g., `v56`) handles conversion from that version to the next (v56 -> v57).
-//! Conversions can be chained: v55 -> v56 -> v57
+//! Each module (e.g., `v57`) handles conversion from that version to the next (v57 -> v58).
+//! Conversions can be chained: v55 -> v56 -> v57 -> v58
 
 pub mod v55;
 pub mod v56;
+pub mod v57;
 
 use anyhow::{Context, Result};
 use rustdoc_types::{Crate, FORMAT_VERSION};
@@ -15,7 +16,7 @@ use sonic_rs::JsonValueTrait;
 /// This function:
 /// 1. Parses the JSON to determine the format version
 /// 2. Parses with the appropriate rustdoc-types version
-/// 3. Converts through intermediate versions to reach FORMAT_VERSION (57)
+/// 3. Converts through intermediate versions to reach FORMAT_VERSION (58)
 pub fn load_and_normalize(json: &[u8], format_version: Option<u32>) -> Result<Crate> {
     // First, peek at the format version without parsing the entire JSON
     let format_version = if let Some(format_version) = format_version {
@@ -34,18 +35,26 @@ pub fn load_and_normalize(json: &[u8], format_version: Option<u32>) -> Result<Cr
             // Already current version, parse directly
             sonic_rs::serde::from_slice(json).context("Failed to parse as current format")
         }
+        57 => {
+            // Parse as v57, convert to v58
+            let crate_57: rustdoc_types_57::Crate = sonic_rs::serde::from_slice(json)
+                .context("Failed to parse as format version 57")?;
+            v57::convert_crate(crate_57)
+        }
         56 => {
-            // Parse as v56, convert to v57
+            // Parse as v56, convert to v57, then to v58
             let crate_56: rustdoc_types_56::Crate = sonic_rs::serde::from_slice(json)
                 .context("Failed to parse as format version 56")?;
-            v56::convert_crate(crate_56)
+            let crate_57 = v56::convert_crate(crate_56).context("Failed to convert v56 to v57")?;
+            v57::convert_crate(crate_57)
         }
         55 => {
-            // Parse as v55, convert to v56, then to v57
+            // Parse as v55, convert to v56, then to v57, then to v58
             let crate_55: rustdoc_types_55::Crate = sonic_rs::serde::from_slice(json)
                 .context("Failed to parse as format version 55")?;
             let crate_56 = v55::convert_crate(crate_55).context("Failed to convert v55 to v56")?;
-            v56::convert_crate(crate_56)
+            let crate_57 = v56::convert_crate(crate_56).context("Failed to convert v56 to v57")?;
+            v57::convert_crate(crate_57)
         }
         v if v < 55 => {
             anyhow::bail!(
