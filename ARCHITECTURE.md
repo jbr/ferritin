@@ -174,10 +174,10 @@ $CARGO_HOME/rustdoc-json/{format-version}/{crate}/{version}.json
 ```
 
 **Multi-version support:**
-- Supports rustdoc JSON format versions 55-57 natively, plus newer additive formats (see below)
+- Supports rustdoc JSON format versions 55-58 natively, plus newer additive formats (see below)
 - Fetches zstd-compressed JSON from docs.rs
 - Stores raw JSON indexed by source format version (not normalized)
-- On read, normalizes to current format version (v57) via conversions module
+- On read, normalizes to current format version (v58) via conversions module
 - Tries exact format-version URLs in descending order when fetching (prefers newer)
 - If none exist (e.g. a freshly-published crate that docs.rs only built in a
   newer format), falls back to the latest-format URL (`.../json` with no format
@@ -192,7 +192,7 @@ $CARGO_HOME/rustdoc-json/{format-version}/{crate}/{version}.json
 
 The `conversions` module chains format conversions to normalize older rustdoc JSON formats to the current version on read. This allows caching older format JSON and avoiding re-fetches when normalization logic changes.
 
-Formats *newer* than the `rustdoc-types` we build against are handled in the opposite direction: rustdoc JSON bumps are typically additive and `rustdoc-types` does not `deny_unknown_fields`, so a newer additive format (e.g. 58, which only adds a `stability` field per item) deserializes cleanly with the current types — the extra fields are ignored. `load_and_normalize` attempts this parse for any version above `FORMAT_VERSION` and surfaces a clear "needs an update" error only if a genuinely breaking change prevents it. This lets ferritin read crates built with a newer docs.rs toolchain before a matching `rustdoc-types` release exists.
+Formats *newer* than the `rustdoc-types` we build against are handled in the opposite direction: rustdoc JSON bumps are typically additive and `rustdoc-types` does not `deny_unknown_fields`, so a newer additive format (e.g. a future format that only adds a field per item, as 58 did with `stability`) deserializes cleanly with the current types — the extra fields are ignored. `load_and_normalize` attempts this parse for any version above `FORMAT_VERSION` and surfaces a clear "needs an update" error only if a genuinely breaking change prevents it. This lets ferritin read crates built with a newer docs.rs toolchain before a matching `rustdoc-types` release exists.
 
 ## Search - Lazy TF-IDF Indexing
 

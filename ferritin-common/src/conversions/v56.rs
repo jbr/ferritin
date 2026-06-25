@@ -6,8 +6,8 @@
 //! Strategy: Parse as v56, serialize to JSON, deserialize as v57 with defaults
 
 use anyhow::{Context, Result};
-use rustdoc_types as v57;
 use rustdoc_types_56 as v56;
+use rustdoc_types_57 as v57;
 use sonic_rs::JsonValueMutTrait;
 
 /// Convert a v56 Crate to v57
