@@ -1118,9 +1118,9 @@ dependencies = [
  "rkyv",
  "rustc-hash",
  "rustdoc-types 0.55.0",
- "rustdoc-types 0.56.0",
  "rustdoc-types 0.57.4",
  "rustdoc-types 0.58.0",
+ "rustdoc-types 0.59.0",
  "semver",
  "serde",
  "sonic-rs",
@@ -2856,16 +2856,6 @@ dependencies = [
 
 [[package]]
 name = "rustdoc-types"
-version = "0.56.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27bf787c529efe523ed9eb6dcdbaa5954d34329f08d5c243fce928441826ca90"
-dependencies = [
- "serde",
- "serde_derive",
-]
-
-[[package]]
-name = "rustdoc-types"
 version = "0.57.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7be7e9f2ca82c1fcefb69332b82c289051edcd4a3245b1715f7756103918255"
@@ -2882,6 +2872,16 @@ checksum = "691bf02c1aea90386d0eda370969473a56e738b5278d3cbeed12eebaf4ec4f55"
 dependencies = [
  "rkyv",
  "rustc-hash",
+ "serde",
+ "serde_derive",
+]
+
+[[package]]
+name = "rustdoc-types"
+version = "0.59.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b3e25ff539c83e47de65a6a790446186286d3a64bfadc780ed557cc3410d9509"
+dependencies = [
  "serde",
  "serde_derive",
 ]
