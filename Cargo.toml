@@ -13,7 +13,7 @@ anyhow = "1.0.102"
 cargo_metadata = "0.23.1"
 elsa = "1.11.2"
 rustc-hash = { version = "2.1.2" }
-rustdoc-types = { version = "0.58", features = ["rustc-hash", "rkyv_0_8"] }
+rustdoc-types = { version = "0.59", features = ["rustc-hash", "rkyv_0_8"] }
 serde = { version = "1.0.228", features = ["derive"] }
 shellexpand = "3.1.2"
 strsim = "0.11.1"
