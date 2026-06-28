@@ -122,7 +122,7 @@ impl Source for StdSource {
         let content = std::fs::read(&json_path).ok()?;
 
         // Normalize through the conversions module like the other sources, so
-        // older (55/56) and newer additive (58+) rustdoc formats both load.
+        // older (55/56) and newer additive (60+) rustdoc formats both load.
         // rustup's std JSON tracks the nightly toolchain, which can be ahead of
         // the rustdoc-types we build against.
         let crate_data = crate::conversions::load_and_normalize(&content, None).ok()?;

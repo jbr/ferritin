@@ -216,7 +216,7 @@ fn synth_crate(
     modules: Vec<(u32, Option<&str>, Vec<u32>)>,
     items: Vec<rustdoc_types::Item>,
 ) -> RustdocData {
-    use rustdoc_types::{Crate, Id, Item, ItemEnum, ItemSummary, Module, Target, Visibility};
+    use rustdoc_types::{Crate, Id, Item, ItemEnum, ItemSummary, Module, Target};
     use std::collections::HashMap;
 
     let mut index: HashMap<Id, Item, rustc_hash::FxBuildHasher> = Default::default();
@@ -225,23 +225,15 @@ fn synth_crate(
         let ids: Vec<Id> = children.into_iter().map(Id).collect();
         index.insert(
             Id(id),
-            Item {
-                id: Id(id),
-                crate_id: 0,
-                name: mod_name.map(str::to_owned),
-                span: None,
-                visibility: Visibility::Public,
-                docs: None,
-                links: Default::default(),
-                attrs: vec![],
-                deprecation: None,
-                stability: None,
-                inner: ItemEnum::Module(Module {
+            synth_item(
+                id,
+                mod_name,
+                ItemEnum::Module(Module {
                     is_crate: id == root_id,
                     items: ids,
                     is_stripped: false,
                 }),
-            },
+            ),
         );
         let summary_path = if id == root_id {
             vec![name.to_string()]
@@ -287,6 +279,10 @@ fn synth_crate(
 }
 
 #[cfg(test)]
+/// The single place test code constructs an [`Item`]. `rustdoc_types::Item`
+/// doesn't derive `Default`, so every additive format bump adds a required
+/// field here; keeping all synthetic items funneled through this helper means a
+/// bump touches exactly one literal instead of every call site.
 fn synth_item(id: u32, name: Option<&str>, inner: rustdoc_types::ItemEnum) -> rustdoc_types::Item {
     use rustdoc_types::{Id, Item, Visibility};
     Item {
@@ -301,6 +297,7 @@ fn synth_item(id: u32, name: Option<&str>, inner: rustdoc_types::ItemEnum) -> ru
         deprecation: None,
         inner,
         stability: None,
+        const_stability: None,
     }
 }
 
@@ -495,37 +492,8 @@ fn cross_crate_prefix_resolves_in_nested_module() {
 /// `ServerHandle` and every other subsequent re-export.
 #[test]
 fn iterator_skips_unresolvable_use_items() {
-    use rustdoc_types::{
-        Crate, Generics, Id, Item, ItemEnum, Module, Struct, StructKind, Target, Use, Visibility,
-    };
+    use rustdoc_types::{Crate, Id, Item, ItemEnum, Module, Target, Use};
     use std::collections::HashMap;
-
-    fn item(id: u32, name: Option<&str>, inner: ItemEnum) -> Item {
-        Item {
-            id: Id(id),
-            crate_id: 0,
-            name: name.map(str::to_owned),
-            span: None,
-            visibility: Visibility::Public,
-            docs: None,
-            links: Default::default(),
-            attrs: vec![],
-            deprecation: None,
-            inner,
-            stability: None,
-        }
-    }
-
-    fn unit_struct() -> ItemEnum {
-        ItemEnum::Struct(Struct {
-            kind: StructKind::Unit,
-            generics: Generics {
-                params: vec![],
-                where_predicates: vec![],
-            },
-            impls: vec![],
-        })
-    }
 
     // Root module contains, in order:
     //   [broken_use, valid_struct_a, another_broken_use, valid_struct_b]
@@ -541,7 +509,7 @@ fn iterator_skips_unresolvable_use_items() {
     let mut index: HashMap<Id, Item, rustc_hash::FxBuildHasher> = Default::default();
     index.insert(
         root_id,
-        item(
+        synth_item(
             root_id.0,
             Some("fake_crate"),
             ItemEnum::Module(Module {
@@ -553,7 +521,7 @@ fn iterator_skips_unresolvable_use_items() {
     );
     index.insert(
         broken_use_a,
-        item(
+        synth_item(
             broken_use_a.0,
             None,
             ItemEnum::Use(Use {
@@ -566,11 +534,11 @@ fn iterator_skips_unresolvable_use_items() {
     );
     index.insert(
         valid_struct_a,
-        item(valid_struct_a.0, Some("KeepA"), unit_struct()),
+        synth_item(valid_struct_a.0, Some("KeepA"), synth_unit_struct()),
     );
     index.insert(
         broken_use_b,
-        item(
+        synth_item(
             broken_use_b.0,
             None,
             ItemEnum::Use(Use {
@@ -583,7 +551,7 @@ fn iterator_skips_unresolvable_use_items() {
     );
     index.insert(
         valid_struct_b,
-        item(valid_struct_b.0, Some("KeepB"), unit_struct()),
+        synth_item(valid_struct_b.0, Some("KeepB"), synth_unit_struct()),
     );
 
     let crate_data = Crate {

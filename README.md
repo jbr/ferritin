@@ -84,8 +84,8 @@ rustup toolchain install nightly
 ```
 
 Note: There is a relationship between ferritin's version and the nightly toolchain version. Ferritin
-currently supports rustdoc JSON format versions 55, 56, 57, and 58. If your nightly generates a
-newer format, ferritin will make a best effort at parsing it.
+supports a range of recent rustdoc JSON format versions, and if your nightly generates a newer
+format, ferritin will make a best effort at parsing it.
 
 ## Usage
 

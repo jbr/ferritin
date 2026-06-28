@@ -19,9 +19,6 @@ memmap2 = "0.9.11"
 rkyv = "0.8.16"
 rustc-hash.workspace = true
 rustdoc-types.workspace = true
-rustdoc-types-57 = { package = "rustdoc-types", version = "0.57" }
-rustdoc-types-56 = { package = "rustdoc-types", version = "0.56" }
-rustdoc-types-55 = { package = "rustdoc-types", version = "0.55" }
 serde.workspace = true
 strsim.workspace = true
 trillium-client = "0.9.7"
