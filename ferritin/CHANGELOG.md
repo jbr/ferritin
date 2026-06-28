@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0](https://github.com/jbr/ferritin/compare/ferritin-v0.12.0...ferritin-v0.13.0) - 2026-06-28
+
+### Added
+
+- add support for version 59 and simplify how we normalize
+- [**breaking**] add support for rykv sidecars
+- add official support for format 58
+
+### Other
+
+- update snaps to rustc 1.98.0-nightly (f28ac764c 2026-06-23)
+- update snaps to rustc 1.98.0-nightly (f28ac764c 2026-06-23)
+
 ## [0.12.0](https://github.com/jbr/ferritin/compare/ferritin-v0.11.1...ferritin-v0.12.0) - 2026-06-24
 
 ### Added

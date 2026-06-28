@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.13.0...ferritin-common-v0.14.0) - 2026-06-28
+
+### Added
+
+- add support for version 59 and simplify how we normalize
+- [**breaking**] add support for rykv sidecars
+- add official support for format 58
+
+### Fixed
+
+- *(deps)* update rust crate trillium-smol to 0.7.0
+
 ## [0.13.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.12.0...ferritin-common-v0.13.0) - 2026-06-24
 
 ### Added
