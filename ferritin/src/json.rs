@@ -13,7 +13,12 @@
 //! pointer a client follows. Kinds not yet modeled fall back to a generic
 //! serialization of their lowered presentation nodes.
 
-use crate::format::{ItemBody, ItemDoc, PlainField, StructDoc, StructShape, TupleField};
+use crate::format::{
+    AssocKind, ConstantDoc, EnumDoc, FunctionDoc, ItemBody, ItemDoc, ItemMeta, MacroDoc,
+    MetaVisibility, MethodDoc, MethodVisibility, ModuleDoc, ModuleItem, PlainField, StaticDoc,
+    StructDoc, StructShape, TraitDoc, TraitMember, TupleField, TypeAliasDoc, VariantDoc,
+    VariantShape,
+};
 use crate::styled_string::{
     Document, DocumentNode, HeadingLevel, ListItem, MetadataField, ShowWhen, Span, SpanStyle,
     TableCell, TruncationLevel,
@@ -71,8 +76,11 @@ struct JsonItem<'a> {
     /// Canonical URL for this item (its docs.rs / std-docs page).
     #[serde(skip_serializing_if = "Option::is_none")]
     canonical_url: Option<String>,
-    /// Metadata block + the item's own doc prose, as generic nodes.
-    header: Vec<JsonNode<'a>>,
+    /// Structured metadata (name, kind, visibility, path, crate).
+    meta: JsonMeta,
+    /// The item's own doc prose, as generic nodes.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    docs: Vec<JsonNode<'a>>,
     body: JsonBody<'a>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     source: Vec<JsonNode<'a>>,
@@ -82,9 +90,43 @@ impl<'a> JsonItem<'a> {
     fn new(item: &ItemDoc<'a>, canonical_url: Option<String>) -> Self {
         Self {
             canonical_url,
-            header: json_nodes(&item.header),
+            meta: JsonMeta::new(&item.meta),
+            docs: json_nodes(&item.docs),
             body: JsonBody::new(&item.body),
             source: json_nodes(&item.source),
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonMeta {
+    name: String,
+    /// Lowercased item kind (`"struct"`, `"enum"`, …).
+    kind: String,
+    /// `"public"`, `"private"`, `"crate"`, or `"restricted"`.
+    visibility: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    defined_at: Option<String>,
+    crate_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    crate_version: Option<String>,
+}
+
+impl JsonMeta {
+    fn new(meta: &ItemMeta<'_>) -> Self {
+        Self {
+            name: meta.name.to_string(),
+            kind: meta.kind.clone(),
+            visibility: match meta.visibility {
+                MetaVisibility::Public => "public",
+                MetaVisibility::Private => "private",
+                MetaVisibility::Crate => "crate",
+                MetaVisibility::Restricted => "restricted",
+            },
+            defined_at: meta.defined_at.clone(),
+            crate_name: meta.crate_name.clone(),
+            crate_version: meta.crate_version.clone(),
         }
     }
 }
@@ -93,6 +135,14 @@ impl<'a> JsonItem<'a> {
 #[serde(tag = "kind", rename_all = "camelCase")]
 enum JsonBody<'a> {
     Struct(JsonStruct<'a>),
+    Enum(JsonEnum<'a>),
+    Trait(JsonTrait<'a>),
+    Module(JsonModule<'a>),
+    Function(JsonFunction<'a>),
+    TypeAlias(JsonTypeAlias<'a>),
+    Constant(JsonConstant<'a>),
+    Static(JsonStatic<'a>),
+    Macro(JsonMacro<'a>),
     /// A kind not yet modeled structurally: its lowered presentation nodes.
     Presentation { nodes: Vec<JsonNode<'a>> },
 }
@@ -101,11 +151,306 @@ impl<'a> JsonBody<'a> {
     fn new(body: &ItemBody<'a>) -> Self {
         match body {
             ItemBody::Struct(model) => JsonBody::Struct(JsonStruct::new(model)),
+            ItemBody::Enum(model) => JsonBody::Enum(JsonEnum::new(model)),
+            ItemBody::Trait(model) => JsonBody::Trait(JsonTrait::new(model)),
+            ItemBody::Module(model) => JsonBody::Module(JsonModule::new(model)),
+            ItemBody::Function(model) => JsonBody::Function(JsonFunction::new(model)),
+            ItemBody::TypeAlias(model) => JsonBody::TypeAlias(JsonTypeAlias::new(model)),
+            ItemBody::Constant(model) => JsonBody::Constant(JsonConstant::new(model)),
+            ItemBody::Static(model) => JsonBody::Static(JsonStatic::new(model)),
+            ItemBody::Macro(model) => JsonBody::Macro(JsonMacro::new(model)),
             ItemBody::Presentation(nodes) => JsonBody::Presentation {
                 nodes: json_nodes(nodes),
             },
         }
     }
+}
+
+/// A type-alias body: the aliased type (RHS of `=`) as a span sequence.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonTypeAlias<'a> {
+    name: &'a str,
+    aliased: Vec<JsonSpan<'a>>,
+}
+
+impl<'a> JsonTypeAlias<'a> {
+    fn new(model: &TypeAliasDoc<'a>) -> Self {
+        Self {
+            name: model.name,
+            aliased: json_spans(&model.aliased),
+        }
+    }
+}
+
+/// A constant body: name, type, and optional value expression.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonConstant<'a> {
+    name: &'a str,
+    #[serde(rename = "type")]
+    type_signature: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    value: Option<&'a str>,
+}
+
+impl<'a> JsonConstant<'a> {
+    fn new(model: &ConstantDoc<'a>) -> Self {
+        Self {
+            name: model.name,
+            type_signature: json_spans(&model.type_signature),
+            value: model.value,
+        }
+    }
+}
+
+/// A static body: name, type, and value expression.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonStatic<'a> {
+    name: &'a str,
+    #[serde(rename = "type")]
+    type_signature: Vec<JsonSpan<'a>>,
+    value: &'a str,
+}
+
+impl<'a> JsonStatic<'a> {
+    fn new(model: &StaticDoc<'a>) -> Self {
+        Self {
+            name: model.name,
+            type_signature: json_spans(&model.type_signature),
+            value: model.value,
+        }
+    }
+}
+
+/// A macro body: its definition source verbatim.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonMacro<'a> {
+    definition: &'a str,
+}
+
+impl<'a> JsonMacro<'a> {
+    fn new(model: &MacroDoc<'a>) -> Self {
+        Self {
+            definition: model.definition,
+        }
+    }
+}
+
+/// A free function body. Mirrors [`JsonMethod`] minus the assoc-item
+/// `kind`/`visibility` and per-item `docs` — params live inside `signature`, so
+/// a function and a method serialize the same way.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonFunction<'a> {
+    name: &'a str,
+    #[serde(skip_serializing_if = "is_false")]
+    is_async: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    is_const: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    is_unsafe: bool,
+    /// Return-type spans (functions with an explicit output).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    returns: Vec<JsonSpan<'a>>,
+    /// Full display signature, the same spans the terminal renders.
+    signature: Vec<JsonSpan<'a>>,
+}
+
+impl<'a> JsonFunction<'a> {
+    fn new(model: &FunctionDoc<'a>) -> Self {
+        Self {
+            name: model.name,
+            is_async: model.is_async,
+            is_const: model.is_const,
+            is_unsafe: model.is_unsafe,
+            returns: json_spans(&model.returns),
+            signature: json_spans(&model.signature),
+        }
+    }
+}
+
+/// A module body: its child items as a flat list. Grouping is left to the
+/// client — each item carries the `kind` it would group under.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonModule<'a> {
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    items: Vec<JsonModuleItem<'a>>,
+}
+
+impl<'a> JsonModule<'a> {
+    fn new(model: &ModuleDoc<'a>) -> Self {
+        Self {
+            items: model.items.iter().map(JsonModuleItem::new).collect(),
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonModuleItem<'a> {
+    /// Path as listed (bare name, or `a::b::c` when reached recursively).
+    path: String,
+    /// Lowercased item kind (`"struct"`, `"enum"`, `"function"`, …).
+    kind: String,
+    /// Navigation target — the resolved docs.rs / std-docs URL for the child.
+    url: String,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    docs: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonModuleItem<'a> {
+    fn new(item: &ModuleItem<'a>) -> Self {
+        Self {
+            path: item.path.clone(),
+            kind: format!("{:?}", item.kind).to_lowercase(),
+            url: crate::generate_docsrs_url::generate_docsrs_url(item.target),
+            docs: item.docs.as_deref().map(json_nodes).unwrap_or_default(),
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonTrait<'a> {
+    name: &'a str,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    generics: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    supertraits: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    where_clause: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    members: Vec<JsonTraitMember<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    implementors: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonTrait<'a> {
+    fn new(model: &TraitDoc<'a>) -> Self {
+        Self {
+            name: model.name,
+            generics: json_spans(&model.generics),
+            supertraits: json_spans(&model.supertraits),
+            where_clause: json_spans(&model.where_clause),
+            members: model.members.iter().map(JsonTraitMember::new).collect(),
+            implementors: json_nodes(&model.implementors),
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonTraitMember<'a> {
+    name: &'a str,
+    /// `"method"`, `"const"`, or `"type"`.
+    kind: &'static str,
+    /// For methods: `true` if a default body is provided.
+    #[serde(skip_serializing_if = "is_false")]
+    has_default: bool,
+    signature: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    docs: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonTraitMember<'a> {
+    fn new(member: &TraitMember<'a>) -> Self {
+        Self {
+            name: member.name,
+            kind: assoc_kind_str(member.kind),
+            has_default: member.has_default,
+            signature: json_spans(&member.signature),
+            docs: member.docs.as_deref().map(json_nodes).unwrap_or_default(),
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonEnum<'a> {
+    name: &'a str,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    generics: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    where_clause: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    variants: Vec<JsonVariant<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    methods: Vec<JsonMethod<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    trait_impls: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonEnum<'a> {
+    fn new(model: &EnumDoc<'a>) -> Self {
+        Self {
+            name: model.name,
+            generics: json_spans(&model.generics),
+            where_clause: json_spans(&model.where_clause),
+            variants: model.variants.iter().map(JsonVariant::new).collect(),
+            methods: model.methods.iter().map(JsonMethod::new).collect(),
+            trait_impls: json_nodes(&model.trait_impls),
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonVariant<'a> {
+    name: &'a str,
+    /// `"plain"`, `"tuple"`, or `"struct"`.
+    shape: &'static str,
+    /// Tuple-variant field types, each a span sequence.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    tuple_fields: Vec<Vec<JsonSpan<'a>>>,
+    /// Struct-variant named fields.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    fields: Vec<JsonVariantField<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    docs: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonVariant<'a> {
+    fn new(variant: &VariantDoc<'a>) -> Self {
+        let (shape, tuple_fields, fields) = match &variant.shape {
+            VariantShape::Plain => ("plain", Vec::new(), Vec::new()),
+            VariantShape::Tuple { fields } => (
+                "tuple",
+                fields.iter().map(|spans| json_spans(spans)).collect(),
+                Vec::new(),
+            ),
+            VariantShape::Struct { fields } => (
+                "struct",
+                Vec::new(),
+                fields
+                    .iter()
+                    .map(|field| JsonVariantField {
+                        name: field.name,
+                        type_signature: json_spans(&field.type_spans),
+                    })
+                    .collect(),
+            ),
+        };
+
+        Self {
+            name: variant.name,
+            shape,
+            tuple_fields,
+            fields,
+            docs: variant.docs.as_deref().map(json_nodes).unwrap_or_default(),
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonVariantField<'a> {
+    name: &'a str,
+    #[serde(rename = "type")]
+    type_signature: Vec<JsonSpan<'a>>,
 }
 
 #[derive(Serialize)]
@@ -122,10 +467,13 @@ struct JsonStruct<'a> {
     fields: Vec<JsonField<'a>>,
     #[serde(skip_serializing_if = "is_zero")]
     hidden_field_count: usize,
-    /// Associated inherent methods — still rendered presentation nodes, until
-    /// they get a structural model of their own (Unit 3).
+    /// Inherent associated items, structurally modeled.
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    methods: Vec<JsonNode<'a>>,
+    methods: Vec<JsonMethod<'a>>,
+    /// Trait implementations — still a faithful serialization of presentation
+    /// nodes, until they get a structural model.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    trait_impls: Vec<JsonNode<'a>>,
 }
 
 impl<'a> JsonStruct<'a> {
@@ -158,7 +506,52 @@ impl<'a> JsonStruct<'a> {
             where_clause: json_spans(&model.where_clause),
             fields,
             hidden_field_count,
-            methods: json_nodes(&model.methods),
+            methods: model.methods.iter().map(JsonMethod::new).collect(),
+            trait_impls: json_nodes(&model.trait_impls),
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonMethod<'a> {
+    name: &'a str,
+    /// `"method"`, `"const"`, or `"type"`.
+    kind: &'static str,
+    /// `"public"`, `"crate"`, `"restricted"`, or `"default"`.
+    visibility: &'static str,
+    #[serde(skip_serializing_if = "is_false")]
+    is_async: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    is_const: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    is_unsafe: bool,
+    /// Return-type spans (functions with an explicit output).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    returns: Vec<JsonSpan<'a>>,
+    /// Full display signature, the same spans the terminal renders.
+    signature: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    docs: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonMethod<'a> {
+    fn new(method: &MethodDoc<'a>) -> Self {
+        Self {
+            name: method.name,
+            kind: assoc_kind_str(method.kind),
+            visibility: match method.visibility {
+                MethodVisibility::Public => "public",
+                MethodVisibility::Crate => "crate",
+                MethodVisibility::Restricted => "restricted",
+                MethodVisibility::Default => "default",
+            },
+            is_async: method.is_async,
+            is_const: method.is_const,
+            is_unsafe: method.is_unsafe,
+            returns: json_spans(&method.returns),
+            signature: json_spans(&method.signature),
+            docs: method.docs.as_deref().map(json_nodes).unwrap_or_default(),
         }
     }
 }
@@ -283,6 +676,18 @@ struct JsonSpan<'a> {
 
 fn is_zero(count: &usize) -> bool {
     *count == 0
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
+}
+
+fn assoc_kind_str(kind: AssocKind) -> &'static str {
+    match kind {
+        AssocKind::Method => "method",
+        AssocKind::Const => "const",
+        AssocKind::Type => "type",
+    }
 }
 
 fn json_nodes<'a>(nodes: &[DocumentNode<'a>]) -> Vec<JsonNode<'a>> {

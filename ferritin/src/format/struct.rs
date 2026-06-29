@@ -17,11 +17,13 @@ pub(crate) struct StructDoc<'a> {
     /// `where`-clause spans; empty when there are none.
     pub(crate) where_clause: Vec<Span<'a>>,
     pub(crate) shape: StructShape<'a>,
-    /// Associated inherent methods, still as opaque presentation nodes. Unit 3
-    /// will model these structurally (`Vec<MethodDoc>`); for now they are
-    /// carried verbatim so the struct body lowers identically and the JSON
-    /// output can at least emit them as a rendered block.
-    pub(crate) methods: Vec<DocumentNode<'a>>,
+    /// Inherent associated items (methods, assoc consts/types), structurally
+    /// modeled.
+    pub(crate) methods: Vec<MethodDoc<'a>>,
+    /// Trait implementations, still opaque presentation nodes (modeling them is
+    /// a future unit). Lowered after the inherent methods, matching the original
+    /// `format_associated_methods` order.
+    pub(crate) trait_impls: Vec<DocumentNode<'a>>,
 }
 
 /// The three structural shapes a struct can take, each carrying its own fields.
@@ -89,7 +91,8 @@ impl<'a> Request<'a> {
             } => self.model_plain_fields(item, fields, *has_stripped_fields),
         };
 
-        let methods = self.format_associated_methods(item);
+        let methods = self.model_inherent_methods(item);
+        let trait_impls = self.format_trait_impls(item);
 
         StructDoc {
             name,
@@ -97,6 +100,7 @@ impl<'a> Request<'a> {
             where_clause,
             shape,
             methods,
+            trait_impls,
         }
     }
 
@@ -195,6 +199,7 @@ pub(super) fn lower_struct(model: StructDoc<'_>) -> Vec<DocumentNode<'_>> {
         where_clause,
         shape,
         methods,
+        trait_impls,
     } = model;
 
     let mut code_spans = vec![
@@ -221,7 +226,8 @@ pub(super) fn lower_struct(model: StructDoc<'_>) -> Vec<DocumentNode<'_>> {
         } => lower_plain(code_spans, fields, hidden_count, has_stripped_fields),
     };
 
-    doc_nodes.extend(methods);
+    doc_nodes.extend(super::impls::lower_inherent_methods(methods));
+    doc_nodes.extend(trait_impls);
     doc_nodes
 }
 

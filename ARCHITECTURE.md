@@ -329,16 +329,24 @@ The architecture separates content generation from presentation through an inter
 
 ### Stage 1: Format to IR
 
-Item formatting is a **two-level lowering**. `Request::model_item` first resolves a `DocRef` into a *domain model* — `ItemDoc { header, body, source }` — where the kind-agnostic `header` (metadata block + the item's own doc prose) and `source` stay as presentation nodes, and the kind-specific `body` is an `ItemBody`:
+Item formatting is a **two-level lowering**. `Request::model_item` first resolves a `DocRef` into a *domain model* — `ItemDoc { meta, metadata_nodes, docs, body, source }`. The `meta` (`ItemMeta`: name, kind, visibility, definition path, crate) is the structured, JSON-facing view of the header; `metadata_nodes` is the *presentation* metadata node kept verbatim alongside it so terminal output stays byte-identical; `docs` is the item's own doc prose; `source` is the optional source block; and the kind-specific `body` is an `ItemBody`:
 
 ```rust
 enum ItemBody<'a> {
-    Struct(StructDoc<'a>),               // a structural model: shape, fields, methods
-    Presentation(Vec<DocumentNode<'a>>), // not-yet-migrated kinds, already lowered
+    Struct(StructDoc<'a>),               // shape, fields, methods, trait impls
+    Enum(EnumDoc<'a>),                   // variants, methods, trait impls
+    Trait(TraitDoc<'a>),                 // members (required/provided), supertraits, implementors
+    Module(ModuleDoc<'a>),               // flat list of children (path, kind, nav target, brief docs)
+    Function(FunctionDoc<'a>),           // single signature + fn flags/returns (mirrors MethodDoc)
+    TypeAlias(TypeAliasDoc<'a>),         // name + aliased type spans
+    Constant(ConstantDoc<'a>),           // name + type + optional value
+    Static(StaticDoc<'a>),               // name + type + value
+    Macro(MacroDoc<'a>),                 // macro_rules! definition source
+    Presentation(Vec<DocumentNode<'a>>), // not-yet-modeled kinds, already lowered
 }
 ```
 
-This is the seam that lets the domain-IR migration proceed one kind at a time. Per kind, `format_<kind>` splits into `model_<kind>` (index lookups + type resolution → a structural model) and `lower_<kind>` (span assembly → presentation nodes). So far only `struct` is modeled (`StructDoc`); every other kind still lowers eagerly into `ItemBody::Presentation`. Signature-level references (field types, generics) stay as span sequences — the shared "leaf" vocabulary — while the item's own structure becomes explicit.
+This is the seam that lets the domain-IR migration proceed one kind at a time. Per kind, `format_<kind>` splits into `model_<kind>` (index lookups + type resolution → a structural model) and `lower_<kind>` (span assembly → presentation nodes). **Modeled so far:** `struct`, `enum`, `trait`, `module`, and `function`, plus the shared `MethodDoc` (inherent associated items, via `model_inherent_methods` — reused by struct and enum) and the structured header (`ItemMeta`). The `module` model is a flat `Vec<ModuleItem>` (each a `{ path, kind, nav target, brief docs }`) in traversal order; grouping by kind into the terminal's sections happens only in `lower_module`, so JSON ships the flat list and a client groups however it likes. The `function` model (`FunctionDoc`) mirrors `MethodDoc`'s fn-fields (`is_async`/`is_const`/`is_unsafe`/`returns`/`signature`) minus the assoc-item `kind`/`visibility` — params stay inside the `signature` span sequence, so a function and a method serialize identically. The single-signature kinds `type-alias` (`TypeAliasDoc`), `const` (`ConstantDoc`), `static` (`StaticDoc`), and `macro` (`MacroDoc`) are likewise modeled: each lifts its cheap scalars (name, value expr, macro source) and keeps types as span-sequence leaves. **Still opaque** (lowered into `ItemBody::Presentation`, or carried as presentation nodes within a model): `union` (its formatter is still an unimplemented placeholder) and a directly-queried assoc type/const; plus, within the modeled kinds, *trait implementations* (`StructDoc`/`EnumDoc::trait_impls`) and a trait's *implementors* section. Signature-level references (field/return types, generics, bounds) stay as span sequences — the shared "leaf" vocabulary, each span carrying its resolved `url` — while the item's own structure (fields, variants, members) becomes explicit. The hybrid rule: **structural containers, span-sequence leaves**.
 
 The terminal renderers go through `ItemDoc::lower()` (and `format_item`, a thin wrapper over it), which produces the *presentation IR* — a relatively flat tree:
 
@@ -402,7 +410,7 @@ The `public` preference (CLI `--public`) filters non-`pub` items at format time 
 
 ### JSON output
 
-`--format json` bypasses the `Document` render pipeline. For `get`, it serializes the `ItemDoc` domain model: a structural kind (currently `struct`) becomes `{ kind, name, shape, fields, methods, ... }`, while the kind-agnostic header/source and any not-yet-modeled body serialize as a faithful JSON mirror of their presentation nodes. Leaf references carry a resolved `url` — the hypermedia pointer a client follows — and the item carries a `canonicalUrl`. `search` and `list` have no domain model yet, so they serialize their presentation `Document` generically (`{ nodes: [...] }`); this is a lower-fidelity, presentation-level representation, and a structural search-results model is a future work unit.
+`--format json` bypasses the `Document` render pipeline. For `get`, it serializes the `ItemDoc` domain model: structured `meta` (name/kind/visibility/path/crate), and a `body` that is structural for modeled kinds — `struct` → `{ shape, fields, methods, traitImpls }`, `enum` → `{ variants, methods, traitImpls }`, `trait` → `{ supertraits, members, implementors }`, `module` → `{ items: [{ path, kind, url, docs }] }`, `function` → `{ name, isAsync, isConst, isUnsafe, returns, signature }`, `type-alias` → `{ name, aliased }`, `const` → `{ name, type, value? }`, `static` → `{ name, type, value }`, `macro` → `{ definition }` — or a faithful JSON mirror of presentation nodes for not-yet-modeled kinds. Methods carry `{ kind, visibility, isAsync, returns, signature, … }`; trait members carry `hasDefault` (required vs. provided). Leaf references carry a resolved `url` — the hypermedia pointer a client follows — and the item carries a `canonicalUrl`. `search` and `list` have no domain model yet, so they serialize their presentation `Document` generically (`{ nodes: [...] }`); this is a lower-fidelity, presentation-level representation, and a structural search-results model is a future work unit.
 
 Serialization lives in the `json` module: `#[derive(Serialize)]` DTOs (`JsonItem`/`JsonNode`/`JsonSpan`/…) that borrow (`Cow`) from the model, serialized with `sonic-rs`. The JSON path is CLI-only today, but `model_item` is the reusable seam a future web server would call directly, rendering to owned bytes without the model crossing an `.await`.
 

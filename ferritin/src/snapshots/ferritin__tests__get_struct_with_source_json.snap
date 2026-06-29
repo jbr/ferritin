@@ -4,79 +4,15 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
 ---
 {
   "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html",
-  "header": [
-    {
-      "type": "metadata",
-      "fields": [
-        {
-          "label": "Item",
-          "value": [
-            {
-              "text": "TestStruct",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Kind",
-          "value": [
-            {
-              "text": "Struct",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Visibility",
-          "value": [
-            {
-              "text": "Public",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Defined at",
-          "value": [
-            {
-              "text": "fixture_crate",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
-            },
-            {
-              "text": "::",
-              "style": "Punctuation"
-            },
-            {
-              "text": "TestStruct",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
-            }
-          ]
-        },
-        {
-          "label": "In crate",
-          "value": [
-            {
-              "text": "fixture-crate",
-              "style": "Plain"
-            },
-            {
-              "text": " (",
-              "style": "Plain"
-            },
-            {
-              "text": "0.1.0",
-              "style": "Plain"
-            },
-            {
-              "text": ")",
-              "style": "Plain"
-            }
-          ]
-        }
-      ]
-    },
+  "meta": {
+    "name": "TestStruct",
+    "kind": "struct",
+    "visibility": "public",
+    "definedAt": "fixture_crate::TestStruct",
+    "crateName": "fixture-crate",
+    "crateVersion": "0.1.0"
+  },
+  "docs": [
     {
       "type": "truncatedBlock",
       "nodes": [
@@ -235,325 +171,327 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
     ],
     "methods": [
       {
-        "type": "section",
-        "title": [
+        "name": "ASSOCIATED_CONST",
+        "kind": "const",
+        "visibility": "public",
+        "signature": [
           {
-            "text": "Methods",
+            "text": "pub",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "const",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "ASSOCIATED_CONST",
             "style": "Plain"
           }
         ],
-        "nodes": [
+        "docs": [
           {
-            "type": "list",
-            "items": [
+            "type": "truncatedBlock",
+            "nodes": [
               {
-                "content": [
+                "type": "paragraph",
+                "spans": [
                   {
-                    "type": "generatedCode",
-                    "spans": [
-                      {
-                        "text": "pub",
-                        "style": "Keyword"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "const",
-                        "style": "Keyword"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "ASSOCIATED_CONST",
-                        "style": "Plain"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "This is an associated constant for a struct",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
-                  }
-                ]
-              },
-              {
-                "content": [
-                  {
-                    "type": "generatedCode",
-                    "spans": [
-                      {
-                        "text": "pub",
-                        "style": "Keyword"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "fn",
-                        "style": "Keyword"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "new",
-                        "style": "Plain",
-                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.new"
-                      },
-                      {
-                        "text": "(",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": "field",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": ":",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "String",
-                        "style": "TypeName",
-                        "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
-                      },
-                      {
-                        "text": ",",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "count",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": ":",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "u32",
-                        "style": "TypeName"
-                      },
-                      {
-                        "text": ")",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "->",
-                        "style": "Operator"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "Self",
-                        "style": "Generic"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "Create a new TestStruct",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
-                  }
-                ]
-              },
-              {
-                "content": [
-                  {
-                    "type": "generatedCode",
-                    "spans": [
-                      {
-                        "text": "pub",
-                        "style": "Keyword"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "fn",
-                        "style": "Keyword"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "get_field",
-                        "style": "Plain",
-                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.get_field"
-                      },
-                      {
-                        "text": "(",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": "&",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": "self",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": ")",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "->",
-                        "style": "Operator"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "&",
-                        "style": "Operator"
-                      },
-                      {
-                        "text": "str",
-                        "style": "TypeName"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "Get the field value",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
-                  }
-                ]
-              },
-              {
-                "content": [
-                  {
-                    "type": "generatedCode",
-                    "spans": [
-                      {
-                        "text": "pub",
-                        "style": "Keyword"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "fn",
-                        "style": "Keyword"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "increment_count",
-                        "style": "Plain",
-                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.increment_count"
-                      },
-                      {
-                        "text": "(",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": "&",
-                        "style": "Punctuation"
-                      },
-                      {
-                        "text": "mut",
-                        "style": "Keyword"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": "self",
-                        "style": "Plain"
-                      },
-                      {
-                        "text": ")",
-                        "style": "Punctuation"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "Update the count",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
+                    "text": "This is an associated constant for a struct",
+                    "style": "Plain"
                   }
                 ]
               }
-            ]
+            ],
+            "level": "SingleLine"
           }
         ]
       },
+      {
+        "name": "new",
+        "kind": "method",
+        "visibility": "public",
+        "returns": [
+          {
+            "text": "Self",
+            "style": "Generic"
+          }
+        ],
+        "signature": [
+          {
+            "text": "pub",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "fn",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "new",
+            "style": "Plain",
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.new"
+          },
+          {
+            "text": "(",
+            "style": "Punctuation"
+          },
+          {
+            "text": "field",
+            "style": "Plain"
+          },
+          {
+            "text": ":",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "String",
+            "style": "TypeName",
+            "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+          },
+          {
+            "text": ",",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "count",
+            "style": "Plain"
+          },
+          {
+            "text": ":",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "u32",
+            "style": "TypeName"
+          },
+          {
+            "text": ")",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "->",
+            "style": "Operator"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "Self",
+            "style": "Generic"
+          }
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Create a new TestStruct",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "name": "get_field",
+        "kind": "method",
+        "visibility": "public",
+        "returns": [
+          {
+            "text": "&",
+            "style": "Operator"
+          },
+          {
+            "text": "str",
+            "style": "TypeName"
+          }
+        ],
+        "signature": [
+          {
+            "text": "pub",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "fn",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "get_field",
+            "style": "Plain",
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.get_field"
+          },
+          {
+            "text": "(",
+            "style": "Punctuation"
+          },
+          {
+            "text": "&",
+            "style": "Punctuation"
+          },
+          {
+            "text": "self",
+            "style": "Plain"
+          },
+          {
+            "text": ")",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "->",
+            "style": "Operator"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "&",
+            "style": "Operator"
+          },
+          {
+            "text": "str",
+            "style": "TypeName"
+          }
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Get the field value",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "name": "increment_count",
+        "kind": "method",
+        "visibility": "public",
+        "signature": [
+          {
+            "text": "pub",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "fn",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "increment_count",
+            "style": "Plain",
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.increment_count"
+          },
+          {
+            "text": "(",
+            "style": "Punctuation"
+          },
+          {
+            "text": "&",
+            "style": "Punctuation"
+          },
+          {
+            "text": "mut",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "self",
+            "style": "Plain"
+          },
+          {
+            "text": ")",
+            "style": "Punctuation"
+          }
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Update the count",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      }
+    ],
+    "traitImpls": [
       {
         "type": "section",
         "title": [

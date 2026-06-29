@@ -6,126 +6,133 @@ use crate::styled_string::{DocumentNode, ListItem, Span};
 use semver::VersionReq;
 
 impl<'a> Request<'a> {
-    /// Add associated methods for a struct or enum
+    /// Add associated methods for a struct or enum: the inherent "Methods"
+    /// section followed by "Trait Implementations". Used by the kinds that
+    /// still lower eagerly (enum); `struct` builds the structured model halves
+    /// directly (see [`Request::model_inherent_methods`] / [`format_trait_impls`]).
     pub(super) fn format_associated_methods(
         &mut self,
         item: DocRef<'a, Item>,
     ) -> Vec<DocumentNode<'a>> {
-        let mut doc_nodes = vec![];
-
-        let inherent_methods = item
-            .methods()
-            .filter(|&method| !self.hidden_by_visibility(method))
-            .collect::<Vec<_>>();
-        // Show inherent methods first
-        if !inherent_methods.is_empty() {
-            doc_nodes.extend(self.format_item_list(inherent_methods, "Methods"));
-        }
-
-        let trait_impls = item.traits().collect::<Vec<_>>();
-        // Show trait implementations
-        if !trait_impls.is_empty() {
-            doc_nodes.extend(self.format_trait_implementations(&trait_impls));
-        }
-
+        let mut doc_nodes = self.format_inherent_methods(item);
+        doc_nodes.extend(self.format_trait_impls(item));
         doc_nodes
     }
 
-    fn format_item_list(
+    /// The inherent "Methods" section, lowered from the structural model.
+    pub(super) fn format_inherent_methods(
         &mut self,
-        mut items: Vec<DocRef<'a, Item>>,
-        title: &'a str,
+        item: DocRef<'a, Item>,
     ) -> Vec<DocumentNode<'a>> {
+        lower_inherent_methods(self.model_inherent_methods(item))
+    }
+
+    /// The "Trait Implementations" section (still presentation-only; modeling
+    /// it structurally is a future unit).
+    pub(super) fn format_trait_impls(&mut self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
+        let trait_impls = item.traits().collect::<Vec<_>>();
+        if trait_impls.is_empty() {
+            vec![]
+        } else {
+            self.format_trait_implementations(&trait_impls)
+        }
+    }
+
+    /// Resolve an item's inherent associated items (methods, assoc consts, assoc
+    /// types) into structured [`MethodDoc`]s, sorted by source location.
+    pub(super) fn model_inherent_methods(&mut self, item: DocRef<'a, Item>) -> Vec<MethodDoc<'a>> {
         use std::cmp::Ordering;
-        items.sort_by(|a, b| {
-            match (&a.span, &b.span) {
-                (Some(span_a), Some(span_b)) => {
-                    // Primary sort by filename
-                    let filename_cmp = span_a.filename.cmp(&span_b.filename);
-                    if filename_cmp != Ordering::Equal {
-                        filename_cmp
-                    } else {
-                        // Secondary sort by start line
-                        let line_cmp = span_a.begin.0.cmp(&span_b.begin.0);
-                        if line_cmp != Ordering::Equal {
-                            line_cmp
-                        } else {
-                            // Tertiary sort by start column
-                            span_a.begin.1.cmp(&span_b.begin.1)
-                        }
-                    }
-                }
-                (Some(_), None) => Ordering::Less,
-                (None, Some(_)) => Ordering::Greater,
-                (None, None) => a.name.cmp(&b.name),
-            }
+
+        let mut items = item
+            .methods()
+            .filter(|&method| !self.hidden_by_visibility(method))
+            .collect::<Vec<_>>();
+
+        items.sort_by(|a, b| match (&a.span, &b.span) {
+            (Some(span_a), Some(span_b)) => span_a
+                .filename
+                .cmp(&span_b.filename)
+                .then(span_a.begin.0.cmp(&span_b.begin.0))
+                .then(span_a.begin.1.cmp(&span_b.begin.1)),
+            (Some(_), None) => Ordering::Less,
+            (None, Some(_)) => Ordering::Greater,
+            (None, None) => a.name.cmp(&b.name),
         });
 
-        let list_items: Vec<ListItem> = items
-            .iter()
-            .map(|item| {
-                let mut signature_spans = vec![];
+        items.iter().map(|&item| self.model_method(item)).collect()
+    }
 
-                // Add visibility
-                match &item.item().visibility {
-                    Visibility::Public => {
-                        signature_spans.push(Span::keyword("pub"));
-                        signature_spans.push(Span::plain(" "));
-                    }
-                    Visibility::Crate => {
-                        signature_spans.push(Span::keyword("pub"));
-                        signature_spans.push(Span::punctuation("("));
-                        signature_spans.push(Span::keyword("crate"));
-                        signature_spans.push(Span::punctuation(")"));
-                        signature_spans.push(Span::plain(" "));
-                    }
-                    Visibility::Restricted { path, .. } => {
-                        signature_spans.push(Span::keyword("pub"));
-                        signature_spans.push(Span::punctuation("("));
-                        signature_spans.push(Span::plain(path));
-                        signature_spans.push(Span::punctuation(")"));
-                        signature_spans.push(Span::plain(" "));
-                    }
-                    Visibility::Default => {}
+    fn model_method(&mut self, item: DocRef<'a, Item>) -> MethodDoc<'a> {
+        // Visibility prefix spans, matching the original inline formatting.
+        let mut signature = vec![];
+        let visibility = match &item.item().visibility {
+            Visibility::Public => {
+                signature.push(Span::keyword("pub"));
+                signature.push(Span::plain(" "));
+                MethodVisibility::Public
+            }
+            Visibility::Crate => {
+                signature.push(Span::keyword("pub"));
+                signature.push(Span::punctuation("("));
+                signature.push(Span::keyword("crate"));
+                signature.push(Span::punctuation(")"));
+                signature.push(Span::plain(" "));
+                MethodVisibility::Crate
+            }
+            Visibility::Restricted { path, .. } => {
+                signature.push(Span::keyword("pub"));
+                signature.push(Span::punctuation("("));
+                signature.push(Span::plain(path));
+                signature.push(Span::punctuation(")"));
+                signature.push(Span::plain(" "));
+                MethodVisibility::Restricted
+            }
+            Visibility::Default => MethodVisibility::Default,
+        };
+
+        let name = item.name().unwrap_or("<unnamed>");
+
+        let (kind, is_async, is_const, is_unsafe, returns) =
+            if let ItemEnum::Function(inner) = &item.item().inner {
+                signature.extend(self.format_function_signature(item, name, inner));
+                let returns = match &inner.sig.output {
+                    Some(output) => self.format_type(item, output),
+                    None => vec![],
+                };
+                (
+                    AssocKind::Method,
+                    inner.header.is_async,
+                    inner.header.is_const,
+                    inner.header.is_unsafe,
+                    returns,
+                )
+            } else {
+                let (kind_str, kind) = match item.kind() {
+                    rustdoc_types::ItemKind::AssocConst => ("const", AssocKind::Const),
+                    rustdoc_types::ItemKind::AssocType => ("type", AssocKind::Type),
+                    _ => ("", AssocKind::Method),
+                };
+                if !kind_str.is_empty() {
+                    signature.push(Span::keyword(kind_str));
+                    signature.push(Span::plain(" "));
                 }
+                signature.push(Span::plain(name));
+                (kind, false, false, false, vec![])
+            };
 
-                let name = item.name().unwrap_or("<unnamed>");
-                let kind = item.kind();
+        let docs = self.docs_to_show(item, TruncationLevel::SingleLine);
 
-                // For functions, show the signature inline
-                if let ItemEnum::Function(inner) = &item.item().inner {
-                    signature_spans.extend(self.format_function_signature(*item, name, inner));
-                } else {
-                    // For other items, show kind + name
-                    let kind_str = match kind {
-                        rustdoc_types::ItemKind::AssocConst => "const",
-                        rustdoc_types::ItemKind::AssocType => "type",
-                        _ => "",
-                    };
-
-                    if !kind_str.is_empty() {
-                        signature_spans.push(Span::keyword(kind_str));
-                        signature_spans.push(Span::plain(" "));
-                    }
-
-                    signature_spans.push(Span::plain(name));
-                }
-
-                let mut item_nodes = vec![DocumentNode::generated_code(signature_spans)];
-
-                // Add brief doc preview
-                if let Some(docs) = self.docs_to_show(*item, TruncationLevel::SingleLine) {
-                    item_nodes.extend(docs);
-                }
-
-                ListItem::new(item_nodes)
-            })
-            .collect();
-
-        vec![DocumentNode::section(
-            vec![Span::plain(title)],
-            vec![DocumentNode::list(list_items)],
-        )]
+        MethodDoc {
+            name,
+            kind,
+            visibility,
+            is_async,
+            is_const,
+            is_unsafe,
+            returns,
+            signature,
+            docs,
+        }
     }
 
     /// Format trait implementations: boring ones as compact lists, non-boring as full signatures
@@ -462,4 +469,28 @@ impl<'a> Request<'a> {
         }
         nodes
     }
+}
+
+/// Lower structural inherent methods back to the "Methods" section. Empty when
+/// there are none (matching the original formatter, which omitted the section).
+pub(super) fn lower_inherent_methods<'a>(methods: Vec<MethodDoc<'a>>) -> Vec<DocumentNode<'a>> {
+    if methods.is_empty() {
+        return vec![];
+    }
+
+    let list_items: Vec<ListItem> = methods
+        .into_iter()
+        .map(|method| {
+            let mut item_nodes = vec![DocumentNode::generated_code(method.signature)];
+            if let Some(docs) = method.docs {
+                item_nodes.extend(docs);
+            }
+            ListItem::new(item_nodes)
+        })
+        .collect();
+
+    vec![DocumentNode::section(
+        vec![Span::plain("Methods")],
+        vec![DocumentNode::list(list_items)],
+    )]
 }
