@@ -1,0 +1,211 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::list(), & get_fixture_crate_path ())"
+---
+{
+  "nodes": [
+    {
+      "type": "heading",
+      "level": "Title",
+      "spans": [
+        {
+          "text": "Available crates:",
+          "style": "Plain"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "alloc",
+                  "style": "Strong",
+                  "url": "https://doc.rust-lang.org/nightly/alloc/index.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " 1.98.0-nightly",
+                  "style": "Plain"
+                },
+                {
+                  "text": "\n    ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "The Rust core allocation and collections library",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "core",
+                  "style": "Strong",
+                  "url": "https://doc.rust-lang.org/nightly/core/index.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " 1.98.0-nightly",
+                  "style": "Plain"
+                },
+                {
+                  "text": "\n    ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "The Rust Core Library",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "fixture-crate",
+                  "style": "Strong",
+                  "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (workspace-local, aliased as ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "crate",
+                  "style": "Strong"
+                },
+                {
+                  "text": ")",
+                  "style": "Plain"
+                },
+                {
+                  "text": "\n    ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "this is the crate description",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "proc_macro",
+                  "style": "Strong",
+                  "url": "https://doc.rust-lang.org/nightly/proc_macro/index.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " 1.98.0-nightly",
+                  "style": "Plain"
+                },
+                {
+                  "text": "\n    ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "A support library for macro authors when defining new macros",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "std",
+                  "style": "Strong",
+                  "url": "https://doc.rust-lang.org/nightly/std/index.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " 1.98.0-nightly",
+                  "style": "Plain"
+                },
+                {
+                  "text": "\n    ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "The Rust Standard Library",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "test",
+                  "style": "Strong",
+                  "url": "https://docs.rs/test/latest/test/index.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " 1.98.0-nightly",
+                  "style": "Plain"
+                },
+                {
+                  "text": "\n    ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "Support code for rustc's built in unit-test and micro-benchmarking framework",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

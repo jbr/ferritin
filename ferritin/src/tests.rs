@@ -91,6 +91,53 @@ fn render_for_tests(command: Commands, output_mode: OutputMode) -> String {
     render_for_tests_rooted(command, output_mode, &get_fixture_crate_path())
 }
 
+/// Render a command to pretty-printed `--format json` output, mirroring
+/// `run_json`: `get` serializes its structural item model, every other command
+/// serializes its presentation `Document` generically.
+fn render_json_for_tests_rooted(command: Commands, project_root: &std::path::Path) -> String {
+    let navigator = build_test_navigator(project_root);
+    let mut request = Request::new(&navigator, FormatContext::new());
+
+    let json = match command {
+        Commands::Get {
+            path,
+            source,
+            recursive,
+            kind,
+            docs,
+        } => {
+            request
+                .format_context()
+                .set_filter(crate::kind::predicate(&kind))
+                .set_doc_level(docs);
+            match crate::commands::get::model(&mut request, &path, source, recursive) {
+                crate::commands::get::JsonOutcome::Found { model, canonical_url } => {
+                    crate::json::to_pretty_string(&model, Some(canonical_url))
+                }
+                crate::commands::get::JsonOutcome::NotFound(document) => {
+                    crate::json::document_to_pretty_string(&document)
+                }
+            }
+        }
+        other => {
+            let (document, _, _) = other.execute(&mut request);
+            crate::json::document_to_pretty_string(&document)
+        }
+    };
+
+    // Same normalization the text snapshots use (the crate path and nightly
+    // version string both appear inside JSON string values).
+    let project_root_str = project_root
+        .canonicalize()
+        .unwrap_or_else(|_| project_root.to_path_buf())
+        .to_string_lossy()
+        .to_string();
+    let json = json.replace(&project_root_str, "/TEST_CRATE_ROOT");
+    let re =
+        regex::Regex::new(r"\d+\.\d+\.\d+-[a-z]+\s+\([a-f0-9]+\s+\d{4}-\d{2}-\d{2}\)").unwrap();
+    re.replace_all(&json, "RUST_VERSION").to_string()
+}
+
 fn render_interactive_for_tests_rooted(
     command: Commands,
     project_root: &std::path::Path,
@@ -131,6 +178,11 @@ macro_rules! test_all_modes_rooted {
             #[test]
             fn [<$name _agent_mode>]() {
                 insta::assert_snapshot!(render_for_tests_rooted($cmd, OutputMode::Agent, &$path_fn()));
+            }
+
+            #[test]
+            fn [<$name _json>]() {
+                insta::assert_snapshot!(render_json_for_tests_rooted($cmd, &$path_fn()));
             }
 
             #[test]

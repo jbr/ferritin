@@ -1091,6 +1091,8 @@ dependencies = [
  "regex",
  "rustdoc-types",
  "semver",
+ "serde",
+ "sonic-rs",
  "strip-ansi-escapes",
  "syntect",
  "terminal_size",

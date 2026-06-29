@@ -1,0 +1,199 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"crate_b\"), &\nget_test_workspace_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/crate-b/0.1.0/crate-b/index.html",
+  "header": [
+    {
+      "type": "metadata",
+      "fields": [
+        {
+          "label": "Item",
+          "value": [
+            {
+              "text": "crate_b",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Kind",
+          "value": [
+            {
+              "text": "Module",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Visibility",
+          "value": [
+            {
+              "text": "Public",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Defined at",
+          "value": [
+            {
+              "text": "crate_b",
+              "style": "TypeName",
+              "url": "https://docs.rs/crate-b/0.1.0/crate-b/index.html"
+            }
+          ]
+        },
+        {
+          "label": "In crate",
+          "value": [
+            {
+              "text": "crate-b",
+              "style": "Plain"
+            },
+            {
+              "text": " (",
+              "style": "Plain"
+            },
+            {
+              "text": "0.1.0",
+              "style": "Plain"
+            },
+            {
+              "text": ")",
+              "style": "Plain"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "body": {
+    "kind": "presentation",
+    "nodes": [
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Modules",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "prefix_inner",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/crate-b/0.1.0/crate-b/prefix_inner/index.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Structs",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "AliasedCrateAStruct",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/crate-a/0.1.0/crate-a/struct.AliasedCrateAStruct.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "CrateBProcessor",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/crate-b/0.1.0/crate-b/struct.CrateBProcessor.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "PrefixCrateAAlias",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/crate-a/0.1.0/crate-a/struct.PrefixCrateAAlias.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "SelfPrefixAlias",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/crate-a/0.1.0/crate-a/struct.SelfPrefixAlias.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -8,18 +8,24 @@ use crate::styled_string::{DocumentNode, ListItem, Span, TruncationLevel};
 /// Signature-level references (field types, generics) stay as span sequences —
 /// the shared "leaf" vocabulary that survives across IR levels — while the
 /// struct's own structure (shape, fields) is explicit, so a non-terminal
-/// consumer can render it at a higher level than "spans in a code block".
-struct StructDoc<'a> {
-    name: &'a str,
+/// consumer (e.g. the JSON output) can render it at a higher level than "spans
+/// in a code block".
+pub(crate) struct StructDoc<'a> {
+    pub(crate) name: &'a str,
     /// Generic-parameter spans (`<T, U>`); empty when the struct has none.
-    generics: Vec<Span<'a>>,
+    pub(crate) generics: Vec<Span<'a>>,
     /// `where`-clause spans; empty when there are none.
-    where_clause: Vec<Span<'a>>,
-    shape: StructShape<'a>,
+    pub(crate) where_clause: Vec<Span<'a>>,
+    pub(crate) shape: StructShape<'a>,
+    /// Associated inherent methods, still as opaque presentation nodes. Unit 3
+    /// will model these structurally (`Vec<MethodDoc>`); for now they are
+    /// carried verbatim so the struct body lowers identically and the JSON
+    /// output can at least emit them as a rendered block.
+    pub(crate) methods: Vec<DocumentNode<'a>>,
 }
 
 /// The three structural shapes a struct can take, each carrying its own fields.
-enum StructShape<'a> {
+pub(crate) enum StructShape<'a> {
     Unit,
     Tuple {
         fields: Vec<TupleField<'a>>,
@@ -33,41 +39,30 @@ enum StructShape<'a> {
 }
 
 /// A named field of a plain struct.
-struct PlainField<'a> {
+pub(crate) struct PlainField<'a> {
     /// Field name; `None` for an unnamed field (rendered as `<unnamed>`).
-    name: Option<&'a str>,
+    pub(crate) name: Option<&'a str>,
     /// Whether the field is declared `pub`.
-    is_pub: bool,
+    pub(crate) is_pub: bool,
     /// The field's type, as a resolved span sequence.
-    type_spans: Vec<Span<'a>>,
+    pub(crate) type_spans: Vec<Span<'a>>,
     /// Single-line docs for the Fields section, if the field has any.
-    docs: Option<Vec<DocumentNode<'a>>>,
+    pub(crate) docs: Option<Vec<DocumentNode<'a>>>,
 }
 
 /// A positional field of a tuple struct.
-struct TupleField<'a> {
-    index: usize,
-    is_pub: bool,
-    type_spans: Vec<Span<'a>>,
-    docs: Option<Vec<DocumentNode<'a>>>,
+pub(crate) struct TupleField<'a> {
+    pub(crate) index: usize,
+    pub(crate) is_pub: bool,
+    pub(crate) type_spans: Vec<Span<'a>>,
+    pub(crate) docs: Option<Vec<DocumentNode<'a>>>,
 }
 
 impl<'a> Request<'a> {
-    pub(super) fn format_struct(
-        &mut self,
-        item: DocRef<'a, Item>,
-        r#struct: DocRef<'a, Struct>,
-    ) -> Vec<DocumentNode<'a>> {
-        let model = self.model_struct(item, r#struct);
-        let mut doc_nodes = lower_struct(model);
-        doc_nodes.extend(self.format_associated_methods(item));
-        doc_nodes
-    }
-
     /// Resolve a struct item into its semantic [`StructDoc`] model — the half of
     /// the old `format_*struct` functions that does index lookups and type
     /// resolution, with the span-assembly half moved to [`lower_struct`].
-    fn model_struct(
+    pub(super) fn model_struct(
         &mut self,
         item: DocRef<'a, Item>,
         struct_data: DocRef<'a, Struct>,
@@ -94,11 +89,14 @@ impl<'a> Request<'a> {
             } => self.model_plain_fields(item, fields, *has_stripped_fields),
         };
 
+        let methods = self.format_associated_methods(item);
+
         StructDoc {
             name,
             generics,
             where_clause,
             shape,
+            methods,
         }
     }
 
@@ -190,12 +188,13 @@ impl<'a> Request<'a> {
 /// Lower a [`StructDoc`] to presentation [`DocumentNode`]s. This is the
 /// terminal-facing half: it must reproduce the old formatters' output
 /// byte-for-byte (insta snapshots are the guardrail).
-fn lower_struct(model: StructDoc<'_>) -> Vec<DocumentNode<'_>> {
+pub(super) fn lower_struct(model: StructDoc<'_>) -> Vec<DocumentNode<'_>> {
     let StructDoc {
         name,
         generics,
         where_clause,
         shape,
+        methods,
     } = model;
 
     let mut code_spans = vec![
@@ -206,7 +205,7 @@ fn lower_struct(model: StructDoc<'_>) -> Vec<DocumentNode<'_>> {
     code_spans.extend(generics);
     code_spans.extend(where_clause);
 
-    match shape {
+    let mut doc_nodes = match shape {
         StructShape::Unit => {
             code_spans.push(Span::punctuation(";"));
             vec![DocumentNode::generated_code(code_spans)]
@@ -220,7 +219,10 @@ fn lower_struct(model: StructDoc<'_>) -> Vec<DocumentNode<'_>> {
             hidden_count,
             has_stripped_fields,
         } => lower_plain(code_spans, fields, hidden_count, has_stripped_fields),
-    }
+    };
+
+    doc_nodes.extend(methods);
+    doc_nodes
 }
 
 fn lower_plain<'a>(

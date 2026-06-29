@@ -329,7 +329,18 @@ The architecture separates content generation from presentation through an inter
 
 ### Stage 1: Format to IR
 
-Format functions (`format_struct`, `format_module`, etc.) convert rustdoc JSON to a structured IR:
+Item formatting is a **two-level lowering**. `Request::model_item` first resolves a `DocRef` into a *domain model* — `ItemDoc { header, body, source }` — where the kind-agnostic `header` (metadata block + the item's own doc prose) and `source` stay as presentation nodes, and the kind-specific `body` is an `ItemBody`:
+
+```rust
+enum ItemBody<'a> {
+    Struct(StructDoc<'a>),               // a structural model: shape, fields, methods
+    Presentation(Vec<DocumentNode<'a>>), // not-yet-migrated kinds, already lowered
+}
+```
+
+This is the seam that lets the domain-IR migration proceed one kind at a time. Per kind, `format_<kind>` splits into `model_<kind>` (index lookups + type resolution → a structural model) and `lower_<kind>` (span assembly → presentation nodes). So far only `struct` is modeled (`StructDoc`); every other kind still lowers eagerly into `ItemBody::Presentation`. Signature-level references (field types, generics) stay as span sequences — the shared "leaf" vocabulary — while the item's own structure becomes explicit.
+
+The terminal renderers go through `ItemDoc::lower()` (and `format_item`, a thin wrapper over it), which produces the *presentation IR* — a relatively flat tree:
 
 ```rust
 Document<'a> {
@@ -350,17 +361,23 @@ Span<'a> {
 
 The `SpanStyle` enum represents semantic categories (Keyword, TypeName, FunctionName, etc.), not terminal colors. This makes the IR renderer-agnostic. The IR also supports conditional nodes that appear only in specific modes (interactive vs. non-interactive), enabling formatters to prepare mode-specific content.
 
+The five renderers below consume this presentation IR. The **JSON output** instead serializes the *domain model* directly (see [JSON output](#json-output)) — which is why a struct appears in JSON as `{ name, fields, methods }` rather than a flat code block.
+
 ### Stage 2: Render IR to Output
 
-Five distinct renderers transform the same IR:
+Five distinct renderers transform the same presentation IR:
 
 1. **Plain** - Plain text output (no colors, no interactivity)
 2. **TTY** - Single-shot CLI with colors and OSC8 hyperlinks
 3. **TestMode** - Normalized output for snapshot testing
 4. **Agent** - Token-efficient, markdown-flavored output for coding agents and
-   other LLM consumers. Selected by `--agent` (hidden `--ai` alias) or
-   auto-detected from the `CLAUDECODE`/`GEMINI_CLI`/`CODEX_SANDBOX` env vars
+   other LLM consumers. Selected by `--format agent` or auto-detected from the
+   `CLAUDECODE`/`GEMINI_CLI`/`CODEX_SANDBOX` env vars
 5. **Interactive** - ratatui-based TUI with mouse/keyboard navigation
+
+The output format is chosen by `--format <tty|plain|agent|json>` (overriding
+autodetection); without it, ferritin picks agent format under a coding agent,
+ANSI on a TTY, and plain when piped.
 
 **Renderer differences:**
 - **Styling:** Plain ignores SpanStyle; TTY/Interactive map to terminal colors; TestMode normalizes; Agent leans on markdown conventions (`#` headers, `-` bullets) instead of ANSI
@@ -382,6 +399,12 @@ The architecture separates formatting concerns (what to include in a `Document`)
 `FormatContext` also carries a `DocLevel` (CLI `--docs <full|brief|none>`, `get`-local, default `full`) controlling how much of the resolved item's *own* doc prose renders ahead of its body. `none` omits it — the pure-listing case (e.g. you want a module's items, not its essay); `brief` renders only the leading paragraph. It maps to the existing `TruncationLevel`, stored as an `AtomicU8` to stay atomic like the other prefs. Note this is orthogonal to `--kind`: `--kind` selects *which items* list, `--docs` controls *how much prose* precedes them.
 
 The `public` preference (CLI `--public`) filters non-`pub` items at format time rather than at build time: workspace crates are always built with `--document-private-items`, and the formatters skip items whose `DocRef::effective_visibility()` isn't public (module children, struct fields, inherent methods). Enum variants are exempt — they carry `Visibility::Default` in rustdoc JSON but are as public as their enum.
+
+### JSON output
+
+`--format json` bypasses the `Document` render pipeline. For `get`, it serializes the `ItemDoc` domain model: a structural kind (currently `struct`) becomes `{ kind, name, shape, fields, methods, ... }`, while the kind-agnostic header/source and any not-yet-modeled body serialize as a faithful JSON mirror of their presentation nodes. Leaf references carry a resolved `url` — the hypermedia pointer a client follows — and the item carries a `canonicalUrl`. `search` and `list` have no domain model yet, so they serialize their presentation `Document` generically (`{ nodes: [...] }`); this is a lower-fidelity, presentation-level representation, and a structural search-results model is a future work unit.
+
+Serialization lives in the `json` module: `#[derive(Serialize)]` DTOs (`JsonItem`/`JsonNode`/`JsonSpan`/…) that borrow (`Cow`) from the model, serialized with `sonic-rs`. The JSON path is CLI-only today, but `model_item` is the reusable seam a future web server would call directly, rendering to owned bytes without the model crossing an `.await`.
 
 ## Intra-doc Link Resolution
 

@@ -141,7 +141,7 @@ pub struct Document<'a> {
 }
 
 /// Condition for when to show content (used by Conditional node)
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
 pub enum ShowWhen {
     /// Always show (default)
     Always,
@@ -245,14 +245,14 @@ pub struct ListItem<'a> {
 }
 
 /// Heading level for semantic structure
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
 pub enum HeadingLevel {
     Title,   // Top-level item name: "Item: Vec"
     Section, // Section header: "Fields:", "Methods:"
 }
 
 /// Truncation level hint for renderers
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
 pub enum TruncationLevel {
     /// Single-line summary (for listings)
     SingleLine,
@@ -277,7 +277,7 @@ impl<'a> Span<'a> {
 }
 
 /// Semantic styling categories for Rust code elements
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize)]
 pub enum SpanStyle {
     // Rust code semantic elements
     Keyword,      // struct, enum, pub, fn, const, etc.

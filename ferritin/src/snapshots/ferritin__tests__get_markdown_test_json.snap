@@ -1,0 +1,2776 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"fixture-crate::markdown_test\"), &\nget_fixture_crate_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html",
+  "header": [
+    {
+      "type": "metadata",
+      "fields": [
+        {
+          "label": "Item",
+          "value": [
+            {
+              "text": "markdown_test",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Kind",
+          "value": [
+            {
+              "text": "Module",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Visibility",
+          "value": [
+            {
+              "text": "Public",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Defined at",
+          "value": [
+            {
+              "text": "fixture_crate",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "markdown_test",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html"
+            }
+          ]
+        },
+        {
+          "label": "In crate",
+          "value": [
+            {
+              "text": "fixture-crate",
+              "style": "Plain"
+            },
+            {
+              "text": " (",
+              "style": "Plain"
+            },
+            {
+              "text": "0.1.0",
+              "style": "Plain"
+            },
+            {
+              "text": ")",
+              "style": "Plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "heading",
+          "level": "Title",
+          "spans": [
+            {
+              "text": "Markdown: Syntax",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Overview",
+                      "style": "Plain",
+                      "url": "#overview"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Philosophy",
+                              "style": "Plain",
+                              "url": "#philosophy"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Inline HTML",
+                              "style": "Plain",
+                              "url": "#html"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Automatic Escaping for Special Characters",
+                              "style": "Plain",
+                              "url": "#autoescape"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Block Elements",
+                      "style": "Plain",
+                      "url": "#block"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Paragraphs and Line Breaks",
+                              "style": "Plain",
+                              "url": "#p"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Headers",
+                              "style": "Plain",
+                              "url": "#header"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Blockquotes",
+                              "style": "Plain",
+                              "url": "#blockquote"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Lists",
+                              "style": "Plain",
+                              "url": "#list"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Code Blocks",
+                              "style": "Plain",
+                              "url": "#precode"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Horizontal Rules",
+                              "style": "Plain",
+                              "url": "#hr"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Span Elements",
+                      "style": "Plain",
+                      "url": "#span"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Links",
+                              "style": "Plain",
+                              "url": "#link"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Emphasis",
+                              "style": "Plain",
+                              "url": "#em"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Code",
+                              "style": "Plain",
+                              "url": "#code"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Images",
+                              "style": "Plain",
+                              "url": "#img"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Miscellaneous",
+                      "style": "Plain",
+                      "url": "#misc"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Backslash Escapes",
+                              "style": "Plain",
+                              "url": "#backslash"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Automatic Links",
+                              "style": "Plain",
+                              "url": "#autolink"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Note:",
+              "style": "Strong"
+            },
+            {
+              "text": " This document is itself written using Markdown; you",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "can ",
+              "style": "Plain"
+            },
+            {
+              "text": "see the source for it by adding '.text' to the URL",
+              "style": "Plain",
+              "url": "/projects/markdown/syntax.text"
+            },
+            {
+              "text": ".",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "horizontalRule"
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Overview",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Philosophy",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Markdown is intended to be as easy-to-read and easy-to-write as is feasible.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Readability, however, is emphasized above all else. A Markdown-formatted",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "document should be publishable as-is, as plain text, without looking",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "like it's been marked up with tags or formatting instructions. While",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Markdown's syntax has been influenced by several existing text-to-HTML",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "filters -- including ",
+              "style": "Plain"
+            },
+            {
+              "text": "Setext",
+              "style": "Plain",
+              "url": "http://docutils.sourceforge.net/mirror/setext.html"
+            },
+            {
+              "text": ", ",
+              "style": "Plain"
+            },
+            {
+              "text": "atx",
+              "style": "Plain",
+              "url": "http://www.aaronsw.com/2002/atx/"
+            },
+            {
+              "text": ", ",
+              "style": "Plain"
+            },
+            {
+              "text": "Textile",
+              "style": "Plain",
+              "url": "http://textism.com/tools/textile/"
+            },
+            {
+              "text": ", ",
+              "style": "Plain"
+            },
+            {
+              "text": "reStructuredText",
+              "style": "Plain",
+              "url": "http://docutils.sourceforge.net/rst.html"
+            },
+            {
+              "text": ",",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Grutatext",
+              "style": "Plain",
+              "url": "http://www.triptico.com/software/grutatxt.html"
+            },
+            {
+              "text": ", and ",
+              "style": "Plain"
+            },
+            {
+              "text": "EtText",
+              "style": "Plain",
+              "url": "http://ettext.taint.org/doc/"
+            },
+            {
+              "text": " -- the single biggest source of",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "inspiration for Markdown's syntax is the format of plain text email.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Block Elements",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Paragraphs and Line Breaks",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "A paragraph is simply one or more consecutive lines of text, separated",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "by one or more blank lines. (A blank line is any line that looks like a",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "blank line -- a line containing nothing but spaces or tabs is considered",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "blank.) Normal paragraphs should not be indented with spaces or tabs.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "The implication of the \"one or more consecutive lines of text\" rule is",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "that Markdown supports \"hard-wrapped\" text paragraphs. This differs",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "significantly from most other text-to-HTML formatters (including Movable",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Type's \"Convert Line Breaks\" option) which translate every line break",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "character in a paragraph into a ",
+              "style": "Plain"
+            },
+            {
+              "text": "<br />",
+              "style": "InlineCode"
+            },
+            {
+              "text": " tag.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "When you ",
+              "style": "Plain"
+            },
+            {
+              "text": "do",
+              "style": "Emphasis"
+            },
+            {
+              "text": " want to insert a ",
+              "style": "Plain"
+            },
+            {
+              "text": "<br />",
+              "style": "InlineCode"
+            },
+            {
+              "text": " break tag using Markdown, you",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "end a line with two or more spaces, then type return.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Headers",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Markdown supports two styles of headers, ",
+              "style": "Plain"
+            },
+            {
+              "text": "Setext",
+              "style": "Plain",
+              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3ASetext"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "1",
+              "style": "Plain",
+              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3A1"
+            },
+            {
+              "text": " and ",
+              "style": "Plain"
+            },
+            {
+              "text": "atx",
+              "style": "Plain",
+              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3Aatx"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "2",
+              "style": "Plain",
+              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3A2"
+            },
+            {
+              "text": ".",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Optionally, you may \"close\" atx-style headers. This is purely",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "cosmetic -- you can use this if you think it looks better. The",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "closing hashes don't even need to match the number of hashes",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "used to open the header. (The number of opening hashes",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "determines the header level.)",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Blockquotes",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Markdown uses email-style ",
+              "style": "Plain"
+            },
+            {
+              "text": ">",
+              "style": "InlineCode"
+            },
+            {
+              "text": " characters for blockquoting. If you're",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "familiar with quoting passages of text in an email message, then you",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "know how to create a blockquote in Markdown. It looks best if you hard",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "wrap the text and put a ",
+              "style": "Plain"
+            },
+            {
+              "text": ">",
+              "style": "InlineCode"
+            },
+            {
+              "text": " before every line:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "blockQuote",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,",
+                  "style": "Plain"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.",
+                  "style": "Plain"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse",
+                  "style": "Plain"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "id sem consectetuer libero luctus adipiscing.",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Markdown allows you to be lazy and only put the ",
+              "style": "Plain"
+            },
+            {
+              "text": ">",
+              "style": "InlineCode"
+            },
+            {
+              "text": " before the first",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "line of a hard-wrapped paragraph:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "blockQuote",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,",
+                  "style": "Plain"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.",
+                  "style": "Plain"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "blockQuote",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse",
+                  "style": "Plain"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "id sem consectetuer libero luctus adipiscing.",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Blockquotes can be nested (i.e. a blockquote-in-a-blockquote) by",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "adding additional levels of ",
+              "style": "Plain"
+            },
+            {
+              "text": ">",
+              "style": "InlineCode"
+            },
+            {
+              "text": ":",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "blockQuote",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "This is the first level of quoting.",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "blockQuote",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "This is nested blockquote.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "Back to the first level.",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Blockquotes can contain other Markdown elements, including headers, lists,",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "and code blocks:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "blockQuote",
+          "nodes": [
+            {
+              "type": "heading",
+              "level": "Section",
+              "spans": [
+                {
+                  "text": "This is a header.",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "list",
+              "items": [
+                {
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "spans": [
+                        {
+                          "text": "This is the first list item.",
+                          "style": "Plain"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "spans": [
+                        {
+                          "text": "This is the second list item.",
+                          "style": "Plain"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "Here's some example code:",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "codeBlock",
+              "lang": "rust",
+              "code": "return shell_exec(\"echo $input | $markdown_script\");"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Any decent text editor should make email-style quoting easy. For",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "example, with BBEdit, you can make a selection and choose Increase",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Quote Level from the Text menu.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Lists",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Markdown supports ordered (numbered) and unordered (bulleted) lists.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Unordered lists use asterisks, pluses, and hyphens -- interchangably",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "-- as list markers:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Red",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Green",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Blue",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "is equivalent to:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Red",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Green",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Blue",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "and:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Red",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Green",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Blue",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Ordered lists use numbers followed by periods:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Bird",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "McHale",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Parish",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "It's important to note that the actual numbers you use to mark the",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "list have no effect on the HTML output Markdown produces. The HTML",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Markdown produces from the above list is:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "If you instead wrote the list in Markdown like this:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Bird",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "McHale",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Parish",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "or even:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Bird",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "McHale",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Parish",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "you'd get the exact same HTML output. The point is, if you want to,",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "you can use ordinal numbers in your ordered Markdown lists, so that",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "the numbers in your source match the numbers in your published HTML.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "But if you want to be lazy, you don't have to.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "To make lists look nice, you can wrap items with hanging indents:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "viverra nec, fringilla in, laoreet vitae, risus.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Donec sit amet nisl. Aliquam semper ipsum sit amet velit.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Suspendisse id sem consectetuer libero luctus adipiscing.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "But if you want to be lazy, you don't have to:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "viverra nec, fringilla in, laoreet vitae, risus.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Donec sit amet nisl. Aliquam semper ipsum sit amet velit.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Suspendisse id sem consectetuer libero luctus adipiscing.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "List items may consist of multiple paragraphs. Each subsequent",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "paragraph in a list item must be indented by either 4 spaces",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "or one tab:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "This is a list item with two paragraphs. Lorem ipsum dolor",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "sit amet, consectetuer adipiscing elit. Aliquam hendrerit",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "mi posuere lectus.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Vestibulum enim wisi, viverra nec, fringilla in, laoreet",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "vitae, risus. Donec sit amet nisl. Aliquam semper ipsum",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "sit amet velit.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Suspendisse id sem consectetuer libero luctus adipiscing.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "It looks nice if you indent every line of the subsequent",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "paragraphs, but here again, Markdown will allow you to be",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "lazy:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "This is a list item with two paragraphs.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "This is the second paragraph in the list item. You're",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "only required to indent the first line. Lorem ipsum dolor",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "sit amet, consectetuer adipiscing elit.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Another item in the same list.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "To put a blockquote within a list item, the blockquote's ",
+              "style": "Plain"
+            },
+            {
+              "text": ">",
+              "style": "InlineCode"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "delimiters need to be indented:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "A list item with a blockquote:",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "blockQuote",
+                  "nodes": [
+                    {
+                      "type": "paragraph",
+                      "spans": [
+                        {
+                          "text": "This is a blockquote",
+                          "style": "Plain"
+                        },
+                        {
+                          "text": " ",
+                          "style": "Plain"
+                        },
+                        {
+                          "text": "inside a list item.",
+                          "style": "Plain"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "To put a code block within a list item, the code block needs",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "to be indented ",
+              "style": "Plain"
+            },
+            {
+              "text": "twice",
+              "style": "Emphasis"
+            },
+            {
+              "text": " -- 8 spaces or two tabs:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "A list item with a code block:",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "codeBlock",
+                  "lang": "rust",
+                  "code": "<code goes here>"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Code Blocks",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Pre-formatted code blocks are used for writing about programming or",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "markup source code. Rather than forming normal paragraphs, the lines",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "of a code block are interpreted literally. Markdown wraps a code block",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "in both ",
+              "style": "Plain"
+            },
+            {
+              "text": "<pre>",
+              "style": "InlineCode"
+            },
+            {
+              "text": " and ",
+              "style": "Plain"
+            },
+            {
+              "text": "<code>",
+              "style": "InlineCode"
+            },
+            {
+              "text": " tags.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "To produce a code block in Markdown, simply indent every line of the",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "block by at least 4 spaces or 1 tab.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "This is a normal paragraph:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "codeBlock",
+          "lang": "rust",
+          "code": "This is a code block."
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Here is an example of AppleScript:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "codeBlock",
+          "lang": "rust",
+          "code": "tell application \"Foo\"\n    beep\nend tell"
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "A code block continues until it reaches a line that is not indented",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "(or the end of the article).",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Within a code block, ampersands (",
+              "style": "Plain"
+            },
+            {
+              "text": "&",
+              "style": "InlineCode"
+            },
+            {
+              "text": ") and angle brackets (",
+              "style": "Plain"
+            },
+            {
+              "text": "<",
+              "style": "InlineCode"
+            },
+            {
+              "text": " and ",
+              "style": "Plain"
+            },
+            {
+              "text": ">",
+              "style": "InlineCode"
+            },
+            {
+              "text": ")",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "are automatically converted into HTML entities. This makes it very",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "easy to include example HTML source code using Markdown -- just paste",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "it and indent it, and Markdown will handle the hassle of encoding the",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "ampersands and angle brackets. For example, this:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "codeBlock",
+          "lang": "rust",
+          "code": "<div class=\"footer\">\n    &copy; 2004 Foo Corporation\n</div>"
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Regular Markdown syntax is not processed within code blocks. E.g.,",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "asterisks are just literal asterisks within a code block. This means",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "it's also easy to use Markdown to write about Markdown's own syntax.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "codeBlock",
+          "lang": "rust",
+          "code": "tell application \"Foo\"\n    beep\nend tell"
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Span Elements",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Links",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Markdown supports two style of links: ",
+              "style": "Plain"
+            },
+            {
+              "text": "inline",
+              "style": "Emphasis"
+            },
+            {
+              "text": " and ",
+              "style": "Plain"
+            },
+            {
+              "text": "reference",
+              "style": "Emphasis"
+            },
+            {
+              "text": ".",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "In both styles, the link text is delimited by ",
+              "style": "Plain"
+            },
+            {
+              "text": "square brackets",
+              "style": "Plain",
+              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3Asquare%20brackets"
+            },
+            {
+              "text": ".",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "To create an inline link, use a set of regular parentheses immediately",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "after the link text's closing square bracket. Inside the parentheses,",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "put the URL where you want the link to point, along with an ",
+              "style": "Plain"
+            },
+            {
+              "text": "optional",
+              "style": "Emphasis"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "title for the link, surrounded in quotes. For example:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "This is ",
+              "style": "Plain"
+            },
+            {
+              "text": "an example",
+              "style": "Plain",
+              "url": "http://example.com/"
+            },
+            {
+              "text": " inline link.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "This link",
+              "style": "Plain",
+              "url": "http://example.net/"
+            },
+            {
+              "text": " has no title attribute.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Emphasis",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Markdown treats asterisks (",
+              "style": "Plain"
+            },
+            {
+              "text": "*",
+              "style": "InlineCode"
+            },
+            {
+              "text": ") and underscores (",
+              "style": "Plain"
+            },
+            {
+              "text": "_",
+              "style": "InlineCode"
+            },
+            {
+              "text": ") as indicators of",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "emphasis. Text wrapped with one ",
+              "style": "Plain"
+            },
+            {
+              "text": "*",
+              "style": "InlineCode"
+            },
+            {
+              "text": " or ",
+              "style": "Plain"
+            },
+            {
+              "text": "_",
+              "style": "InlineCode"
+            },
+            {
+              "text": " will be wrapped with an",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "HTML ",
+              "style": "Plain"
+            },
+            {
+              "text": "<em>",
+              "style": "InlineCode"
+            },
+            {
+              "text": " tag; double ",
+              "style": "Plain"
+            },
+            {
+              "text": "*",
+              "style": "InlineCode"
+            },
+            {
+              "text": "'s or ",
+              "style": "Plain"
+            },
+            {
+              "text": "_",
+              "style": "InlineCode"
+            },
+            {
+              "text": "'s will be wrapped with an HTML",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "<strong>",
+              "style": "InlineCode"
+            },
+            {
+              "text": " tag. E.g., this input:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "single asterisks",
+              "style": "Emphasis"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "single underscores",
+              "style": "Emphasis"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "double asterisks",
+              "style": "Strong"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "double underscores",
+              "style": "Strong"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Code",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "To indicate a span of code, wrap it with backtick quotes (",
+              "style": "Plain"
+            },
+            {
+              "text": "`",
+              "style": "InlineCode"
+            },
+            {
+              "text": ").",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Unlike a pre-formatted code block, a code span indicates code within a",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "normal paragraph. For example:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Use the ",
+              "style": "Plain"
+            },
+            {
+              "text": "printf()",
+              "style": "InlineCode"
+            },
+            {
+              "text": " function.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Tables",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Markdown supports tables for structured data.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Simple Table",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Here's a simple two-column table:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "header": [
+            {
+              "spans": [
+                {
+                  "text": "Field",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "spans": [
+                {
+                  "text": "Type",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ],
+          "rows": [
+            [
+              {
+                "spans": [
+                  {
+                    "text": "x",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "u32",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "spans": [
+                  {
+                    "text": "y",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "u32",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Complex Table",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "And a more complex table with various content:",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "header": [
+            {
+              "spans": [
+                {
+                  "text": "Method",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "spans": [
+                {
+                  "text": "Parameters",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "spans": [
+                {
+                  "text": "Return Type",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "spans": [
+                {
+                  "text": "Description",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ],
+          "rows": [
+            [
+              {
+                "spans": [
+                  {
+                    "text": "new()",
+                    "style": "InlineCode"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "x: i32, y: i32",
+                    "style": "InlineCode"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "Self",
+                    "style": "InlineCode"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "Creates a new point at the given coordinates",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "spans": [
+                  {
+                    "text": "distance()",
+                    "style": "InlineCode"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "&self, other: &Point",
+                    "style": "InlineCode"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "f64",
+                    "style": "InlineCode"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "Calculates Euclidean distance to another point",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "spans": [
+                  {
+                    "text": "translate()",
+                    "style": "InlineCode"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "&mut self, dx: i32, dy: i32",
+                    "style": "InlineCode"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "()",
+                    "style": "InlineCode"
+                  }
+                ]
+              },
+              {
+                "spans": [
+                  {
+                    "text": "Moves the point by the given offset",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "presentation",
+    "nodes": [
+      {
+        "type": "paragraph",
+        "spans": [
+          {
+            "text": "No items match the current filters.",
+            "style": "Plain"
+          }
+        ]
+      }
+    ]
+  }
+}
