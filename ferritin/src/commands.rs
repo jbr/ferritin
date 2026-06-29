@@ -5,7 +5,7 @@ use crate::request::Request;
 use crate::styled_string::Document;
 use std::fmt::Display;
 
-mod get;
+pub(crate) mod get;
 pub(crate) mod list;
 pub(crate) mod search;
 

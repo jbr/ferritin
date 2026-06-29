@@ -1,0 +1,629 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\").recursive(), &\nget_fixture_crate_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html",
+  "header": [
+    {
+      "type": "metadata",
+      "fields": [
+        {
+          "label": "Item",
+          "value": [
+            {
+              "text": "submodule",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Kind",
+          "value": [
+            {
+              "text": "Module",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Visibility",
+          "value": [
+            {
+              "text": "Public",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Defined at",
+          "value": [
+            {
+              "text": "fixture_crate",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "submodule",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html"
+            }
+          ]
+        },
+        {
+          "label": "In crate",
+          "value": [
+            {
+              "text": "fixture-crate",
+              "style": "Plain"
+            },
+            {
+              "text": " (",
+              "style": "Plain"
+            },
+            {
+              "text": "0.1.0",
+              "style": "Plain"
+            },
+            {
+              "text": ")",
+              "style": "Plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "A module with items",
+              "style": "Plain"
+            }
+          ]
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "presentation",
+    "nodes": [
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Structs",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "SubStruct",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A struct in a submodule",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Enums",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "TestEnum",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "An enum for testing",
+                            "style": "Plain"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "This is like ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "crate::GenericEnum",
+                            "style": "InlineCode",
+                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html"
+                          },
+                          {
+                            "text": " but without the generic",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Functions",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "SubStruct::double",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.double"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Double the value",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "SubStruct::get_value",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.get_value"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Get the value",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "SubStruct::new",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.new"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Create a new SubStruct",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "sub_function",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A function in a submodule",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Variants",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "TestEnum::VariantA",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Variant A (see also ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "crate::GenericEnum",
+                            "style": "InlineCode",
+                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html"
+                          },
+                          {
+                            "text": ")",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "TestEnum::VariantB",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Variant B with data",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "TestEnum::VariantC",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Variant C with struct data (",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "name",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " and ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "value",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": ")",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "VariantA",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Variant A (see also ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "crate::GenericEnum",
+                            "style": "InlineCode",
+                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html"
+                          },
+                          {
+                            "text": ")",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "VariantB",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Variant B with data",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "VariantC",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Variant C with struct data (",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "name",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " and ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "value",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": ")",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

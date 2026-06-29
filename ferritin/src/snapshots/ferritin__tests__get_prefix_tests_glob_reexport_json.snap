@@ -1,0 +1,424 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::deep::glob_reexport\"),\n& get_fixture_crate_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/glob_reexport/index.html",
+  "header": [
+    {
+      "type": "metadata",
+      "fields": [
+        {
+          "label": "Item",
+          "value": [
+            {
+              "text": "glob_reexport",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Kind",
+          "value": [
+            {
+              "text": "Module",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Visibility",
+          "value": [
+            {
+              "text": "Public",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Defined at",
+          "value": [
+            {
+              "text": "fixture_crate",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "prefix_tests",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "deep",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "glob_reexport",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/glob_reexport/index.html"
+            }
+          ]
+        },
+        {
+          "label": "In crate",
+          "value": [
+            {
+              "text": "fixture-crate",
+              "style": "Plain"
+            },
+            {
+              "text": " (",
+              "style": "Plain"
+            },
+            {
+              "text": "0.1.0",
+              "style": "Plain"
+            },
+            {
+              "text": ")",
+              "style": "Plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Exercises the \"glob brings a name into scope, then re-export that",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "name\" pattern, all within the same crate.",
+              "style": "Plain"
+            }
+          ]
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "presentation",
+    "nodes": [
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Modules",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "deep",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A nested module to exercise ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "self::",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": ", ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "super::",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": ", and ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "super::super::",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": ".",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Structs",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "DocOuter",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.DocOuter.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Intra-doc links from the outer module:",
+                            "style": "Plain"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          {
+                            "content": [
+                              {
+                                "type": "paragraph",
+                                "spans": [
+                                  {
+                                    "text": "crate::TestStruct",
+                                    "style": "InlineCode",
+                                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
+                                  },
+                                  {
+                                    "text": " — absolute path from crate root.",
+                                    "style": "Plain"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "content": [
+                              {
+                                "type": "paragraph",
+                                "spans": [
+                                  {
+                                    "text": "self::PrefixMarker",
+                                    "style": "InlineCode",
+                                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html"
+                                  },
+                                  {
+                                    "text": " — sibling in the same module.",
+                                    "style": "Plain"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "content": [
+                              {
+                                "type": "paragraph",
+                                "spans": [
+                                  {
+                                    "text": "super::TestStruct",
+                                    "style": "InlineCode",
+                                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
+                                  },
+                                  {
+                                    "text": " — parent of this module is the crate root.",
+                                    "style": "Plain"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "content": [
+                              {
+                                "type": "paragraph",
+                                "spans": [
+                                  {
+                                    "text": "crate::submodule::TestEnum",
+                                    "style": "InlineCode",
+                                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html"
+                                  },
+                                  {
+                                    "text": " — deep absolute path.",
+                                    "style": "Plain"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "GlobReexportedMarker",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.GlobReexportedMarker.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A sibling target for ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "self::",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " / ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "super::PrefixMarker",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " references.",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "PrefixMarker",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A sibling target for ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "self::",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " / ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "super::PrefixMarker",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " references.",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

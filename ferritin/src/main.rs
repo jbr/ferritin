@@ -24,6 +24,7 @@ mod format;
 mod format_context;
 mod generate_docsrs_url;
 mod indent;
+mod json;
 mod kind;
 mod logging;
 mod markdown;
@@ -91,13 +92,29 @@ struct Cli {
     #[arg(long, global = true)]
     no_default_features: bool,
 
-    /// Output in agent-friendly format for coding agents and other LLM readers
-    /// (also auto-enabled by the CLAUDECODE, GEMINI_CLI, or CODEX_SANDBOX env vars)
-    #[arg(long, global = true, alias = "ai")]
-    agent: bool,
+    /// Output format. Defaults to autodetection: agent format under coding
+    /// agents (CLAUDECODE/GEMINI_CLI/CODEX_SANDBOX), ANSI on a TTY, plain when
+    /// piped. `json` emits the structured item model and is only valid for `get`.
+    #[arg(long, global = true, value_enum)]
+    format: Option<Format>,
 
     #[command(subcommand)]
     command: Option<Commands>,
+}
+
+/// Explicit `--format` override. `Agent`/`Plain`/`Tty` select a renderer; `Json`
+/// takes a separate path that serializes the semantic item model directly,
+/// bypassing the `Document` render pipeline.
+#[derive(clap::ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
+enum Format {
+    /// ANSI terminal output (colors, hyperlinks)
+    Tty,
+    /// Plain text, no decoration
+    Plain,
+    /// Token-efficient output for coding agents and other LLM readers
+    Agent,
+    /// Structured JSON of the item model (only valid for `get`)
+    Json,
 }
 
 fn build_theme_help() -> &'static str {
@@ -156,9 +173,20 @@ fn main() -> ExitCode {
         return ExitCode::FAILURE;
     }
 
+    // `--format json` is incompatible with the interactive TUI.
+    if cli.format == Some(Format::Json) && cli.interactive {
+        eprintln!("--format json cannot be combined with --interactive");
+        return ExitCode::FAILURE;
+    }
+
     let mut output_mode = OutputMode::detect();
-    if cli.agent {
-        output_mode = OutputMode::Agent;
+    match cli.format {
+        Some(Format::Tty) => output_mode = OutputMode::Tty,
+        Some(Format::Plain) => output_mode = OutputMode::Plain,
+        Some(Format::Agent) => output_mode = OutputMode::Agent,
+        // JSON bypasses the renderer entirely; handled in the non-interactive
+        // path below. Output mode is irrelevant there.
+        Some(Format::Json) | None => {}
     }
 
     let mut render_context = RenderContext::new()
@@ -223,9 +251,16 @@ fn main() -> ExitCode {
     let format_context = FormatContext::new().with_public(cli.public);
     let mut request = Request::new(&navigator, format_context);
 
-    // One-shot mode: execute command and render to stdout
     // Use env_logger for CLI mode
     env_logger::init();
+
+    // `--format json` takes a separate path: it serializes the semantic item
+    // model directly instead of going through the `Document` render pipeline.
+    if cli.format == Some(Format::Json) {
+        return run_json(&mut request, cli.command);
+    }
+
+    // One-shot mode: execute command and render to stdout
     let (document, is_error, _initial_entry) = cli
         .command
         .unwrap_or_else(Commands::list)
@@ -246,5 +281,56 @@ fn main() -> ExitCode {
         ExitCode::FAILURE
     } else {
         ExitCode::SUCCESS
+    }
+}
+
+/// Handle `--format json`, bypassing the `Document` render pipeline. `get`
+/// serializes its structural [`crate::format::ItemDoc`] model; every other
+/// command serializes its presentation `Document` generically (see
+/// [`crate::json::document_to_string`]).
+fn run_json(request: &mut Request<'_>, command: Option<Commands>) -> ExitCode {
+    let (json, is_error) = match command.unwrap_or_else(Commands::list) {
+        Commands::Get {
+            path,
+            source,
+            recursive,
+            kind,
+            docs,
+        } => {
+            request
+                .format_context()
+                .set_filter(crate::kind::predicate(&kind))
+                .set_doc_level(docs);
+            match commands::get::model(request, &path, source, recursive) {
+                commands::get::JsonOutcome::Found {
+                    model,
+                    canonical_url,
+                } => (json::to_string(&model, Some(canonical_url)), false),
+                // Not found: serialize the suggestions document (valid JSON,
+                // parity with the text renderers) and signal failure.
+                commands::get::JsonOutcome::NotFound(document) => {
+                    (json::document_to_string(&document), true)
+                }
+            }
+        }
+        other => {
+            let (document, is_error, _) = other.execute(request);
+            (json::document_to_string(&document), is_error)
+        }
+    };
+
+    match json {
+        Ok(json) => {
+            println!("{json}");
+            if is_error {
+                ExitCode::FAILURE
+            } else {
+                ExitCode::SUCCESS
+            }
+        }
+        Err(error) => {
+            eprintln!("failed to serialize JSON: {error}");
+            ExitCode::FAILURE
+        }
     }
 }

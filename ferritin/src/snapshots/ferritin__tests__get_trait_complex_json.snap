@@ -1,0 +1,718 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\"), &\nget_fixture_crate_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html",
+  "header": [
+    {
+      "type": "metadata",
+      "fields": [
+        {
+          "label": "Item",
+          "value": [
+            {
+              "text": "ComplexTrait",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Kind",
+          "value": [
+            {
+              "text": "Trait",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Visibility",
+          "value": [
+            {
+              "text": "Public",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Defined at",
+          "value": [
+            {
+              "text": "fixture_crate",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "ComplexTrait",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html"
+            }
+          ]
+        },
+        {
+          "label": "In crate",
+          "value": [
+            {
+              "text": "fixture-crate",
+              "style": "Plain"
+            },
+            {
+              "text": " (",
+              "style": "Plain"
+            },
+            {
+              "text": "0.1.0",
+              "style": "Plain"
+            },
+            {
+              "text": ")",
+              "style": "Plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "A more complex trait demonstrating various features",
+              "style": "Plain"
+            }
+          ]
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "presentation",
+    "nodes": [
+      {
+        "type": "generatedCode",
+        "spans": [
+          {
+            "text": "trait",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "ComplexTrait",
+            "style": "TypeName"
+          },
+          {
+            "text": "<",
+            "style": "Punctuation"
+          },
+          {
+            "text": "T",
+            "style": "Generic"
+          },
+          {
+            "text": ">",
+            "style": "Punctuation"
+          },
+          {
+            "text": ":",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "PartialEq",
+            "style": "TypeName",
+            "url": "http://docs.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"
+          },
+          {
+            "text": " + ",
+            "style": "Plain"
+          },
+          {
+            "text": "std::fmt::Debug",
+            "style": "TypeName",
+            "url": "http://docs.rust-lang.org/nightly/core/fmt/trait.Debug.html"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "where",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "T",
+            "style": "Generic"
+          },
+          {
+            "text": ":",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "Clone",
+            "style": "TypeName",
+            "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html"
+          },
+          {
+            "text": " + ",
+            "style": "Plain"
+          },
+          {
+            "text": "Send",
+            "style": "TypeName",
+            "url": "http://docs.rust-lang.org/nightly/core/marker/trait.Send.html"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "{",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ... ",
+            "style": "Plain"
+          },
+          {
+            "text": "}",
+            "style": "Punctuation"
+          }
+        ]
+      },
+      {
+        "type": "list",
+        "items": [
+          {
+            "content": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "type",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Output",
+                    "style": "TypeName"
+                  },
+                  {
+                    "text": ":",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "std::fmt::Display",
+                    "style": "TypeName",
+                    "url": "http://docs.rust-lang.org/nightly/core/fmt/trait.Display.html"
+                  },
+                  {
+                    "text": ";",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "truncatedBlock",
+                "nodes": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "An associated type",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ],
+                "level": "SingleLine"
+              }
+            ]
+          },
+          {
+            "content": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "const",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "MAX_SIZE",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ":",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "usize",
+                    "style": "TypeName"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "=",
+                    "style": "Operator"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "100",
+                    "style": "InlineRustCode"
+                  },
+                  {
+                    "text": ";",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "truncatedBlock",
+                "nodes": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "An associated constant",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ],
+                "level": "SingleLine"
+              }
+            ]
+          },
+          {
+            "content": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "fn",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "process",
+                    "style": "Plain",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "&",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "self",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ",",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "input",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ":",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "T",
+                    "style": "Generic"
+                  },
+                  {
+                    "text": ")",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "->",
+                    "style": "Operator"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Self",
+                    "style": "Generic"
+                  },
+                  {
+                    "text": "::",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "Output",
+                    "style": "TypeName"
+                  },
+                  {
+                    "text": ";",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "truncatedBlock",
+                "nodes": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "A simple method",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ],
+                "level": "SingleLine"
+              }
+            ]
+          },
+          {
+            "content": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "fn",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "is_ready",
+                    "style": "Plain",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "&",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "self",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ")",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "->",
+                    "style": "Operator"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bool",
+                    "style": "TypeName"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "{",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ... ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "}",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "truncatedBlock",
+                "nodes": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "A method with default implementation",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ],
+                "level": "SingleLine"
+              }
+            ]
+          },
+          {
+            "content": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "fn",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "transform",
+                    "style": "Plain",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                  },
+                  {
+                    "text": "<",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "U",
+                    "style": "Generic"
+                  },
+                  {
+                    "text": ">",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "&",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "self",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ",",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "data",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ":",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "U",
+                    "style": "Generic"
+                  },
+                  {
+                    "text": ")",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "->",
+                    "style": "Operator"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Result",
+                    "style": "TypeName",
+                    "url": "http://docs.rust-lang.org/nightly/core/result/enum.Result.html"
+                  },
+                  {
+                    "text": "<",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "T",
+                    "style": "Generic"
+                  },
+                  {
+                    "text": ",",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "String",
+                    "style": "TypeName",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                  },
+                  {
+                    "text": ">",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "where",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "U",
+                    "style": "Generic"
+                  },
+                  {
+                    "text": ":",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Into",
+                    "style": "TypeName",
+                    "url": "http://docs.rust-lang.org/nightly/core/convert/trait.Into.html"
+                  },
+                  {
+                    "text": "<",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "T",
+                    "style": "Generic"
+                  },
+                  {
+                    "text": ">",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": ";",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "truncatedBlock",
+                "nodes": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "A method with complex generics",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ],
+                "level": "SingleLine"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

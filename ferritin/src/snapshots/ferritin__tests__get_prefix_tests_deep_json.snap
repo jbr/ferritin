@@ -1,0 +1,566 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::deep\"), &\nget_fixture_crate_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html",
+  "header": [
+    {
+      "type": "metadata",
+      "fields": [
+        {
+          "label": "Item",
+          "value": [
+            {
+              "text": "deep",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Kind",
+          "value": [
+            {
+              "text": "Module",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Visibility",
+          "value": [
+            {
+              "text": "Public",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Defined at",
+          "value": [
+            {
+              "text": "fixture_crate",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "prefix_tests",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "deep",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html"
+            }
+          ]
+        },
+        {
+          "label": "In crate",
+          "value": [
+            {
+              "text": "fixture-crate",
+              "style": "Plain"
+            },
+            {
+              "text": " (",
+              "style": "Plain"
+            },
+            {
+              "text": "0.1.0",
+              "style": "Plain"
+            },
+            {
+              "text": ")",
+              "style": "Plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "A nested module to exercise ",
+              "style": "Plain"
+            },
+            {
+              "text": "self::",
+              "style": "InlineCode"
+            },
+            {
+              "text": ", ",
+              "style": "Plain"
+            },
+            {
+              "text": "super::",
+              "style": "InlineCode"
+            },
+            {
+              "text": ", and ",
+              "style": "Plain"
+            },
+            {
+              "text": "super::super::",
+              "style": "InlineCode"
+            },
+            {
+              "text": ".",
+              "style": "Plain"
+            }
+          ]
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "presentation",
+    "nodes": [
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Modules",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "glob_reexport",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/glob_reexport/index.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Exercises the \"glob brings a name into scope, then re-export that",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": " ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "name\" pattern, all within the same crate.",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Structs",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "CrateAlias",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.CrateAlias.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A struct in a submodule",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "DeepMarker",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DeepMarker.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A marker target inside ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "deep",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": ".",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "DocDeep",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DocDeep.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Intra-doc links from a nested module:",
+                            "style": "Plain"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          {
+                            "content": [
+                              {
+                                "type": "paragraph",
+                                "spans": [
+                                  {
+                                    "text": "self::DeepMarker",
+                                    "style": "InlineCode",
+                                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DeepMarker.html"
+                                  },
+                                  {
+                                    "text": " — local sibling.",
+                                    "style": "Plain"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "content": [
+                              {
+                                "type": "paragraph",
+                                "spans": [
+                                  {
+                                    "text": "super::PrefixMarker",
+                                    "style": "InlineCode",
+                                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html"
+                                  },
+                                  {
+                                    "text": " — one module up.",
+                                    "style": "Plain"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "content": [
+                              {
+                                "type": "paragraph",
+                                "spans": [
+                                  {
+                                    "text": "super::super::TestStruct",
+                                    "style": "InlineCode",
+                                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
+                                  },
+                                  {
+                                    "text": " — two modules up (crate root).",
+                                    "style": "Plain"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "content": [
+                              {
+                                "type": "paragraph",
+                                "spans": [
+                                  {
+                                    "text": "crate::TestStruct",
+                                    "style": "InlineCode",
+                                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
+                                  },
+                                  {
+                                    "text": " — absolute path from crate root.",
+                                    "style": "Plain"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "SelfAliasDeep",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.SelfAliasDeep.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A marker target inside ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "deep",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": ".",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "SuperAlias",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.SuperAlias.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A sibling target for ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "self::",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " / ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "super::PrefixMarker",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " references.",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "SuperSuperAlias",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.SuperSuperAlias.html"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "A simple struct for testing basic functionality.",
+                            "style": "Plain"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "This struct demonstrates basic usage patterns and should show completely",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": " ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "since it only has one paragraph of documentation.",
+                            "style": "Plain"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "It uses ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "Vector",
+                            "style": "InlineCode",
+                            "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec"
+                          },
+                          {
+                            "text": " for testing intra-doc link resolution with renamed imports.",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": " ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "Also tests ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "HashMap",
+                            "style": "InlineCode",
+                            "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/index.html?search=std%3A%3Acollections%3A%3Ahash%3A%3Amap%3A%3AHashMap"
+                          },
+                          {
+                            "text": " which is a non-renamed import.",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
