@@ -1,0 +1,98 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::TestUnion\"), OutputMode ::\nTestMode, & get_fixture_crate_path ())"
+---
+<metadata>
+  <field name="Item">TestUnion</field>
+  <field name="Kind">Union</field>
+  <field name="Visibility">Public</field>
+  <field name="Defined at"><type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>TestUnion</type-name></field>
+  <field name="In crate">fixture-crate (0.1.0)</field>
+</metadata>
+<truncated level="full"><p>
+A union for testing union formatting.</p>
+<p>
+Demonstrates a <inline-code>union</inline-code> with public and private fields, a generic parameter, and an inherent method — the union counterpart to <inline-code>TestStruct</inline-code>.</p>
+</truncated>
+<generated-code>
+<keyword>union</keyword> <type-name>TestUnion</type-name><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Copy</type-name><punctuation>></punctuation> <punctuation>{</punctuation>
+    <keyword>pub</keyword> <field-name>as_int</field-name><punctuation>:</punctuation> <type-name>u64</type-name><punctuation>,</punctuation>
+    <keyword>pub</keyword> <field-name>as_float</field-name><punctuation>:</punctuation> <type-name>f64</type-name><punctuation>,</punctuation>
+    <field-name>private</field-name><punctuation>:</punctuation> <generic>T</generic><punctuation>,</punctuation>
+<punctuation>}</punctuation></generated-code>
+<section><section-title>Fields:</section-title><list>
+  <item><generated-code>
+<field-name>as_int</field-name><punctuation>:</punctuation> <type-name>u64</type-name></generated-code>
+<truncated level="single-line"><p>
+The integer view</p>
+</truncated>
+</item>
+  <item><generated-code>
+<field-name>as_float</field-name><punctuation>:</punctuation> <type-name>f64</type-name></generated-code>
+<truncated level="single-line"><p>
+The floating-point view</p>
+</truncated>
+</item>
+  <item><generated-code>
+<field-name>private</field-name><punctuation>:</punctuation> <generic>T</generic></generated-code>
+<truncated level="single-line"><p>
+A private generic field</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Methods</section-title><list>
+  <item><generated-code>
+<keyword>pub</keyword> <keyword>fn</keyword> from_int<punctuation>(</punctuation>as_int<punctuation>:</punctuation> <type-name>u64</type-name><punctuation>)</punctuation> <operator>-></operator> <generic>Self</generic></generated-code>
+<truncated level="single-line"><p>
+Construct a <inline-code>TestUnion</inline-code> from its integer view.</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Trait Implementations</section-title><p>
+std: <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></p>
+<list>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>BorrowMut</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Borrow</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>></punctuation> <type-name>RefUnwindSafe</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>UnwindSafe</type-name><punctuation>></punctuation> <type-name>UnwindSafe</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Unpin</type-name><punctuation>></punctuation> <type-name>Unpin</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>></punctuation> <type-name>UnsafeUnpin</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Freeze</type-name><punctuation>></punctuation> <type-name>Freeze</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Sync</type-name><punctuation>></punctuation> <type-name>Sync</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Send</type-name><punctuation>></punctuation> <type-name>Send</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <lifetime>'static</lifetime> + <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Any</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<generated-code>
+    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <type-name>Infallible</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryInto</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<generated-code>
+    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <punctuation><</punctuation><generic>U</generic> <keyword>as</keyword> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation><punctuation>::</punctuation>Error</generated-code>
+</item>
+</list>
+</section>

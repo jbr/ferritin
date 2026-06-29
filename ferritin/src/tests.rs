@@ -253,6 +253,8 @@ test_all_modes!(
     Commands::get("crate::TestStruct").with_source()
 );
 
+test_all_modes!(get_union, Commands::get("crate::TestUnion"));
+
 test_all_modes!(get_submodule, Commands::get("crate::submodule"));
 
 test_all_modes!(
