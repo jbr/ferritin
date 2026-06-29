@@ -68,18 +68,6 @@ impl<'a> Request<'a> {
             value: &static_item.expr,
         }
     }
-
-    /// Format a union
-    pub(crate) fn format_union(
-        &mut self,
-        _item: DocRef<'a, Item>,
-        _union: DocRef<'a, Union>,
-    ) -> Vec<DocumentNode<'a>> {
-        // TODO: Implement union formatting
-        vec![DocumentNode::paragraph(vec![Span::plain(
-            "[Union formatting not yet implemented]",
-        )])]
-    }
 }
 
 /// Lower a [`TypeAliasDoc`] to presentation nodes: `type <name> = <aliased>;`.

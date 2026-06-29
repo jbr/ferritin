@@ -110,6 +110,23 @@ impl<'a> Request<'a> {
         fields: &[Id],
         has_stripped_fields: bool,
     ) -> StructShape<'a> {
+        let (fields, hidden_count) = self.model_named_fields(item, fields);
+
+        StructShape::Plain {
+            fields,
+            hidden_count,
+            has_stripped_fields,
+        }
+    }
+
+    /// Model a sequence of named `StructField` items into [`PlainField`]s plus a
+    /// hidden count, honoring the `--public` filter. Shared by plain structs and
+    /// unions (both store their fields the same way).
+    pub(super) fn model_named_fields(
+        &mut self,
+        item: DocRef<'a, Item>,
+        fields: &[Id],
+    ) -> (Vec<PlainField<'a>>, usize) {
         let (visible_fields, hidden_count) = self.categorize_fields(item, fields);
 
         let mut model_fields = Vec::new();
@@ -124,11 +141,7 @@ impl<'a> Request<'a> {
             }
         }
 
-        StructShape::Plain {
-            fields: model_fields,
-            hidden_count,
-            has_stripped_fields,
-        }
+        (model_fields, hidden_count)
     }
 
     fn model_tuple_fields(
@@ -231,7 +244,10 @@ pub(super) fn lower_struct(model: StructDoc<'_>) -> Vec<DocumentNode<'_>> {
     doc_nodes
 }
 
-fn lower_plain<'a>(
+/// Lower a named-field body (`{ … }` plus the trailing `Fields:` section) onto
+/// already-assembled `code_spans` (the `struct Name<…>` / `union Name<…>`
+/// prefix). Shared by plain structs and unions.
+pub(super) fn lower_plain<'a>(
     mut code_spans: Vec<Span<'a>>,
     fields: Vec<PlainField<'a>>,
     hidden_count: usize,

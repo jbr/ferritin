@@ -16,7 +16,7 @@
 use crate::format::{
     AssocKind, ConstantDoc, EnumDoc, FunctionDoc, ItemBody, ItemDoc, ItemMeta, MacroDoc,
     MetaVisibility, MethodDoc, MethodVisibility, ModuleDoc, ModuleItem, PlainField, StaticDoc,
-    StructDoc, StructShape, TraitDoc, TraitMember, TupleField, TypeAliasDoc, VariantDoc,
+    StructDoc, StructShape, TraitDoc, TraitMember, TupleField, TypeAliasDoc, UnionDoc, VariantDoc,
     VariantShape,
 };
 use crate::styled_string::{
@@ -143,6 +143,7 @@ enum JsonBody<'a> {
     Constant(JsonConstant<'a>),
     Static(JsonStatic<'a>),
     Macro(JsonMacro<'a>),
+    Union(JsonUnion<'a>),
     /// A kind not yet modeled structurally: its lowered presentation nodes.
     Presentation { nodes: Vec<JsonNode<'a>> },
 }
@@ -159,6 +160,7 @@ impl<'a> JsonBody<'a> {
             ItemBody::Constant(model) => JsonBody::Constant(JsonConstant::new(model)),
             ItemBody::Static(model) => JsonBody::Static(JsonStatic::new(model)),
             ItemBody::Macro(model) => JsonBody::Macro(JsonMacro::new(model)),
+            ItemBody::Union(model) => JsonBody::Union(JsonUnion::new(model)),
             ItemBody::Presentation(nodes) => JsonBody::Presentation {
                 nodes: json_nodes(nodes),
             },
@@ -235,6 +237,40 @@ impl<'a> JsonMacro<'a> {
     fn new(model: &MacroDoc<'a>) -> Self {
         Self {
             definition: model.definition,
+        }
+    }
+}
+
+/// A union body. Mirrors [`JsonStruct`] minus the `shape` (a union is always
+/// named fields).
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonUnion<'a> {
+    name: &'a str,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    generics: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    where_clause: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    fields: Vec<JsonField<'a>>,
+    #[serde(skip_serializing_if = "is_zero")]
+    hidden_field_count: usize,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    methods: Vec<JsonMethod<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    trait_impls: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonUnion<'a> {
+    fn new(model: &UnionDoc<'a>) -> Self {
+        Self {
+            name: model.name,
+            generics: json_spans(&model.generics),
+            where_clause: json_spans(&model.where_clause),
+            fields: model.fields.iter().map(JsonField::from_plain).collect(),
+            hidden_field_count: model.hidden_count,
+            methods: model.methods.iter().map(JsonMethod::new).collect(),
+            trait_impls: json_nodes(&model.trait_impls),
         }
     }
 }
