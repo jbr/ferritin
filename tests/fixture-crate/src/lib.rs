@@ -52,6 +52,26 @@ where
     secret: String,
 }
 
+/// A union for testing union formatting.
+///
+/// Demonstrates a `union` with public and private fields, a generic parameter,
+/// and an inherent method — the union counterpart to [`TestStruct`].
+pub union TestUnion<T: Copy> {
+    /// The integer view
+    pub as_int: u64,
+    /// The floating-point view
+    pub as_float: f64,
+    /// A private generic field
+    private: T,
+}
+
+impl<T: Copy> TestUnion<T> {
+    /// Construct a `TestUnion` from its integer view.
+    pub fn from_int(as_int: u64) -> Self {
+        Self { as_int }
+    }
+}
+
 /// A trait for testing extremely long documentation that exceeds line limits.
 ///
 /// This trait provides a comprehensive interface for data processing operations.

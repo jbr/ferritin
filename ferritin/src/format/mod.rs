@@ -31,6 +31,7 @@ mod source;
 mod r#struct;
 mod r#trait;
 mod types;
+mod union;
 
 pub(crate) use functions::FunctionDoc;
 pub(crate) use items::{ConstantDoc, MacroDoc, StaticDoc, TypeAliasDoc};
@@ -38,6 +39,7 @@ pub(crate) use r#enum::{EnumDoc, VariantDoc, VariantShape};
 pub(crate) use r#module::{ModuleDoc, ModuleItem};
 pub(crate) use r#struct::{PlainField, StructDoc, StructShape, TupleField};
 pub(crate) use r#trait::{TraitDoc, TraitMember};
+pub(crate) use union::UnionDoc;
 
 /// Semantic model of a documented item: a kind-agnostic header (metadata block
 /// + the item's own doc prose) and trailing source code, wrapped around a
@@ -94,6 +96,7 @@ pub(crate) enum ItemBody<'a> {
     Constant(items::ConstantDoc<'a>),
     Static(items::StaticDoc<'a>),
     Macro(items::MacroDoc<'a>),
+    Union(union::UnionDoc<'a>),
     Presentation(Vec<DocumentNode<'a>>),
 }
 
@@ -109,6 +112,7 @@ impl<'a> ItemBody<'a> {
             ItemBody::Constant(model) => items::lower_constant(model),
             ItemBody::Static(model) => items::lower_static(model),
             ItemBody::Macro(model) => items::lower_macro(model),
+            ItemBody::Union(model) => union::lower_union(model),
             ItemBody::Presentation(nodes) => nodes,
         }
     }
@@ -278,7 +282,7 @@ impl<'a> Request<'a> {
                 ItemBody::TypeAlias(self.model_type_alias(item, item.build_ref(type_alias_data)))
             }
             ItemEnum::Union(union_data) => {
-                ItemBody::Presentation(self.format_union(item, item.build_ref(union_data)))
+                ItemBody::Union(self.model_union(item, item.build_ref(union_data)))
             }
             ItemEnum::Constant { type_, const_ } => {
                 ItemBody::Constant(self.model_constant(item, type_, const_))
