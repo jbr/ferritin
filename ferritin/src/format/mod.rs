@@ -32,6 +32,55 @@ mod r#struct;
 mod r#trait;
 mod types;
 
+pub(crate) use r#struct::{PlainField, StructDoc, StructShape, TupleField};
+
+/// Semantic model of a documented item: a kind-agnostic header (metadata block
+/// + the item's own doc prose) and trailing source code, wrapped around a
+/// kind-specific [`ItemBody`]. Built by [`Request::model_item`]; the terminal
+/// renderers go through [`ItemDoc::lower`], while the JSON output serializes it
+/// structurally.
+pub(crate) struct ItemDoc<'a> {
+    /// Metadata node + own-doc prose. Already structured enough (the metadata
+    /// node carries labeled fields; docs are a markdown sub-IR), so only the
+    /// body gets the semantic treatment for now.
+    pub(crate) header: Vec<DocumentNode<'a>>,
+    pub(crate) body: ItemBody<'a>,
+    /// Source code block, when `--source` is requested; otherwise empty.
+    pub(crate) source: Vec<DocumentNode<'a>>,
+}
+
+/// The kind-specific body of an item. Migrated kinds carry a structural model;
+/// the rest fall back to already-lowered presentation nodes. This is the seam
+/// that lets the domain-IR migration proceed one kind at a time.
+pub(crate) enum ItemBody<'a> {
+    Struct(r#struct::StructDoc<'a>),
+    Presentation(Vec<DocumentNode<'a>>),
+}
+
+impl<'a> ItemBody<'a> {
+    fn lower(self) -> Vec<DocumentNode<'a>> {
+        match self {
+            ItemBody::Struct(model) => r#struct::lower_struct(model),
+            ItemBody::Presentation(nodes) => nodes,
+        }
+    }
+}
+
+impl<'a> ItemDoc<'a> {
+    /// Lower to presentation nodes, reproducing the old `format_item` output
+    /// (header, then body, then source).
+    pub(crate) fn lower(self) -> Vec<DocumentNode<'a>> {
+        let ItemDoc {
+            mut header,
+            body,
+            source,
+        } = self;
+        header.extend(body.lower());
+        header.extend(source);
+        header
+    }
+}
+
 impl<'a> Request<'a> {
     /// Whether `item` should be omitted because `--public` is active and
     /// the item is not `pub`.
@@ -55,49 +104,72 @@ impl<'a> Request<'a> {
         !matches!(item.effective_visibility(), Visibility::Public)
     }
 
-    /// Format an item with automatic recursion tracking
+    /// Format an item to presentation nodes by building its [`ItemDoc`] model
+    /// and lowering it. The model flows through the same seam the JSON output
+    /// uses, so terminal output stays byte-identical (snapshots are the guard).
     pub(crate) fn format_item(&mut self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
-        let mut doc_nodes = vec![];
+        self.model_item(item).lower()
+    }
 
-        // Item metadata (name, kind, visibility, location, crate)
-        doc_nodes.extend(self.format_item_metadata(item));
+    /// Resolve an item into its semantic [`ItemDoc`] model.
+    pub(crate) fn model_item(&mut self, item: DocRef<'a, Item>) -> ItemDoc<'a> {
+        // Item metadata (name, kind, visibility, location, crate).
+        let mut header = self.format_item_metadata(item);
 
-        // Add the item's own documentation, at the level set by `--docs`
-        // (omitted entirely when `--docs none`).
+        // The item's own documentation, at the level set by `--docs` (omitted
+        // entirely when `--docs none`).
         if let Some(truncation) = self.format_context().doc_truncation()
             && let Some(docs) = self.docs_to_show(item, truncation)
         {
-            doc_nodes.extend(docs);
+            header.extend(docs);
+        }
+
+        let body = self.model_item_body(item);
+
+        let source = if self.format_context().include_source()
+            && let Some(span) = &item.span
+        {
+            source::format_source_code(self, span)
+        } else {
+            vec![]
         };
 
-        // Handle different item types
+        ItemDoc {
+            header,
+            body,
+            source,
+        }
+    }
+
+    /// Build the kind-specific [`ItemBody`]. Only `struct` is modeled
+    /// structurally so far; every other kind lowers eagerly into
+    /// [`ItemBody::Presentation`].
+    fn model_item_body(&mut self, item: DocRef<'a, Item>) -> ItemBody<'a> {
         match item.inner() {
-            ItemEnum::Module(_) => {
-                doc_nodes.extend(self.format_module(item));
-            }
             ItemEnum::Struct(struct_data) => {
-                doc_nodes.extend(self.format_struct(item, item.build_ref(struct_data)));
+                ItemBody::Struct(self.model_struct(item, item.build_ref(struct_data)))
             }
+            ItemEnum::Module(_) => ItemBody::Presentation(self.format_module(item)),
             ItemEnum::Enum(enum_data) => {
-                doc_nodes.extend(self.format_enum(item, item.build_ref(enum_data)));
+                ItemBody::Presentation(self.format_enum(item, item.build_ref(enum_data)))
             }
             ItemEnum::Trait(trait_data) => {
-                doc_nodes.extend(self.format_trait(item, item.build_ref(trait_data)));
+                ItemBody::Presentation(self.format_trait(item, item.build_ref(trait_data)))
             }
             ItemEnum::Function(function_data) => {
-                doc_nodes.extend(self.format_function(item, item.build_ref(function_data)));
+                ItemBody::Presentation(self.format_function(item, item.build_ref(function_data)))
             }
             ItemEnum::TypeAlias(type_alias_data) => {
-                doc_nodes.extend(self.format_type_alias(item, item.build_ref(type_alias_data)));
+                ItemBody::Presentation(self.format_type_alias(item, item.build_ref(type_alias_data)))
             }
             ItemEnum::Union(union_data) => {
-                doc_nodes.extend(self.format_union(item, item.build_ref(union_data)));
+                ItemBody::Presentation(self.format_union(item, item.build_ref(union_data)))
             }
             ItemEnum::Constant { type_, const_ } => {
-                doc_nodes.extend(self.format_constant(item, type_, const_));
+                ItemBody::Presentation(self.format_constant(item, type_, const_))
             }
             ItemEnum::Static(static_data) => {
-                doc_nodes.extend(self.format_static(item, static_data));
+                ItemBody::Presentation(self.format_static(item, static_data))
             }
             ItemEnum::AssocType {
                 generics,
@@ -113,7 +185,7 @@ impl<'a> Request<'a> {
                     type_.as_ref(),
                     name,
                 );
-                doc_nodes.push(DocumentNode::generated_code(sig));
+                ItemBody::Presentation(vec![DocumentNode::generated_code(sig)])
             }
             ItemEnum::AssocConst {
                 type_,
@@ -122,32 +194,21 @@ impl<'a> Request<'a> {
             } => {
                 let name = item.name().unwrap_or("<unnamed>");
                 let sig = self.format_trait_assoc_const_signature(item, type_, value, name);
-                doc_nodes.push(DocumentNode::generated_code(sig));
+                ItemBody::Presentation(vec![DocumentNode::generated_code(sig)])
             }
-            ItemEnum::Macro(macro_def) => {
-                doc_nodes.push(DocumentNode::paragraph(vec![StyledSpan::plain(
-                    "Macro definition:",
-                )]));
-                doc_nodes.push(DocumentNode::code_block(Some("rust"), macro_def));
-            }
+            ItemEnum::Macro(macro_def) => ItemBody::Presentation(vec![
+                DocumentNode::paragraph(vec![StyledSpan::plain("Macro definition:")]),
+                DocumentNode::code_block(Some("rust"), macro_def),
+            ]),
             _ => {
-                // For any other item, just print its name and kind
-                doc_nodes.push(DocumentNode::paragraph(vec![
+                // For any other item, just print its name and kind.
+                ItemBody::Presentation(vec![DocumentNode::paragraph(vec![
                     StyledSpan::plain(format!("{:?}", item.kind())),
                     StyledSpan::plain(" "),
                     StyledSpan::plain(item.name().unwrap_or("<unnamed>")),
-                ]));
+                ])])
             }
         }
-
-        // Add source code if requested
-        if self.format_context().include_source()
-            && let Some(span) = &item.span
-        {
-            doc_nodes.extend(source::format_source_code(self, span));
-        }
-
-        doc_nodes
     }
 
     /// Format item metadata as a structured `Metadata` node so each renderer

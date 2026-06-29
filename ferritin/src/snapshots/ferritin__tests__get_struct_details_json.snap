@@ -1,0 +1,1442 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), &\nget_fixture_crate_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html",
+  "header": [
+    {
+      "type": "metadata",
+      "fields": [
+        {
+          "label": "Item",
+          "value": [
+            {
+              "text": "TestStruct",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Kind",
+          "value": [
+            {
+              "text": "Struct",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Visibility",
+          "value": [
+            {
+              "text": "Public",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Defined at",
+          "value": [
+            {
+              "text": "fixture_crate",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "TestStruct",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
+            }
+          ]
+        },
+        {
+          "label": "In crate",
+          "value": [
+            {
+              "text": "fixture-crate",
+              "style": "Plain"
+            },
+            {
+              "text": " (",
+              "style": "Plain"
+            },
+            {
+              "text": "0.1.0",
+              "style": "Plain"
+            },
+            {
+              "text": ")",
+              "style": "Plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "A simple struct for testing basic functionality.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "This struct demonstrates basic usage patterns and should show completely",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "since it only has one paragraph of documentation.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "It uses ",
+              "style": "Plain"
+            },
+            {
+              "text": "Vector",
+              "style": "InlineCode",
+              "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec"
+            },
+            {
+              "text": " for testing intra-doc link resolution with renamed imports.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Also tests ",
+              "style": "Plain"
+            },
+            {
+              "text": "HashMap",
+              "style": "InlineCode",
+              "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/index.html?search=std%3A%3Acollections%3A%3Ahash%3A%3Amap%3A%3AHashMap"
+            },
+            {
+              "text": " which is a non-renamed import.",
+              "style": "Plain"
+            }
+          ]
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "struct",
+    "name": "TestStruct",
+    "shape": "plain",
+    "fields": [
+      {
+        "name": "field",
+        "pub": true,
+        "type": [
+          {
+            "text": "String",
+            "style": "TypeName",
+            "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+          }
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A public field",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "name": "count",
+        "pub": true,
+        "type": [
+          {
+            "text": "u32",
+            "style": "TypeName"
+          }
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Another public field",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "name": "private_field",
+        "pub": false,
+        "type": [
+          {
+            "text": "bool",
+            "style": "TypeName"
+          }
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A private field",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      }
+    ],
+    "methods": [
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Methods",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "pub",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "const",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "ASSOCIATED_CONST",
+                        "style": "Plain"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "This is an associated constant for a struct",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "pub",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "fn",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "new",
+                        "style": "Plain",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.new"
+                      },
+                      {
+                        "text": "(",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "field",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "String",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                      },
+                      {
+                        "text": ",",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "count",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "u32",
+                        "style": "TypeName"
+                      },
+                      {
+                        "text": ")",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "->",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Self",
+                        "style": "Generic"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Create a new TestStruct",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "pub",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "fn",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "get_field",
+                        "style": "Plain",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.get_field"
+                      },
+                      {
+                        "text": "(",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "&",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "self",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": ")",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "->",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "&",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": "str",
+                        "style": "TypeName"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Get the field value",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "pub",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "fn",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "increment_count",
+                        "style": "Plain",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.increment_count"
+                      },
+                      {
+                        "text": "(",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "&",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "mut",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "self",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": ")",
+                        "style": "Punctuation"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "truncatedBlock",
+                    "nodes": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "Update the count",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ],
+                    "level": "SingleLine"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Trait Implementations",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "paragraph",
+            "spans": [
+              {
+                "text": "TestTrait",
+                "style": "TypeName",
+                "url": "https://docs.rs/fixture_crate/latest/fixture_crate/index.html?search=fixture%5Fcrate%3A%3ATestTrait"
+              },
+              {
+                "text": "<",
+                "style": "Punctuation"
+              },
+              {
+                "text": "T",
+                "style": "TypeName"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "=",
+                "style": "Operator"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "String",
+                "style": "TypeName",
+                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+              },
+              {
+                "text": ">",
+                "style": "Punctuation"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "spans": [
+              {
+                "text": "std: ",
+                "style": "Plain"
+              },
+              {
+                "text": "From",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom"
+              },
+              {
+                "text": "<",
+                "style": "Punctuation"
+              },
+              {
+                "text": "T",
+                "style": "Generic"
+              },
+              {
+                "text": ">",
+                "style": "Punctuation"
+              },
+              {
+                "text": ",",
+                "style": "Punctuation"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "RefUnwindSafe",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3ARefUnwindSafe"
+              },
+              {
+                "text": ",",
+                "style": "Punctuation"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "UnwindSafe",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3AUnwindSafe"
+              },
+              {
+                "text": ",",
+                "style": "Punctuation"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "Unpin",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnpin"
+              },
+              {
+                "text": ",",
+                "style": "Punctuation"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "Clone",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/clone/index.html?search=core%3A%3Aclone%3A%3AClone"
+              },
+              {
+                "text": ",",
+                "style": "Punctuation"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "UnsafeUnpin",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnsafeUnpin"
+              },
+              {
+                "text": ",",
+                "style": "Punctuation"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "Freeze",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AFreeze"
+              },
+              {
+                "text": ",",
+                "style": "Punctuation"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "Sync",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASync"
+              },
+              {
+                "text": ",",
+                "style": "Punctuation"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "Debug",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/fmt/index.html?search=core%3A%3Afmt%3A%3ADebug"
+              },
+              {
+                "text": ",",
+                "style": "Punctuation"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "Send",
+                "style": "TypeName",
+                "url": "https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASend"
+              }
+            ]
+          },
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "impl",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "'static",
+                        "style": "Lifetime"
+                      },
+                      {
+                        "text": " + ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "?",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": "Sized",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Any",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/any/trait.Any.html"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "impl",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ",",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "U",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Into",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/convert/trait.Into.html"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "TryFrom",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "U",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "    ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "type",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Error",
+                        "style": "TypeName"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "=",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Infallible",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "impl",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ",",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "U",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "TryFrom",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "TryInto",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryInto.html"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "U",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "    ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "type",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Error",
+                        "style": "TypeName"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "=",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "U",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "as",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "TryFrom",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "::",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "Error",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "impl",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ",",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "U",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "From",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/convert/trait.From.html"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Into",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/convert/trait.Into.html"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "U",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "impl",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Clone",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "CloneToUninit",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/clone/trait.CloneToUninit.html"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "impl",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "?",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": "Sized",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "BorrowMut",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "impl",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "?",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": "Sized",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Borrow",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "impl",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": "<",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      },
+                      {
+                        "text": ":",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Clone",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html"
+                      },
+                      {
+                        "text": ">",
+                        "style": "Punctuation"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "ToOwned",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/alloc/borrow/trait.ToOwned.html"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "    ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "type",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "Owned",
+                        "style": "TypeName"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "=",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "T",
+                        "style": "Generic"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

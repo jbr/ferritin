@@ -1,0 +1,701 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestTrait\"), &\nget_fixture_crate_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html",
+  "header": [
+    {
+      "type": "metadata",
+      "fields": [
+        {
+          "label": "Item",
+          "value": [
+            {
+              "text": "TestTrait",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Kind",
+          "value": [
+            {
+              "text": "Trait",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Visibility",
+          "value": [
+            {
+              "text": "Public",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "label": "Defined at",
+          "value": [
+            {
+              "text": "fixture_crate",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
+            },
+            {
+              "text": "::",
+              "style": "Punctuation"
+            },
+            {
+              "text": "TestTrait",
+              "style": "TypeName",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html"
+            }
+          ]
+        },
+        {
+          "label": "In crate",
+          "value": [
+            {
+              "text": "fixture-crate",
+              "style": "Plain"
+            },
+            {
+              "text": " (",
+              "style": "Plain"
+            },
+            {
+              "text": "0.1.0",
+              "style": "Plain"
+            },
+            {
+              "text": ")",
+              "style": "Plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "A trait for testing extremely long documentation that exceeds line limits.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "This trait provides a comprehensive interface for data processing operations.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "It demonstrates various method signatures including mutable references,",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "error handling, and different return types. The trait is designed to be",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "flexible and extensible for different use cases in data processing pipelines.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Each method serves a specific purpose in the data transformation workflow.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "The implementation should handle edge cases gracefully and provide meaningful",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "error messages when operations fail. This documentation intentionally spans",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "many lines to test the line-based truncation when paragraph truncation",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "doesn't apply. We want to see how the system handles documentation that",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "goes well beyond the 16-line limit and should trigger line-based truncation.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "This continues for several more lines to ensure we exceed the limit.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Line 14 of this very long paragraph that should be truncated.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Line 15 of this extremely verbose documentation example.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Line 16 which should be the last line shown in brief mode.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Line 17 that should be hidden and show a truncation indicator.",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "Line 18 that definitely won't be visible in brief mode.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Section",
+          "spans": [
+            {
+              "text": "Additional sections after the long paragraph",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "This section should not be visible in brief mode since the first",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "paragraph already exceeded the line limit.",
+              "style": "Plain"
+            }
+          ]
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "presentation",
+    "nodes": [
+      {
+        "type": "generatedCode",
+        "spans": [
+          {
+            "text": "trait",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "TestTrait",
+            "style": "TypeName"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "{",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ... ",
+            "style": "Plain"
+          },
+          {
+            "text": "}",
+            "style": "Punctuation"
+          }
+        ]
+      },
+      {
+        "type": "list",
+        "items": [
+          {
+            "content": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "const",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "ASSOCIATED_CONSTANT",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ":",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": ")",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": ";",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "truncatedBlock",
+                "nodes": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "trait associated constant",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ],
+                "level": "SingleLine"
+              }
+            ]
+          },
+          {
+            "content": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "type",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "T",
+                    "style": "TypeName"
+                  },
+                  {
+                    "text": ":",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Clone",
+                    "style": "TypeName",
+                    "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html"
+                  },
+                  {
+                    "text": ";",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "truncatedBlock",
+                "nodes": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "trait associated type",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ],
+                "level": "SingleLine"
+              }
+            ]
+          },
+          {
+            "content": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "fn",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "test_method",
+                    "style": "Plain",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "&",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "self",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ")",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "->",
+                    "style": "Operator"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "String",
+                    "style": "TypeName",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                  },
+                  {
+                    "text": ";",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "truncatedBlock",
+                "nodes": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "A method",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ],
+                "level": "SingleLine"
+              }
+            ]
+          },
+          {
+            "content": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "fn",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "process",
+                    "style": "Plain",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "&",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "mut",
+                    "style": "Keyword"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "self",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ",",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "data",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ":",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "&",
+                    "style": "Operator"
+                  },
+                  {
+                    "text": "str",
+                    "style": "TypeName"
+                  },
+                  {
+                    "text": ")",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "->",
+                    "style": "Operator"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Result",
+                    "style": "TypeName",
+                    "url": "http://docs.rust-lang.org/nightly/core/result/enum.Result.html"
+                  },
+                  {
+                    "text": "<",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": ")",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": ",",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "String",
+                    "style": "TypeName",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                  },
+                  {
+                    "text": ">",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": ";",
+                    "style": "Punctuation"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "truncatedBlock",
+                "nodes": [
+                  {
+                    "type": "paragraph",
+                    "spans": [
+                      {
+                        "text": "Another method with parameters",
+                        "style": "Plain"
+                      }
+                    ]
+                  }
+                ],
+                "level": "SingleLine"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": [
+          {
+            "text": "Implementors (this crate)",
+            "style": "Plain"
+          }
+        ],
+        "nodes": [
+          {
+            "type": "list",
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "TestStruct",
+                        "style": "TypeName",
+                        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "generatedCode",
+                    "spans": [
+                      {
+                        "text": "    ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "type",
+                        "style": "Keyword"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "T",
+                        "style": "TypeName"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "=",
+                        "style": "Operator"
+                      },
+                      {
+                        "text": " ",
+                        "style": "Plain"
+                      },
+                      {
+                        "text": "String",
+                        "style": "TypeName",
+                        "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,2318 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based truncation\"),\n& get_fixture_crate_path ())"
+---
+{
+  "nodes": [
+    {
+      "type": "heading",
+      "level": "Title",
+      "spans": [
+        {
+          "text": "Search results for '",
+          "style": "Plain"
+        },
+        {
+          "text": "trigger line-based truncation",
+          "style": "Emphasis"
+        },
+        {
+          "text": "'",
+          "style": "Plain"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "fixture-crate::TestTrait",
+                  "style": "Plain",
+                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Trait) - score: 100.0",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "A trait for testing extremely long documentation that exceeds line limits.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "This trait provides a comprehensive interface for data processing operations.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "It demonstrates various method signatures including mutable references,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "error handling, and different return types. The trait is designed to be",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "flexible and extensible for different use cases in data processing pipelines.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Each method serves a specific purpose in the data transformation workflow.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "The implementation should handle edge cases gracefully and provide meaningful",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "error messages when operations fail. This documentation intentionally spans",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "many lines to test the line-based truncation when paragraph truncation",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "doesn't apply. We want to see how the system handles documentation that",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "goes well beyond the 16-line limit and should trigger line-based truncation.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "This continues for several more lines to ensure we exceed the limit.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Line 14 of this very long paragraph that should be truncated.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Line 15 of this extremely verbose documentation example.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Line 16 which should be the last line shown in brief mode.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Line 17 that should be hidden and show a truncation indicator.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Line 18 that definitely won't be visible in brief mode.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "level": "Section",
+                  "spans": [
+                    {
+                      "text": "Additional sections after the long paragraph",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "This section should not be visible in brief mode since the first",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "paragraph already exceeded the line limit.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "std::line",
+                  "style": "Plain",
+                  "url": "http://docs.rust-lang.org/nightly/core/macro.line.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Macro) - score: 54.4",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Expands to the line number on which it was invoked.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "With ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "column!",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/core/macro.column.html"
+                    },
+                    {
+                      "text": " and ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "file!",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/core/macro.file.html"
+                    },
+                    {
+                      "text": ", these macros provide debugging information for",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "developers about the location within the source.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The expanded expression has type ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "u32",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " and is 1-based, so the first line",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "in each file evaluates to 1, the second to 2, etc. This is consistent",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "with error messages by common compilers or popular editors.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "The returned line is ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "not necessarily",
+                      "style": "Emphasis"
+                    },
+                    {
+                      "text": " the line of the ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "line!",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " invocation itself,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "but rather the first macro invocation leading up to the invocation",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "of the ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "line!",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " macro.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "level": "Title",
+                  "spans": [
+                    {
+                      "text": "Examples",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "codeBlock",
+                  "lang": "rust",
+                  "code": "let current_line = line!();\nprintln!(\"defined on line: {current_line}\");"
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "core::line",
+                  "style": "Plain",
+                  "url": "http://docs.rust-lang.org/nightly/core/macro.line.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Macro) - score: 54.3",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Expands to the line number on which it was invoked.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "With ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "column!",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/core/macro.column.html"
+                    },
+                    {
+                      "text": " and ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "file!",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/core/macro.file.html"
+                    },
+                    {
+                      "text": ", these macros provide debugging information for",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "developers about the location within the source.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The expanded expression has type ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "u32",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " and is 1-based, so the first line",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "in each file evaluates to 1, the second to 2, etc. This is consistent",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "with error messages by common compilers or popular editors.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "The returned line is ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "not necessarily",
+                      "style": "Emphasis"
+                    },
+                    {
+                      "text": " the line of the ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "line!",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " invocation itself,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "but rather the first macro invocation leading up to the invocation",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "of the ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "line!",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " macro.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "level": "Title",
+                  "spans": [
+                    {
+                      "text": "Examples",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "codeBlock",
+                  "lang": "rust",
+                  "code": "let current_line = line!();\nprintln!(\"defined on line: {current_line}\");"
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "proc_macro::Span::line",
+                  "style": "Plain",
+                  "url": "http://docs.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Function) - score: 39.3",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The one-indexed line of the source file where the span starts.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "To obtain the line of the span's end, use ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "span.end().line()",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": ".",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "core::panic::Location::line",
+                  "style": "Plain",
+                  "url": "http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Function) - score: 39.2",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Returns the line number from which the panic originated.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "level": "Title",
+                  "spans": [
+                    {
+                      "text": "Examples",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "codeBlock",
+                  "lang": "rust",
+                  "code": "use std::panic;\n\npanic::set_hook(Box::new(|panic_info| {\n    if let Some(location) = panic_info.location() {\n        println!(\"panic occurred at line {}\", location.line());\n    } else {\n        println!(\"panic occurred but can't get location information...\");\n    }\n}));\n\npanic!(\"Normal panic\");"
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "std::panic::Location::line",
+                  "style": "Plain",
+                  "url": "http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Function) - score: 39.2",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Returns the line number from which the panic originated.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "level": "Title",
+                  "spans": [
+                    {
+                      "text": "Examples",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "codeBlock",
+                  "lang": "rust",
+                  "code": "use std::panic;\n\npanic::set_hook(Box::new(|panic_info| {\n    if let Some(location) = panic_info.location() {\n        println!(\"panic occurred at line {}\", location.line());\n    } else {\n        println!(\"panic occurred but can't get location information...\");\n    }\n}));\n\npanic!(\"Normal panic\");"
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "core::arch::x86::_mm_prefetch",
+                  "style": "Plain",
+                  "url": "http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Function) - score: 30.9",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Fetch the cache line that contains address ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "p",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " using the given ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "STRATEGY",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": ".",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "STRATEGY",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " must be one of:",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_T0",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FT0"
+                            },
+                            {
+                              "text": ": Fetch into all levels of the",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "cache hierarchy.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_T1",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FT1"
+                            },
+                            {
+                              "text": ": Fetch into L2 and higher.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_T2",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FT2"
+                            },
+                            {
+                              "text": ": Fetch into L3 and higher or",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "an implementation-specific choice (e.g., L2 if there is no L3).",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_NTA",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FNTA"
+                            },
+                            {
+                              "text": ": Fetch data using the",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "non-temporal access (NTA) hint. It may be a place closer than main memory",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "but outside of the cache hierarchy. This is used to reduce access latency",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "without polluting the cache.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_ET0",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FET0"
+                            },
+                            {
+                              "text": " and",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "_MM_HINT_ET1",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FET1"
+                            },
+                            {
+                              "text": " are similar to ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "_MM_HINT_T0",
+                              "style": "InlineCode"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "and ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "_MM_HINT_T1",
+                              "style": "InlineCode"
+                            },
+                            {
+                              "text": " but indicate an anticipation to write to the address.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The actual implementation depends on the particular CPU. This instruction",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "is considered a hint, so the CPU is also free to simply ignore the request.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The amount of prefetched data depends on the cache line size of the",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "specific CPU, but it will be at least 32 bytes.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Common caveats:",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Most modern CPUs already automatically prefetch data based on predicted",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "access patterns.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Data is usually not fetched if this would cause a TLB miss or a page",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "fault.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Too much prefetching can cause unnecessary cache evictions.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Prefetching may also fail if there are not enough memory-subsystem",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "resources (e.g., request buffers).",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Note: this intrinsic is safe to use even though it takes a raw pointer argument. In general, this",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "cannot change the behavior of the program, including not trapping on invalid pointers.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Intel's documentation",
+                      "style": "Plain",
+                      "url": "https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_prefetch"
+                    }
+                  ]
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "std::arch::x86::_mm_prefetch",
+                  "style": "Plain",
+                  "url": "http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Function) - score: 30.9",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Fetch the cache line that contains address ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "p",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " using the given ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "STRATEGY",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": ".",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "STRATEGY",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " must be one of:",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_T0",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FT0"
+                            },
+                            {
+                              "text": ": Fetch into all levels of the",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "cache hierarchy.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_T1",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FT1"
+                            },
+                            {
+                              "text": ": Fetch into L2 and higher.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_T2",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FT2"
+                            },
+                            {
+                              "text": ": Fetch into L3 and higher or",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "an implementation-specific choice (e.g., L2 if there is no L3).",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_NTA",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FNTA"
+                            },
+                            {
+                              "text": ": Fetch data using the",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "non-temporal access (NTA) hint. It may be a place closer than main memory",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "but outside of the cache hierarchy. This is used to reduce access latency",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "without polluting the cache.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "_MM_HINT_ET0",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FET0"
+                            },
+                            {
+                              "text": " and",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "_MM_HINT_ET1",
+                              "style": "InlineCode",
+                              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3A%5FMM%5FHINT%5FET1"
+                            },
+                            {
+                              "text": " are similar to ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "_MM_HINT_T0",
+                              "style": "InlineCode"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "and ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "_MM_HINT_T1",
+                              "style": "InlineCode"
+                            },
+                            {
+                              "text": " but indicate an anticipation to write to the address.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The actual implementation depends on the particular CPU. This instruction",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "is considered a hint, so the CPU is also free to simply ignore the request.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The amount of prefetched data depends on the cache line size of the",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "specific CPU, but it will be at least 32 bytes.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Common caveats:",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Most modern CPUs already automatically prefetch data based on predicted",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "access patterns.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Data is usually not fetched if this would cause a TLB miss or a page",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "fault.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Too much prefetching can cause unnecessary cache evictions.",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "spans": [
+                            {
+                              "text": "Prefetching may also fail if there are not enough memory-subsystem",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": " ",
+                              "style": "Plain"
+                            },
+                            {
+                              "text": "resources (e.g., request buffers).",
+                              "style": "Plain"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Note: this intrinsic is safe to use even though it takes a raw pointer argument. In general, this",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "cannot change the behavior of the program, including not trapping on invalid pointers.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Intel's documentation",
+                      "style": "Plain",
+                      "url": "https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_prefetch"
+                    }
+                  ]
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "alloc::collections::BTreeMap",
+                  "style": "Plain",
+                  "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Struct) - score: 30.9",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "An ordered map based on a ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "B-Tree",
+                      "style": "Plain",
+                      "url": "https://en.wikipedia.org/wiki/B-tree"
+                    },
+                    {
+                      "text": ".",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Given a key type with a ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "total order",
+                      "style": "Plain",
+                      "url": "https://en.wikipedia.org/wiki/Total_order"
+                    },
+                    {
+                      "text": ", an ordered map stores its entries in key order.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "That means that keys must be of a type that implements the ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Ord",
+                      "style": "InlineCode",
+                      "url": "https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3AOrd"
+                    },
+                    {
+                      "text": " trait,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "such that two keys can always be compared to determine their ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Ordering",
+                      "style": "InlineCode",
+                      "url": "https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3AOrdering"
+                    },
+                    {
+                      "text": ".",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Examples of keys with a total order are strings with lexicographical order,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "and numbers with their natural order.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Iterators obtained from functions such as ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "BTreeMap::iter",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter"
+                    },
+                    {
+                      "text": ", ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "BTreeMap::into_iter",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_iter"
+                    },
+                    {
+                      "text": ", ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "BTreeMap::values",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values"
+                    },
+                    {
+                      "text": ", or",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "BTreeMap::keys",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.keys"
+                    },
+                    {
+                      "text": " produce their items in key order, and take worst-case logarithmic and",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "amortized constant time per item returned.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "It is a logic error for a key to be modified in such a way that the key's ordering relative to",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "any other key, as determined by the ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Ord",
+                      "style": "InlineCode",
+                      "url": "https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3AOrd"
+                    },
+                    {
+                      "text": " trait, changes while it is in the map. This is",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "normally only possible through ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Cell",
+                      "style": "InlineCode",
+                      "url": "https://doc.rust-lang.org/nightly/core/cell/index.html?search=core%3A%3Acell%3A%3ACell"
+                    },
+                    {
+                      "text": ", ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "RefCell",
+                      "style": "InlineCode",
+                      "url": "https://doc.rust-lang.org/nightly/core/cell/index.html?search=core%3A%3Acell%3A%3ARefCell"
+                    },
+                    {
+                      "text": ", global state, I/O, or unsafe code.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "The behavior resulting from such a logic error is not specified, but will be encapsulated to the",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "BTreeMap",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " that observed the logic error and not result in undefined behavior. This could",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "include panics, incorrect results, aborts, memory leaks, and non-termination.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "level": "Title",
+                  "spans": [
+                    {
+                      "text": "Examples",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "codeBlock",
+                  "lang": "rust",
+                  "code": "use std::collections::BTreeMap;\n\n// type inference lets us omit an explicit type signature (which\n// would be `BTreeMap<&str, &str>` in this example).\nlet mut movie_reviews = BTreeMap::new();\n\n// review some movies.\nmovie_reviews.insert(\"Office Space\",       \"Deals with real issues in the workplace.\");\nmovie_reviews.insert(\"Pulp Fiction\",       \"Masterpiece.\");\nmovie_reviews.insert(\"The Godfather\",      \"Very enjoyable.\");\nmovie_reviews.insert(\"The Blues Brothers\", \"Eye lyked it a lot.\");\n\n// check for a specific one.\nif !movie_reviews.contains_key(\"Les Misérables\") {\n    println!(\"We've got {} reviews, but Les Misérables ain't one.\",\n             movie_reviews.len());\n}\n\n// oops, this review has a lot of spelling mistakes, let's delete it.\nmovie_reviews.remove(\"The Blues Brothers\");\n\n// look up the values associated with some keys.\nlet to_find = [\"Up!\", \"Office Space\"];\nfor movie in &to_find {\n    match movie_reviews.get(movie) {\n       Some(review) => println!(\"{movie}: {review}\"),\n       None => println!(\"{movie} is unreviewed.\")\n    }\n}\n\n// Look up the value for a key (will panic if the key is not found).\nprintln!(\"Movie review: {}\", movie_reviews[\"Office Space\"]);\n\n// iterate over everything.\nfor (movie, review) in &movie_reviews {\n    println!(\"{movie}: \\\"{review}\\\"\");\n}"
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "A ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "BTreeMap",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " with a known list of items can be initialized from an array:",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "codeBlock",
+                  "lang": "rust",
+                  "code": "use std::collections::BTreeMap;\n\nlet solar_distance = BTreeMap::from([\n    (\"Mercury\", 0.4),\n    (\"Venus\", 0.7),\n    (\"Earth\", 1.0),\n    (\"Mars\", 1.5),\n]);"
+                },
+                {
+                  "type": "heading",
+                  "level": "Section",
+                  "spans": [
+                    {
+                      "text": "Entry",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " API",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "BTreeMap",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " implements an ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Entry API",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.entry"
+                    },
+                    {
+                      "text": ", which allows for complex",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "methods of getting, setting, updating and removing keys and their values:",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "codeBlock",
+                  "lang": "rust",
+                  "code": "use std::collections::BTreeMap;\n\n// type inference lets us omit an explicit type signature (which\n// would be `BTreeMap<&str, u8>` in this example).\nlet mut player_stats = BTreeMap::new();\n\nfn random_stat_buff() -> u8 {\n    // could actually return some random value here - let's just return\n    // some fixed value for now\n    42\n}\n\n// insert a key only if it doesn't already exist\nplayer_stats.entry(\"health\").or_insert(100);\n\n// insert a key using a function that provides a new value only if it\n// doesn't already exist\nplayer_stats.entry(\"defence\").or_insert_with(random_stat_buff);\n\n// update a key, guarding against the key possibly not being set\nlet stat = player_stats.entry(\"attack\").or_insert(100);\n*stat += random_stat_buff();\n\n// modify an entry before an insert with in-place mutation\nplayer_stats.entry(\"mana\").and_modify(|mana| *mana += 200).or_insert(100);"
+                },
+                {
+                  "type": "heading",
+                  "level": "Title",
+                  "spans": [
+                    {
+                      "text": "Background",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "A B-tree is (like) a ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "binary search tree",
+                      "style": "Plain",
+                      "url": "https://en.wikipedia.org/wiki/Binary_search_tree"
+                    },
+                    {
+                      "text": ", but adapted to the natural granularity that modern",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "machines like to consume data at. This means that each node contains an entire array of elements,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "instead of just a single element.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "B-Trees represent a fundamental compromise between cache-efficiency and actually minimizing",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "the amount of work performed in a search. In theory, a binary search tree (BST) is the optimal",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "choice for a sorted map, as a perfectly balanced BST performs the theoretical minimum number of",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "comparisons necessary to find an element (log",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "2",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "n). However, in practice the way this",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "is done is ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "very",
+                      "style": "Emphasis"
+                    },
+                    {
+                      "text": " inefficient for modern computer architectures. In particular, every element",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "is stored in its own individually heap-allocated node. This means that every single insertion",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "triggers a heap-allocation, and every comparison is a potential cache-miss due to the indirection.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "Since both heap-allocations and cache-misses are notably expensive in practice, we are forced to,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "at the very least, reconsider the BST strategy.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "A B-Tree instead makes each node contain B-1 to 2B-1 elements in a contiguous array. By doing",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "this, we reduce the number of allocations by a factor of B, and improve cache efficiency in",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "searches. However, this does mean that searches will have to do ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "more",
+                      "style": "Emphasis"
+                    },
+                    {
+                      "text": " comparisons on average.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "The precise number of comparisons depends on the node search strategy used. For optimal cache",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "efficiency, one could search the nodes linearly. For optimal comparisons, one could search",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "the node using binary search. As a compromise, one could also perform a linear search",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "that initially only checks every i",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "th",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " element for some choice of i.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Currently, our implementation simply performs naive linear search. This provides excellent",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "performance on ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "small",
+                      "style": "Emphasis"
+                    },
+                    {
+                      "text": " nodes of elements which are cheap to compare. However in the future we",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "would like to further explore choosing the optimal search strategy based on the choice of B,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "and possibly other factors. Using linear search, searching for a random element is expected",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "to take B * log(n) comparisons, which is generally worse than a BST. In practice,",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "however, performance is excellent.",
+                      "style": "Plain"
+                    }
+                  ]
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "std::io::LineWriter",
+                  "style": "Plain",
+                  "url": "http://docs.rust-lang.org/nightly/std/io/buffered/linewriter/struct.LineWriter.html"
+                },
+                {
+                  "text": " ",
+                  "style": "Plain"
+                },
+                {
+                  "text": " (Struct) - score: 30.7",
+                  "style": "Plain"
+                }
+              ]
+            },
+            {
+              "type": "truncatedBlock",
+              "nodes": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Wraps a writer and buffers output to it, flushing whenever a newline",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "(",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "0x0a",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": ", ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "'\\n'",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": ") is detected.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "The ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "BufWriter",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/std/io/buffered/bufwriter/struct.BufWriter.html"
+                    },
+                    {
+                      "text": " struct wraps a writer and buffers its output.",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "But it only does this batched write when it goes out of scope, or when the",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "internal buffer is full. Sometimes, you'd prefer to write each line as it's",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "completed, rather than the entire buffer at once. Enter ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "LineWriter",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": ". It",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "does exactly that.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "Like ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "BufWriter",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/std/io/buffered/bufwriter/struct.BufWriter.html"
+                    },
+                    {
+                      "text": ", a ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "LineWriter",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": "’s buffer will also be flushed when the",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "LineWriter",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " goes out of scope or when its internal buffer is full.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "If there's still a partial line in the buffer when the ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "LineWriter",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " is",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "dropped, it will flush those contents.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "level": "Title",
+                  "spans": [
+                    {
+                      "text": "Examples",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "We can use ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "LineWriter",
+                      "style": "InlineCode"
+                    },
+                    {
+                      "text": " to write one line at a time, significantly",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": " ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "reducing the number of actual writes to the file.",
+                      "style": "Plain"
+                    }
+                  ]
+                },
+                {
+                  "type": "codeBlock",
+                  "lang": "rust",
+                  "code": "use std::fs::{self, File};\nuse std::io::prelude::*;\nuse std::io::LineWriter;\n\nfn main() -> std::io::Result<()> {\n    let road_not_taken = b\"I shall be telling this with a sigh\nSomewhere ages and ages hence:\nTwo roads diverged in a wood, and I -\nI took the one less traveled by,\nAnd that has made all the difference.\";\n\n    let file = File::create(\"poem.txt\")?;\n    let mut file = LineWriter::new(file);\n\n    file.write_all(b\"I shall be telling this with a sigh\")?;\n\n    // No bytes are written until a newline is encountered (or\n    // the internal buffer is filled).\n    assert_eq!(fs::read_to_string(\"poem.txt\")?, \"\");\n    file.write_all(b\"\\n\")?;\n    assert_eq!(\n        fs::read_to_string(\"poem.txt\")?,\n        \"I shall be telling this with a sigh\\n\",\n    );\n\n    // Write the rest of the poem.\n    file.write_all(b\"Somewhere ages and ages hence:\nTwo roads diverged in a wood, and I -\nI took the one less traveled by,\nAnd that has made all the difference.\")?;\n\n    // The last line of the poem doesn't end in a newline, so\n    // we have to flush or drop the `LineWriter` to finish\n    // writing.\n    file.flush()?;\n\n    // Confirm the whole poem was written.\n    assert_eq!(fs::read(\"poem.txt\")?, &road_not_taken[..]);\n    Ok(())\n}"
+                }
+              ],
+              "level": "SingleLine"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

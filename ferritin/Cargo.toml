@@ -43,6 +43,8 @@ pulldown-cmark = "0.13"
 ratatui = "0.30"
 regex = "1.12"
 rustdoc-types.workspace = true
+serde.workspace = true
+sonic-rs.workspace = true
 syntect = { version = "5.3", default-features = false, features = ["parsing", "default-syntaxes", "html", "plist-load", "yaml-load", "dump-load", "dump-create", "regex-onig"] }
 terminal_size = "0.4"
 thiserror = "2"
