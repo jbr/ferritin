@@ -4,97 +4,15 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
 ---
 {
   "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DocDeep.html",
-  "header": [
-    {
-      "type": "metadata",
-      "fields": [
-        {
-          "label": "Item",
-          "value": [
-            {
-              "text": "DocDeep",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Kind",
-          "value": [
-            {
-              "text": "Struct",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Visibility",
-          "value": [
-            {
-              "text": "Public",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Defined at",
-          "value": [
-            {
-              "text": "fixture_crate",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
-            },
-            {
-              "text": "::",
-              "style": "Punctuation"
-            },
-            {
-              "text": "prefix_tests",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html"
-            },
-            {
-              "text": "::",
-              "style": "Punctuation"
-            },
-            {
-              "text": "deep",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html"
-            },
-            {
-              "text": "::",
-              "style": "Punctuation"
-            },
-            {
-              "text": "DocDeep",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DocDeep.html"
-            }
-          ]
-        },
-        {
-          "label": "In crate",
-          "value": [
-            {
-              "text": "fixture-crate",
-              "style": "Plain"
-            },
-            {
-              "text": " (",
-              "style": "Plain"
-            },
-            {
-              "text": "0.1.0",
-              "style": "Plain"
-            },
-            {
-              "text": ")",
-              "style": "Plain"
-            }
-          ]
-        }
-      ]
-    },
+  "meta": {
+    "name": "DocDeep",
+    "kind": "struct",
+    "visibility": "public",
+    "definedAt": "fixture_crate::prefix_tests::deep::DocDeep",
+    "crateName": "fixture-crate",
+    "crateVersion": "0.1.0"
+  },
+  "docs": [
     {
       "type": "truncatedBlock",
       "nodes": [
@@ -192,7 +110,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
     "kind": "struct",
     "name": "DocDeep",
     "shape": "unit",
-    "methods": [
+    "traitImpls": [
       {
         "type": "section",
         "title": [

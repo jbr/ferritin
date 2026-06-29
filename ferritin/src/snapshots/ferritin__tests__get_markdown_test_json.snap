@@ -4,79 +4,15 @@ expression: "render_json_for_tests_rooted(Commands::get(\"fixture-crate::markdow
 ---
 {
   "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html",
-  "header": [
-    {
-      "type": "metadata",
-      "fields": [
-        {
-          "label": "Item",
-          "value": [
-            {
-              "text": "markdown_test",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Kind",
-          "value": [
-            {
-              "text": "Module",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Visibility",
-          "value": [
-            {
-              "text": "Public",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Defined at",
-          "value": [
-            {
-              "text": "fixture_crate",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
-            },
-            {
-              "text": "::",
-              "style": "Punctuation"
-            },
-            {
-              "text": "markdown_test",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html"
-            }
-          ]
-        },
-        {
-          "label": "In crate",
-          "value": [
-            {
-              "text": "fixture-crate",
-              "style": "Plain"
-            },
-            {
-              "text": " (",
-              "style": "Plain"
-            },
-            {
-              "text": "0.1.0",
-              "style": "Plain"
-            },
-            {
-              "text": ")",
-              "style": "Plain"
-            }
-          ]
-        }
-      ]
-    },
+  "meta": {
+    "name": "markdown_test",
+    "kind": "module",
+    "visibility": "public",
+    "definedAt": "fixture_crate::markdown_test",
+    "crateName": "fixture-crate",
+    "crateVersion": "0.1.0"
+  },
+  "docs": [
     {
       "type": "truncatedBlock",
       "nodes": [
@@ -2760,17 +2696,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"fixture-crate::markdow
     }
   ],
   "body": {
-    "kind": "presentation",
-    "nodes": [
-      {
-        "type": "paragraph",
-        "spans": [
-          {
-            "text": "No items match the current filters.",
-            "style": "Plain"
-          }
-        ]
-      }
-    ]
+    "kind": "module"
   }
 }

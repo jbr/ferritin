@@ -4,39 +4,14 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestTrait::T\")
 ---
 {
   "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/",
-  "header": [
-    {
-      "type": "metadata",
-      "fields": [
-        {
-          "label": "Item",
-          "value": [
-            {
-              "text": "T",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Kind",
-          "value": [
-            {
-              "text": "AssocType",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Visibility",
-          "value": [
-            {
-              "text": "Private",
-              "style": "Plain"
-            }
-          ]
-        }
-      ]
-    },
+  "meta": {
+    "name": "T",
+    "kind": "assoctype",
+    "visibility": "private",
+    "crateName": "fixture-crate",
+    "crateVersion": "0.1.0"
+  },
+  "docs": [
     {
       "type": "truncatedBlock",
       "nodes": [

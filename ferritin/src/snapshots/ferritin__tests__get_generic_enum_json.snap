@@ -4,79 +4,15 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
 ---
 {
   "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html",
-  "header": [
-    {
-      "type": "metadata",
-      "fields": [
-        {
-          "label": "Item",
-          "value": [
-            {
-              "text": "GenericEnum",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Kind",
-          "value": [
-            {
-              "text": "Enum",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Visibility",
-          "value": [
-            {
-              "text": "Public",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Defined at",
-          "value": [
-            {
-              "text": "fixture_crate",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
-            },
-            {
-              "text": "::",
-              "style": "Punctuation"
-            },
-            {
-              "text": "GenericEnum",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html"
-            }
-          ]
-        },
-        {
-          "label": "In crate",
-          "value": [
-            {
-              "text": "fixture-crate",
-              "style": "Plain"
-            },
-            {
-              "text": " (",
-              "style": "Plain"
-            },
-            {
-              "text": "0.1.0",
-              "style": "Plain"
-            },
-            {
-              "text": ")",
-              "style": "Plain"
-            }
-          ]
-        }
-      ]
-    },
+  "meta": {
+    "name": "GenericEnum",
+    "kind": "enum",
+    "visibility": "public",
+    "definedAt": "fixture_crate::GenericEnum",
+    "crateName": "fixture-crate",
+    "crateVersion": "0.1.0"
+  },
+  "docs": [
     {
       "type": "truncatedBlock",
       "nodes": [
@@ -108,393 +44,210 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
     }
   ],
   "body": {
-    "kind": "presentation",
-    "nodes": [
+    "kind": "enum",
+    "name": "GenericEnum",
+    "generics": [
       {
-        "type": "generatedCode",
-        "spans": [
-          {
-            "text": "enum",
-            "style": "Keyword"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "GenericEnum",
-            "style": "TypeName"
-          },
-          {
-            "text": "<",
-            "style": "Punctuation"
-          },
-          {
-            "text": "T",
-            "style": "Generic"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "U",
-            "style": "Generic"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "=",
-            "style": "Operator"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "String",
-            "style": "TypeName",
-            "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
-          },
-          {
-            "text": ">",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "where",
-            "style": "Keyword"
-          },
-          {
-            "text": "\n    ",
-            "style": "Plain"
-          },
-          {
-            "text": "T",
-            "style": "Generic"
-          },
-          {
-            "text": ":",
-            "style": "Punctuation"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "Clone",
-            "style": "TypeName",
-            "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html"
-          },
-          {
-            "text": " + ",
-            "style": "Plain"
-          },
-          {
-            "text": "Send",
-            "style": "TypeName",
-            "url": "http://docs.rust-lang.org/nightly/core/marker/trait.Send.html"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n    ",
-            "style": "Plain"
-          },
-          {
-            "text": "U",
-            "style": "Generic"
-          },
-          {
-            "text": ":",
-            "style": "Punctuation"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "std::fmt::Display",
-            "style": "TypeName",
-            "url": "http://docs.rust-lang.org/nightly/core/fmt/trait.Display.html"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "{",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "    ",
-            "style": "Plain"
-          },
-          {
-            "text": "Simple",
-            "style": "TypeName"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "    ",
-            "style": "Plain"
-          },
-          {
-            "text": "WithData",
-            "style": "TypeName"
-          },
-          {
-            "text": "(",
-            "style": "Punctuation"
-          },
-          {
-            "text": "T",
-            "style": "Generic"
-          },
-          {
-            "text": ")",
-            "style": "Punctuation"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "    ",
-            "style": "Plain"
-          },
-          {
-            "text": "Mixed",
-            "style": "TypeName"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "{",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "        ",
-            "style": "Plain"
-          },
-          {
-            "text": "data",
-            "style": "FieldName"
-          },
-          {
-            "text": ":",
-            "style": "Punctuation"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "T",
-            "style": "Generic"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "        ",
-            "style": "Plain"
-          },
-          {
-            "text": "info",
-            "style": "FieldName"
-          },
-          {
-            "text": ":",
-            "style": "Punctuation"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "U",
-            "style": "Generic"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "    ",
-            "style": "Plain"
-          },
-          {
-            "text": "}",
-            "style": "Punctuation"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "}",
-            "style": "Punctuation"
-          }
-        ]
+        "text": "<",
+        "style": "Punctuation"
       },
       {
-        "type": "section",
-        "title": [
+        "text": "T",
+        "style": "Generic"
+      },
+      {
+        "text": ",",
+        "style": "Punctuation"
+      },
+      {
+        "text": " ",
+        "style": "Plain"
+      },
+      {
+        "text": "U",
+        "style": "Generic"
+      },
+      {
+        "text": " ",
+        "style": "Plain"
+      },
+      {
+        "text": "=",
+        "style": "Operator"
+      },
+      {
+        "text": " ",
+        "style": "Plain"
+      },
+      {
+        "text": "String",
+        "style": "TypeName",
+        "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+      },
+      {
+        "text": ">",
+        "style": "Punctuation"
+      }
+    ],
+    "whereClause": [
+      {
+        "text": "\n",
+        "style": "Plain"
+      },
+      {
+        "text": "where",
+        "style": "Keyword"
+      },
+      {
+        "text": "\n    ",
+        "style": "Plain"
+      },
+      {
+        "text": "T",
+        "style": "Generic"
+      },
+      {
+        "text": ":",
+        "style": "Punctuation"
+      },
+      {
+        "text": " ",
+        "style": "Plain"
+      },
+      {
+        "text": "Clone",
+        "style": "TypeName",
+        "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html"
+      },
+      {
+        "text": " + ",
+        "style": "Plain"
+      },
+      {
+        "text": "Send",
+        "style": "TypeName",
+        "url": "http://docs.rust-lang.org/nightly/core/marker/trait.Send.html"
+      },
+      {
+        "text": ",",
+        "style": "Punctuation"
+      },
+      {
+        "text": "\n    ",
+        "style": "Plain"
+      },
+      {
+        "text": "U",
+        "style": "Generic"
+      },
+      {
+        "text": ":",
+        "style": "Punctuation"
+      },
+      {
+        "text": " ",
+        "style": "Plain"
+      },
+      {
+        "text": "std::fmt::Display",
+        "style": "TypeName",
+        "url": "http://docs.rust-lang.org/nightly/core/fmt/trait.Display.html"
+      }
+    ],
+    "variants": [
+      {
+        "name": "Simple",
+        "shape": "plain",
+        "docs": [
           {
-            "text": "Variants:",
-            "style": "Plain"
-          }
-        ],
-        "nodes": [
-          {
-            "type": "list",
-            "items": [
+            "type": "truncatedBlock",
+            "nodes": [
               {
-                "content": [
+                "type": "paragraph",
+                "spans": [
                   {
-                    "type": "paragraph",
-                    "spans": [
-                      {
-                        "text": "Simple",
-                        "style": "TypeName"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "Simple variant",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
-                  }
-                ]
-              },
-              {
-                "content": [
-                  {
-                    "type": "paragraph",
-                    "spans": [
-                      {
-                        "text": "WithData",
-                        "style": "TypeName"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "Variant with generic data",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
-                  }
-                ]
-              },
-              {
-                "content": [
-                  {
-                    "type": "paragraph",
-                    "spans": [
-                      {
-                        "text": "Mixed",
-                        "style": "TypeName"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "Variant with mixed generics",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
+                    "text": "Simple variant",
+                    "style": "Plain"
                   }
                 ]
               }
-            ]
+            ],
+            "level": "SingleLine"
           }
         ]
       },
+      {
+        "name": "WithData",
+        "shape": "tuple",
+        "tupleFields": [
+          [
+            {
+              "text": "T",
+              "style": "Generic"
+            }
+          ]
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Variant with generic data",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "name": "Mixed",
+        "shape": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": [
+              {
+                "text": "T",
+                "style": "Generic"
+              }
+            ]
+          },
+          {
+            "name": "info",
+            "type": [
+              {
+                "text": "U",
+                "style": "Generic"
+              }
+            ]
+          }
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Variant with mixed generics",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      }
+    ],
+    "traitImpls": [
       {
         "type": "section",
         "title": [

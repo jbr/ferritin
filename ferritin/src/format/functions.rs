@@ -3,16 +3,50 @@ use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModi
 use super::*;
 use crate::styled_string::{DocumentNode, Span as StyledSpan};
 
+/// Semantic model of a free `function` item. A function is the same fn-shape as
+/// an inherent [`MethodDoc`], minus the assoc-item `kind`/`visibility` (a free
+/// function isn't an associated item, and its signature carries no `pub` prefix)
+/// and the per-item `docs` (a top-level item's own prose renders via
+/// [`ItemDoc`](super::ItemDoc), not in the body). Parameters stay inside the
+/// `signature` span sequence — the shared leaf vocabulary — so a function and a
+/// method serialize identically.
+pub(crate) struct FunctionDoc<'a> {
+    pub(crate) name: &'a str,
+    /// `true` only for `async fn`.
+    pub(crate) is_async: bool,
+    pub(crate) is_const: bool,
+    pub(crate) is_unsafe: bool,
+    /// Return-type spans (functions with an explicit output); empty otherwise.
+    pub(crate) returns: Vec<StyledSpan<'a>>,
+    /// Full display signature — the lowering leaf.
+    pub(crate) signature: Vec<StyledSpan<'a>>,
+}
+
 impl<'a> Request<'a> {
-    /// Format a function signature
-    pub(super) fn format_function(
+    /// Resolve a function item into its semantic [`FunctionDoc`] model — the
+    /// resolution half of the old `format_function`, with span assembly left to
+    /// [`lower_function`].
+    pub(super) fn model_function(
         &mut self,
         item: DocRef<'a, Item>,
         function: DocRef<'a, Function>,
-    ) -> Vec<DocumentNode<'a>> {
+    ) -> FunctionDoc<'a> {
         let name = item.name().unwrap_or("<unnamed>");
-        let signature_spans = self.format_function_signature(item, name, function.item());
-        vec![DocumentNode::generated_code(signature_spans)]
+        let func = function.item();
+        let signature = self.format_function_signature(item, name, func);
+        let returns = match &func.sig.output {
+            Some(output) => self.format_type(item, output),
+            None => vec![],
+        };
+
+        FunctionDoc {
+            name,
+            is_async: func.header.is_async,
+            is_const: func.header.is_const,
+            is_unsafe: func.header.is_unsafe,
+            returns,
+            signature,
+        }
     }
 
     /// Format a function signature
@@ -624,4 +658,10 @@ impl<'a> Request<'a> {
         spans.push(StyledSpan::punctuation(">"));
         spans
     }
+}
+
+/// Lower a [`FunctionDoc`] to presentation nodes, reproducing the old
+/// `format_function` output: the signature as a single generated-code block.
+pub(super) fn lower_function(model: FunctionDoc<'_>) -> Vec<DocumentNode<'_>> {
+    vec![DocumentNode::generated_code(model.signature)]
 }
