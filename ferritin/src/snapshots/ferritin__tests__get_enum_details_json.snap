@@ -4,88 +4,15 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule::Test
 ---
 {
   "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html",
-  "header": [
-    {
-      "type": "metadata",
-      "fields": [
-        {
-          "label": "Item",
-          "value": [
-            {
-              "text": "TestEnum",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Kind",
-          "value": [
-            {
-              "text": "Enum",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Visibility",
-          "value": [
-            {
-              "text": "Public",
-              "style": "Plain"
-            }
-          ]
-        },
-        {
-          "label": "Defined at",
-          "value": [
-            {
-              "text": "fixture_crate",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html"
-            },
-            {
-              "text": "::",
-              "style": "Punctuation"
-            },
-            {
-              "text": "submodule",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html"
-            },
-            {
-              "text": "::",
-              "style": "Punctuation"
-            },
-            {
-              "text": "TestEnum",
-              "style": "TypeName",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html"
-            }
-          ]
-        },
-        {
-          "label": "In crate",
-          "value": [
-            {
-              "text": "fixture-crate",
-              "style": "Plain"
-            },
-            {
-              "text": " (",
-              "style": "Plain"
-            },
-            {
-              "text": "0.1.0",
-              "style": "Plain"
-            },
-            {
-              "text": ")",
-              "style": "Plain"
-            }
-          ]
-        }
-      ]
-    },
+  "meta": {
+    "name": "TestEnum",
+    "kind": "enum",
+    "visibility": "public",
+    "definedAt": "fixture_crate::submodule::TestEnum",
+    "crateName": "fixture-crate",
+    "crateVersion": "0.1.0"
+  },
+  "docs": [
     {
       "type": "truncatedBlock",
       "nodes": [
@@ -121,316 +48,129 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule::Test
     }
   ],
   "body": {
-    "kind": "presentation",
-    "nodes": [
+    "kind": "enum",
+    "name": "TestEnum",
+    "variants": [
       {
-        "type": "generatedCode",
-        "spans": [
+        "name": "VariantA",
+        "shape": "plain",
+        "docs": [
           {
-            "text": "enum",
-            "style": "Keyword"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "TestEnum",
-            "style": "TypeName"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "{",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "    ",
-            "style": "Plain"
-          },
-          {
-            "text": "VariantA",
-            "style": "TypeName"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "    ",
-            "style": "Plain"
-          },
-          {
-            "text": "VariantB",
-            "style": "TypeName"
-          },
-          {
-            "text": "(",
-            "style": "Punctuation"
-          },
-          {
-            "text": "String",
-            "style": "TypeName",
-            "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
-          },
-          {
-            "text": ")",
-            "style": "Punctuation"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "    ",
-            "style": "Plain"
-          },
-          {
-            "text": "VariantC",
-            "style": "TypeName"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "{",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "        ",
-            "style": "Plain"
-          },
-          {
-            "text": "name",
-            "style": "FieldName"
-          },
-          {
-            "text": ":",
-            "style": "Punctuation"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "String",
-            "style": "TypeName",
-            "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "        ",
-            "style": "Plain"
-          },
-          {
-            "text": "value",
-            "style": "FieldName"
-          },
-          {
-            "text": ":",
-            "style": "Punctuation"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "i32",
-            "style": "TypeName"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "    ",
-            "style": "Plain"
-          },
-          {
-            "text": "}",
-            "style": "Punctuation"
-          },
-          {
-            "text": ",",
-            "style": "Punctuation"
-          },
-          {
-            "text": "\n",
-            "style": "Plain"
-          },
-          {
-            "text": "}",
-            "style": "Punctuation"
-          }
-        ]
-      },
-      {
-        "type": "section",
-        "title": [
-          {
-            "text": "Variants:",
-            "style": "Plain"
-          }
-        ],
-        "nodes": [
-          {
-            "type": "list",
-            "items": [
+            "type": "truncatedBlock",
+            "nodes": [
               {
-                "content": [
+                "type": "paragraph",
+                "spans": [
                   {
-                    "type": "paragraph",
-                    "spans": [
-                      {
-                        "text": "VariantA",
-                        "style": "TypeName"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      }
-                    ]
+                    "text": "Variant A (see also ",
+                    "style": "Plain"
                   },
                   {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "Variant A (see also ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "crate::GenericEnum",
-                            "style": "InlineCode",
-                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html"
-                          },
-                          {
-                            "text": ")",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
-                  }
-                ]
-              },
-              {
-                "content": [
-                  {
-                    "type": "paragraph",
-                    "spans": [
-                      {
-                        "text": "VariantB",
-                        "style": "TypeName"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      }
-                    ]
+                    "text": "crate::GenericEnum",
+                    "style": "InlineCode",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html"
                   },
                   {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "Variant B with data",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
-                  }
-                ]
-              },
-              {
-                "content": [
-                  {
-                    "type": "paragraph",
-                    "spans": [
-                      {
-                        "text": "VariantC",
-                        "style": "TypeName"
-                      },
-                      {
-                        "text": " ",
-                        "style": "Plain"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "truncatedBlock",
-                    "nodes": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "Variant C with struct data (",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "name",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": " and ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "value",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": ")",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ],
-                    "level": "SingleLine"
+                    "text": ")",
+                    "style": "Plain"
                   }
                 ]
               }
-            ]
+            ],
+            "level": "SingleLine"
           }
         ]
       },
+      {
+        "name": "VariantB",
+        "shape": "tuple",
+        "tupleFields": [
+          [
+            {
+              "text": "String",
+              "style": "TypeName",
+              "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+            }
+          ]
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Variant B with data",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "name": "VariantC",
+        "shape": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": [
+              {
+                "text": "String",
+                "style": "TypeName",
+                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+              }
+            ]
+          },
+          {
+            "name": "value",
+            "type": [
+              {
+                "text": "i32",
+                "style": "TypeName"
+              }
+            ]
+          }
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Variant C with struct data (",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "name",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " and ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "value",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ")",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      }
+    ],
+    "traitImpls": [
       {
         "type": "section",
         "title": [

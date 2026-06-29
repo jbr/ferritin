@@ -28,14 +28,33 @@ const GROUP_ORDER: &[(&str, &[ItemKind])] = &[
     ("Variants", &[ItemKind::Variant]),
 ];
 
-#[derive(Debug)]
-struct FlatItem<'a> {
-    path: String,
-    item: DocRef<'a, Item>,
+/// Semantic model of a `module` item: a flat collection of its child items in
+/// traversal order. Grouping by kind (the terminal's sections) and a JSON
+/// client's own grouping are both *downstream* of this flat list — the model
+/// ships structure, not presentation, so grouping stays a consumer concern.
+pub(crate) struct ModuleDoc<'a> {
+    pub(crate) items: Vec<ModuleItem<'a>>,
+}
+
+/// A single child of a module: its qualified path (relative to the module, or
+/// fully qualified under `--recursive`), the kind used for grouping, the
+/// resolved navigation target, and brief docs.
+pub(crate) struct ModuleItem<'a> {
+    /// Path as listed: the bare name for a direct child, `a::b::c` when reached
+    /// recursively through nested modules.
+    pub(crate) path: String,
+    /// Item kind, used to group the listing (terminal) and exposed verbatim to
+    /// JSON clients (which may group differently).
+    pub(crate) kind: ItemKind,
+    /// The child item itself — the navigation target. Carried so the lowering
+    /// can attach the nav action and the JSON output can derive the `url`.
+    pub(crate) target: DocRef<'a, Item>,
+    /// Single-line docs for the listing, if the item has any.
+    pub(crate) docs: Option<Vec<DocumentNode<'a>>>,
 }
 
 impl<'a> Request<'a> {
-    /// Collect all items in a module hierarchy as flat qualified paths.
+    /// Collect all items in a module hierarchy as flat [`ModuleItem`]s.
     ///
     /// Tracks visited items during recursive descent so cyclic re-export
     /// chains (e.g. a nested module glob-importing its parent) can't send the
@@ -43,9 +62,9 @@ impl<'a> Request<'a> {
     // DocRef hashes by crate name + item id; the interior mutability lives in
     // Navigator's connection pool and doesn't affect identity.
     #[allow(clippy::mutable_key_type)]
-    fn collect_flat_items(
+    fn collect_module_items(
         &mut self,
-        collected: &mut Vec<FlatItem<'a>>,
+        collected: &mut Vec<ModuleItem<'a>>,
         visited: &mut std::collections::HashSet<DocRef<'a, Item>>,
         path: Option<String>,
         item: DocRef<'a, Item>,
@@ -64,107 +83,111 @@ impl<'a> Request<'a> {
                 // `--kind fn` listing should still recurse through modules to
                 // reach nested functions, just without listing the modules.
                 if self.format_context().should_display(child) {
-                    collected.push(FlatItem {
+                    let docs = self.docs_to_show(child, TruncationLevel::SingleLine);
+                    collected.push(ModuleItem {
                         path: path.clone(),
-                        item: child,
+                        kind: child.kind(),
+                        target: child,
+                        docs,
                     });
                 }
 
                 if self.format_context().is_recursive() && visited.insert(child) {
-                    self.collect_flat_items(collected, visited, Some(path), child);
+                    self.collect_module_items(collected, visited, Some(path), child);
                 }
             }
         }
     }
 
-    /// Format collected flat items with grouping by type
-    fn format_grouped_flat_items(&mut self, items: &[FlatItem<'a>]) -> Vec<DocumentNode<'a>> {
-        if items.is_empty() {
-            return vec![DocumentNode::paragraph(vec![Span::plain(
-                "No items match the current filters.",
-            )])];
-        }
-
-        // Group items by filter type
-        let mut groups: HashMap<ItemKind, Vec<&FlatItem>> = HashMap::new();
-        for flat_item in items {
-            let kind = flat_item.item.kind();
-            groups.entry(kind).or_default().push(flat_item);
-        }
-
-        let mut doc_nodes = vec![];
-
-        for (group_name, kinds) in GROUP_ORDER {
-            let mut group_items: Vec<&FlatItem> = kinds
-                .iter()
-                .filter_map(|kind| groups.remove(kind))
-                .flatten()
-                .collect();
-
-            if group_items.is_empty() {
-                continue;
-            }
-
-            group_items.sort_by_key(|a| &a.path);
-
-            let list_items: Vec<ListItem> = group_items
-                .iter()
-                .map(|flat_item| self.format_flat_item(flat_item))
-                .collect();
-
-            let section = DocumentNode::section(
-                vec![Span::plain(*group_name)],
-                vec![DocumentNode::list(list_items)],
-            );
-            doc_nodes.push(section);
-        }
-
-        // Sort remaining (unrecognized) kinds alphabetically by their debug name
-        // so output is stable across runs — HashMap iteration order is not.
-        let mut remaining: Vec<_> = groups.into_iter().collect();
-        remaining.sort_by_key(|(kind, _)| format!("{kind:?}"));
-
-        for (kind, mut group_items) in remaining {
-            group_items.sort_by_key(|a| &a.path);
-
-            let list_items: Vec<ListItem> = group_items
-                .iter()
-                .map(|flat_item| self.format_flat_item(flat_item))
-                .collect();
-
-            let section = DocumentNode::section(
-                vec![Span::plain(format!("{kind:?}"))],
-                vec![DocumentNode::list(list_items)],
-            );
-            doc_nodes.push(section);
-        }
-
-        doc_nodes
-    }
-
-    /// Format a single flat item as a ListItem
-    fn format_flat_item(&mut self, flat_item: &FlatItem<'a>) -> ListItem<'a> {
-        // Prepend item name as a paragraph
-        let mut content = vec![DocumentNode::paragraph(vec![
-            Span::type_name(flat_item.path.clone()).with_target(Some(flat_item.item)),
-            Span::plain(" "),
-        ])];
-
-        // Add brief documentation if available
-        if let Some(docs) = self.docs_to_show(flat_item.item, TruncationLevel::SingleLine) {
-            content.extend(docs);
-        }
-
-        ListItem::new(content)
-    }
-
-    /// Format a module
-    #[allow(clippy::mutable_key_type)] // see collect_flat_items
-    pub(super) fn format_module(&mut self, item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
-        let mut collected = Vec::new();
+    /// Resolve a module item into its semantic [`ModuleDoc`] model — the
+    /// resolution half of the old `format_module`, with the grouping and span
+    /// assembly moved to [`lower_module`].
+    #[allow(clippy::mutable_key_type)] // see collect_module_items
+    pub(super) fn model_module(&mut self, item: DocRef<'a, Item>) -> ModuleDoc<'a> {
+        let mut items = Vec::new();
         let mut visited = std::collections::HashSet::new();
         visited.insert(item);
-        self.collect_flat_items(&mut collected, &mut visited, None, item);
-        self.format_grouped_flat_items(&collected)
+        self.collect_module_items(&mut items, &mut visited, None, item);
+        ModuleDoc { items }
     }
+}
+
+/// Lower a [`ModuleDoc`] to presentation [`DocumentNode`]s, reproducing the old
+/// `format_module` output: items grouped by kind under [`GROUP_ORDER`]
+/// headings, sorted by path within each group, with unrecognized kinds appended
+/// alphabetically. insta snapshots are the guardrail for byte-identity.
+pub(super) fn lower_module(model: ModuleDoc<'_>) -> Vec<DocumentNode<'_>> {
+    let ModuleDoc { items } = model;
+
+    if items.is_empty() {
+        return vec![DocumentNode::paragraph(vec![Span::plain(
+            "No items match the current filters.",
+        )])];
+    }
+
+    // Group items by kind.
+    let mut groups: HashMap<ItemKind, Vec<ModuleItem>> = HashMap::new();
+    for item in items {
+        groups.entry(item.kind).or_default().push(item);
+    }
+
+    let mut doc_nodes = vec![];
+
+    for (group_name, kinds) in GROUP_ORDER {
+        let mut group_items: Vec<ModuleItem> = kinds
+            .iter()
+            .filter_map(|kind| groups.remove(kind))
+            .flatten()
+            .collect();
+
+        if group_items.is_empty() {
+            continue;
+        }
+
+        group_items.sort_by(|a, b| a.path.cmp(&b.path));
+
+        let list_items: Vec<ListItem> = group_items.into_iter().map(lower_module_item).collect();
+
+        doc_nodes.push(DocumentNode::section(
+            vec![Span::plain(*group_name)],
+            vec![DocumentNode::list(list_items)],
+        ));
+    }
+
+    // Sort remaining (unrecognized) kinds alphabetically by their debug name
+    // so output is stable across runs — HashMap iteration order is not.
+    let mut remaining: Vec<_> = groups.into_iter().collect();
+    remaining.sort_by_key(|(kind, _)| format!("{kind:?}"));
+
+    for (kind, mut group_items) in remaining {
+        group_items.sort_by(|a, b| a.path.cmp(&b.path));
+
+        let list_items: Vec<ListItem> = group_items.into_iter().map(lower_module_item).collect();
+
+        doc_nodes.push(DocumentNode::section(
+            vec![Span::plain(format!("{kind:?}"))],
+            vec![DocumentNode::list(list_items)],
+        ));
+    }
+
+    doc_nodes
+}
+
+/// Lower a single [`ModuleItem`] to its list entry: a nav-targeted path
+/// paragraph followed by any brief docs.
+fn lower_module_item(item: ModuleItem<'_>) -> ListItem<'_> {
+    let ModuleItem {
+        path, target, docs, ..
+    } = item;
+
+    let mut content = vec![DocumentNode::paragraph(vec![
+        Span::type_name(path).with_target(Some(target)),
+        Span::plain(" "),
+    ])];
+
+    if let Some(docs) = docs {
+        content.extend(docs);
+    }
+
+    ListItem::new(content)
 }

@@ -3,104 +3,120 @@ use rustdoc_types::{AssocItemConstraintKind, GenericArg, GenericArgs, GenericPar
 use super::*;
 use crate::styled_string::{DocumentNode, ListItem, Span};
 
+/// Semantic model of a `trait`: signature pieces, its members (methods, assoc
+/// types/consts), and the (still opaque) implementors section. Members reuse the
+/// shared [`AssocKind`](super::AssocKind).
+pub(crate) struct TraitDoc<'a> {
+    pub(crate) name: &'a str,
+    pub(crate) generics: Vec<Span<'a>>,
+    /// Supertrait bound spans (the `Eq + PartialOrd` of `trait Ord: Eq + …`),
+    /// without the leading `: `.
+    pub(crate) supertraits: Vec<Span<'a>>,
+    pub(crate) where_clause: Vec<Span<'a>>,
+    pub(crate) members: Vec<TraitMember<'a>>,
+    /// "Implementors (this crate)" section, still opaque presentation nodes.
+    pub(crate) implementors: Vec<DocumentNode<'a>>,
+}
+
+/// A single trait member: a method (required or provided), an associated type,
+/// or an associated const.
+pub(crate) struct TraitMember<'a> {
+    pub(crate) name: &'a str,
+    pub(crate) kind: AssocKind,
+    /// For methods: whether it has a default body (provided vs. required).
+    pub(crate) has_default: bool,
+    /// Member signature spans — the display leaf.
+    pub(crate) signature: Vec<Span<'a>>,
+    pub(crate) docs: Option<Vec<DocumentNode<'a>>>,
+}
+
 impl<'a> Request<'a> {
-    /// Format a trait
-    pub(super) fn format_trait(
+    /// Resolve a trait item into its semantic [`TraitDoc`] model.
+    pub(super) fn model_trait(
         &mut self,
         item: DocRef<'a, Item>,
         trait_data: DocRef<'a, Trait>,
-    ) -> Vec<DocumentNode<'a>> {
-        let trait_name = item.name().unwrap_or("<unnamed>");
+    ) -> TraitDoc<'a> {
+        let name = item.name().unwrap_or("<unnamed>");
 
-        // Build concise trait signature
-        let mut signature_spans = vec![
-            Span::keyword("trait"),
-            Span::plain(" "),
-            Span::type_name(trait_name),
-        ];
+        let generics = if !trait_data.generics.params.is_empty() {
+            self.format_generics(item, &trait_data.item().generics)
+        } else {
+            vec![]
+        };
+        let supertraits = if !trait_data.bounds.is_empty() {
+            self.format_generic_bounds(item, &trait_data.item().bounds)
+        } else {
+            vec![]
+        };
+        let where_clause = if !trait_data.generics.where_predicates.is_empty() {
+            self.format_where_clause(item, &trait_data.item().generics.where_predicates)
+        } else {
+            vec![]
+        };
 
-        if !trait_data.generics.params.is_empty() {
-            signature_spans.extend(self.format_generics(item, &trait_data.item().generics));
-        }
-
-        // Supertraits: `trait Ord: Eq + PartialOrd`
-        if !trait_data.bounds.is_empty() {
-            signature_spans.push(Span::punctuation(":"));
-            signature_spans.push(Span::plain(" "));
-            signature_spans.extend(self.format_generic_bounds(item, &trait_data.item().bounds));
-        }
-
-        if !trait_data.generics.where_predicates.is_empty() {
-            signature_spans.extend(
-                self.format_where_clause(item, &trait_data.item().generics.where_predicates),
-            );
-        }
-
-        signature_spans.push(Span::plain(" "));
-        signature_spans.push(Span::punctuation("{"));
-        signature_spans.push(Span::plain(" ... "));
-        signature_spans.push(Span::punctuation("}"));
-
-        let mut nodes: Vec<DocumentNode> = vec![DocumentNode::generated_code(signature_spans)];
-
-        // Build list of trait members
-        let mut member_items = vec![];
-
+        let mut members = vec![];
         for trait_item in self.ids(item, &trait_data.item().items) {
             let item_name = trait_item.name().unwrap_or("<unnamed>");
 
-            let signature_spans = match &trait_item.item().inner {
-                ItemEnum::Function(f) => {
-                    self.format_trait_method_signature(trait_item, f, item_name)
-                }
+            let (kind, has_default, signature) = match &trait_item.item().inner {
+                ItemEnum::Function(f) => (
+                    AssocKind::Method,
+                    f.has_body,
+                    self.format_trait_method_signature(trait_item, f, item_name),
+                ),
                 ItemEnum::AssocType {
                     generics,
                     bounds,
                     type_,
                     default_unstable: _,
-                } => self.format_trait_assoc_type_signature(
-                    item,
-                    generics,
-                    bounds,
-                    type_.as_ref(),
-                    item_name,
+                } => (
+                    AssocKind::Type,
+                    false,
+                    self.format_trait_assoc_type_signature(
+                        item,
+                        generics,
+                        bounds,
+                        type_.as_ref(),
+                        item_name,
+                    ),
                 ),
                 ItemEnum::AssocConst {
                     type_,
                     value,
                     default_unstable: _,
-                } => self.format_trait_assoc_const_signature(item, type_, value, item_name),
-                _ => {
-                    // Fallback for unknown item types
-                    vec![Span::comment(format!(
-                        "// {}: {:?}",
-                        item_name, trait_item.inner
-                    ))]
-                }
+                } => (
+                    AssocKind::Const,
+                    false,
+                    self.format_trait_assoc_const_signature(item, type_, value, item_name),
+                ),
+                other => (
+                    AssocKind::Method,
+                    false,
+                    vec![Span::comment(format!("// {}: {:?}", item_name, other))],
+                ),
             };
 
-            // Prepend signature as a paragraph
-            let mut item_content = vec![DocumentNode::paragraph({
-                let mut sig = signature_spans;
-                sig.push(Span::plain(" "));
-                sig
-            })];
-
-            // Add docs if available
-            if let Some(docs) = self.docs_to_show(trait_item, TruncationLevel::SingleLine) {
-                item_content.extend(docs);
-            }
-
-            member_items.push(ListItem::new(item_content));
+            let docs = self.docs_to_show(trait_item, TruncationLevel::SingleLine);
+            members.push(TraitMember {
+                name: item_name,
+                kind,
+                has_default,
+                signature,
+                docs,
+            });
         }
 
-        if !member_items.is_empty() {
-            nodes.push(DocumentNode::list(member_items));
+        let implementors = self.format_implementors(item);
+
+        TraitDoc {
+            name,
+            generics,
+            supertraits,
+            where_clause,
+            members,
+            implementors,
         }
-
-        nodes.extend(self.format_implementors(item));
-
-        nodes
     }
 
     /// Format the "Implementors" section for a trait page.
@@ -436,4 +452,55 @@ impl<'a> Request<'a> {
 
         spans
     }
+}
+
+/// Lower a [`TraitDoc`] to presentation nodes, reproducing the old `format_trait`
+/// output byte-for-byte.
+pub(super) fn lower_trait(model: TraitDoc<'_>) -> Vec<DocumentNode<'_>> {
+    let TraitDoc {
+        name,
+        generics,
+        supertraits,
+        where_clause,
+        members,
+        implementors,
+    } = model;
+
+    let mut signature_spans = vec![
+        Span::keyword("trait"),
+        Span::plain(" "),
+        Span::type_name(name),
+    ];
+    signature_spans.extend(generics);
+    if !supertraits.is_empty() {
+        signature_spans.push(Span::punctuation(":"));
+        signature_spans.push(Span::plain(" "));
+        signature_spans.extend(supertraits);
+    }
+    signature_spans.extend(where_clause);
+    signature_spans.push(Span::plain(" "));
+    signature_spans.push(Span::punctuation("{"));
+    signature_spans.push(Span::plain(" ... "));
+    signature_spans.push(Span::punctuation("}"));
+
+    let mut nodes = vec![DocumentNode::generated_code(signature_spans)];
+
+    if !members.is_empty() {
+        let member_items: Vec<ListItem> = members
+            .into_iter()
+            .map(|member| {
+                let mut sig = member.signature;
+                sig.push(Span::plain(" "));
+                let mut content = vec![DocumentNode::paragraph(sig)];
+                if let Some(docs) = member.docs {
+                    content.extend(docs);
+                }
+                ListItem::new(content)
+            })
+            .collect();
+        nodes.push(DocumentNode::list(member_items));
+    }
+
+    nodes.extend(implementors);
+    nodes
 }
