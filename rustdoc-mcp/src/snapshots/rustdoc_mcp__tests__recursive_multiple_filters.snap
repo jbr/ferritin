@@ -12,6 +12,7 @@ A minimal test crate for rustdoc JSON testing
 
 Traits:
 ComplexTrait // A more complex trait demonstrating various features
+Marker // A marker trait (no associated items) to exercise the compact implementors [+1 more lines]
 TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 
 Functions:

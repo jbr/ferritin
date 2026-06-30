@@ -11,14 +11,14 @@ Search results for 'generic struct'
   ◦ [alloc::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 67.9
     A trait for borrowing data. [...]
 
-  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 67.4
+  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html)  (Enum) - score: 67.5
     A generic enum for testing [...]
 
-  ◦ [core::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64.5
+  ◦ [core::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64.6
     Compile-time type information about instantiated generics of structs, enum and
     union variants.
 
-  ◦ [std::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64.5
+  ◦ [std::mem::type_info::Generic](http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 64.6
     Compile-time type information about instantiated generics of structs, enum and
     union variants.
 
@@ -28,7 +28,7 @@ Search results for 'generic struct'
   ◦ [core::borrow::Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.0
     A trait for borrowing data. [...]
 
-  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html)  (Struct) - score: 63.5
+  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html)  (Struct) - score: 63.3
     A simple struct for testing basic functionality. [...]
 
   ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 63.0
