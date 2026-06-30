@@ -21821,685 +21821,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
-        "path": "Vec::into_flattened",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Takes a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec<[T; N]>",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " and flattens it into a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec<T>",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if the length of the resulting vector would overflow a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "usize",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "This is only possible when flattening a vector of arrays of zero-sized",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "types, and thus tends to be irrelevant in practice. If",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "size_of::<T>() > 0",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", this will never panic.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut vec = vec![[1, 2, 3], [4, 5, 6], [7, 8, 9]];\nassert_eq!(vec.pop(), Some([7, 8, 9]));\n\nlet mut flattened = vec.into_flattened();\nassert_eq!(flattened.pop(), Some(6));"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::splice",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Creates a splicing iterator that replaces the specified range in the vector",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "with the given ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "replace_with",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " iterator and yields the removed items.",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "replace_with",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " does not need to be the same length as ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "range",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "range",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is removed even if the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Splice",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " iterator is not consumed before it is dropped.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "It is unspecified how many elements are removed from the vector",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "if the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Splice",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " value is leaked.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "The input iterator ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "replace_with",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is only consumed when the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Splice",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " value is dropped.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "This is optimal if:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "list",
-                "items": [
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "The tail (elements in the vector after ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "range",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": ") is empty,",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "or ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "replace_with",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": " yields fewer or equal elements than ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "range",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": "'s length",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "or the lower bound of its ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "size_hint()",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": " is exact.",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Otherwise, a temporary vector is allocated and the tail is moved twice.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if the range has ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "start_bound > end_bound",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", or, if the range is",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "bounded on either end and past the length of the vector.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut v = vec![1, 2, 3, 4];\nlet new = [7, 8, 9];\nlet u: Vec<_> = v.splice(1..3, new).collect();\nassert_eq!(v, [1, 7, 8, 9, 4]);\nassert_eq!(u, [2, 3]);"
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Using ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "splice",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " to insert new items into a vector efficiently at a specific position",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "indicated by an empty range:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut v = vec![1, 5];\nlet new = [2, 3, 4];\nv.splice(1..1, new);\nassert_eq!(v, [1, 2, 3, 4, 5]);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::extract_if",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Creates an iterator which uses a closure to determine if an element in the range should be removed.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "If the closure returns ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "true",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", the element is removed from the vector",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "and yielded. If the closure returns ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "false",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", or panics, the element",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "remains in the vector and will not be yielded.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Only elements that fall in the provided range are considered for extraction, but any elements",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "after the range will still have to be moved if any element has been extracted.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "If the returned ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "ExtractIf",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is not exhausted, e.g. because it is dropped without iterating",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "or the iteration short-circuits, then the remaining elements will be retained.",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Use ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "extract_if().for_each(drop)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " if you do not need the returned iterator,",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "or ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "retain_mut",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain_mut"
-                  },
-                  {
-                    "text": " with a negated predicate if you also do not need to restrict the range.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Using this method is equivalent to the following code:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut i = range.start;\nlet end_items = vec.len() - range.end;\n\nwhile i < vec.len() - end_items {\n    if some_predicate(&mut vec[i]) {\n        let val = vec.remove(i);\n        // your code here\n    } else {\n        i += 1;\n    }\n}\n"
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "But ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "extract_if",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is easier to use. ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "extract_if",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is also more efficient,",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "because it can backshift the elements of the array in bulk.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "The iterator also lets you mutate the value of each element in the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "closure, regardless of whether you choose to keep or remove it.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "If ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "range",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is out of bounds.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Splitting a vector into even and odd values, reusing the original vector:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut numbers = vec![1, 2, 3, 4, 5, 6, 8, 9, 11, 13, 14, 15];\n\nlet evens = numbers.extract_if(.., |x| *x % 2 == 0).collect::<Vec<_>>();\nlet odds = numbers;\n\nassert_eq!(evens, vec![2, 4, 6, 8, 14]);\nassert_eq!(odds, vec![1, 3, 5, 9, 11, 13, 15]);"
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Using the range argument to only process a part of the vector:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut items = vec![0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 2];\nlet ones = items.extract_if(7.., |x| *x == 1).collect::<Vec<_>>();\nassert_eq!(items, vec![0, 0, 0, 0, 0, 0, 0, 2, 2, 2]);\nassert_eq!(ones.len(), 3);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
         "path": "Vec::resize",
         "kind": "function",
         "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize",
@@ -33328,6 +32649,685 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "Plain"
                   }
                 ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::into_flattened",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Takes a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<[T; N]>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " and flattens it into a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<T>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if the length of the resulting vector would overflow a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "usize",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "This is only possible when flattening a vector of arrays of zero-sized",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "types, and thus tends to be irrelevant in practice. If",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "size_of::<T>() > 0",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", this will never panic.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut vec = vec![[1, 2, 3], [4, 5, 6], [7, 8, 9]];\nassert_eq!(vec.pop(), Some([7, 8, 9]));\n\nlet mut flattened = vec.into_flattened();\nassert_eq!(flattened.pop(), Some(6));"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::splice",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Creates a splicing iterator that replaces the specified range in the vector",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "with the given ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "replace_with",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " iterator and yields the removed items.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "replace_with",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " does not need to be the same length as ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "range",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "range",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is removed even if the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Splice",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " iterator is not consumed before it is dropped.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "It is unspecified how many elements are removed from the vector",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "if the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Splice",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " value is leaked.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The input iterator ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "replace_with",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is only consumed when the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Splice",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " value is dropped.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "This is optimal if:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "list",
+                "items": [
+                  {
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "The tail (elements in the vector after ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "range",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": ") is empty,",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "or ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "replace_with",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " yields fewer or equal elements than ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "range",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": "'s length",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "or the lower bound of its ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "size_hint()",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " is exact.",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Otherwise, a temporary vector is allocated and the tail is moved twice.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if the range has ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "start_bound > end_bound",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", or, if the range is",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bounded on either end and past the length of the vector.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut v = vec![1, 2, 3, 4];\nlet new = [7, 8, 9];\nlet u: Vec<_> = v.splice(1..3, new).collect();\nassert_eq!(v, [1, 7, 8, 9, 4]);\nassert_eq!(u, [2, 3]);"
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Using ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "splice",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " to insert new items into a vector efficiently at a specific position",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "indicated by an empty range:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut v = vec![1, 5];\nlet new = [2, 3, 4];\nv.splice(1..1, new);\nassert_eq!(v, [1, 2, 3, 4, 5]);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::extract_if",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Creates an iterator which uses a closure to determine if an element in the range should be removed.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If the closure returns ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "true",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", the element is removed from the vector",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "and yielded. If the closure returns ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "false",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", or panics, the element",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "remains in the vector and will not be yielded.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Only elements that fall in the provided range are considered for extraction, but any elements",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "after the range will still have to be moved if any element has been extracted.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If the returned ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "ExtractIf",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is not exhausted, e.g. because it is dropped without iterating",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "or the iteration short-circuits, then the remaining elements will be retained.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Use ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "extract_if().for_each(drop)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " if you do not need the returned iterator,",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "or ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "retain_mut",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain_mut"
+                  },
+                  {
+                    "text": " with a negated predicate if you also do not need to restrict the range.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Using this method is equivalent to the following code:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut i = range.start;\nlet end_items = vec.len() - range.end;\n\nwhile i < vec.len() - end_items {\n    if some_predicate(&mut vec[i]) {\n        let val = vec.remove(i);\n        // your code here\n    } else {\n        i += 1;\n    }\n}\n"
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "But ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "extract_if",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is easier to use. ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "extract_if",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is also more efficient,",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "because it can backshift the elements of the array in bulk.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The iterator also lets you mutate the value of each element in the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "closure, regardless of whether you choose to keep or remove it.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "range",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is out of bounds.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Splitting a vector into even and odd values, reusing the original vector:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut numbers = vec![1, 2, 3, 4, 5, 6, 8, 9, 11, 13, 14, 15];\n\nlet evens = numbers.extract_if(.., |x| *x % 2 == 0).collect::<Vec<_>>();\nlet odds = numbers;\n\nassert_eq!(evens, vec![2, 4, 6, 8, 14]);\nassert_eq!(odds, vec![1, 3, 5, 9, 11, 13, 15]);"
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Using the range argument to only process a part of the vector:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut items = vec![0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 2];\nlet ones = items.extract_if(7.., |x| *x == 1).collect::<Vec<_>>();\nassert_eq!(items, vec![0, 0, 0, 0, 0, 0, 0, 2, 2, 2]);\nassert_eq!(ones.len(), 3);"
               }
             ],
             "level": "SingleLine"
