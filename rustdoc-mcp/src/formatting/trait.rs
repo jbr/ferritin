@@ -36,10 +36,13 @@ impl<'a> Request<'a> {
                     generics,
                     bounds,
                     type_,
+                    default_unstable: _,
                 } => self.format_assoc_type(&mut result, generics, bounds, type_, &trait_item),
-                ItemEnum::AssocConst { type_, value } => {
-                    self.format_assoc_const(&mut result, type_, value, &trait_item)
-                }
+                ItemEnum::AssocConst {
+                    type_,
+                    value,
+                    default_unstable: _,
+                } => self.format_assoc_const(&mut result, type_, value, &trait_item),
                 _ => {
                     let item_name = trait_item.name.as_deref().unwrap_or("<unnamed>");
                     result.push_str(&format!("    // {}: {:?}\n", item_name, trait_item.inner));

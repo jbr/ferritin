@@ -103,6 +103,7 @@ impl<'a> Request<'a> {
                 generics,
                 bounds,
                 type_,
+                default_unstable: _,
             } => {
                 let name = item.name().unwrap_or("<unnamed>");
                 let sig = self.format_trait_assoc_type_signature(
@@ -114,7 +115,11 @@ impl<'a> Request<'a> {
                 );
                 doc_nodes.push(DocumentNode::generated_code(sig));
             }
-            ItemEnum::AssocConst { type_, value } => {
+            ItemEnum::AssocConst {
+                type_,
+                value,
+                default_unstable: _,
+            } => {
                 let name = item.name().unwrap_or("<unnamed>");
                 let sig = self.format_trait_assoc_const_signature(item, type_, value, name);
                 doc_nodes.push(DocumentNode::generated_code(sig));

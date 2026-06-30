@@ -57,6 +57,7 @@ impl<'a> Request<'a> {
                     generics,
                     bounds,
                     type_,
+                    default_unstable: _,
                 } => self.format_trait_assoc_type_signature(
                     item,
                     generics,
@@ -64,9 +65,11 @@ impl<'a> Request<'a> {
                     type_.as_ref(),
                     item_name,
                 ),
-                ItemEnum::AssocConst { type_, value } => {
-                    self.format_trait_assoc_const_signature(item, type_, value, item_name)
-                }
+                ItemEnum::AssocConst {
+                    type_,
+                    value,
+                    default_unstable: _,
+                } => self.format_trait_assoc_const_signature(item, type_, value, item_name),
                 _ => {
                     // Fallback for unknown item types
                     vec![Span::comment(format!(

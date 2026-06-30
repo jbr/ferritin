@@ -7,7 +7,7 @@
 //! the canonical types, because an added `Option` field defaults to `None` when
 //! absent and an added enum variant simply never appears in older data.
 //!
-//! The sole exception across formats 55..=59 is [`ExternalCrate::path`], a
+//! The sole exception across formats 55..=60 is [`ExternalCrate::path`], a
 //! required `PathBuf` added in format 57. Pre-57 JSON omits it, so we inject an
 //! empty value before parsing. That single JSON-level patch is the entire
 //! normalization story today.
