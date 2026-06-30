@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), OutputMode :: Ai,\n& get_fixture_crate_path ())"
+expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), OutputMode ::\nAgent, & get_fixture_crate_path ())"
 ---
 ## Search results for 'generic struct'
 
@@ -11,6 +11,6 @@ expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), Outpu
 - std::mem::type_info::Generic  (Enum) - score: 64.5 — Compile-time type information about instantiated generics of structs, enum and union variants.
 - std::borrow::Borrow  (Trait) - score: 64.3 — A trait for borrowing data. [+19 lines]
 - core::borrow::Borrow  (Trait) - score: 64.0 — A trait for borrowing data. [+19 lines]
+- fixture-crate::TestStruct  (Struct) - score: 63.5 — A simple struct for testing basic functionality. [+2 lines]
 - std::clone::Clone  (Trait) - score: 63.0 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
 - std::ops::Deref  (Trait) - score: 62.2 — Used for immutable dereferencing operations, like *v. [+23 lines]
-- core::clone::Clone  (Trait) - score: 61.5 — A common trait that allows explicit creation of a duplicate value. [+28 lines]

@@ -14,11 +14,14 @@
 //! serialization of their lowered presentation nodes.
 
 use crate::format::{
-    AssocKind, ConstantDoc, EnumDoc, FunctionDoc, ItemBody, ItemDoc, ItemMeta, MacroDoc,
-    MetaVisibility, MethodDoc, MethodVisibility, ModuleDoc, ModuleItem, PlainField, StaticDoc,
-    StructDoc, StructShape, TraitDoc, TraitMember, TupleField, TypeAliasDoc, UnionDoc, VariantDoc,
-    VariantShape,
+    AssocKind, ConstantDoc, EnumDoc, FunctionDoc, ImplAssocType, ImplementorDoc, ItemBody, ItemDoc,
+    ItemMeta, MacroDoc, MetaVisibility, MethodDoc, MethodVisibility, ModuleDoc, ModuleItem,
+    PlainField, StaticDoc, StructDoc, StructShape, TraitDoc, TraitImplDoc, TraitMember, TupleField,
+    TypeAliasDoc, UnionDoc, VariantDoc, VariantShape,
 };
+use crate::commands::get::NotFoundDoc;
+use crate::commands::list::ListDoc;
+use crate::commands::search::{SearchDoc, SearchResult};
 use crate::styled_string::{
     Document, DocumentNode, HeadingLevel, ListItem, MetadataField, ShowWhen, Span, SpanStyle,
     TableCell, TruncationLevel,
@@ -43,11 +46,206 @@ pub(crate) fn document_to_string(document: &Document<'_>) -> sonic_rs::Result<St
     sonic_rs::to_string(&JsonDocument::new(document))
 }
 
+/// Serialize a not-found result to JSON (`{ error, query, suggestions }`).
+pub(crate) fn not_found_to_string(not_found: &NotFoundDoc<'_>) -> sonic_rs::Result<String> {
+    sonic_rs::to_string(&JsonNotFound::new(not_found))
+}
+
+/// Serialize the crate list to JSON (`{ crates: [...] }`).
+pub(crate) fn list_to_string(list: &ListDoc) -> sonic_rs::Result<String> {
+    sonic_rs::to_string(&JsonList::new(list))
+}
+
+/// Pretty-printed variant of [`list_to_string`], for snapshot tests.
+#[cfg(test)]
+pub(crate) fn list_to_pretty_string(list: &ListDoc) -> String {
+    sonic_rs::to_string_pretty(&JsonList::new(list)).unwrap()
+}
+
+/// Serialize a search outcome to JSON.
+pub(crate) fn search_to_string(doc: &SearchDoc<'_>) -> sonic_rs::Result<String> {
+    sonic_rs::to_string(&JsonSearch::new(doc))
+}
+
+/// Pretty-printed variant of [`search_to_string`], for snapshot tests.
+#[cfg(test)]
+pub(crate) fn search_to_pretty_string(doc: &SearchDoc<'_>) -> String {
+    sonic_rs::to_string_pretty(&JsonSearch::new(doc)).unwrap()
+}
+
 /// Pretty-printed variant of [`to_string`], for readable snapshot tests. Same
 /// DTOs, so the field order matches the compact production output.
 #[cfg(test)]
 pub(crate) fn to_pretty_string(item: &ItemDoc<'_>, canonical_url: Option<String>) -> String {
     sonic_rs::to_string_pretty(&JsonItem::new(item, canonical_url)).unwrap()
+}
+
+/// Pretty-printed variant of [`not_found_to_string`], for snapshot tests.
+#[cfg(test)]
+pub(crate) fn not_found_to_pretty_string(not_found: &NotFoundDoc<'_>) -> String {
+    sonic_rs::to_string_pretty(&JsonNotFound::new(not_found)).unwrap()
+}
+
+/// A search outcome. `error` is set only for the no-crates-loaded case; an empty
+/// query and a query with no matches both serialize as `{ query, results: [] }`.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonSearch<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    error: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    query: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    results: Vec<JsonSearchResult<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    suggestions: Vec<JsonSuggestion>,
+}
+
+impl<'a> JsonSearch<'a> {
+    fn new(doc: &SearchDoc<'a>) -> Self {
+        match doc {
+            SearchDoc::Results { query, results } => Self {
+                error: None,
+                query: Some(query.clone()),
+                results: results.iter().map(JsonSearchResult::new).collect(),
+                suggestions: vec![],
+            },
+            SearchDoc::NoResults { query } => Self {
+                error: None,
+                query: Some(query.clone()),
+                results: vec![],
+                suggestions: vec![],
+            },
+            SearchDoc::EmptyQuery => Self {
+                error: None,
+                query: Some(String::new()),
+                results: vec![],
+                suggestions: vec![],
+            },
+            SearchDoc::NoCrates { suggestions } => Self {
+                error: Some("noCratesLoaded"),
+                query: None,
+                results: vec![],
+                suggestions: suggestions
+                    .iter()
+                    .map(|s| JsonSuggestion {
+                        path: s.path.clone(),
+                        kind: s.item.map(|i| format!("{:?}", i.kind()).to_lowercase()),
+                        url: s.item.map(crate::generate_docsrs_url::generate_docsrs_url),
+                    })
+                    .collect(),
+            },
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonSearchResult<'a> {
+    path: String,
+    /// Lowercased item kind.
+    kind: String,
+    url: String,
+    /// Normalized relevance score (best result = 100).
+    score: f32,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    docs: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonSearchResult<'a> {
+    fn new(result: &SearchResult<'a>) -> Self {
+        Self {
+            path: result.path.clone(),
+            kind: format!("{:?}", result.item.kind()).to_lowercase(),
+            url: crate::generate_docsrs_url::generate_docsrs_url(result.item),
+            score: result.score,
+            docs: result.docs.as_deref().map(json_nodes).unwrap_or_default(),
+        }
+    }
+}
+
+/// A not-found result: the query and "did you mean" candidates. A JSON client
+/// distinguishes it from a found item by the `error` discriminant.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonNotFound {
+    /// Always `"notFound"`.
+    error: &'static str,
+    query: String,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    suggestions: Vec<JsonSuggestion>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonSuggestion {
+    path: String,
+    /// Lowercased kind of the resolved candidate, when known.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    kind: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    url: Option<String>,
+}
+
+/// The crate list. Minimal projection of [`ListDoc`] (a soon-to-be-reworked
+/// command).
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonList {
+    crates: Vec<JsonCrate>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonCrate {
+    name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    version: Option<String>,
+    #[serde(skip_serializing_if = "is_false")]
+    is_default: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    is_workspace: bool,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    used_by: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<String>,
+}
+
+impl JsonList {
+    fn new(list: &ListDoc) -> Self {
+        Self {
+            crates: list
+                .crates
+                .iter()
+                .map(|c| JsonCrate {
+                    name: c.name.clone(),
+                    version: c.version.clone(),
+                    is_default: c.is_default,
+                    is_workspace: c.is_workspace,
+                    used_by: c.used_by.clone(),
+                    description: c.description.clone(),
+                })
+                .collect(),
+        }
+    }
+}
+
+impl JsonNotFound {
+    fn new(not_found: &NotFoundDoc<'_>) -> Self {
+        Self {
+            error: "notFound",
+            query: not_found.query.clone(),
+            suggestions: not_found
+                .suggestions
+                .iter()
+                .map(|s| JsonSuggestion {
+                    path: s.path.clone(),
+                    kind: s.item.map(|i| format!("{:?}", i.kind()).to_lowercase()),
+                    url: s.item.map(crate::generate_docsrs_url::generate_docsrs_url),
+                })
+                .collect(),
+        }
+    }
 }
 
 /// Pretty-printed variant of [`document_to_string`], for snapshot tests.
@@ -144,6 +342,8 @@ enum JsonBody<'a> {
     Static(JsonStatic<'a>),
     Macro(JsonMacro<'a>),
     Union(JsonUnion<'a>),
+    /// A directly-queried trait associated item (type or const).
+    AssocItem(JsonAssocItem<'a>),
     /// A kind not yet modeled structurally: its lowered presentation nodes.
     Presentation { nodes: Vec<JsonNode<'a>> },
 }
@@ -161,6 +361,7 @@ impl<'a> JsonBody<'a> {
             ItemBody::Static(model) => JsonBody::Static(JsonStatic::new(model)),
             ItemBody::Macro(model) => JsonBody::Macro(JsonMacro::new(model)),
             ItemBody::Union(model) => JsonBody::Union(JsonUnion::new(model)),
+            ItemBody::AssocItem(member) => JsonBody::AssocItem(JsonAssocItem::new(member)),
             ItemBody::Presentation(nodes) => JsonBody::Presentation {
                 nodes: json_nodes(nodes),
             },
@@ -258,7 +459,7 @@ struct JsonUnion<'a> {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     methods: Vec<JsonMethod<'a>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    trait_impls: Vec<JsonNode<'a>>,
+    trait_impls: Vec<JsonTraitImpl<'a>>,
 }
 
 impl<'a> JsonUnion<'a> {
@@ -270,7 +471,7 @@ impl<'a> JsonUnion<'a> {
             fields: model.fields.iter().map(JsonField::from_plain).collect(),
             hidden_field_count: model.hidden_count,
             methods: model.methods.iter().map(JsonMethod::new).collect(),
-            trait_impls: json_nodes(&model.trait_impls),
+            trait_impls: model.trait_impls.iter().map(JsonTraitImpl::new).collect(),
         }
     }
 }
@@ -362,7 +563,10 @@ struct JsonTrait<'a> {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     members: Vec<JsonTraitMember<'a>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    implementors: Vec<JsonNode<'a>>,
+    implementors: Vec<JsonImplementor<'a>>,
+    /// Implementors beyond the render cap.
+    #[serde(skip_serializing_if = "is_zero")]
+    implementor_overflow: usize,
 }
 
 impl<'a> JsonTrait<'a> {
@@ -373,7 +577,52 @@ impl<'a> JsonTrait<'a> {
             supertraits: json_spans(&model.supertraits),
             where_clause: json_spans(&model.where_clause),
             members: model.members.iter().map(JsonTraitMember::new).collect(),
-            implementors: json_nodes(&model.implementors),
+            implementors: model.implementors.iter().map(JsonImplementor::new).collect(),
+            implementor_overflow: model.implementor_overflow,
+        }
+    }
+}
+
+/// A trait implementor: the implementing type plus the impl's structured
+/// metadata (richer than the terminal, which shows the type and assoc types).
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonImplementor<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_name: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_url: Option<String>,
+    /// The implementing type, bounds merged inline (`BufReader<R: Read>`).
+    for_type: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    assoc_types: Vec<JsonImplAssocType<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    methods: Vec<JsonMethod<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    provided_methods: Vec<&'a str>,
+    #[serde(skip_serializing_if = "is_false")]
+    is_unsafe: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    is_synthetic: bool,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    blanket: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    docs: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonImplementor<'a> {
+    fn new(model: &ImplementorDoc<'a>) -> Self {
+        Self {
+            type_name: model.type_name,
+            type_url: model.type_url.clone(),
+            for_type: json_spans(&model.for_type),
+            assoc_types: model.assoc_types.iter().map(JsonImplAssocType::new).collect(),
+            methods: model.methods.iter().map(JsonMethod::new).collect(),
+            provided_methods: model.provided_methods.clone(),
+            is_unsafe: model.is_unsafe,
+            is_synthetic: model.is_synthetic,
+            blanket: model.blanket.as_deref().map(json_spans).unwrap_or_default(),
+            docs: model.docs.as_deref().map(json_nodes).unwrap_or_default(),
         }
     }
 }
@@ -404,6 +653,32 @@ impl<'a> JsonTraitMember<'a> {
     }
 }
 
+/// A directly-queried trait associated item (type or const). Its own kind is
+/// serialized as `assocKind` to avoid colliding with the `JsonBody` `kind` tag.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonAssocItem<'a> {
+    /// `"type"` or `"const"`.
+    assoc_kind: &'static str,
+    name: &'a str,
+    /// For an assoc type: whether it has a default; for an assoc const: whether
+    /// it has a value.
+    #[serde(skip_serializing_if = "is_false")]
+    has_default: bool,
+    signature: Vec<JsonSpan<'a>>,
+}
+
+impl<'a> JsonAssocItem<'a> {
+    fn new(member: &TraitMember<'a>) -> Self {
+        Self {
+            assoc_kind: assoc_kind_str(member.kind),
+            name: member.name,
+            has_default: member.has_default,
+            signature: json_spans(&member.signature),
+        }
+    }
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonEnum<'a> {
@@ -417,7 +692,7 @@ struct JsonEnum<'a> {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     methods: Vec<JsonMethod<'a>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    trait_impls: Vec<JsonNode<'a>>,
+    trait_impls: Vec<JsonTraitImpl<'a>>,
 }
 
 impl<'a> JsonEnum<'a> {
@@ -428,7 +703,79 @@ impl<'a> JsonEnum<'a> {
             where_clause: json_spans(&model.where_clause),
             variants: model.variants.iter().map(JsonVariant::new).collect(),
             methods: model.methods.iter().map(JsonMethod::new).collect(),
-            trait_impls: json_nodes(&model.trait_impls),
+            trait_impls: model.trait_impls.iter().map(JsonTraitImpl::new).collect(),
+        }
+    }
+}
+
+/// A trait implementation on a type. Carries the full structural impl —
+/// including data the terminal drops (the impl's `methods`, `providedMethods`,
+/// the negative/unsafe/synthetic flags, the blanket source type, and impl
+/// `docs`). The compact/std bucketing is a terminal concern and not serialized.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonTraitImpl<'a> {
+    trait_name: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    trait_url: Option<String>,
+    /// The trait's generic arguments (`<T>` in `From<T>`).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    args: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    assoc_types: Vec<JsonImplAssocType<'a>>,
+    /// Methods / assoc consts the impl provides or overrides.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    methods: Vec<JsonMethod<'a>>,
+    /// Names of trait-default methods inherited (not overridden).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    provided_methods: Vec<&'a str>,
+    #[serde(skip_serializing_if = "is_false")]
+    is_negative: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    is_unsafe: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    is_synthetic: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    is_std: bool,
+    /// Blanket source type, when this came from a blanket impl.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    blanket: Vec<JsonSpan<'a>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    docs: Vec<JsonNode<'a>>,
+}
+
+impl<'a> JsonTraitImpl<'a> {
+    fn new(model: &TraitImplDoc<'a>) -> Self {
+        Self {
+            trait_name: model.trait_name,
+            trait_url: model.trait_url.clone(),
+            args: json_spans(&model.trait_args),
+            assoc_types: model.assoc_types.iter().map(JsonImplAssocType::new).collect(),
+            methods: model.methods.iter().map(JsonMethod::new).collect(),
+            provided_methods: model.provided_methods.clone(),
+            is_negative: model.is_negative,
+            is_unsafe: model.is_unsafe,
+            is_synthetic: model.is_synthetic,
+            is_std: model.is_std,
+            blanket: model.blanket.as_deref().map(json_spans).unwrap_or_default(),
+            docs: model.docs.as_deref().map(json_nodes).unwrap_or_default(),
+        }
+    }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonImplAssocType<'a> {
+    name: &'a str,
+    #[serde(rename = "type")]
+    type_signature: Vec<JsonSpan<'a>>,
+}
+
+impl<'a> JsonImplAssocType<'a> {
+    fn new(assoc: &ImplAssocType<'a>) -> Self {
+        Self {
+            name: assoc.name,
+            type_signature: json_spans(&assoc.type_spans),
         }
     }
 }
@@ -506,10 +853,9 @@ struct JsonStruct<'a> {
     /// Inherent associated items, structurally modeled.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     methods: Vec<JsonMethod<'a>>,
-    /// Trait implementations — still a faithful serialization of presentation
-    /// nodes, until they get a structural model.
+    /// Trait implementations, structurally modeled.
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    trait_impls: Vec<JsonNode<'a>>,
+    trait_impls: Vec<JsonTraitImpl<'a>>,
 }
 
 impl<'a> JsonStruct<'a> {
@@ -543,7 +889,7 @@ impl<'a> JsonStruct<'a> {
             fields,
             hidden_field_count,
             methods: model.methods.iter().map(JsonMethod::new).collect(),
-            trait_impls: json_nodes(&model.trait_impls),
+            trait_impls: model.trait_impls.iter().map(JsonTraitImpl::new).collect(),
         }
     }
 }

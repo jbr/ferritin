@@ -30,6 +30,7 @@ mod r#module;
 mod source;
 mod r#struct;
 mod r#trait;
+mod trait_impls;
 mod types;
 mod union;
 
@@ -38,7 +39,8 @@ pub(crate) use items::{ConstantDoc, MacroDoc, StaticDoc, TypeAliasDoc};
 pub(crate) use r#enum::{EnumDoc, VariantDoc, VariantShape};
 pub(crate) use r#module::{ModuleDoc, ModuleItem};
 pub(crate) use r#struct::{PlainField, StructDoc, StructShape, TupleField};
-pub(crate) use r#trait::{TraitDoc, TraitMember};
+pub(crate) use r#trait::{ImplementorDoc, TraitDoc, TraitMember};
+pub(crate) use trait_impls::{ImplAssocType, TraitImplDoc};
 pub(crate) use union::UnionDoc;
 
 /// Semantic model of a documented item: a kind-agnostic header (metadata block
@@ -97,6 +99,9 @@ pub(crate) enum ItemBody<'a> {
     Static(items::StaticDoc<'a>),
     Macro(items::MacroDoc<'a>),
     Union(union::UnionDoc<'a>),
+    /// A trait associated item (type or const) queried directly by path —
+    /// modeled as a standalone [`TraitMember`].
+    AssocItem(r#trait::TraitMember<'a>),
     Presentation(Vec<DocumentNode<'a>>),
 }
 
@@ -113,6 +118,7 @@ impl<'a> ItemBody<'a> {
             ItemBody::Static(model) => items::lower_static(model),
             ItemBody::Macro(model) => items::lower_macro(model),
             ItemBody::Union(model) => union::lower_union(model),
+            ItemBody::AssocItem(member) => vec![DocumentNode::generated_code(member.signature)],
             ItemBody::Presentation(nodes) => nodes,
         }
     }
@@ -296,19 +302,31 @@ impl<'a> Request<'a> {
                 type_,
             } => {
                 let name = item.name().unwrap_or("<unnamed>");
-                let sig = self.format_trait_assoc_type_signature(
+                let signature = self.format_trait_assoc_type_signature(
                     item,
                     generics,
                     bounds,
                     type_.as_ref(),
                     name,
                 );
-                ItemBody::Presentation(vec![DocumentNode::generated_code(sig)])
+                ItemBody::AssocItem(TraitMember {
+                    name,
+                    kind: AssocKind::Type,
+                    has_default: type_.is_some(),
+                    signature,
+                    docs: None,
+                })
             }
             ItemEnum::AssocConst { type_, value } => {
                 let name = item.name().unwrap_or("<unnamed>");
-                let sig = self.format_trait_assoc_const_signature(item, type_, value, name);
-                ItemBody::Presentation(vec![DocumentNode::generated_code(sig)])
+                let signature = self.format_trait_assoc_const_signature(item, type_, value, name);
+                ItemBody::AssocItem(TraitMember {
+                    name,
+                    kind: AssocKind::Const,
+                    has_default: value.is_some(),
+                    signature,
+                    docs: None,
+                })
             }
             ItemEnum::Macro(macro_def) => ItemBody::Macro(items::MacroDoc {
                 definition: macro_def,

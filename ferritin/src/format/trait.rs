@@ -1,11 +1,12 @@
 use rustdoc_types::{AssocItemConstraintKind, GenericArg, GenericArgs, GenericParamDefKind, Impl};
 
 use super::*;
+use crate::generate_docsrs_url::generate_docsrs_url;
 use crate::styled_string::{DocumentNode, ListItem, Span};
 
 /// Semantic model of a `trait`: signature pieces, its members (methods, assoc
-/// types/consts), and the (still opaque) implementors section. Members reuse the
-/// shared [`AssocKind`](super::AssocKind).
+/// types/consts), and the implementors section. Members reuse the shared
+/// [`AssocKind`](super::AssocKind).
 pub(crate) struct TraitDoc<'a> {
     pub(crate) name: &'a str,
     pub(crate) generics: Vec<Span<'a>>,
@@ -14,8 +15,37 @@ pub(crate) struct TraitDoc<'a> {
     pub(crate) supertraits: Vec<Span<'a>>,
     pub(crate) where_clause: Vec<Span<'a>>,
     pub(crate) members: Vec<TraitMember<'a>>,
-    /// "Implementors (this crate)" section, still opaque presentation nodes.
-    pub(crate) implementors: Vec<DocumentNode<'a>>,
+    /// Types implementing this trait in the current crate, structurally modeled
+    /// (capped — see [`Request::model_implementors`]).
+    pub(crate) implementors: Vec<ImplementorDoc<'a>>,
+    /// Implementors beyond the render cap (the "… and N more").
+    pub(crate) implementor_overflow: usize,
+}
+
+/// A single implementor of a trait: the implementing type (the impl's `for_`)
+/// plus the impl's structured metadata. Like [`TraitImplDoc`](super::TraitImplDoc),
+/// the IR is richer than the terminal — it carries the impl's methods, assoc
+/// types, `provided_trait_methods`, flags, and docs even though the terminal
+/// shows only the implementing type (and assoc types for non-compact impls).
+pub(crate) struct ImplementorDoc<'a> {
+    /// Implementing type's display name when it's a named path; `None` for
+    /// primitives, slices, tuples, etc.
+    pub(crate) type_name: Option<&'a str>,
+    /// Nav URL for the implementing type, when resolvable.
+    pub(crate) type_url: Option<String>,
+    /// The implementing type as a span leaf, bounds merged inline
+    /// (`BufReader<R: Read>`) — the display leaf.
+    pub(crate) for_type: Vec<Span<'a>>,
+    pub(crate) assoc_types: Vec<ImplAssocType<'a>>,
+    pub(crate) methods: Vec<MethodDoc<'a>>,
+    pub(crate) provided_methods: Vec<&'a str>,
+    pub(crate) is_unsafe: bool,
+    pub(crate) is_synthetic: bool,
+    pub(crate) blanket: Option<Vec<Span<'a>>>,
+    pub(crate) docs: Option<Vec<DocumentNode<'a>>>,
+    /// Renders in the compact comma list (vs. an expanded list item with assoc
+    /// types). Mirrors the old "boring implementor" classification.
+    pub(crate) is_compact: bool,
 }
 
 /// A single trait member: a method (required or provided), an associated type,
@@ -102,7 +132,7 @@ impl<'a> Request<'a> {
             });
         }
 
-        let implementors = self.format_implementors(item);
+        let (implementors, implementor_overflow) = self.model_implementors(item);
 
         TraitDoc {
             name,
@@ -111,85 +141,89 @@ impl<'a> Request<'a> {
             where_clause,
             members,
             implementors,
+            implementor_overflow,
         }
     }
 
-    /// Format the "Implementors" section for a trait page.
+    /// Resolve the types implementing this trait in the current crate into
+    /// structured [`ImplementorDoc`]s, plus the count beyond the render cap.
     ///
-    /// Scans the current crate's index for impl blocks that implement this trait.
-    /// Boring impls (no bounds, no assoc types) appear in a compact comma-separated list;
-    /// everything else appears as a list item. Capped at 20 total.
-    fn format_implementors(&mut self, trait_item: DocRef<'a, Item>) -> Vec<DocumentNode<'a>> {
+    /// Sorted by the implementing type's name *before* the cap, because
+    /// [`implementors()`](DocRef::implementors) yields `FxHashMap` iteration
+    /// order — so without sorting, *which* implementors survive the cap (and
+    /// their order) would be nondeterministic w.r.t. the crate's item set.
+    fn model_implementors(
+        &mut self,
+        trait_item: DocRef<'a, Item>,
+    ) -> (Vec<ImplementorDoc<'a>>, usize) {
         const MAX_IMPLEMENTORS: usize = 20;
 
-        let mut boring: Vec<(DocRef<'a, Item>, &'a Impl)> = vec![];
-        let mut non_boring: Vec<(DocRef<'a, Item>, &'a Impl)> = vec![];
-        let mut total = 0;
-        let mut overflow = 0;
-
+        let mut blocks: Vec<(DocRef<'a, Item>, &'a Impl)> = vec![];
         for impl_block in trait_item.implementors() {
             if let ItemEnum::Impl(impl_item) = impl_block.inner() {
-                total += 1;
-                if total > MAX_IMPLEMENTORS {
-                    overflow += 1;
-                    continue;
-                }
-
-                if self.is_boring_implementor(impl_block, impl_item) {
-                    boring.push((impl_block, impl_item));
-                } else {
-                    non_boring.push((impl_block, impl_item));
-                }
+                blocks.push((impl_block, impl_item));
             }
         }
 
-        if total == 0 {
-            return vec![];
-        }
+        blocks.sort_by(|a, b| implementor_sort_key(a.1).cmp(implementor_sort_key(b.1)));
 
-        let mut content = vec![];
+        let overflow = blocks.len().saturating_sub(MAX_IMPLEMENTORS);
 
-        if !boring.is_empty() {
-            let mut spans = vec![];
-            for (i, (impl_block, impl_item)) in boring.iter().enumerate() {
-                if i > 0 {
-                    spans.push(Span::punctuation(","));
-                    spans.push(Span::plain(" "));
-                }
-                spans.extend(self.format_implementor_type(*impl_block, impl_item));
-            }
-            content.push(DocumentNode::paragraph(spans));
-        }
+        let implementors = blocks
+            .into_iter()
+            .take(MAX_IMPLEMENTORS)
+            .map(|(impl_block, impl_item)| self.model_implementor(impl_block, impl_item))
+            .collect();
 
-        if !non_boring.is_empty() {
-            let items = non_boring
-                .iter()
-                .map(|(impl_block, impl_item)| {
-                    let mut item_nodes = vec![DocumentNode::generated_code(
-                        self.format_implementor_type(*impl_block, impl_item),
-                    )];
-                    item_nodes.extend(self.format_impl_assoc_types(*impl_block, impl_item));
-                    ListItem::new(item_nodes)
-                })
-                .collect();
-            content.push(DocumentNode::list(items));
-        }
-
-        if overflow > 0 {
-            content.push(DocumentNode::paragraph(vec![Span::plain(format!(
-                "… and {overflow} more"
-            ))]));
-        }
-
-        vec![DocumentNode::section(
-            vec![Span::plain("Implementors (this crate)")],
-            content,
-        )]
+        (implementors, overflow)
     }
 
-    /// An implementor is boring if the impl has no type-param bounds and no concrete assoc types.
-    /// Method overrides in `items` don't count — only `AssocType { type_: Some(_) }` items do.
-    fn is_boring_implementor(&self, impl_block: DocRef<'_, Item>, impl_item: &Impl) -> bool {
+    fn model_implementor(
+        &mut self,
+        impl_block: DocRef<'a, Item>,
+        impl_item: &'a Impl,
+    ) -> ImplementorDoc<'a> {
+        let is_compact = self.is_compact_implementor(impl_block, impl_item);
+        let for_type = self.format_implementor_type(impl_block, impl_item);
+
+        let (type_name, type_url) = match &impl_item.for_ {
+            Type::ResolvedPath(path) => (
+                Some(super::display_path_name(path)),
+                self.get_path(impl_block, path.id).map(generate_docsrs_url),
+            ),
+            _ => (None, None),
+        };
+
+        let (methods, assoc_types) = self.model_impl_items(impl_block, impl_item);
+        let blanket = impl_item
+            .blanket_impl
+            .as_ref()
+            .map(|ty| self.format_type(impl_block, ty));
+        let docs = self.docs_to_show(impl_block, TruncationLevel::SingleLine);
+
+        ImplementorDoc {
+            type_name,
+            type_url,
+            for_type,
+            assoc_types,
+            methods,
+            provided_methods: impl_item
+                .provided_trait_methods
+                .iter()
+                .map(String::as_str)
+                .collect(),
+            is_unsafe: impl_item.is_unsafe,
+            is_synthetic: impl_item.is_synthetic,
+            blanket,
+            docs,
+            is_compact,
+        }
+    }
+
+    /// An implementor is "compact" if the impl has no type-param bounds and no
+    /// concrete assoc types. Method overrides in `items` don't count — only
+    /// `AssocType { type_: Some(_) }` items do.
+    fn is_compact_implementor(&self, impl_block: DocRef<'_, Item>, impl_item: &Impl) -> bool {
         let no_bounds = impl_item.generics.params.iter().all(|p| {
             !matches!(p.kind, GenericParamDefKind::Type { ref bounds, .. } if !bounds.is_empty())
         }) && impl_item.generics.where_predicates.is_empty();
@@ -459,6 +493,7 @@ pub(super) fn lower_trait(model: TraitDoc<'_>) -> Vec<DocumentNode<'_>> {
         where_clause,
         members,
         implementors,
+        implementor_overflow,
     } = model;
 
     let mut signature_spans = vec![
@@ -496,6 +531,72 @@ pub(super) fn lower_trait(model: TraitDoc<'_>) -> Vec<DocumentNode<'_>> {
         nodes.push(DocumentNode::list(member_items));
     }
 
-    nodes.extend(implementors);
+    nodes.extend(lower_implementors(implementors, implementor_overflow));
     nodes
+}
+
+/// Sort key for a trait implementor — the implementing type's display name.
+/// `implementors()` order is otherwise `FxHashMap` iteration order.
+fn implementor_sort_key(impl_item: &Impl) -> &str {
+    match &impl_item.for_ {
+        Type::ResolvedPath(path) => super::display_path_name(path),
+        Type::Primitive(name) => name,
+        _ => "",
+    }
+}
+
+/// Lower the modeled implementors back to the "Implementors (this crate)"
+/// section: compact ones in a comma-separated list, the rest as list items with
+/// their assoc-type lines, then the overflow note. Empty when there are none.
+fn lower_implementors(implementors: Vec<ImplementorDoc<'_>>, overflow: usize) -> Vec<DocumentNode<'_>> {
+    if implementors.is_empty() {
+        return vec![];
+    }
+
+    let mut compact: Vec<Vec<Span>> = vec![];
+    let mut expanded: Vec<(Vec<Span>, Vec<ImplAssocType>)> = vec![];
+    for imp in implementors {
+        if imp.is_compact {
+            compact.push(imp.for_type);
+        } else {
+            expanded.push((imp.for_type, imp.assoc_types));
+        }
+    }
+
+    let mut content = vec![];
+
+    if !compact.is_empty() {
+        let mut spans = vec![];
+        for (i, for_type) in compact.into_iter().enumerate() {
+            if i > 0 {
+                spans.push(Span::punctuation(","));
+                spans.push(Span::plain(" "));
+            }
+            spans.extend(for_type);
+        }
+        content.push(DocumentNode::paragraph(spans));
+    }
+
+    if !expanded.is_empty() {
+        let items = expanded
+            .into_iter()
+            .map(|(for_type, assoc_types)| {
+                let mut item_nodes = vec![DocumentNode::generated_code(for_type)];
+                item_nodes.extend(super::trait_impls::lower_impl_assoc_types(assoc_types));
+                ListItem::new(item_nodes)
+            })
+            .collect();
+        content.push(DocumentNode::list(items));
+    }
+
+    if overflow > 0 {
+        content.push(DocumentNode::paragraph(vec![Span::plain(format!(
+            "… and {overflow} more"
+        ))]));
+    }
+
+    vec![DocumentNode::section(
+        vec![Span::plain("Implementors (this crate)")],
+        content,
+    )]
 }

@@ -3250,6 +3250,200 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
         ]
       },
       {
+        "path": "TestUnion",
+        "kind": "union",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A union for testing union formatting.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Demonstrates a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "union",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " with public and private fields, a generic parameter,",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "and an inherent method — the union counterpart to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "TestStruct",
+                    "style": "InlineCode",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "NotThreadSafe",
+        "kind": "struct",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.NotThreadSafe.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A type that is not thread-safe, to exercise negative auto-trait impls",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "!Send",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": "/",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "!Sync",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", which rustdoc synthesizes for types holding a raw pointer).",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Marker",
+        "kind": "trait",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A marker trait (no associated items) to exercise the compact implementors",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "list — implementors with no bounds and no assoc types render comma-separated.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "MarkerOne",
+        "kind": "struct",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerOne.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "First implementor of ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Marker",
+                    "style": "InlineCode",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "MarkerTwo",
+        "kind": "struct",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerTwo.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Second implementor of ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Marker",
+                    "style": "InlineCode",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "TestTrait",
         "kind": "trait",
         "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html",

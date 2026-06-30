@@ -1,0 +1,13 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::Marker\"), OutputMode :: Agent, &\nget_fixture_crate_path ())"
+---
+Trait fixture_crate::Marker — in fixture-crate (0.1.0)
+
+A marker trait (no associated items) to exercise the compact implementors list — implementors with no bounds and no assoc types render comma-separated.
+
+trait Marker { ... }
+
+## Implementors (this crate)
+
+MarkerOne, MarkerTwo

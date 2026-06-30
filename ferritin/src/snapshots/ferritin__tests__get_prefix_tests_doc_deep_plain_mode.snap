@@ -22,18 +22,18 @@ struct DocDeep;
 
 Trait Implementations
 
-std: UnsafeUnpin, Freeze, Sync, Send, From<T>, RefUnwindSafe, UnwindSafe, Unpin
+std: Freeze, From<T>, RefUnwindSafe, Send, Sync, Unpin, UnsafeUnpin, UnwindSafe
 
   ◦ impl<T: 'static + ?Sized> Any
+
+  ◦ impl<T: ?Sized> Borrow<T>
+
+  ◦ impl<T: ?Sized> BorrowMut<T>
+
+  ◦ impl<T, U: From<T>> Into<U>
 
   ◦ impl<T, U: Into<T>> TryFrom<U>
         type Error = Infallible
 
   ◦ impl<T, U: TryFrom<T>> TryInto<U>
         type Error = <U as TryFrom<T>>::Error
-
-  ◦ impl<T, U: From<T>> Into<U>
-
-  ◦ impl<T: ?Sized> BorrowMut<T>
-
-  ◦ impl<T: ?Sized> Borrow<T>

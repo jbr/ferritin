@@ -1,0 +1,38 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::NotThreadSafe\"), OutputMode ::\nPlain, & get_fixture_crate_path ())"
+---
+Item: NotThreadSafe
+Kind: Struct
+Visibility: Public
+Defined at: fixture_crate::NotThreadSafe
+In crate: fixture-crate (0.1.0)
+
+A type that is not thread-safe, to exercise negative auto-trait impls (!Send/!Sync, which rustdoc synthesizes for types holding a raw pointer).
+
+struct NotThreadSafe {
+    ptr: *const u8,
+}
+
+Methods
+
+  ◦ pub fn new(ptr: *const u8) -> Self
+    Wrap a raw pointer.
+
+Trait Implementations
+
+std: Freeze, From<T>, RefUnwindSafe, !Send, !Sync, Unpin, UnsafeUnpin, UnwindSafe
+
+  ◦ impl<T: 'static + ?Sized> Any
+
+  ◦ impl<T: ?Sized> Borrow<T>
+
+  ◦ impl<T: ?Sized> BorrowMut<T>
+
+  ◦ impl<T, U: From<T>> Into<U>
+
+  ◦ impl<T, U: Into<T>> TryFrom<U>
+        type Error = Infallible
+
+  ◦ impl<T, U: TryFrom<T>> TryInto<U>
+        type Error = <U as TryFrom<T>>::Error

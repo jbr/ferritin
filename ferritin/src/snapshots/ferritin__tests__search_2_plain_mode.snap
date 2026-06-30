@@ -26,11 +26,11 @@ Search results for 'generic struct'
   ◦ core::borrow::Borrow  (Trait) - score: 64.0
     A trait for borrowing data. [...]
 
+  ◦ fixture-crate::TestStruct  (Struct) - score: 63.5
+    A simple struct for testing basic functionality. [...]
+
   ◦ std::clone::Clone  (Trait) - score: 63.0
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ std::ops::Deref  (Trait) - score: 62.2
     Used for immutable dereferencing operations, like *v. [...]
-
-  ◦ core::clone::Clone  (Trait) - score: 61.5
-    A common trait that allows explicit creation of a duplicate value. [...]
