@@ -18,6 +18,8 @@ submodule
 
 Structs:
 GenericStruct
+MarkerOne
+MarkerTwo
 NotThreadSafe
 ReachableViaPrivateModule
 SubStruct
@@ -32,6 +34,7 @@ TestEnum
 
 Traits:
 ComplexTrait
+Marker
 TestTrait
 
 Unions:

@@ -27,6 +27,8 @@ submodule // A module with items
 
 Structs:
 GenericStruct // A generic struct for testing multi-paragraph documentation. [+14 more lines]
+MarkerOne // First implementor of [`Marker`].
+MarkerTwo // Second implementor of [`Marker`].
 NotThreadSafe // A type that is not thread-safe, to exercise negative auto-trait impls [+1 more lines]
 ReachableViaPrivateModule // A struct accessible only via re-export from a private module.
 SubStruct // A struct in a submodule
@@ -66,6 +68,7 @@ submodule::TestEnum // An enum for testing [+2 more lines]
 
 Traits:
 ComplexTrait // A more complex trait demonstrating various features
+Marker // A marker trait (no associated items) to exercise the compact implementors [+1 more lines]
 TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 link_resolution_tests::nested::TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 
