@@ -28,6 +28,11 @@ LLM-friendly output; you do not need to pass any output-format flag.
   `crate::Module::Item`:
   - `ferritin get std::vec::Vec`
   - `ferritin get serde::Serialize`
+  - `ferritin get serde@1.0::Serialize`  (pin a version — on the crate
+    segment, not as a suffix on the full path)
+  - The version is a semver **spec**, not an exact version: `serde@1.0`
+    matches any `1.x.y`, while `serde@=1.0.0` pins exactly `1.0.0`. The full
+    semver requirement syntax (`^`, `~`, `>=`, `*`, etc.) applies.
 - `ferritin search <crate> <query>...` — search within one crate:
   - `ferritin search tokio spawn`
   - `ferritin search serde@1.0 Deserialize`  (pin a version)

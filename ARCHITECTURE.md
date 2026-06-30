@@ -200,10 +200,10 @@ $CARGO_HOME/rustdoc-json/{format-version}/{crate}/{version}.json
 ```
 
 **Multi-version support:**
-- Supports rustdoc JSON format versions 55-59 natively, plus newer additive formats (see below)
+- Supports rustdoc JSON format versions 55-60 natively, plus newer additive formats (see below)
 - Fetches zstd-compressed JSON from docs.rs
 - Stores raw JSON indexed by source format version (not normalized)
-- On read, normalizes to current format version (v59) via conversions module
+- On read, normalizes to current format version (v60) via conversions module
 - Tries exact format-version URLs in descending order when fetching (prefers newer)
 - If none exist (e.g. a freshly-published crate that docs.rs only built in a
   newer format), falls back to the latest-format URL (`.../json` with no format
@@ -218,7 +218,7 @@ $CARGO_HOME/rustdoc-json/{format-version}/{crate}/{version}.json
 
 The `conversions` module normalizes any supported rustdoc JSON format to the canonical `FORMAT_VERSION` on read. This lets us cache older-format JSON and avoid re-fetches when normalization logic changes.
 
-Every format bump in the supported range (55..=current) has so far been **read-compatible**: each adds a field or an enum variant without removing, renaming, or retyping anything we read. Because `rustdoc-types` does not `deny_unknown_fields`, an added `Option` field defaults to `None` when absent, and an added enum variant never appears in older data, such formats deserialize *directly* into the canonical types — no per-version `rustdoc-types` crate is needed. The single exception across 55..=59 is `ExternalCrate::path`, a required `PathBuf` added in format 57; `load_and_normalize` injects an empty value into pre-57 JSON (its only structural patch) before parsing. This same additive tolerance handles formats *newer* than the `rustdoc-types` we build against: `load_and_normalize` parses them directly and surfaces a clear "needs an update" error only if a genuinely breaking change prevents it, so ferritin can read crates built with a newer docs.rs toolchain before a matching `rustdoc-types` release exists.
+Every format bump in the supported range (55..=current) has so far been **read-compatible**: each adds a field or an enum variant without removing, renaming, or retyping anything we read. Because `rustdoc-types` does not `deny_unknown_fields`, an added `Option` field defaults to `None` when absent, and an added enum variant never appears in older data, such formats deserialize *directly* into the canonical types — no per-version `rustdoc-types` crate is needed. The single exception across 55..=60 is `ExternalCrate::path`, a required `PathBuf` added in format 57; `load_and_normalize` injects an empty value into pre-57 JSON (its only structural patch) before parsing. This same additive tolerance handles formats *newer* than the `rustdoc-types` we build against: `load_and_normalize` parses them directly and surfaces a clear "needs an update" error only if a genuinely breaking change prevents it, so ferritin can read crates built with a newer docs.rs toolchain before a matching `rustdoc-types` release exists.
 
 **If a future format makes a genuinely read-breaking change**, the additive shortcut fails for that hop. The fix is to pin a `rustdoc-types` crate for the older format, parse with it, and translate to the canonical types in `conversions` — the chained-conversion pattern this module used before the formats turned out to be uniformly additive (preserved in git history).
 
