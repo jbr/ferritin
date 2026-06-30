@@ -18,7 +18,9 @@ pub(crate) enum SearchDoc<'a> {
     /// The query was empty (the TUI shows search instructions).
     EmptyQuery,
     /// No crates could be loaded to search; carries fuzzy crate suggestions.
-    NoCrates { suggestions: Vec<SearchSuggestion<'a>> },
+    NoCrates {
+        suggestions: Vec<SearchSuggestion<'a>>,
+    },
 }
 
 /// A single search hit: its qualified path, the resolved item (kind + nav URL),
@@ -229,8 +231,7 @@ pub(crate) fn lower_search(doc: SearchDoc<'_>) -> Document<'_> {
                 let items: Vec<_> = suggestions
                     .into_iter()
                     .map(|s| {
-                        let mut content =
-                            vec![DocumentNode::paragraph(vec![Span::plain(s.path)])];
+                        let mut content = vec![DocumentNode::paragraph(vec![Span::plain(s.path)])];
                         if let Some(item) = s.item {
                             content.push(DocumentNode::paragraph(vec![Span::plain(format!(
                                 "({:?})",

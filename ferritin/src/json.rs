@@ -13,15 +13,15 @@
 //! pointer a client follows. Kinds not yet modeled fall back to a generic
 //! serialization of their lowered presentation nodes.
 
+use crate::commands::get::NotFoundDoc;
+use crate::commands::list::ListDoc;
+use crate::commands::search::{SearchDoc, SearchResult};
 use crate::format::{
     AssocKind, ConstantDoc, EnumDoc, FunctionDoc, ImplAssocType, ImplementorDoc, ItemBody, ItemDoc,
     ItemMeta, MacroDoc, MetaVisibility, MethodDoc, MethodVisibility, ModuleDoc, ModuleItem,
     PlainField, StaticDoc, StructDoc, StructShape, TraitDoc, TraitImplDoc, TraitMember, TupleField,
     TypeAliasDoc, UnionDoc, VariantDoc, VariantShape,
 };
-use crate::commands::get::NotFoundDoc;
-use crate::commands::list::ListDoc;
-use crate::commands::search::{SearchDoc, SearchResult};
 use crate::styled_string::{
     Document, DocumentNode, HeadingLevel, ListItem, MetadataField, ShowWhen, Span, SpanStyle,
     TableCell, TruncationLevel,
@@ -345,7 +345,9 @@ enum JsonBody<'a> {
     /// A directly-queried trait associated item (type or const).
     AssocItem(JsonAssocItem<'a>),
     /// A kind not yet modeled structurally: its lowered presentation nodes.
-    Presentation { nodes: Vec<JsonNode<'a>> },
+    Presentation {
+        nodes: Vec<JsonNode<'a>>,
+    },
 }
 
 impl<'a> JsonBody<'a> {
@@ -577,7 +579,11 @@ impl<'a> JsonTrait<'a> {
             supertraits: json_spans(&model.supertraits),
             where_clause: json_spans(&model.where_clause),
             members: model.members.iter().map(JsonTraitMember::new).collect(),
-            implementors: model.implementors.iter().map(JsonImplementor::new).collect(),
+            implementors: model
+                .implementors
+                .iter()
+                .map(JsonImplementor::new)
+                .collect(),
             implementor_overflow: model.implementor_overflow,
         }
     }
@@ -616,7 +622,11 @@ impl<'a> JsonImplementor<'a> {
             type_name: model.type_name,
             type_url: model.type_url.clone(),
             for_type: json_spans(&model.for_type),
-            assoc_types: model.assoc_types.iter().map(JsonImplAssocType::new).collect(),
+            assoc_types: model
+                .assoc_types
+                .iter()
+                .map(JsonImplAssocType::new)
+                .collect(),
             methods: model.methods.iter().map(JsonMethod::new).collect(),
             provided_methods: model.provided_methods.clone(),
             is_unsafe: model.is_unsafe,
@@ -750,7 +760,11 @@ impl<'a> JsonTraitImpl<'a> {
             trait_name: model.trait_name,
             trait_url: model.trait_url.clone(),
             args: json_spans(&model.trait_args),
-            assoc_types: model.assoc_types.iter().map(JsonImplAssocType::new).collect(),
+            assoc_types: model
+                .assoc_types
+                .iter()
+                .map(JsonImplAssocType::new)
+                .collect(),
             methods: model.methods.iter().map(JsonMethod::new).collect(),
             provided_methods: model.provided_methods.clone(),
             is_negative: model.is_negative,

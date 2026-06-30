@@ -34,9 +34,9 @@ mod trait_impls;
 mod types;
 mod union;
 
+pub(crate) use r#enum::{EnumDoc, VariantDoc, VariantShape};
 pub(crate) use functions::FunctionDoc;
 pub(crate) use items::{ConstantDoc, MacroDoc, StaticDoc, TypeAliasDoc};
-pub(crate) use r#enum::{EnumDoc, VariantDoc, VariantShape};
 pub(crate) use r#module::{ModuleDoc, ModuleItem};
 pub(crate) use r#struct::{PlainField, StructDoc, StructShape, TupleField};
 pub(crate) use r#trait::{ImplementorDoc, TraitDoc, TraitMember};
@@ -293,9 +293,7 @@ impl<'a> Request<'a> {
             ItemEnum::Constant { type_, const_ } => {
                 ItemBody::Constant(self.model_constant(item, type_, const_))
             }
-            ItemEnum::Static(static_data) => {
-                ItemBody::Static(self.model_static(item, static_data))
-            }
+            ItemEnum::Static(static_data) => ItemBody::Static(self.model_static(item, static_data)),
             ItemEnum::AssocType {
                 generics,
                 bounds,

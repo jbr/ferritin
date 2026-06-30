@@ -553,7 +553,10 @@ fn implementor_sort_key(impl_item: &Impl) -> &str {
 /// Lower the modeled implementors back to the "Implementors (this crate)"
 /// section: compact ones in a comma-separated list, the rest as list items with
 /// their assoc-type lines, then the overflow note. Empty when there are none.
-fn lower_implementors(implementors: Vec<ImplementorDoc<'_>>, overflow: usize) -> Vec<DocumentNode<'_>> {
+fn lower_implementors(
+    implementors: Vec<ImplementorDoc<'_>>,
+    overflow: usize,
+) -> Vec<DocumentNode<'_>> {
     if implementors.is_empty() {
         return vec![];
     }
