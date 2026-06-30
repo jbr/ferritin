@@ -111,9 +111,10 @@ fn render_json_for_tests_rooted(command: Commands, project_root: &std::path::Pat
                 .set_filter(crate::kind::predicate(&kind))
                 .set_doc_level(docs);
             match crate::commands::get::model(&mut request, &path, source, recursive) {
-                crate::commands::get::JsonOutcome::Found { model, canonical_url } => {
-                    crate::json::to_pretty_string(&model, Some(canonical_url))
-                }
+                crate::commands::get::JsonOutcome::Found {
+                    model,
+                    canonical_url,
+                } => crate::json::to_pretty_string(&model, Some(canonical_url)),
                 crate::commands::get::JsonOutcome::NotFound(not_found) => {
                     crate::json::not_found_to_pretty_string(&not_found)
                 }
@@ -131,7 +132,8 @@ fn render_json_for_tests_rooted(command: Commands, project_root: &std::path::Pat
                 .format_context()
                 .set_filter(crate::kind::predicate(&kind));
             let (crate_, query) = crate::commands::search::parse_target(target);
-            let model = crate::commands::search::model(&mut request, &query, limit, crate_.as_deref());
+            let model =
+                crate::commands::search::model(&mut request, &query, limit, crate_.as_deref());
             crate::json::search_to_pretty_string(&model)
         }
     };
