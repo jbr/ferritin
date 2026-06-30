@@ -3,99 +3,33 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct::cute\"), &\nget_fixture_crate_path ())"
 ---
 {
-  "nodes": [
+  "error": "notFound",
+  "query": "crate::TestStruct::cute",
+  "suggestions": [
     {
-      "type": "paragraph",
-      "spans": [
-        {
-          "text": "Could not find 'crate::TestStruct::cute'",
-          "style": "Plain"
-        }
-      ]
+      "path": "crate::TestStruct::ASSOCIATED_CONST",
+      "kind": "assocconst",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#associatedconstant.ASSOCIATED_CONST"
     },
     {
-      "type": "paragraph",
-      "spans": [
-        {
-          "text": "Did you mean:",
-          "style": "Plain"
-        }
-      ]
+      "path": "crate::TestStruct::new",
+      "kind": "function",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.new"
     },
     {
-      "type": "list",
-      "items": [
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::TestStruct::ASSOCIATED_CONST",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#associatedconstant.ASSOCIATED_CONST"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::TestStruct::new",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.new"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::TestStruct::get_field",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.get_field"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::TestStruct::increment_count",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.increment_count"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::submodule",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      "path": "crate::TestStruct::get_field",
+      "kind": "function",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.get_field"
+    },
+    {
+      "path": "crate::TestStruct::increment_count",
+      "kind": "function",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.increment_count"
+    },
+    {
+      "path": "crate::submodule",
+      "kind": "module",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html"
     }
   ]
 }

@@ -27,6 +27,7 @@ submodule // A module with items
 
 Structs:
 GenericStruct // A generic struct for testing multi-paragraph documentation. [+14 more lines]
+NotThreadSafe // A type that is not thread-safe, to exercise negative auto-trait impls [+1 more lines]
 ReachableViaPrivateModule // A struct accessible only via re-export from a private module.
 SubStruct // A struct in a submodule
 TestStruct // A simple struct for testing basic functionality. [+6 more lines]
@@ -68,7 +69,12 @@ ComplexTrait // A more complex trait demonstrating various features
 TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 link_resolution_tests::nested::TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 
+Unions:
+TestUnion // A union for testing union formatting. [+3 more lines]
+
 Functions:
+NotThreadSafe::new // Wrap a raw pointer.
+TestUnion::from_int // Construct a `TestUnion` from its integer view.
 Vec::allocator // Returns a reference to the underlying allocator.
 Vec::append // Moves all the elements of `other` into `self`, leaving `other` empty. [+14 more lines]
 Vec::as_mut_ptr // Returns a raw mutable pointer to the vector's buffer, or a dangling [+72 more lines]

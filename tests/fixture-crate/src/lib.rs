@@ -72,6 +72,31 @@ impl<T: Copy> TestUnion<T> {
     }
 }
 
+/// A type that is not thread-safe, to exercise negative auto-trait impls
+/// (`!Send`/`!Sync`, which rustdoc synthesizes for types holding a raw pointer).
+pub struct NotThreadSafe {
+    ptr: *const u8,
+}
+
+impl NotThreadSafe {
+    /// Wrap a raw pointer.
+    pub fn new(ptr: *const u8) -> Self {
+        Self { ptr }
+    }
+}
+
+/// A marker trait (no associated items) to exercise the compact implementors
+/// list — implementors with no bounds and no assoc types render comma-separated.
+pub trait Marker {}
+
+/// First implementor of [`Marker`].
+pub struct MarkerOne;
+/// Second implementor of [`Marker`].
+pub struct MarkerTwo;
+
+impl Marker for MarkerOne {}
+impl Marker for MarkerTwo {}
+
 /// A trait for testing extremely long documentation that exceeds line limits.
 ///
 /// This trait provides a comprehensive interface for data processing operations.

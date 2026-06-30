@@ -1,6 +1,47 @@
 use crate::request::Request;
 use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span};
 
+/// Structural model of the crate list, for `--format json`. `list` is a thin
+/// command slated for rework, so this is a deliberately minimal JSON-only
+/// projection — the terminal path ([`execute`]) is left untouched rather than
+/// refactored into model+lower.
+pub(crate) struct ListDoc {
+    pub(crate) crates: Vec<CrateEntry>,
+}
+
+pub(crate) struct CrateEntry {
+    pub(crate) name: String,
+    pub(crate) version: Option<String>,
+    pub(crate) is_default: bool,
+    pub(crate) is_workspace: bool,
+    pub(crate) used_by: Vec<String>,
+    pub(crate) description: Option<String>,
+}
+
+/// Build the structural [`ListDoc`] for the JSON output (crates sorted by name,
+/// matching [`execute`]).
+pub(crate) fn json_model(request: &Request<'_>) -> ListDoc {
+    let mut available = request
+        .navigator()
+        .list_available_crates()
+        .collect::<Vec<_>>();
+    available.sort_by(|a, b| a.name().cmp(b.name()));
+
+    let crates = available
+        .iter()
+        .map(|c| CrateEntry {
+            name: c.name().to_string(),
+            version: c.version().map(|v| v.to_string()),
+            is_default: c.is_default_crate(),
+            is_workspace: c.provenance().is_workspace(),
+            used_by: c.used_by().iter().map(|u| u.to_string()).collect(),
+            description: c.description().as_ref().map(|d| d.to_string()),
+        })
+        .collect();
+
+    ListDoc { crates }
+}
+
 pub(crate) fn execute<'a>(request: &mut Request<'a>) -> (Document<'a>, bool, Option<&'a str>) {
     let mut nodes = vec![DocumentNode::Heading {
         level: HeadingLevel::Title,

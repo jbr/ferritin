@@ -37,6 +37,16 @@ Structs
   ◦ [GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.GenericStruct.html) 
     A generic struct for testing multi-paragraph documentation. [...]
 
+  ◦ [MarkerOne](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerOne.html) 
+    First implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html).
+
+  ◦ [MarkerTwo](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerTwo.html) 
+    Second implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html).
+
+  ◦ [NotThreadSafe](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.NotThreadSafe.html) 
+    A type that is not thread-safe, to exercise negative auto-trait impls (!Send/
+    !Sync, which rustdoc synthesizes for types holding a raw pointer).
+
   ◦ [ReachableViaPrivateModule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html) 
     A struct accessible only via re-export from a private module.
 
@@ -68,8 +78,17 @@ Traits
   ◦ [ComplexTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html) 
     A more complex trait demonstrating various features
 
+  ◦ [Marker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html) 
+    A marker trait (no associated items) to exercise the compact implementors list
+    — implementors with no bounds and no assoc types render comma-separated.
+
   ◦ [TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html) 
     A trait for testing extremely long documentation that exceeds line limits. [...]
+
+Unions
+
+  ◦ [TestUnion](https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html) 
+    A union for testing union formatting. [...]
 
 Functions
 

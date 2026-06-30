@@ -1,0 +1,465 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"crate::NotThreadSafe\"), &\nget_fixture_crate_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.NotThreadSafe.html",
+  "meta": {
+    "name": "NotThreadSafe",
+    "kind": "struct",
+    "visibility": "public",
+    "definedAt": "fixture_crate::NotThreadSafe",
+    "crateName": "fixture-crate",
+    "crateVersion": "0.1.0"
+  },
+  "docs": [
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "A type that is not thread-safe, to exercise negative auto-trait impls",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "(",
+              "style": "Plain"
+            },
+            {
+              "text": "!Send",
+              "style": "InlineCode"
+            },
+            {
+              "text": "/",
+              "style": "Plain"
+            },
+            {
+              "text": "!Sync",
+              "style": "InlineCode"
+            },
+            {
+              "text": ", which rustdoc synthesizes for types holding a raw pointer).",
+              "style": "Plain"
+            }
+          ]
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "struct",
+    "name": "NotThreadSafe",
+    "shape": "plain",
+    "fields": [
+      {
+        "name": "ptr",
+        "pub": false,
+        "type": [
+          {
+            "text": "*",
+            "style": "Operator"
+          },
+          {
+            "text": "const",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "u8",
+            "style": "TypeName"
+          }
+        ]
+      }
+    ],
+    "methods": [
+      {
+        "name": "new",
+        "kind": "method",
+        "visibility": "public",
+        "returns": [
+          {
+            "text": "Self",
+            "style": "Generic"
+          }
+        ],
+        "signature": [
+          {
+            "text": "pub",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "fn",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "new",
+            "style": "Plain",
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.NotThreadSafe.html#method.new"
+          },
+          {
+            "text": "(",
+            "style": "Punctuation"
+          },
+          {
+            "text": "ptr",
+            "style": "Plain"
+          },
+          {
+            "text": ":",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "*",
+            "style": "Operator"
+          },
+          {
+            "text": "const",
+            "style": "Keyword"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "u8",
+            "style": "TypeName"
+          },
+          {
+            "text": ")",
+            "style": "Punctuation"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "->",
+            "style": "Operator"
+          },
+          {
+            "text": " ",
+            "style": "Plain"
+          },
+          {
+            "text": "Self",
+            "style": "Generic"
+          }
+        ],
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Wrap a raw pointer.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      }
+    ],
+    "traitImpls": [
+      {
+        "traitName": "Any",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/any/trait.Any.html",
+        "isStd": true,
+        "blanket": [
+          {
+            "text": "T",
+            "style": "Generic"
+          }
+        ]
+      },
+      {
+        "traitName": "Borrow",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
+        "args": [
+          {
+            "text": "<",
+            "style": "Punctuation"
+          },
+          {
+            "text": "T",
+            "style": "Generic"
+          },
+          {
+            "text": ">",
+            "style": "Punctuation"
+          }
+        ],
+        "isStd": true,
+        "blanket": [
+          {
+            "text": "T",
+            "style": "Generic"
+          }
+        ]
+      },
+      {
+        "traitName": "BorrowMut",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html",
+        "args": [
+          {
+            "text": "<",
+            "style": "Punctuation"
+          },
+          {
+            "text": "T",
+            "style": "Generic"
+          },
+          {
+            "text": ">",
+            "style": "Punctuation"
+          }
+        ],
+        "isStd": true,
+        "blanket": [
+          {
+            "text": "T",
+            "style": "Generic"
+          }
+        ]
+      },
+      {
+        "traitName": "Freeze",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.Freeze.html",
+        "isSynthetic": true,
+        "isStd": true
+      },
+      {
+        "traitName": "From",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/convert/trait.From.html",
+        "args": [
+          {
+            "text": "<",
+            "style": "Punctuation"
+          },
+          {
+            "text": "T",
+            "style": "Generic"
+          },
+          {
+            "text": ">",
+            "style": "Punctuation"
+          }
+        ],
+        "isStd": true,
+        "blanket": [
+          {
+            "text": "T",
+            "style": "Generic"
+          }
+        ]
+      },
+      {
+        "traitName": "Into",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/convert/trait.Into.html",
+        "args": [
+          {
+            "text": "<",
+            "style": "Punctuation"
+          },
+          {
+            "text": "U",
+            "style": "Generic"
+          },
+          {
+            "text": ">",
+            "style": "Punctuation"
+          }
+        ],
+        "isStd": true,
+        "blanket": [
+          {
+            "text": "T",
+            "style": "Generic"
+          }
+        ]
+      },
+      {
+        "traitName": "RefUnwindSafe",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/panic/unwind_safe/trait.RefUnwindSafe.html",
+        "isSynthetic": true,
+        "isStd": true
+      },
+      {
+        "traitName": "Send",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.Send.html",
+        "isNegative": true,
+        "isSynthetic": true,
+        "isStd": true
+      },
+      {
+        "traitName": "Sync",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.Sync.html",
+        "isNegative": true,
+        "isSynthetic": true,
+        "isStd": true
+      },
+      {
+        "traitName": "TryFrom",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
+        "args": [
+          {
+            "text": "<",
+            "style": "Punctuation"
+          },
+          {
+            "text": "U",
+            "style": "Generic"
+          },
+          {
+            "text": ">",
+            "style": "Punctuation"
+          }
+        ],
+        "assocTypes": [
+          {
+            "name": "Error",
+            "type": [
+              {
+                "text": "Infallible",
+                "style": "TypeName",
+                "url": "http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html"
+              }
+            ]
+          }
+        ],
+        "isStd": true,
+        "blanket": [
+          {
+            "text": "T",
+            "style": "Generic"
+          }
+        ]
+      },
+      {
+        "traitName": "TryInto",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/convert/trait.TryInto.html",
+        "args": [
+          {
+            "text": "<",
+            "style": "Punctuation"
+          },
+          {
+            "text": "U",
+            "style": "Generic"
+          },
+          {
+            "text": ">",
+            "style": "Punctuation"
+          }
+        ],
+        "assocTypes": [
+          {
+            "name": "Error",
+            "type": [
+              {
+                "text": "<",
+                "style": "Punctuation"
+              },
+              {
+                "text": "U",
+                "style": "Generic"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "as",
+                "style": "Keyword"
+              },
+              {
+                "text": " ",
+                "style": "Plain"
+              },
+              {
+                "text": "TryFrom",
+                "style": "TypeName",
+                "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html"
+              },
+              {
+                "text": "<",
+                "style": "Punctuation"
+              },
+              {
+                "text": "T",
+                "style": "Generic"
+              },
+              {
+                "text": ">",
+                "style": "Punctuation"
+              },
+              {
+                "text": ">",
+                "style": "Punctuation"
+              },
+              {
+                "text": "::",
+                "style": "Punctuation"
+              },
+              {
+                "text": "Error",
+                "style": "Plain"
+              }
+            ]
+          }
+        ],
+        "isStd": true,
+        "blanket": [
+          {
+            "text": "T",
+            "style": "Generic"
+          }
+        ]
+      },
+      {
+        "traitName": "Unpin",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.Unpin.html",
+        "isSynthetic": true,
+        "isStd": true
+      },
+      {
+        "traitName": "UnsafeUnpin",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html",
+        "isSynthetic": true,
+        "isStd": true
+      },
+      {
+        "traitName": "UnwindSafe",
+        "traitUrl": "http://docs.rust-lang.org/nightly/core/panic/unwind_safe/trait.UnwindSafe.html",
+        "isSynthetic": true,
+        "isStd": true
+      }
+    ]
+  }
+}

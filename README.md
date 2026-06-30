@@ -126,6 +126,21 @@ List available crates in your workspace:
 ferritin list
 ```
 
+### Output format
+
+Ferritin auto-detects how to render: ANSI colors on a terminal, plain text when
+piped, and a compact markdown-flavored format under a coding agent. Override it
+with `--format <tty|plain|agent|json>`. `--format json` emits a structured
+representation — of the resolved item for `get`, or of the results for
+`search`/`list` — for scripting and programmatic consumers:
+
+```bash
+ferritin get std::vec::Vec --format json
+```
+
+(The JSON shape is still settling as the library API evolves; a published JSON
+Schema is planned.)
+
 ## Caching and Storage
 
 Ferritin caches documentation JSON files to avoid repeated downloads and builds:

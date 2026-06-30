@@ -4,8 +4,8 @@ expression: result
 ---
 `crate::DoesNotExist` not found. Did you mean one of these?
 
+• `crate::TestUnion` (Union)
 • `crate::TestEnum` (Enum)
 • `crate::prefix_tests` (Module)
 • `crate::ComplexTrait` (Trait)
 • `crate::markdown_test` (Module)
-• `crate::link_resolution_tests` (Module)

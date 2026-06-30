@@ -6,15 +6,50 @@ use crate::request::Request;
 use crate::styled_string::{Document, DocumentNode, ListItem, Span};
 
 /// Outcome of resolving a path for `--format json`: either the structural item
-/// model (with its canonical URL) or the "could not find / did you mean"
-/// document, which the JSON path serializes generically — keeping parity with
-/// the text renderers, which show the same suggestions.
+/// model (with its canonical URL) or a structural not-found result carrying the
+/// "did you mean" suggestions.
 pub(crate) enum JsonOutcome<'a> {
     Found {
         model: ItemDoc<'a>,
         canonical_url: String,
     },
-    NotFound(Document<'a>),
+    NotFound(NotFoundDoc<'a>),
+}
+
+/// Structural "could not find / did you mean" result. Built when a path doesn't
+/// resolve; lowered to the suggestions document for the terminal
+/// ([`lower_not_found`]) and serialized as `{ error, query, suggestions }` for
+/// JSON.
+pub(crate) struct NotFoundDoc<'a> {
+    /// The path that failed to resolve.
+    pub(crate) query: String,
+    pub(crate) suggestions: Vec<SuggestionDoc<'a>>,
+}
+
+/// A single "did you mean" candidate: its path and the resolved item (for kind
+/// and nav URL).
+pub(crate) struct SuggestionDoc<'a> {
+    pub(crate) path: String,
+    pub(crate) item: Option<DocRef<'a, Item>>,
+}
+
+/// Number of "did you mean" candidates surfaced — the top score-ranked matches.
+const MAX_SUGGESTIONS: usize = 5;
+
+impl<'a> NotFoundDoc<'a> {
+    fn new(query: &str, suggestions: &[Suggestion<'a>]) -> Self {
+        Self {
+            query: query.to_string(),
+            suggestions: suggestions
+                .iter()
+                .take(MAX_SUGGESTIONS)
+                .map(|s| SuggestionDoc {
+                    path: s.path().to_string(),
+                    item: s.item().copied(),
+                })
+                .collect(),
+        }
+    }
 }
 
 /// Resolve a path to its semantic [`ItemDoc`] model for the `--format json`
@@ -36,25 +71,26 @@ pub(crate) fn model<'a>(
             canonical_url: crate::generate_docsrs_url::generate_docsrs_url(item),
             model: request.model_item(item),
         },
-        None => JsonOutcome::NotFound(not_found_document(path, &suggestions)),
+        None => JsonOutcome::NotFound(NotFoundDoc::new(path, &suggestions)),
     }
 }
 
-/// Build the "Could not find … / Did you mean" document, shared by the text
-/// (`execute`) and JSON (`model`) not-found paths.
-fn not_found_document<'a>(path: &str, suggestions: &[Suggestion<'a>]) -> Document<'a> {
+/// Lower a [`NotFoundDoc`] to the "Could not find … / Did you mean" document,
+/// shared by the text (`execute`) and JSON (`model`) not-found paths.
+pub(crate) fn lower_not_found<'a>(not_found: &NotFoundDoc<'a>) -> Document<'a> {
     let mut nodes = vec![DocumentNode::paragraph(vec![Span::plain(format!(
-        "Could not find '{path}'",
+        "Could not find '{}'",
+        not_found.query,
     ))])];
 
-    if !suggestions.is_empty() {
+    if !not_found.suggestions.is_empty() {
         nodes.push(DocumentNode::paragraph(vec![Span::plain("Did you mean:")]));
-        let items = suggestions
+        let items = not_found
+            .suggestions
             .iter()
-            .take(5)
             .map(|s| {
                 ListItem::new(vec![DocumentNode::paragraph(vec![
-                    Span::plain(s.path().to_string()).with_target(s.item().copied()),
+                    Span::plain(s.path.clone()).with_target(s.item),
                 ])])
             })
             .collect();
@@ -91,6 +127,10 @@ pub(crate) fn execute<'a>(
             }
             (Document::from(doc_nodes), false, Some(item))
         }
-        None => (not_found_document(path, &suggestions), true, None),
+        None => (
+            lower_not_found(&NotFoundDoc::new(path, &suggestions)),
+            true,
+            None,
+        ),
     }
 }

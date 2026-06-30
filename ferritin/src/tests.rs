@@ -114,14 +114,25 @@ fn render_json_for_tests_rooted(command: Commands, project_root: &std::path::Pat
                 crate::commands::get::JsonOutcome::Found { model, canonical_url } => {
                     crate::json::to_pretty_string(&model, Some(canonical_url))
                 }
-                crate::commands::get::JsonOutcome::NotFound(document) => {
-                    crate::json::document_to_pretty_string(&document)
+                crate::commands::get::JsonOutcome::NotFound(not_found) => {
+                    crate::json::not_found_to_pretty_string(&not_found)
                 }
             }
         }
-        other => {
-            let (document, _, _) = other.execute(&mut request);
-            crate::json::document_to_pretty_string(&document)
+        Commands::List => {
+            crate::json::list_to_pretty_string(&crate::commands::list::json_model(&request))
+        }
+        Commands::Search {
+            limit,
+            kind,
+            target,
+        } => {
+            request
+                .format_context()
+                .set_filter(crate::kind::predicate(&kind));
+            let (crate_, query) = crate::commands::search::parse_target(target);
+            let model = crate::commands::search::model(&mut request, &query, limit, crate_.as_deref());
+            crate::json::search_to_pretty_string(&model)
         }
     };
 
@@ -255,6 +266,8 @@ test_all_modes!(
 
 test_all_modes!(get_union, Commands::get("crate::TestUnion"));
 
+test_all_modes!(get_negative_impls, Commands::get("crate::NotThreadSafe"));
+
 test_all_modes!(get_submodule, Commands::get("crate::submodule"));
 
 test_all_modes!(
@@ -316,6 +329,10 @@ test_all_modes!(
     get_trait_method,
     Commands::get("crate::TestTrait::test_method")
 );
+
+// A marker trait with two bound-free implementors — exercises the compact
+// (comma-separated) implementors list.
+test_all_modes!(get_trait_marker, Commands::get("crate::Marker"));
 
 test_all_modes!(get_trait_assoc_type, Commands::get("crate::TestTrait::T"));
 
