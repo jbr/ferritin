@@ -206,18 +206,7 @@ impl Commands {
                 request
                     .format_context()
                     .set_filter(crate::kind::predicate(&kind));
-                let (crate_, query_parts) = match target {
-                    SearchTarget::All { query } => (None, query),
-                    SearchTarget::Crate(mut parts) => {
-                        if parts.is_empty() {
-                            (None, Vec::new())
-                        } else {
-                            let crate_ = parts.remove(0);
-                            (Some(crate_), parts)
-                        }
-                    }
-                };
-                let query = query_parts.join(" ");
+                let (crate_, query) = search::parse_target(target);
                 if query.trim().is_empty() {
                     let doc = Document::from(vec![crate::styled_string::DocumentNode::paragraph(
                         vec![crate::styled_string::Span::plain(

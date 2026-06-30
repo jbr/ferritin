@@ -94,6 +94,22 @@ A generic struct for testing multi-paragraph documentation.</p>
 This struct and provides a <elided chars="401"/></truncated>
 </item>
   <item><p>
+<type-name>MarkerOne</type-name> </p>
+<truncated level="single-line"><p>
+First implementor of <inline-code>Marker</inline-code>.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>MarkerTwo</type-name> </p>
+<truncated level="single-line"><p>
+Second implementor of <inline-code>Marker</inline-code>.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>NotThreadSafe</type-name> </p>
+<truncated level="single-line">A type that is not thread-safe, to exercise negative auto-trait impls (<inline-code>!Send</inline-code>/<inline-code>!Sync</inline-code>, which rustdoc synthesizes for types holding a raw pointer). <elided chars="63"/></truncated>
+</item>
+  <item><p>
 <type-name>ReachableViaPrivateModule</type-name> </p>
 <truncated level="single-line"><p>
 A struct accessible only via re-export from a private module.</p>
@@ -311,6 +327,10 @@ A more complex trait demonstrating various features</p>
 </truncated>
 </item>
   <item><p>
+<type-name>Marker</type-name> </p>
+<truncated level="single-line">A marker trait (no associated items) to exercise the compact implementors list — implementors with no bounds and no assoc types render comma-separated. <elided chars="73"/></truncated>
+</item>
+  <item><p>
 <type-name>TestTrait</type-name> </p>
 <truncated level="single-line"><p>
 A trait for testing extremely long documentation that exceeds line limits.</p>
@@ -323,7 +343,27 @@ A trait for testing extremely long documentation that exceeds line limits.</p>
 This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
 </item>
 </list>
+</section><section><section-title>Unions</section-title><list>
+  <item><p>
+<type-name>TestUnion</type-name> </p>
+<truncated level="single-line"><p>
+A union for testing union formatting.</p>
+Demonstrates a <inline-code>union</inline-code> with public and private fields, a generic and an inherent method — the union<inline-code>TestStruct</inline-code>. <elided chars="94"/></truncated>
+</item>
+</list>
 </section><section><section-title>Functions</section-title><list>
+  <item><p>
+<type-name>NotThreadSafe::new</type-name> </p>
+<truncated level="single-line"><p>
+Wrap a raw pointer.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>TestUnion::from_int</type-name> </p>
+<truncated level="single-line"><p>
+Construct a <inline-code>TestUnion</inline-code> from its integer view.</p>
+</truncated>
+</item>
   <item><p>
 <type-name>Vec::allocator</type-name> </p>
 <truncated level="single-line"><p>

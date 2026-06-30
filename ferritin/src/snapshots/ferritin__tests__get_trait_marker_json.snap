@@ -1,0 +1,68 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_json_for_tests_rooted(Commands::get(\"crate::Marker\"), &\nget_fixture_crate_path ())"
+---
+{
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html",
+  "meta": {
+    "name": "Marker",
+    "kind": "trait",
+    "visibility": "public",
+    "definedAt": "fixture_crate::Marker",
+    "crateName": "fixture-crate",
+    "crateVersion": "0.1.0"
+  },
+  "docs": [
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "A marker trait (no associated items) to exercise the compact implementors",
+              "style": "Plain"
+            },
+            {
+              "text": " ",
+              "style": "Plain"
+            },
+            {
+              "text": "list — implementors with no bounds and no assoc types render comma-separated.",
+              "style": "Plain"
+            }
+          ]
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "trait",
+    "name": "Marker",
+    "implementors": [
+      {
+        "typeName": "MarkerOne",
+        "typeUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerOne.html",
+        "forType": [
+          {
+            "text": "MarkerOne",
+            "style": "TypeName",
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerOne.html"
+          }
+        ]
+      },
+      {
+        "typeName": "MarkerTwo",
+        "typeUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerTwo.html",
+        "forType": [
+          {
+            "text": "MarkerTwo",
+            "style": "TypeName",
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerTwo.html"
+          }
+        ]
+      }
+    ]
+  }
+}

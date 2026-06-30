@@ -49,23 +49,23 @@ Trait Implementations
 
 TestTrait<T = String>
 
-std: From<T>, RefUnwindSafe, UnwindSafe, Unpin, Clone, UnsafeUnpin, Freeze, Sync, Debug, Send
+std: Clone, Debug, Freeze, From<T>, RefUnwindSafe, Send, Sync, Unpin, UnsafeUnpin, UnwindSafe
 
   ◦ impl<T: 'static + ?Sized> Any
+
+  ◦ impl<T: ?Sized> Borrow<T>
+
+  ◦ impl<T: ?Sized> BorrowMut<T>
+
+  ◦ impl<T: Clone> CloneToUninit
+
+  ◦ impl<T, U: From<T>> Into<U>
+
+  ◦ impl<T: Clone> ToOwned
+        type Owned = T
 
   ◦ impl<T, U: Into<T>> TryFrom<U>
         type Error = Infallible
 
   ◦ impl<T, U: TryFrom<T>> TryInto<U>
         type Error = <U as TryFrom<T>>::Error
-
-  ◦ impl<T, U: From<T>> Into<U>
-
-  ◦ impl<T: Clone> CloneToUninit
-
-  ◦ impl<T: ?Sized> BorrowMut<T>
-
-  ◦ impl<T: ?Sized> Borrow<T>
-
-  ◦ impl<T: Clone> ToOwned
-        type Owned = T

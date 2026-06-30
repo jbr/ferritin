@@ -2,15 +2,15 @@ use super::*;
 use crate::styled_string::{DocumentNode, ListItem, Span};
 
 /// Semantic model of an `enum`: name, generics, variants, inherent methods, and
-/// (still opaque) trait impls. Parallels [`StructDoc`](super::StructDoc); the
-/// `methods` reuse the shared [`MethodDoc`](super::MethodDoc) model.
+/// trait impls. Parallels [`StructDoc`](super::StructDoc); the `methods` reuse
+/// the shared [`MethodDoc`](super::MethodDoc) model.
 pub(crate) struct EnumDoc<'a> {
     pub(crate) name: &'a str,
     pub(crate) generics: Vec<Span<'a>>,
     pub(crate) where_clause: Vec<Span<'a>>,
     pub(crate) variants: Vec<VariantDoc<'a>>,
     pub(crate) methods: Vec<MethodDoc<'a>>,
-    pub(crate) trait_impls: Vec<DocumentNode<'a>>,
+    pub(crate) trait_impls: Vec<TraitImplDoc<'a>>,
 }
 
 /// A single enum variant.
@@ -104,7 +104,7 @@ impl<'a> Request<'a> {
         }
 
         let methods = self.model_inherent_methods(item);
-        let trait_impls = self.format_trait_impls(item);
+        let trait_impls = self.model_trait_impls(item);
 
         EnumDoc {
             name,
@@ -211,6 +211,6 @@ pub(super) fn lower_enum(model: EnumDoc<'_>) -> Vec<DocumentNode<'_>> {
     }
 
     doc_nodes.extend(super::impls::lower_inherent_methods(methods));
-    doc_nodes.extend(trait_impls);
+    doc_nodes.extend(super::trait_impls::lower_trait_impls(trait_impls));
     doc_nodes
 }

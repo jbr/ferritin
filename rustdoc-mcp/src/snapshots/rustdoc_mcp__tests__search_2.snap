@@ -8,7 +8,7 @@ Search results for 'generic struct' in crate 'crate':
     A generic struct for testing multi-paragraph documentation. [+14 more lines]
 • fixture-crate::GenericEnum (Enum) - score: 68
     A generic enum for testing [+2 more lines]
-• fixture-crate::TestStruct (Struct) - score: 57
+• fixture-crate::TestStruct (Struct) - score: 63
     A simple struct for testing basic functionality. [+6 more lines]
 • fixture-crate::generic_function (Function) - score: 51
     A generic function

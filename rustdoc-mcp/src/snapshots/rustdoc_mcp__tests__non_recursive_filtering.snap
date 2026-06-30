@@ -12,6 +12,7 @@ A minimal test crate for rustdoc JSON testing
 
 Structs:
 GenericStruct // A generic struct for testing multi-paragraph documentation. [+14 more lines]
+NotThreadSafe // A type that is not thread-safe, to exercise negative auto-trait impls [+1 more lines]
 ReachableViaPrivateModule // A struct accessible only via re-export from a private module.
 SubStruct // A struct in a submodule
 TestStruct // A simple struct for testing basic functionality. [+6 more lines]

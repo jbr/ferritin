@@ -306,16 +306,28 @@ fn run_json(request: &mut Request<'_>, command: Option<Commands>) -> ExitCode {
                     model,
                     canonical_url,
                 } => (json::to_string(&model, Some(canonical_url)), false),
-                // Not found: serialize the suggestions document (valid JSON,
-                // parity with the text renderers) and signal failure.
-                commands::get::JsonOutcome::NotFound(document) => {
-                    (json::document_to_string(&document), true)
+                // Not found: serialize the structural suggestions result and
+                // signal failure.
+                commands::get::JsonOutcome::NotFound(not_found) => {
+                    (json::not_found_to_string(&not_found), true)
                 }
             }
         }
-        other => {
-            let (document, is_error, _) = other.execute(request);
-            (json::document_to_string(&document), is_error)
+        Commands::List => (
+            json::list_to_string(&commands::list::json_model(request)),
+            false,
+        ),
+        Commands::Search {
+            limit,
+            kind,
+            target,
+        } => {
+            request
+                .format_context()
+                .set_filter(crate::kind::predicate(&kind));
+            let (crate_, query) = commands::search::parse_target(target);
+            let model = commands::search::model(request, &query, limit, crate_.as_deref());
+            (json::search_to_string(&model), model.is_error())
         }
     };
 

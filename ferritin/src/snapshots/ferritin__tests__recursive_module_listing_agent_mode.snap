@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests_rooted(Commands::get(\"crate\").recursive(), OutputMode :: Ai,\n& get_fixture_crate_path ())"
+expression: "render_for_tests_rooted(Commands::get(\"crate\").recursive(), OutputMode ::\nAgent, & get_fixture_crate_path ())"
 ---
 Module fixture_crate — in fixture-crate (0.1.0)
 
@@ -25,6 +25,9 @@ A minimal test crate for rustdoc JSON testing
 ## Structs
 
 - GenericStruct — A generic struct for testing multi-paragraph documentation. [+6 lines]
+- MarkerOne — First implementor of Marker.
+- MarkerTwo — Second implementor of Marker.
+- NotThreadSafe — A type that is not thread-safe, to exercise negative auto-trait impls (!Send/!Sync, which rustdoc synthesizes for types holding a raw pointer).
 - ReachableViaPrivateModule — A struct accessible only via re-export from a private module.
 - SubStruct — A struct in a submodule
 - TestStruct — A simple struct for testing basic functionality. [+2 lines]
@@ -65,11 +68,18 @@ A minimal test crate for rustdoc JSON testing
 ## Traits
 
 - ComplexTrait — A more complex trait demonstrating various features
+- Marker — A marker trait (no associated items) to exercise the compact implementors list — implementors with no bounds and no assoc types render comma-separated.
 - TestTrait — A trait for testing extremely long documentation that exceeds line limits. [+3 lines]
 - link_resolution_tests::nested::TestTrait — A trait for testing extremely long documentation that exceeds line limits. [+3 lines]
 
+## Unions
+
+- TestUnion — A union for testing union formatting. [+1 lines]
+
 ## Functions
 
+- NotThreadSafe::new — Wrap a raw pointer.
+- TestUnion::from_int — Construct a TestUnion from its integer view.
 - Vec::allocator — Returns a reference to the underlying allocator.
 - Vec::append — Moves all the elements of other into self, leaving other empty. [+4 lines]
 - Vec::as_mut_ptr — Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer valid for zero sized reads if the vector didn't allocate. [+9 lines]

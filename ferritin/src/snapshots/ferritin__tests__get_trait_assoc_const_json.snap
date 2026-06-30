@@ -29,44 +29,41 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestTrait::ASSO
     }
   ],
   "body": {
-    "kind": "presentation",
-    "nodes": [
+    "kind": "assocItem",
+    "assocKind": "const",
+    "name": "ASSOCIATED_CONSTANT",
+    "signature": [
       {
-        "type": "generatedCode",
-        "spans": [
-          {
-            "text": "const",
-            "style": "Keyword"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "ASSOCIATED_CONSTANT",
-            "style": "Plain"
-          },
-          {
-            "text": ":",
-            "style": "Punctuation"
-          },
-          {
-            "text": " ",
-            "style": "Plain"
-          },
-          {
-            "text": "(",
-            "style": "Punctuation"
-          },
-          {
-            "text": ")",
-            "style": "Punctuation"
-          },
-          {
-            "text": ";",
-            "style": "Punctuation"
-          }
-        ]
+        "text": "const",
+        "style": "Keyword"
+      },
+      {
+        "text": " ",
+        "style": "Plain"
+      },
+      {
+        "text": "ASSOCIATED_CONSTANT",
+        "style": "Plain"
+      },
+      {
+        "text": ":",
+        "style": "Punctuation"
+      },
+      {
+        "text": " ",
+        "style": "Plain"
+      },
+      {
+        "text": "(",
+        "style": "Punctuation"
+      },
+      {
+        "text": ")",
+        "style": "Punctuation"
+      },
+      {
+        "text": ";",
+        "style": "Punctuation"
       }
     ]
   }

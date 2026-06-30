@@ -16,9 +16,9 @@ pub(crate) struct UnionDoc<'a> {
     pub(crate) has_stripped_fields: bool,
     /// Inherent associated items (methods, assoc consts/types).
     pub(crate) methods: Vec<MethodDoc<'a>>,
-    /// Trait implementations, still opaque presentation nodes (modeling them is
-    /// a future unit), lowered after the inherent methods.
-    pub(crate) trait_impls: Vec<DocumentNode<'a>>,
+    /// Trait implementations, structurally modeled, lowered after the inherent
+    /// methods.
+    pub(crate) trait_impls: Vec<TraitImplDoc<'a>>,
 }
 
 impl<'a> Request<'a> {
@@ -44,7 +44,7 @@ impl<'a> Request<'a> {
 
         let (fields, hidden_count) = self.model_named_fields(item, &union.item().fields);
         let methods = self.model_inherent_methods(item);
-        let trait_impls = self.format_trait_impls(item);
+        let trait_impls = self.model_trait_impls(item);
 
         UnionDoc {
             name,
@@ -84,6 +84,6 @@ pub(super) fn lower_union(model: UnionDoc<'_>) -> Vec<DocumentNode<'_>> {
     let mut doc_nodes =
         super::r#struct::lower_plain(code_spans, fields, hidden_count, has_stripped_fields);
     doc_nodes.extend(super::impls::lower_inherent_methods(methods));
-    doc_nodes.extend(trait_impls);
+    doc_nodes.extend(super::trait_impls::lower_trait_impls(trait_impls));
     doc_nodes
 }

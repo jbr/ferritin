@@ -20,10 +20,9 @@ pub(crate) struct StructDoc<'a> {
     /// Inherent associated items (methods, assoc consts/types), structurally
     /// modeled.
     pub(crate) methods: Vec<MethodDoc<'a>>,
-    /// Trait implementations, still opaque presentation nodes (modeling them is
-    /// a future unit). Lowered after the inherent methods, matching the original
-    /// `format_associated_methods` order.
-    pub(crate) trait_impls: Vec<DocumentNode<'a>>,
+    /// Trait implementations, structurally modeled. Lowered after the inherent
+    /// methods.
+    pub(crate) trait_impls: Vec<TraitImplDoc<'a>>,
 }
 
 /// The three structural shapes a struct can take, each carrying its own fields.
@@ -92,7 +91,7 @@ impl<'a> Request<'a> {
         };
 
         let methods = self.model_inherent_methods(item);
-        let trait_impls = self.format_trait_impls(item);
+        let trait_impls = self.model_trait_impls(item);
 
         StructDoc {
             name,
@@ -240,7 +239,7 @@ pub(super) fn lower_struct(model: StructDoc<'_>) -> Vec<DocumentNode<'_>> {
     };
 
     doc_nodes.extend(super::impls::lower_inherent_methods(methods));
-    doc_nodes.extend(trait_impls);
+    doc_nodes.extend(super::trait_impls::lower_trait_impls(trait_impls));
     doc_nodes
 }
 

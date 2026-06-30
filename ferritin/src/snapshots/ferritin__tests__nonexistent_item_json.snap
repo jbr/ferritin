@@ -3,99 +3,33 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate::DoesNotExist\"), &\nget_fixture_crate_path ())"
 ---
 {
-  "nodes": [
+  "error": "notFound",
+  "query": "crate::DoesNotExist",
+  "suggestions": [
     {
-      "type": "paragraph",
-      "spans": [
-        {
-          "text": "Could not find 'crate::DoesNotExist'",
-          "style": "Plain"
-        }
-      ]
+      "path": "crate::submodule",
+      "kind": "module",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html"
     },
     {
-      "type": "paragraph",
-      "spans": [
-        {
-          "text": "Did you mean:",
-          "style": "Plain"
-        }
-      ]
+      "path": "crate::link_resolution_tests",
+      "kind": "module",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/index.html"
     },
     {
-      "type": "list",
-      "items": [
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::submodule",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::link_resolution_tests",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/index.html"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::reexport_mod",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::markdown_test",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "content": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "crate::namespace_collisions",
-                  "style": "Plain",
-                  "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/index.html"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      "path": "crate::reexport_mod",
+      "kind": "module",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html"
+    },
+    {
+      "path": "crate::markdown_test",
+      "kind": "module",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html"
+    },
+    {
+      "path": "crate::namespace_collisions",
+      "kind": "module",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/index.html"
     }
   ]
 }

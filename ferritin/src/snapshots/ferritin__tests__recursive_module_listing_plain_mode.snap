@@ -55,6 +55,15 @@ Structs
   ◦ GenericStruct 
     A generic struct for testing multi-paragraph documentation. [...]
 
+  ◦ MarkerOne 
+    First implementor of Marker.
+
+  ◦ MarkerTwo 
+    Second implementor of Marker.
+
+  ◦ NotThreadSafe 
+    A type that is not thread-safe, to exercise negative auto-trait impls (!Send/!Sync, which rustdoc synthesizes for types holding a raw pointer).
+
   ◦ ReachableViaPrivateModule 
     A struct accessible only via re-export from a private module.
 
@@ -161,13 +170,27 @@ Traits
   ◦ ComplexTrait 
     A more complex trait demonstrating various features
 
+  ◦ Marker 
+    A marker trait (no associated items) to exercise the compact implementors list — implementors with no bounds and no assoc types render comma-separated.
+
   ◦ TestTrait 
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
   ◦ link_resolution_tests::nested::TestTrait 
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
+Unions
+
+  ◦ TestUnion 
+    A union for testing union formatting. [...]
+
 Functions
+
+  ◦ NotThreadSafe::new 
+    Wrap a raw pointer.
+
+  ◦ TestUnion::from_int 
+    Construct a TestUnion from its integer view.
 
   ◦ Vec::allocator 
     Returns a reference to the underlying allocator.
