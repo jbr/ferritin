@@ -158,27 +158,10 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\").re
                     "style": "Plain"
                   }
                 ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "This is like ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "crate::GenericEnum",
-                    "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html"
-                  },
-                  {
-                    "text": " but without the generic",
-                    "style": "Plain"
-                  }
-                ]
               }
             ],
-            "level": "SingleLine"
+            "level": "SingleLine",
+            "truncated": true
           }
         ]
       },
@@ -200,7 +183,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\").re
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html"
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html",
+                    "path": "fixture_crate::GenericEnum"
                   },
                   {
                     "text": ")",
@@ -291,7 +275,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\").re
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html"
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html",
+                    "path": "fixture_crate::GenericEnum"
                   },
                   {
                     "text": ")",

@@ -23,6 +23,7 @@ mod commands;
 mod format;
 mod format_context;
 mod generate_docsrs_url;
+mod highlight;
 mod indent;
 mod json;
 mod kind;
@@ -31,6 +32,9 @@ mod markdown;
 mod render_context;
 mod renderer;
 mod request;
+#[cfg(feature = "schema")]
+mod schema;
+mod serve;
 mod styled_string;
 #[cfg(test)]
 mod tests;
@@ -148,6 +152,18 @@ where
 
 fn main() -> ExitCode {
     let cli = Cli::parse();
+
+    // Development tool: write the OpenAPI schema and exit before any source setup.
+    #[cfg(feature = "schema")]
+    if let Some(Commands::Schema { output }) = &cli.command {
+        let document = schema::openapi_document();
+        if let Err(error) = std::fs::write(output, format!("{document}\n")) {
+            eprintln!("failed to write schema to {}: {error}", output.display());
+            return ExitCode::FAILURE;
+        }
+        eprintln!("wrote OpenAPI schema to {}", output.display());
+        return ExitCode::SUCCESS;
+    }
 
     let use_local = cli.local || cli.manifest_path.is_some();
     let path = cli
@@ -329,6 +345,7 @@ fn run_json(request: &mut Request<'_>, command: Option<Commands>) -> ExitCode {
             let model = commands::search::model(request, &query, limit, crate_.as_deref());
             (json::search_to_string(&model), model.is_error())
         }
+        _ => return ExitCode::FAILURE,
     };
 
     match json {

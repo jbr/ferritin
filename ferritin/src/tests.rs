@@ -136,6 +136,7 @@ fn render_json_for_tests_rooted(command: Commands, project_root: &std::path::Pat
                 crate::commands::search::model(&mut request, &query, limit, crate_.as_deref());
             crate::json::search_to_pretty_string(&model)
         }
+        other => panic!("{other:?} has no JSON test rendering"),
     };
 
     // Same normalization the text snapshots use (the crate path and nightly

@@ -186,6 +186,7 @@ fn test_brief_truncation_with_code_block() {
                 DocumentNode::CodeBlock {
                     lang: Some("rust".into()),
                     code: "fn example() {\n    println!(\"Hello\");\n    let x = 42;\n    let y = 100;\n    let z = x + y;\n}\n".into(),
+                    attrs: Vec::new(),
                 },
                 DocumentNode::paragraph(vec![Span::plain("Third paragraph after code.")]),
             ],
@@ -262,6 +263,7 @@ fn test_brief_with_short_code_block() {
                 DocumentNode::CodeBlock {
                     lang: Some("rust".into()),
                     code: "let x = 42;".into(),
+                    attrs: Vec::new(),
                 },
             ],
         }],
@@ -496,6 +498,7 @@ fn test_code_block_spacing() {
             DocumentNode::CodeBlock {
                 lang: Some("rust".into()),
                 code: "let x = vec![1, 2, 3];".into(),
+                attrs: Vec::new(),
             },
             DocumentNode::paragraph(vec![Span::plain("More content after the code block.")]),
         ],

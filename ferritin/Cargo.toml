@@ -11,11 +11,8 @@ include = [
     "build.rs",
     "assets/**/*.tmTheme",
     "CHANGELOG.md",
+    "client/dist/",
 ]
-
-[[bin]]
-name = "ferritin"
-path = "src/main.rs"
 
 # dist tags releases per-package as `{crate}-v{version}` (workspace with multiple
 # publishable crates), but cargo-binstall's built-in dist auto-detection only
@@ -38,7 +35,7 @@ crossbeam-channel = "0.5"
 crossterm = "0.29"
 fieldwork = "0.5.2"
 log = "0.4.33"
-env_logger = "0.11.10"
+env_logger = "0.11.11"
 pulldown-cmark = "0.13"
 ratatui = "0.30"
 regex = "1.12"
@@ -53,6 +50,23 @@ webbrowser = "1.2.1"
 semver = "1.0.28"
 percent-encoding = "2.3"
 mimalloc = "0.1.52"
+trillium = "1.3.0"
+trillium-frontend = "0.4.0"
+trillium-html-rewriter = "0.6.0"
+trillium-api = { version = "0.3.0", features = ["sonic-rs", "url"] }
+trillium-logger = { version = "0.5.4", features = ["client"] }
+trillium-rustls = "0.11.3"
+trillium-smol = "0.7.0"
+trillium-router = "0.5.2"
+querystrong = "0.4.0"
+trillium-client = "0.9.9"
+schemars = { version = "1.2.1", optional = true }
+rayon = "1.12.0"
+async-channel = "2.5.0"
+trillium-caching-headers = "0.4.1"
+trillium-compression = {version = "0.3.3", features = ["client"]}
+
+
 
 [build-dependencies]
 syntect = { version = "5.3", default-features = false, features = ["parsing", "plist-load", "dump-load", "dump-create", "regex-onig"] }
@@ -61,3 +75,14 @@ syntect = { version = "5.3", default-features = false, features = ["parsing", "p
 insta = { version = "1.48.0", features = ["filters"] }
 paste = "1.0.15"
 strip-ansi-escapes = "0.2.1"
+
+[[bin]]
+name = "ferritin"
+path = "src/main.rs"
+
+[features]
+# Development-only: emit the OpenAPI schema for the JSON API (`ferritin schema`).
+# Off by default so normal builds don't pull in schemars; the generated schema is
+# committed under assets/ and regenerated as a dev task.
+schema = ["dep:schemars"]
+dev-proxy = ["trillium-frontend/dev-proxy"]

@@ -1,7 +1,48 @@
+use std::borrow::Cow;
+
 use crate::styled_string::{
     DocumentNode, HeadingLevel, LinkTarget, ListItem, Span, SpanStyle, TuiAction,
 };
 use pulldown_cmark::{BrokenLink, CodeBlockKind, Event, Options, Parser, Tag, TagEnd};
+
+/// Rust doctest info-string tokens that are not languages: rustdoc attributes and
+/// the bare `rust` tag. Any other token names the fenced block's language.
+const RUST_FENCE_TAGS: &[&str] = &[
+    "rust",
+    "no_run",
+    "ignore",
+    "compile_fail",
+    "should_panic",
+    "test_harness",
+    "edition2015",
+    "edition2018",
+    "edition2021",
+    "edition2024",
+];
+
+/// Parse a fenced code-block info string into its syntect grammar language and the
+/// reader-facing doctest attributes (`should_panic`, `compile_fail`).
+///
+/// Info strings can carry several comma-separated tokens in any order
+/// (`rust,should_panic`, bare `should_panic`, `ignore,edition2021`, `bash`). The
+/// grammar is the first token that isn't a rustdoc attribute, defaulting to `rust`
+/// (so a bare-attribute or empty fence still highlights as Rust, matching the
+/// terminal).
+fn parse_code_fence<'a>(info: &str) -> (String, Vec<Cow<'a, str>>) {
+    let mut grammar: Option<&str> = None;
+    let mut attrs: Vec<Cow<'a, str>> = Vec::new();
+    for token in info.split(',').map(str::trim).filter(|t| !t.is_empty()) {
+        match token {
+            "should_panic" => attrs.push(Cow::Borrowed("should_panic")),
+            "compile_fail" => attrs.push(Cow::Borrowed("compile_fail")),
+            _ => {}
+        }
+        if grammar.is_none() && !RUST_FENCE_TAGS.contains(&token) {
+            grammar = Some(token);
+        }
+    }
+    (grammar.unwrap_or("rust").to_string(), attrs)
+}
 
 /// Stack item for building the document tree
 /// We need this because Lists contain ListItems (not DocumentNodes directly)
@@ -40,6 +81,7 @@ impl MarkdownRenderer {
         // Inline style state (doesn't nest structurally)
         let mut in_code_block = false;
         let mut code_block_lang: Option<String> = None;
+        let mut code_block_attrs: Vec<Cow<'a, str>> = Vec::new();
         let mut code_block_content = String::new();
         let mut in_strong = false;
         let mut in_emphasis = false;
@@ -59,17 +101,12 @@ impl MarkdownRenderer {
                 Event::Start(tag) => match tag {
                     Tag::CodeBlock(kind) => {
                         in_code_block = true;
-                        code_block_lang = Some(match kind {
-                            CodeBlockKind::Fenced(lang) => {
-                                match lang.split(',').next().unwrap_or(&*lang) {
-                                    "no_run" | "should_panic" | "ignore" | "compile_fail"
-                                    | "edition2015" | "edition2018" | "edition2021"
-                                    | "edition2024" | "rust" | "" => "rust".to_string(),
-                                    other => other.to_string(),
-                                }
-                            }
-                            CodeBlockKind::Indented => "rust".to_string(),
-                        });
+                        let (lang, attrs) = match kind {
+                            CodeBlockKind::Fenced(info) => parse_code_fence(&info),
+                            CodeBlockKind::Indented => ("rust".to_string(), Vec::new()),
+                        };
+                        code_block_lang = Some(lang);
+                        code_block_attrs = attrs;
                         code_block_content.clear();
                     }
                     Tag::Emphasis => {
@@ -179,7 +216,11 @@ impl MarkdownRenderer {
                             code_block_content.clone()
                         };
 
-                        let code_block = DocumentNode::code_block(code_block_lang.take(), code);
+                        let code_block = DocumentNode::CodeBlock {
+                            lang: code_block_lang.take().map(Cow::Owned),
+                            code: Cow::Owned(code),
+                            attrs: std::mem::take(&mut code_block_attrs),
+                        };
                         Self::push_to_parent(&mut stack, &mut root, StackItem::Node(code_block));
                         in_code_block = false;
                     }

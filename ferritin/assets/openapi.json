@@ -1,0 +1,1705 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ferritin",
+    "version": "0.13.0",
+    "description": "Structured Rust documentation as JSON (the semantic IR)."
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "JSON API mount point."
+    }
+  ],
+  "paths": {
+    "/crates/{crate_name}": {
+      "get": {
+        "summary": "Structured documentation model for an item path.",
+        "parameters": [
+          {
+            "name": "crate_name",
+            "in": "path",
+            "required": true,
+            "description": "Item path, `::`-joined (e.g. `serde::Deserialize`).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The resolved item model.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonItem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No item resolved; \"did you mean\" suggestions returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonNotFound"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/{crate_name}": {
+      "get": {
+        "summary": "Search for items within a single crate.",
+        "parameters": [
+          {
+            "name": "crate_name",
+            "in": "path",
+            "required": true,
+            "description": "Crate to search (optionally `name@version`).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Search query.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonSearch"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HeadingLevel": {
+        "description": "Heading level for semantic structure",
+        "type": "string",
+        "enum": [
+          "Title",
+          "Section"
+        ]
+      },
+      "JsonAssocItem": {
+        "description": "A directly-queried trait associated item (type or const). Its own kind is\nserialized as `assocKind` to avoid colliding with the `JsonBody` `kind` tag.",
+        "type": "object",
+        "properties": {
+          "assocKind": {
+            "description": "`\"type\"` or `\"const\"`.",
+            "type": "string"
+          },
+          "hasDefault": {
+            "description": "For an assoc type: whether it has a default; for an assoc const: whether\nit has a value.",
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "assocKind",
+          "name",
+          "signature"
+        ]
+      },
+      "JsonBody": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "struct"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonStruct"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "enum"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonEnum"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "trait"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonTrait"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "module"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonModule"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "function"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonFunction"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "typeAlias"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonTypeAlias"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "constant"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonConstant"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "static"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonStatic"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "macro"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonMacro"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "union"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonUnion"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "description": "A directly-queried trait associated item (type or const).",
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "assocItem"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonAssocItem"
+              }
+            ],
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "description": "A kind not yet modeled structurally: its lowered presentation nodes.",
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "presentation"
+                ]
+              },
+              "nodes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonNode"
+                }
+              }
+            },
+            "required": [
+              "kind",
+              "nodes"
+            ]
+          }
+        ]
+      },
+      "JsonCodeSpan": {
+        "description": "A span in a syntax-highlighted code block: a slice of source and its lexical\nclass (`keyword`, `type`, `string`, …). Distinct from [`JsonSpan`], whose\n`style` is a semantic, navigable [`SpanStyle`]; a code-block class is a purely\nlexical highlight the client colors, with no navigation.",
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "JsonConstant": {
+        "description": "A constant body: name, type, and optional value expression.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "JsonCrate": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "isWorkspace": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "usedBy": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "JsonEnum": {
+        "type": "object",
+        "properties": {
+          "generics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "methods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonMethod"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "traitImpls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonTraitImpl"
+            }
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonVariant"
+            }
+          },
+          "whereClause": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "JsonField": {
+        "type": "object",
+        "properties": {
+          "docs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          },
+          "index": {
+            "description": "Positional index, for tuple-struct fields.",
+            "type": "integer",
+            "format": "uint",
+            "minimum": 0,
+            "nullable": true
+          },
+          "name": {
+            "description": "Field name, for plain-struct fields.",
+            "type": "string",
+            "nullable": true
+          },
+          "pub": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "pub",
+          "type"
+        ]
+      },
+      "JsonFunction": {
+        "description": "A free function body. Mirrors [`JsonMethod`] minus the assoc-item\n`kind`/`visibility` and per-item `docs` — params live inside `signature`, so\na function and a method serialize the same way.",
+        "type": "object",
+        "properties": {
+          "isAsync": {
+            "type": "boolean"
+          },
+          "isConst": {
+            "type": "boolean"
+          },
+          "isUnsafe": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "returns": {
+            "description": "Return-type spans (functions with an explicit output).",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "signature": {
+            "description": "Full display signature, the same spans the terminal renders.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "signature"
+        ]
+      },
+      "JsonImplAssocType": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "JsonImplementor": {
+        "description": "A trait implementor: the implementing type plus the impl's structured\nmetadata (richer than the terminal, which shows the type and assoc types).",
+        "type": "object",
+        "properties": {
+          "assocTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonImplAssocType"
+            }
+          },
+          "blanket": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "docs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          },
+          "forType": {
+            "description": "The implementing type, bounds merged inline (`BufReader<R: Read>`).",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "isSynthetic": {
+            "type": "boolean"
+          },
+          "isUnsafe": {
+            "type": "boolean"
+          },
+          "methods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonMethod"
+            }
+          },
+          "providedMethods": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "typeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "forType"
+        ]
+      },
+      "JsonItem": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/JsonBody"
+          },
+          "canonicalUrl": {
+            "description": "Canonical URL for this item (its docs.rs / std-docs page).",
+            "type": "string",
+            "nullable": true
+          },
+          "docs": {
+            "description": "The item's own doc prose, as generic nodes.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          },
+          "meta": {
+            "description": "Structured metadata (name, kind, visibility, path, crate).",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonMeta"
+              }
+            ]
+          },
+          "source": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          }
+        },
+        "required": [
+          "meta",
+          "body"
+        ]
+      },
+      "JsonList": {
+        "description": "The crate list. Minimal projection of [`ListDoc`] (a soon-to-be-reworked\ncommand).",
+        "type": "object",
+        "properties": {
+          "crates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonCrate"
+            }
+          }
+        },
+        "required": [
+          "crates"
+        ]
+      },
+      "JsonListItem": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "JsonMacro": {
+        "description": "A macro body: its definition source verbatim.",
+        "type": "object",
+        "properties": {
+          "definition": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "definition"
+        ]
+      },
+      "JsonMeta": {
+        "type": "object",
+        "properties": {
+          "crateName": {
+            "type": "string"
+          },
+          "crateVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "definedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "kind": {
+            "description": "Lowercased item kind (`\"struct\"`, `\"enum\"`, …).",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "visibility": {
+            "description": "`\"public\"`, `\"private\"`, `\"crate\"`, or `\"restricted\"`.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "visibility",
+          "crateName"
+        ]
+      },
+      "JsonMetadataField": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ]
+      },
+      "JsonMethod": {
+        "type": "object",
+        "properties": {
+          "docs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          },
+          "isAsync": {
+            "type": "boolean"
+          },
+          "isConst": {
+            "type": "boolean"
+          },
+          "isUnsafe": {
+            "type": "boolean"
+          },
+          "kind": {
+            "description": "`\"method\"`, `\"const\"`, or `\"type\"`.",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "returns": {
+            "description": "Return-type spans (functions with an explicit output).",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "signature": {
+            "description": "Full display signature, the same spans the terminal renders.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "visibility": {
+            "description": "`\"public\"`, `\"crate\"`, `\"restricted\"`, or `\"default\"`.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "visibility",
+          "signature"
+        ]
+      },
+      "JsonModule": {
+        "description": "A module body: its child items as a flat list. Grouping is left to the\nclient — each item carries the `kind` it would group under.",
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonModuleItem"
+            }
+          }
+        }
+      },
+      "JsonModuleItem": {
+        "type": "object",
+        "properties": {
+          "docs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          },
+          "kind": {
+            "description": "Lowercased item kind (`\"struct\"`, `\"enum\"`, `\"function\"`, …).",
+            "type": "string"
+          },
+          "path": {
+            "description": "Path as listed (bare name, or `a::b::c` when reached recursively).",
+            "type": "string"
+          },
+          "url": {
+            "description": "Navigation target — the resolved docs.rs / std-docs URL for the child.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "kind",
+          "url"
+        ]
+      },
+      "JsonNode": {
+        "description": "JSON mirror of [`DocumentNode`] — a faithful serialization of the\npresentation IR, used for the header, docs, source, opaque methods, and\nnot-yet-modeled bodies.",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "spans": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonSpan"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "paragraph"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "spans"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "fields": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonMetadataField"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "metadata"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "fields"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "level": {
+                "$ref": "#/components/schemas/HeadingLevel"
+              },
+              "spans": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonSpan"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "heading"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "level",
+              "spans"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "nodes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonNode"
+                }
+              },
+              "title": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonSpan"
+                },
+                "nullable": true
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "section"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "nodes"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonListItem"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "list"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "items"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attrs": {
+                "description": "Doctest attributes worth surfacing to a reader — `should_panic` and\n`compile_fail`, positive assertions that the example is a\ncounterexample. Omitted when empty.",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lang": {
+                "type": "string",
+                "nullable": true
+              },
+              "spans": {
+                "description": "Syntax-highlighted spans that tile the source: concatenating their\n`text` reconstructs the raw code (there is no separate `code` field).\nA span without a `class` is unstyled text (punctuation, plain\nidentifiers, or a block whose language has no grammar).",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonCodeSpan"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "codeBlock"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "spans"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "spans": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonSpan"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "generatedCode"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "spans"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "horizontalRule"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "nodes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonNode"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "blockQuote"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "nodes"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "header": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonTableCell"
+                },
+                "nullable": true
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JsonTableCell"
+                  }
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "table"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "rows"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "level": {
+                "$ref": "#/components/schemas/TruncationLevel"
+              },
+              "nodes": {
+                "description": "The retained nodes *after* applying `level` — a preview\n(`SingleLine`/`Brief`) keeps only the first block, `Full` keeps all.\nTruncation happens here rather than on the client so the wire payload\ncarries the summary, not the whole essay it summarizes.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonNode"
+                }
+              },
+              "truncated": {
+                "description": "`true` when nodes were dropped — the client's cue that a fuller body\nexists behind the item's navigation target.",
+                "type": "boolean"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "truncatedBlock"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "nodes",
+              "level"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "nodes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/JsonNode"
+                }
+              },
+              "show_when": {
+                "$ref": "#/components/schemas/ShowWhen"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "conditional"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "show_when",
+              "nodes"
+            ]
+          }
+        ]
+      },
+      "JsonNotFound": {
+        "description": "A not-found result: the query and \"did you mean\" candidates. A JSON client\ndistinguishes it from a found item by the `error` discriminant.",
+        "type": "object",
+        "properties": {
+          "error": {
+            "description": "Always `\"notFound\"`.",
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          },
+          "suggestions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSuggestion"
+            }
+          }
+        },
+        "required": [
+          "error",
+          "query"
+        ]
+      },
+      "JsonSearch": {
+        "description": "A search outcome. `error` is set only for the no-crates-loaded case; an empty\nquery and a query with no matches both serialize as `{ query, results: [] }`.",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "query": {
+            "type": "string",
+            "nullable": true
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSearchResult"
+            }
+          },
+          "suggestions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSuggestion"
+            }
+          }
+        }
+      },
+      "JsonSearchResult": {
+        "type": "object",
+        "properties": {
+          "docs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          },
+          "kind": {
+            "description": "Lowercased item kind.",
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "score": {
+            "description": "Normalized relevance score (best result = 100).",
+            "type": "number",
+            "format": "float"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "kind",
+          "url",
+          "score"
+        ]
+      },
+      "JsonSpan": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "description": "In-app navigation target: a `::`-joined item path (e.g. `trillium::Conn`)\nthe client routes to. Present whenever the target resolves to an item with\nits own page; absent for associated items, variants, and bare external\nURLs (fall back to `url`).",
+            "type": "string",
+            "nullable": true
+          },
+          "style": {
+            "$ref": "#/components/schemas/SpanStyle"
+          },
+          "text": {
+            "type": "string"
+          },
+          "url": {
+            "description": "External navigation target (the item's docs.rs / std-docs page), when the\nspan points at another item — the pointer for opening upstream docs.",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "text",
+          "style"
+        ]
+      },
+      "JsonStatic": {
+        "description": "A static body: name, type, and value expression.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "value"
+        ]
+      },
+      "JsonStruct": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonField"
+            }
+          },
+          "generics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "hiddenFieldCount": {
+            "type": "integer",
+            "format": "uint",
+            "minimum": 0
+          },
+          "methods": {
+            "description": "Inherent associated items, structurally modeled.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonMethod"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "shape": {
+            "description": "`\"plain\"`, `\"tuple\"`, or `\"unit\"`.",
+            "type": "string"
+          },
+          "traitImpls": {
+            "description": "Trait implementations, structurally modeled.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonTraitImpl"
+            }
+          },
+          "whereClause": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "shape"
+        ]
+      },
+      "JsonSuggestion": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "description": "Lowercased kind of the resolved candidate, when known.",
+            "type": "string",
+            "nullable": true
+          },
+          "path": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "JsonTableCell": {
+        "type": "object",
+        "properties": {
+          "spans": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "spans"
+        ]
+      },
+      "JsonTrait": {
+        "type": "object",
+        "properties": {
+          "generics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "implementorOverflow": {
+            "description": "Implementors beyond the render cap.",
+            "type": "integer",
+            "format": "uint",
+            "minimum": 0
+          },
+          "implementors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonImplementor"
+            }
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonTraitMember"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "supertraits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "whereClause": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "JsonTraitImpl": {
+        "description": "A trait implementation on a type. Carries the full structural impl —\nincluding data the terminal drops (the impl's `methods`, `providedMethods`,\nthe negative/unsafe/synthetic flags, the blanket source type, and impl\n`docs`). The compact/std bucketing is a terminal concern and not serialized.",
+        "type": "object",
+        "properties": {
+          "args": {
+            "description": "The trait's generic arguments (`<T>` in `From<T>`).",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "assocTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonImplAssocType"
+            }
+          },
+          "blanket": {
+            "description": "Blanket source type, when this came from a blanket impl.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "docs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          },
+          "isNegative": {
+            "type": "boolean"
+          },
+          "isStd": {
+            "type": "boolean"
+          },
+          "isSynthetic": {
+            "type": "boolean"
+          },
+          "isUnsafe": {
+            "type": "boolean"
+          },
+          "methods": {
+            "description": "Methods / assoc consts the impl provides or overrides.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonMethod"
+            }
+          },
+          "providedMethods": {
+            "description": "Names of trait-default methods inherited (not overridden).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "traitName": {
+            "type": "string"
+          },
+          "traitUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "traitName"
+        ]
+      },
+      "JsonTraitMember": {
+        "type": "object",
+        "properties": {
+          "docs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          },
+          "hasDefault": {
+            "description": "For methods: `true` if a default body is provided.",
+            "type": "boolean"
+          },
+          "kind": {
+            "description": "`\"method\"`, `\"const\"`, or `\"type\"`.",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "signature"
+        ]
+      },
+      "JsonTypeAlias": {
+        "description": "A type-alias body: the aliased type (RHS of `=`) as a span sequence.",
+        "type": "object",
+        "properties": {
+          "aliased": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "aliased"
+        ]
+      },
+      "JsonUnion": {
+        "description": "A union body. Mirrors [`JsonStruct`] minus the `shape` (a union is always\nnamed fields).",
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonField"
+            }
+          },
+          "generics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          },
+          "hiddenFieldCount": {
+            "type": "integer",
+            "format": "uint",
+            "minimum": 0
+          },
+          "methods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonMethod"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "traitImpls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonTraitImpl"
+            }
+          },
+          "whereClause": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "JsonVariant": {
+        "type": "object",
+        "properties": {
+          "docs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          },
+          "fields": {
+            "description": "Struct-variant named fields.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonVariantField"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "shape": {
+            "description": "`\"plain\"`, `\"tuple\"`, or `\"struct\"`.",
+            "type": "string"
+          },
+          "tupleFields": {
+            "description": "Tuple-variant field types, each a span sequence.",
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/JsonSpan"
+              }
+            }
+          }
+        },
+        "required": [
+          "name",
+          "shape"
+        ]
+      },
+      "JsonVariantField": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonSpan"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "ShowWhen": {
+        "description": "Condition for when to show content (used by Conditional node)",
+        "oneOf": [
+          {
+            "description": "Always show (default)",
+            "type": "string",
+            "enum": [
+              "Always"
+            ]
+          },
+          {
+            "description": "Only in interactive mode",
+            "type": "string",
+            "enum": [
+              "Interactive"
+            ]
+          },
+          {
+            "description": "Only in non-interactive mode",
+            "type": "string",
+            "enum": [
+              "NonInteractive"
+            ]
+          }
+        ]
+      },
+      "SpanStyle": {
+        "description": "Semantic styling categories for Rust code elements",
+        "type": "string",
+        "enum": [
+          "Keyword",
+          "TypeName",
+          "FunctionName",
+          "FieldName",
+          "Lifetime",
+          "Generic",
+          "Plain",
+          "Punctuation",
+          "Operator",
+          "Comment",
+          "InlineRustCode",
+          "InlineCode",
+          "Strong",
+          "Emphasis",
+          "Strikethrough"
+        ]
+      },
+      "TruncationLevel": {
+        "description": "Truncation level hint for renderers",
+        "oneOf": [
+          {
+            "description": "Single-line summary (for listings)",
+            "type": "string",
+            "enum": [
+              "SingleLine"
+            ]
+          },
+          {
+            "description": "Brief paragraph (for secondary items like methods/fields)",
+            "type": "string",
+            "enum": [
+              "Brief"
+            ]
+          },
+          {
+            "description": "Full documentation (for main requested item)",
+            "type": "string",
+            "enum": [
+              "Full"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

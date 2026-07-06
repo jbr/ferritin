@@ -1,0 +1,234 @@
+/* Item reading view: header, sections, signature cards, fields, chips. */
+
+/* --- header --- */
+.item-header {
+  margin-bottom: 2rem;
+}
+.breadcrumb {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+.breadcrumb-sep {
+  color: var(--faint);
+  margin: 0 0.15rem;
+}
+.breadcrumb-link {
+  color: var(--ty);
+}
+.breadcrumb-current {
+  color: var(--ink);
+}
+.item-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.1rem;
+}
+.kind-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in oklch, var(--accent) 26%, transparent);
+  padding: 0.22rem 0.55rem;
+  border-radius: 6px;
+}
+.item-title {
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.source-link {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--faint);
+}
+
+/* --- header signature block --- */
+.signature {
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0 0 1.4rem;
+}
+.signature code {
+  font-family: var(--mono);
+}
+
+/* --- sections --- */
+.item-section {
+  margin: 2rem 0;
+}
+.section-heading {
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sig {
+  font-family: var(--mono);
+  font-size: 0.87rem;
+  line-height: 1.6;
+}
+
+/* --- signature cards (methods, members) --- */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.sig-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.sig-card-summary {
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.sig-card-summary::-webkit-details-marker {
+  display: none;
+}
+.sig-card-summary::before {
+  content: "▸";
+  color: var(--faint);
+  font-size: 0.75rem;
+  transition: transform 0.12s ease;
+}
+.sig-card[open] > .sig-card-summary::before {
+  transform: rotate(90deg);
+}
+.sig-card-docs {
+  padding: 0 1rem 0.9rem 2rem;
+  font-size: 0.92rem;
+}
+
+/* --- fields & variants --- */
+.field-list,
+.variant-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.field,
+.variant {
+  padding-left: 0.2rem;
+}
+.field-docs {
+  padding-left: 1.2rem;
+  margin-top: 0.3rem;
+  font-size: 0.92rem;
+}
+
+/* --- trait impl / implementor chips --- */
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.impl-chip {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.impl-chip[open] {
+  width: 100%;
+}
+.impl-chip-summary {
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.impl-chip-summary::-webkit-details-marker {
+  display: none;
+}
+.impl-chip-summary::before {
+  content: "▸";
+  color: var(--faint);
+  font-size: 0.7rem;
+}
+.impl-chip[open] > .impl-chip-summary::before {
+  content: "▾";
+}
+.impl-detail {
+  padding: 0.4rem 1rem 0.9rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+.assoc-type {
+  display: block;
+}
+
+/* --- module listing --- */
+.module-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.module-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 14rem) 1fr;
+  gap: 1rem;
+  align-items: baseline;
+}
+.module-item {
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  color: var(--ty);
+}
+.module-item-docs {
+  color: var(--faint);
+  font-size: 0.9rem;
+}
+.module-item-docs p {
+  margin: 0;
+}
+
+/* --- not found --- */
+.not-found-title {
+  font-size: 1.5rem;
+  margin: 0 0 0.8rem;
+}
+.suggestions {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.suggestions a {
+  font-family: var(--mono);
+}
+
+@media (max-width: 40rem) {
+  .module-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem;
+  }
+}

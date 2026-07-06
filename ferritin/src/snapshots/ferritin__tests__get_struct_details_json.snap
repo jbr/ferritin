@@ -52,7 +52,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
             {
               "text": "Vector",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec"
+              "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec",
+              "path": "alloc::vec::Vec"
             },
             {
               "text": " for testing intra-doc link resolution with renamed imports.",
@@ -69,7 +70,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
             {
               "text": "HashMap",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/index.html?search=std%3A%3Acollections%3A%3Ahash%3A%3Amap%3A%3AHashMap"
+              "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/index.html?search=std%3A%3Acollections%3A%3Ahash%3A%3Amap%3A%3AHashMap",
+              "path": "std::collections::hash::map::HashMap"
             },
             {
               "text": " which is a non-renamed import.",
@@ -93,7 +95,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
           {
             "text": "String",
             "style": "TypeName",
-            "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+            "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html",
+            "path": "alloc::string::String"
           }
         ],
         "docs": [
@@ -265,7 +268,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
           {
             "text": "String",
             "style": "TypeName",
-            "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+            "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html",
+            "path": "alloc::string::String"
           },
           {
             "text": ",",
@@ -565,7 +569,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "TestStruct",
                 "style": "TypeName",
-                "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
+                "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html",
+                "path": "fixture_crate::TestStruct"
               }
             ],
             "signature": [
@@ -613,7 +618,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "TestStruct",
                 "style": "TypeName",
-                "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
+                "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html",
+                "path": "fixture_crate::TestStruct"
               }
             ]
           }
@@ -646,7 +652,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "Result",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/fmt/type.Result.html"
+                "url": "http://docs.rust-lang.org/nightly/core/fmt/type.Result.html",
+                "path": "core::fmt::Result"
               }
             ],
             "signature": [
@@ -710,7 +717,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "Formatter",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/fmt/struct.Formatter.html"
+                "url": "http://docs.rust-lang.org/nightly/core/fmt/struct.Formatter.html",
+                "path": "core::fmt::Formatter"
               },
               {
                 "text": "<",
@@ -743,7 +751,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "Result",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/fmt/type.Result.html"
+                "url": "http://docs.rust-lang.org/nightly/core/fmt/type.Result.html",
+                "path": "core::fmt::Result"
               }
             ]
           }
@@ -834,7 +843,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "String",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html",
+                "path": "alloc::string::String"
               }
             ]
           }
@@ -867,7 +877,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "String",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html",
+                "path": "alloc::string::String"
               }
             ],
             "signature": [
@@ -915,7 +926,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "String",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html",
+                "path": "alloc::string::String"
               }
             ]
           },
@@ -927,7 +939,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "Result",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/result/enum.Result.html"
+                "url": "http://docs.rust-lang.org/nightly/core/result/enum.Result.html",
+                "path": "core::result::Result"
               },
               {
                 "text": "<",
@@ -952,7 +965,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "String",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html",
+                "path": "alloc::string::String"
               },
               {
                 "text": ">",
@@ -1040,7 +1054,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "Result",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/result/enum.Result.html"
+                "url": "http://docs.rust-lang.org/nightly/core/result/enum.Result.html",
+                "path": "core::result::Result"
               },
               {
                 "text": "<",
@@ -1065,7 +1080,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "String",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+                "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html",
+                "path": "alloc::string::String"
               },
               {
                 "text": ">",
@@ -1124,7 +1140,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "Infallible",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html"
+                "url": "http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html",
+                "path": "core::convert::Infallible"
               }
             ]
           }
@@ -1181,7 +1198,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\"), 
               {
                 "text": "TryFrom",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html"
+                "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
+                "path": "core::convert::TryFrom"
               },
               {
                 "text": "<",

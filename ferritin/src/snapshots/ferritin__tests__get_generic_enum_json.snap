@@ -35,7 +35,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
             {
               "text": "crate::TestEnum",
               "style": "InlineCode",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html"
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html",
+              "path": "fixture_crate::submodule::TestEnum"
             }
           ]
         }
@@ -82,7 +83,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
       {
         "text": "String",
         "style": "TypeName",
-        "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html"
+        "url": "http://docs.rust-lang.org/nightly/alloc/string/struct.String.html",
+        "path": "alloc::string::String"
       },
       {
         "text": ">",
@@ -117,7 +119,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
       {
         "text": "Clone",
         "style": "TypeName",
-        "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html"
+        "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html",
+        "path": "core::clone::Clone"
       },
       {
         "text": " + ",
@@ -126,7 +129,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
       {
         "text": "Send",
         "style": "TypeName",
-        "url": "http://docs.rust-lang.org/nightly/core/marker/trait.Send.html"
+        "url": "http://docs.rust-lang.org/nightly/core/marker/trait.Send.html",
+        "path": "core::marker::Send"
       },
       {
         "text": ",",
@@ -151,7 +155,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
       {
         "text": "std::fmt::Display",
         "style": "TypeName",
-        "url": "http://docs.rust-lang.org/nightly/core/fmt/trait.Display.html"
+        "url": "http://docs.rust-lang.org/nightly/core/fmt/trait.Display.html",
+        "path": "core::fmt::Display"
       }
     ],
     "variants": [
@@ -407,7 +412,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
               {
                 "text": "Infallible",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html"
+                "url": "http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html",
+                "path": "core::convert::Infallible"
               }
             ]
           }
@@ -464,7 +470,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
               {
                 "text": "TryFrom",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html"
+                "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
+                "path": "core::convert::TryFrom"
               },
               {
                 "text": "<",

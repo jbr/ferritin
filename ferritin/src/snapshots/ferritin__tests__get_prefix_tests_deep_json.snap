@@ -132,86 +132,10 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
                     "style": "Plain"
                   }
                 ]
-              },
-              {
-                "type": "list",
-                "items": [
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "self::DeepMarker",
-                            "style": "InlineCode",
-                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DeepMarker.html"
-                          },
-                          {
-                            "text": " — local sibling.",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "super::PrefixMarker",
-                            "style": "InlineCode",
-                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html"
-                          },
-                          {
-                            "text": " — one module up.",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "super::super::TestStruct",
-                            "style": "InlineCode",
-                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
-                          },
-                          {
-                            "text": " — two modules up (crate root).",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "crate::TestStruct",
-                            "style": "InlineCode",
-                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
-                          },
-                          {
-                            "text": " — absolute path from crate root.",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
               }
             ],
-            "level": "SingleLine"
+            "level": "SingleLine",
+            "truncated": true
           }
         ]
       },
@@ -299,61 +223,10 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
                     "style": "Plain"
                   }
                 ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "This struct demonstrates basic usage patterns and should show completely",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "since it only has one paragraph of documentation.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "It uses ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vector",
-                    "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec"
-                  },
-                  {
-                    "text": " for testing intra-doc link resolution with renamed imports.",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Also tests ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "HashMap",
-                    "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/index.html?search=std%3A%3Acollections%3A%3Ahash%3A%3Amap%3A%3AHashMap"
-                  },
-                  {
-                    "text": " which is a non-renamed import.",
-                    "style": "Plain"
-                  }
-                ]
               }
             ],
-            "level": "SingleLine"
+            "level": "SingleLine",
+            "truncated": true
           }
         ]
       },

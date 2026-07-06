@@ -88,9 +88,10 @@ pub(crate) fn not_found_to_pretty_string(not_found: &NotFoundDoc<'_>) -> String 
 
 /// A search outcome. `error` is set only for the no-crates-loaded case; an empty
 /// query and a query with no matches both serialize as `{ query, results: [] }`.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-struct JsonSearch<'a> {
+pub(crate) struct JsonSearch<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     error: Option<&'static str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -102,7 +103,7 @@ struct JsonSearch<'a> {
 }
 
 impl<'a> JsonSearch<'a> {
-    fn new(doc: &SearchDoc<'a>) -> Self {
+    pub(crate) fn new(doc: &SearchDoc<'a>) -> Self {
         match doc {
             SearchDoc::Results { query, results } => Self {
                 error: None,
@@ -139,6 +140,7 @@ impl<'a> JsonSearch<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonSearchResult<'a> {
@@ -166,9 +168,10 @@ impl<'a> JsonSearchResult<'a> {
 
 /// A not-found result: the query and "did you mean" candidates. A JSON client
 /// distinguishes it from a found item by the `error` discriminant.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-struct JsonNotFound {
+pub(crate) struct JsonNotFound {
     /// Always `"notFound"`.
     error: &'static str,
     query: String,
@@ -176,6 +179,7 @@ struct JsonNotFound {
     suggestions: Vec<JsonSuggestion>,
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonSuggestion {
@@ -189,12 +193,14 @@ struct JsonSuggestion {
 
 /// The crate list. Minimal projection of [`ListDoc`] (a soon-to-be-reworked
 /// command).
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-struct JsonList {
+pub(crate) struct JsonList {
     crates: Vec<JsonCrate>,
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonCrate {
@@ -231,7 +237,7 @@ impl JsonList {
 }
 
 impl JsonNotFound {
-    fn new(not_found: &NotFoundDoc<'_>) -> Self {
+    pub(crate) fn new(not_found: &NotFoundDoc<'_>) -> Self {
         Self {
             error: "notFound",
             query: not_found.query.clone(),
@@ -255,8 +261,9 @@ pub(crate) fn document_to_pretty_string(document: &Document<'_>) -> String {
 }
 
 /// Generic JSON wrapper for a presentation [`Document`] — just its nodes.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
-struct JsonDocument<'a> {
+pub(crate) struct JsonDocument<'a> {
     nodes: Vec<JsonNode<'a>>,
 }
 
@@ -268,9 +275,10 @@ impl<'a> JsonDocument<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-struct JsonItem<'a> {
+pub(crate) struct JsonItem<'a> {
     /// Canonical URL for this item (its docs.rs / std-docs page).
     #[serde(skip_serializing_if = "Option::is_none")]
     canonical_url: Option<String>,
@@ -285,7 +293,7 @@ struct JsonItem<'a> {
 }
 
 impl<'a> JsonItem<'a> {
-    fn new(item: &ItemDoc<'a>, canonical_url: Option<String>) -> Self {
+    pub(crate) fn new(item: &ItemDoc<'a>, canonical_url: Option<String>) -> Self {
         Self {
             canonical_url,
             meta: JsonMeta::new(&item.meta),
@@ -296,6 +304,7 @@ impl<'a> JsonItem<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonMeta {
@@ -329,6 +338,7 @@ impl JsonMeta {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(tag = "kind", rename_all = "camelCase")]
 enum JsonBody<'a> {
@@ -372,6 +382,7 @@ impl<'a> JsonBody<'a> {
 }
 
 /// A type-alias body: the aliased type (RHS of `=`) as a span sequence.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonTypeAlias<'a> {
@@ -389,6 +400,7 @@ impl<'a> JsonTypeAlias<'a> {
 }
 
 /// A constant body: name, type, and optional value expression.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonConstant<'a> {
@@ -410,6 +422,7 @@ impl<'a> JsonConstant<'a> {
 }
 
 /// A static body: name, type, and value expression.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonStatic<'a> {
@@ -430,6 +443,7 @@ impl<'a> JsonStatic<'a> {
 }
 
 /// A macro body: its definition source verbatim.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonMacro<'a> {
@@ -446,6 +460,7 @@ impl<'a> JsonMacro<'a> {
 
 /// A union body. Mirrors [`JsonStruct`] minus the `shape` (a union is always
 /// named fields).
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonUnion<'a> {
@@ -481,6 +496,7 @@ impl<'a> JsonUnion<'a> {
 /// A free function body. Mirrors [`JsonMethod`] minus the assoc-item
 /// `kind`/`visibility` and per-item `docs` — params live inside `signature`, so
 /// a function and a method serialize the same way.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonFunction<'a> {
@@ -513,6 +529,7 @@ impl<'a> JsonFunction<'a> {
 
 /// A module body: its child items as a flat list. Grouping is left to the
 /// client — each item carries the `kind` it would group under.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonModule<'a> {
@@ -528,6 +545,7 @@ impl<'a> JsonModule<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonModuleItem<'a> {
@@ -552,6 +570,7 @@ impl<'a> JsonModuleItem<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonTrait<'a> {
@@ -591,6 +610,7 @@ impl<'a> JsonTrait<'a> {
 
 /// A trait implementor: the implementing type plus the impl's structured
 /// metadata (richer than the terminal, which shows the type and assoc types).
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonImplementor<'a> {
@@ -637,6 +657,7 @@ impl<'a> JsonImplementor<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonTraitMember<'a> {
@@ -665,6 +686,7 @@ impl<'a> JsonTraitMember<'a> {
 
 /// A directly-queried trait associated item (type or const). Its own kind is
 /// serialized as `assocKind` to avoid colliding with the `JsonBody` `kind` tag.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonAssocItem<'a> {
@@ -689,6 +711,7 @@ impl<'a> JsonAssocItem<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonEnum<'a> {
@@ -722,6 +745,7 @@ impl<'a> JsonEnum<'a> {
 /// including data the terminal drops (the impl's `methods`, `providedMethods`,
 /// the negative/unsafe/synthetic flags, the blanket source type, and impl
 /// `docs`). The compact/std bucketing is a terminal concern and not serialized.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonTraitImpl<'a> {
@@ -777,6 +801,7 @@ impl<'a> JsonTraitImpl<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonImplAssocType<'a> {
@@ -794,6 +819,7 @@ impl<'a> JsonImplAssocType<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonVariant<'a> {
@@ -842,6 +868,7 @@ impl<'a> JsonVariant<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonVariantField<'a> {
@@ -850,6 +877,7 @@ struct JsonVariantField<'a> {
     type_signature: Vec<JsonSpan<'a>>,
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonStruct<'a> {
@@ -908,6 +936,7 @@ impl<'a> JsonStruct<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonMethod<'a> {
@@ -952,6 +981,7 @@ impl<'a> JsonMethod<'a> {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonField<'a> {
@@ -994,6 +1024,7 @@ impl<'a> JsonField<'a> {
 /// JSON mirror of [`DocumentNode`] — a faithful serialization of the
 /// presentation IR, used for the header, docs, source, opaque methods, and
 /// not-yet-modeled bodies.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(tag = "type", rename_all = "camelCase")]
 enum JsonNode<'a> {
@@ -1018,7 +1049,16 @@ enum JsonNode<'a> {
     CodeBlock {
         #[serde(skip_serializing_if = "Option::is_none")]
         lang: Option<Cow<'a, str>>,
-        code: Cow<'a, str>,
+        /// Syntax-highlighted spans that tile the source: concatenating their
+        /// `text` reconstructs the raw code (there is no separate `code` field).
+        /// A span without a `class` is unstyled text (punctuation, plain
+        /// identifiers, or a block whose language has no grammar).
+        spans: Vec<JsonCodeSpan<'a>>,
+        /// Doctest attributes worth surfacing to a reader — `should_panic` and
+        /// `compile_fail`, positive assertions that the example is a
+        /// counterexample. Omitted when empty.
+        #[serde(skip_serializing_if = "Vec::is_empty")]
+        attrs: Vec<Cow<'a, str>>,
     },
     GeneratedCode {
         spans: Vec<JsonSpan<'a>>,
@@ -1033,8 +1073,16 @@ enum JsonNode<'a> {
         rows: Vec<Vec<JsonTableCell<'a>>>,
     },
     TruncatedBlock {
+        /// The retained nodes *after* applying `level` — a preview
+        /// (`SingleLine`/`Brief`) keeps only the first block, `Full` keeps all.
+        /// Truncation happens here rather than on the client so the wire payload
+        /// carries the summary, not the whole essay it summarizes.
         nodes: Vec<JsonNode<'a>>,
         level: TruncationLevel,
+        /// `true` when nodes were dropped — the client's cue that a fuller body
+        /// exists behind the item's navigation target.
+        #[serde(skip_serializing_if = "is_false")]
+        truncated: bool,
     },
     Conditional {
         show_when: ShowWhen,
@@ -1042,6 +1090,7 @@ enum JsonNode<'a> {
     },
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonMetadataField<'a> {
@@ -1049,25 +1098,47 @@ struct JsonMetadataField<'a> {
     value: Vec<JsonSpan<'a>>,
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 struct JsonListItem<'a> {
     content: Vec<JsonNode<'a>>,
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 struct JsonTableCell<'a> {
     spans: Vec<JsonSpan<'a>>,
 }
 
+/// A span in a syntax-highlighted code block: a slice of source and its lexical
+/// class (`keyword`, `type`, `string`, …). Distinct from [`JsonSpan`], whose
+/// `style` is a semantic, navigable [`SpanStyle`]; a code-block class is a purely
+/// lexical highlight the client colors, with no navigation.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonCodeSpan<'a> {
+    text: Cow<'a, str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    class: Option<Cow<'a, str>>,
+}
+
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonSpan<'a> {
     text: Cow<'a, str>,
     style: SpanStyle,
-    /// Resolved navigation target (intra-doc link), when the span points at
-    /// another item — the hypermedia pointer a client follows.
+    /// External navigation target (the item's docs.rs / std-docs page), when the
+    /// span points at another item — the pointer for opening upstream docs.
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<Cow<'a, str>>,
+    /// In-app navigation target: a `::`-joined item path (e.g. `trillium::Conn`)
+    /// the client routes to. Present whenever the target resolves to an item with
+    /// its own page; absent for associated items, variants, and bare external
+    /// URLs (fall back to `url`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    path: Option<Cow<'a, str>>,
 }
 
 fn is_zero(count: &usize) -> bool {
@@ -1099,6 +1170,7 @@ fn json_span<'a>(span: &Span<'a>) -> JsonSpan<'a> {
         text: span.text.clone(),
         style: span.style,
         url: span.url(),
+        path: span.nav_path(),
     }
 }
 
@@ -1121,9 +1193,16 @@ fn json_node<'a>(node: &DocumentNode<'a>) -> JsonNode<'a> {
         DocumentNode::List { items } => JsonNode::List {
             items: items.iter().map(json_list_item).collect(),
         },
-        DocumentNode::CodeBlock { lang, code } => JsonNode::CodeBlock {
+        DocumentNode::CodeBlock { lang, code, attrs } => JsonNode::CodeBlock {
             lang: lang.clone(),
-            code: code.clone(),
+            spans: crate::highlight::highlight(lang.as_deref(), code.as_ref())
+                .into_iter()
+                .map(|span| JsonCodeSpan {
+                    text: Cow::Owned(span.text.to_owned()),
+                    class: span.class.map(Cow::Borrowed),
+                })
+                .collect(),
+            attrs: attrs.clone(),
         },
         DocumentNode::GeneratedCode { spans } => JsonNode::GeneratedCode {
             spans: json_spans(spans),
@@ -1141,10 +1220,22 @@ fn json_node<'a>(node: &DocumentNode<'a>) -> JsonNode<'a> {
                 .map(|row| row.iter().map(json_table_cell).collect())
                 .collect(),
         },
-        DocumentNode::TruncatedBlock { nodes, level } => JsonNode::TruncatedBlock {
-            nodes: json_nodes(nodes),
-            level: *level,
-        },
+        DocumentNode::TruncatedBlock { nodes, level } => {
+            // A preview level keeps only the first block; the terminal renderers
+            // apply the same "first node" rule at render time (see
+            // `renderer::plain`). `Full` is the item's own docs — kept whole.
+            let retained: &[DocumentNode] = match level {
+                TruncationLevel::Full => nodes,
+                TruncationLevel::SingleLine | TruncationLevel::Brief => {
+                    &nodes[..nodes.len().min(1)]
+                }
+            };
+            JsonNode::TruncatedBlock {
+                nodes: json_nodes(retained),
+                level: *level,
+                truncated: retained.len() < nodes.len(),
+            }
+        }
         DocumentNode::Conditional { show_when, nodes } => JsonNode::Conditional {
             show_when: *show_when,
             nodes: json_nodes(nodes),

@@ -63,7 +63,7 @@ fn render_node(node: &DocumentNode, output: &mut impl Write) -> Result {
             writeln!(output, "</list>")?;
             Ok(())
         }
-        DocumentNode::CodeBlock { lang, code } => {
+        DocumentNode::CodeBlock { lang, code, .. } => {
             let lang_attr = lang
                 .as_ref()
                 .map(|l| format!(" lang=\"{}\"", l))
