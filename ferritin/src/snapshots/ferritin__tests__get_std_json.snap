@@ -43156,7 +43156,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
               {
                 "type": "codeBlock",
                 "lang": "rust",
-                "code": "unsafe {\n    // A flag we want to pack into our pointer\n    static HAS_DATA: usize = 0x1;\n    static FLAG_MASK: usize = !HAS_DATA;\n\n    // Our value, which must have enough alignment to have spare least-significant-bits.\n    let my_precious_data: u32 = 17;\n    assert!(align_of::<u32>() > 1);\n\n    // Create a tagged pointer\n    let ptr = &my_precious_data as *const u32;\n    let tagged = ptr.map_addr(|addr| addr | HAS_DATA);\n\n    // Check the flag:\n    if tagged.addr() & HAS_DATA != 0 {\n        // Untag and read the pointer\n        let data = *tagged.map_addr(|addr| addr & FLAG_MASK);\n        assert_eq!(data, 17);\n    } else {\n        unreachable!()\n    }\n}"
+                "code": "// A flag we want to pack into our pointer\nstatic HAS_DATA: usize = 0x1;\nstatic FLAG_MASK: usize = !HAS_DATA;\n\n// Our value, which must have enough alignment to have spare least-significant-bits.\nlet my_precious_data: u32 = 17;\nassert!(align_of::<u32>() > 1);\n\n// Create a tagged pointer\nlet ptr = &my_precious_data as *const u32;\nlet tagged = ptr.map_addr(|addr| addr | HAS_DATA);\n\n// Check the flag:\nif tagged.addr() & HAS_DATA != 0 {\n    // Untag and read the pointer\n    let data = unsafe { *tagged.map_addr(|addr| addr & FLAG_MASK) };\n    assert_eq!(data, 17);\n} else {\n    unreachable!()\n}"
               },
               {
                 "type": "paragraph",
