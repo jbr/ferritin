@@ -56,6 +56,20 @@ pub(crate) enum Commands {
 
     /// List available crates
     List,
+    Serve,
+
+    /// Write the OpenAPI schema for the JSON API to a file (development tool).
+    ///
+    /// Writes a file rather than stdout because the client build script emits
+    /// its progress to stdout; a `cargo run ... > file` redirect would splice
+    /// that noise into the JSON. Defaults to the committed `assets/openapi.json`
+    /// so a bare `ferritin schema` regenerates it in place.
+    #[cfg(feature = "schema")]
+    Schema {
+        /// Output path for the generated document.
+        #[arg(default_value = crate::schema::DEFAULT_OUTPUT_PATH)]
+        output: std::path::PathBuf,
+    },
 }
 
 /// What to search: a single crate, or every available crate.
@@ -227,6 +241,16 @@ impl Commands {
                 let history_entry = Some(HistoryEntry::List { default_crate });
                 (doc, is_error, history_entry)
             }
+
+            Commands::Serve => {
+                crate::serve::serve();
+                return (Document::new(), false, None);
+            }
+
+            // Intercepted in `main` before this point; arm keeps the match
+            // exhaustive when the `schema` feature is enabled.
+            #[cfg(feature = "schema")]
+            Commands::Schema { .. } => (Document::new(), false, None),
         }
     }
 }

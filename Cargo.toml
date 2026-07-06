@@ -9,10 +9,10 @@ repository = "https://github.com/jbr/ferritin"
 license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
-anyhow = "1.0.102"
+anyhow = "1.0.103"
 cargo_metadata = "0.23.1"
 elsa = "1.11.2"
-rustc-hash = { version = "2.1.2" }
+rustc-hash = { version = "2.1.3" }
 rustdoc-types = { version = "0.60", features = ["rustc-hash", "rkyv_0_8"] }
 serde = { version = "1.0.228", features = ["derive"] }
 shellexpand = "3.1.2"
@@ -29,3 +29,11 @@ walkdir = "2.5.0"
 inherits = "release"
 lto = true
 codegen-units = 1
+
+# TEMPORARY: test the half-close fix in full-duplex-async-copy (used by
+# trillium-proxy for WebSocket upgrade tunnels) against a local checkout. The
+# published 0.1.0 tears down both directions when one read half hits EOF, which
+# collapses proxied Vite HMR sockets into a reload loop. Drop once a fixed
+# version is published.
+[patch.crates-io]
+trillium-frontend = { path = "../trillium-frontend" }

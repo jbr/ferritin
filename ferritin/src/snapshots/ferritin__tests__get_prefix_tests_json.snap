@@ -266,86 +266,10 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests\")
                     "style": "Plain"
                   }
                 ]
-              },
-              {
-                "type": "list",
-                "items": [
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "crate::TestStruct",
-                            "style": "InlineCode",
-                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
-                          },
-                          {
-                            "text": " — absolute path from crate root.",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "self::PrefixMarker",
-                            "style": "InlineCode",
-                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html"
-                          },
-                          {
-                            "text": " — sibling in the same module.",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "super::TestStruct",
-                            "style": "InlineCode",
-                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html"
-                          },
-                          {
-                            "text": " — parent of this module is the crate root.",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "crate::submodule::TestEnum",
-                            "style": "InlineCode",
-                            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html"
-                          },
-                          {
-                            "text": " — deep absolute path.",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
               }
             ],
-            "level": "SingleLine"
+            "level": "SingleLine",
+            "truncated": true
           }
         ]
       }

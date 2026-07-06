@@ -176,7 +176,7 @@ impl<'a> InteractiveState<'a> {
                 // Container: children handle their own spacing
             }
 
-            DocumentNode::CodeBlock { lang, code } => {
+            DocumentNode::CodeBlock { lang, code, .. } => {
                 // Block element: unconditionally position at indent
                 self.layout.pos.x = self.layout.indent;
 

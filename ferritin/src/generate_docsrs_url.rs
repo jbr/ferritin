@@ -118,6 +118,33 @@ fn generate_url_for_associated_item(
     let item_name = item.name().unwrap_or("unknown");
     let kind = item.kind();
 
+    // Only these kinds actually live *inside* another item, so only they can be
+    // found by the parent scans below. Everything else — notably modules that
+    // lack a `paths` entry, like the compiler's per-integer `core::i32` support
+    // modules — would scan `all_items()` in vain. That scan forces the whole
+    // crate index to materialize from the archive (core is 61 MB) and finds
+    // nothing, so short-circuit before paying for it.
+    use rustdoc_types::ItemKind;
+    if !matches!(
+        kind,
+        ItemKind::Function
+            | ItemKind::AssocConst
+            | ItemKind::AssocType
+            | ItemKind::Variant
+            | ItemKind::StructField
+    ) {
+        // A path-less module still has a derivable page: `{base}/{crate}/{name}/`.
+        if kind == ItemKind::Module {
+            let base = if is_std {
+                String::from("http://docs.rust-lang.org/nightly")
+            } else {
+                format!("https://docs.rs/{crate_name}/{version}")
+            };
+            return format!("{base}/{crate_name}/{item_name}/index.html");
+        }
+        return fallback_url(crate_name, version, is_std);
+    }
+
     // Search through all impl blocks to find which one contains this item
     for impl_item in docs.all_items() {
         if let ItemEnum::Impl(impl_block) = &impl_item.inner
@@ -184,9 +211,14 @@ fn generate_url_for_associated_item(
     }
 
     // Fallback - couldn't determine parent
+    fallback_url(crate_name, version, is_std)
+}
+
+/// Last-resort URL when we can't place an item precisely: the crate root page.
+fn fallback_url(crate_name: &str, version: &str, is_std: bool) -> String {
     if is_std {
-        format!("https://doc.rust-lang.org/nightly/{}/", crate_name)
+        format!("https://doc.rust-lang.org/nightly/{crate_name}/")
     } else {
-        format!("https://docs.rs/{}/{}/{}/", crate_name, version, crate_name)
+        format!("https://docs.rs/{crate_name}/{version}/{crate_name}/")
     }
 }

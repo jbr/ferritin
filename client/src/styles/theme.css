@@ -1,0 +1,98 @@
+/*
+ * Theme palettes. Two semantic variable sets from the design directions:
+ * light = "A · Foundry" (warm light), dark = "C · Lamp" (warm dark). The toggle
+ * swaps `data-theme` on <html>; nothing else needs to know which theme is active.
+ * Fonts are held constant across the pair (Hanken Grotesk / JetBrains Mono) so
+ * only color flips — the two directions' own font pairings are not carried over.
+ */
+
+:root {
+  /* light — A · Foundry (docs reading view) */
+  --bg: oklch(0.982 0.008 80);
+  --surface: oklch(0.967 0.012 78);
+  --sunken: oklch(0.945 0.014 76);
+  --border: oklch(0.885 0.014 76);
+  --ink: oklch(0.27 0.02 55);
+  --muted: oklch(0.5 0.022 55);
+  --faint: oklch(0.64 0.02 60);
+  --accent: oklch(0.575 0.13 45);
+  --accent2: oklch(0.7 0.1 78);
+  --link: oklch(0.5 0.12 250);
+  --kw: oklch(0.5 0.13 35);
+  --ty: oklch(0.45 0.09 235);
+  --fn: oklch(0.52 0.12 65);
+  --str: oklch(0.47 0.09 145);
+  --com: oklch(0.62 0.03 95);
+  --num: oklch(0.5 0.11 30);
+  --life: oklch(0.52 0.11 22);
+  --punct: oklch(0.5 0.02 60);
+  --warn-ink: oklch(0.45 0.11 65);
+  --warn-bg: oklch(0.95 0.045 80);
+  --warn-edge: oklch(0.72 0.13 70);
+  --fail-ink: oklch(0.47 0.16 25);
+  --fail-bg: oklch(0.95 0.04 25);
+  --fail-edge: oklch(0.6 0.19 25);
+
+  --sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  /* dark — C · Lamp (docs reading view) */
+  --bg: oklch(0.2 0.012 65);
+  --surface: oklch(0.238 0.014 65);
+  --sunken: oklch(0.168 0.012 65);
+  --border: oklch(0.32 0.016 65);
+  --ink: oklch(0.9 0.014 85);
+  --muted: oklch(0.7 0.02 80);
+  --faint: oklch(0.55 0.02 75);
+  --accent: oklch(0.78 0.12 75);
+  --accent2: oklch(0.72 0.11 45);
+  --link: oklch(0.8 0.1 200);
+  --kw: oklch(0.8 0.11 70);
+  --ty: oklch(0.82 0.08 205);
+  --fn: oklch(0.85 0.1 130);
+  --str: oklch(0.82 0.09 145);
+  --com: oklch(0.58 0.02 80);
+  --num: oklch(0.8 0.1 45);
+  --life: oklch(0.8 0.1 40);
+  --punct: oklch(0.72 0.02 80);
+  --warn-ink: oklch(0.87 0.1 82);
+  --warn-bg: oklch(0.3 0.05 75);
+  --warn-edge: oklch(0.7 0.12 75);
+  --fail-ink: oklch(0.85 0.12 32);
+  --fail-bg: oklch(0.3 0.06 25);
+  --fail-edge: oklch(0.62 0.17 28);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

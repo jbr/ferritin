@@ -1,0 +1,210 @@
+/* Syntax tokens, code blocks, doc prose, and shared status text. */
+
+/* --- syntax token colors (SpanStyle → semantic color) --- */
+.tok-Keyword {
+  color: var(--kw);
+}
+.tok-TypeName {
+  color: var(--ty);
+}
+.tok-FunctionName {
+  color: var(--fn);
+}
+.tok-FieldName {
+  color: var(--ink);
+}
+.tok-Lifetime {
+  color: var(--life);
+}
+.tok-Generic {
+  color: var(--ty);
+}
+.tok-Plain {
+  color: inherit;
+}
+.tok-Punctuation,
+.tok-Operator {
+  color: var(--punct);
+}
+.tok-Comment {
+  color: var(--com);
+  font-style: italic;
+}
+.tok-InlineRustCode,
+.tok-InlineCode {
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+.tok-Strong {
+  font-weight: 700;
+  color: var(--ink);
+}
+.tok-Emphasis {
+  font-style: italic;
+}
+.tok-Strikethrough {
+  text-decoration: line-through;
+}
+
+a.tok {
+  color: inherit;
+  text-decoration: none;
+}
+a.tok:hover {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklch, currentColor 45%, transparent);
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+/* --- code blocks --- */
+.code-block {
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 0.9rem 0;
+}
+.code-block pre {
+  margin: 0;
+  overflow-x: auto;
+}
+.code-block code {
+  font-family: var(--mono);
+}
+
+/* Syntect scope classes (lexical highlight of fenced blocks). These reuse the
+   same color variables as the semantic `tok-*` classes, so example code and
+   generated signatures stay visually consistent across both themes. */
+.syn-keyword {
+  color: var(--kw);
+}
+.syn-type {
+  color: var(--ty);
+}
+.syn-function {
+  color: var(--fn);
+}
+.syn-string {
+  color: var(--str);
+}
+.syn-number,
+.syn-constant {
+  color: var(--num);
+}
+.syn-comment {
+  color: var(--com);
+  font-style: italic;
+}
+.syn-operator,
+.syn-punctuation {
+  color: var(--punct);
+}
+.syn-variable {
+  color: var(--ink);
+}
+
+/* Doctest-attribute banner: `should_panic` / `compile_fail` mark a snippet as a
+   deliberate counterexample, so it gets a prominent tinted note. */
+.code-note {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+.code-note-item {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.65rem;
+  border-radius: 6px;
+  border-left: 3px solid;
+}
+.code-note-item.warn {
+  color: var(--warn-ink);
+  background: var(--warn-bg);
+  border-color: var(--warn-edge);
+}
+.code-note-item.fail {
+  color: var(--fail-ink);
+  background: var(--fail-bg);
+  border-color: var(--fail-edge);
+}
+
+/* --- doc prose --- */
+.item-docs,
+.sig-card-docs,
+.field-docs,
+.module-item-docs,
+.impl-detail {
+  color: var(--muted);
+}
+.item-docs p,
+.sig-card-docs p,
+.field-docs p {
+  margin: 0.6rem 0;
+}
+.item-docs {
+  font-size: 1rem;
+  line-height: 1.65;
+  max-width: 68ch;
+}
+.item-docs a,
+.sig-card-docs a,
+.field-docs a {
+  color: var(--link);
+}
+
+.doc-table {
+  border-collapse: collapse;
+  margin: 0.8rem 0;
+  font-size: 0.9rem;
+}
+.doc-table th,
+.doc-table td {
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.6rem;
+  text-align: left;
+}
+.doc-metadata {
+  margin: 0.6rem 0;
+}
+.doc-metadata-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.doc-metadata dt {
+  font-weight: 600;
+  color: var(--faint);
+}
+
+blockquote {
+  margin: 0.8rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--border);
+  color: var(--faint);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.4rem 0;
+}
+
+/* --- shared status / helpers --- */
+.status {
+  color: var(--muted);
+  padding: 1rem 0;
+}
+.status.error {
+  color: var(--ink);
+}
+.muted {
+  color: var(--faint);
+  font-size: 0.9rem;
+}

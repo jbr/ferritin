@@ -141,6 +141,7 @@ pub struct Document<'a> {
 }
 
 /// Condition for when to show content (used by Conditional node)
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
 pub enum ShowWhen {
     /// Always show (default)
@@ -200,6 +201,11 @@ pub enum DocumentNode<'a> {
     CodeBlock {
         lang: Option<Cow<'a, str>>,
         code: Cow<'a, str>,
+        /// Doctest attributes that are positive assertions about the example's
+        /// behavior — currently `should_panic` and `compile_fail` — surfaced so
+        /// the web client can badge counterexamples. Terminal renderers ignore
+        /// it. Empty for non-markdown code blocks (source listings, signatures).
+        attrs: Vec<Cow<'a, str>>,
     },
 
     /// Generated code with pre-styled spans (for signatures, etc.)
@@ -245,6 +251,7 @@ pub struct ListItem<'a> {
 }
 
 /// Heading level for semantic structure
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
 pub enum HeadingLevel {
     Title,   // Top-level item name: "Item: Vec"
@@ -252,6 +259,7 @@ pub enum HeadingLevel {
 }
 
 /// Truncation level hint for renderers
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
 pub enum TruncationLevel {
     /// Single-line summary (for listings)
@@ -274,9 +282,26 @@ impl<'a> Span<'a> {
     pub fn url(&self) -> Option<Cow<'a, str>> {
         self.action.as_ref()?.url()
     }
+
+    /// The in-app navigation target for this span, as a `::`-joined item path
+    /// (e.g. `trillium::Conn`) that [`Navigator::resolve_path`] accepts. Distinct
+    /// from [`url`](Self::url), which is the external docs.rs/std pointer: the web
+    /// client navigates within the app by `path`, falling back to `url` only for
+    /// targets that have no resolvable path (associated items, variants, external
+    /// URLs). `None` when the span carries no navigable action.
+    pub fn nav_path(&self) -> Option<Cow<'a, str>> {
+        match self.action.as_ref()? {
+            TuiAction::Navigate { doc_ref, .. } => {
+                doc_ref.path().map(|path| Cow::Owned(path.to_string()))
+            }
+            TuiAction::NavigateToPath { path, .. } => Some(path.clone()),
+            _ => None,
+        }
+    }
 }
 
 /// Semantic styling categories for Rust code elements
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize)]
 pub enum SpanStyle {
     // Rust code semantic elements
@@ -530,6 +555,7 @@ impl<'a> DocumentNode<'a> {
         DocumentNode::CodeBlock {
             lang: lang.map(Into::into),
             code: code.into(),
+            attrs: Vec::new(),
         }
     }
 
@@ -654,7 +680,7 @@ mod tests {
     fn test_code_block() {
         let code = DocumentNode::code_block(Some("rust".to_string()), "fn main() {}".to_string());
 
-        if let DocumentNode::CodeBlock { lang, code } = code {
+        if let DocumentNode::CodeBlock { lang, code, .. } = code {
             assert_eq!(lang, Some("rust".into()));
             assert_eq!(code, "fn main() {}");
         } else {

@@ -144,7 +144,7 @@ impl<'w, W: Write> AiRenderer<'w, W> {
                 result
             }
             DocumentNode::List { items } => self.render_list(items),
-            DocumentNode::CodeBlock { code, lang } => {
+            DocumentNode::CodeBlock { code, lang, .. } => {
                 self.write_indent()?;
                 match lang.as_deref() {
                     Some(lang) if !lang.is_empty() => writeln!(self.output, "```{lang}")?,

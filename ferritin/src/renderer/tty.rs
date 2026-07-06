@@ -548,7 +548,7 @@ fn build_node_lines<'a>(
                 }
             }
         }
-        DocumentNode::CodeBlock { lang, code } => {
+        DocumentNode::CodeBlock { lang, code, .. } => {
             if matches!(budget, RenderBudget::Characters { .. }) {
                 return;
             }

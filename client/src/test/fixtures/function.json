@@ -1,0 +1,118 @@
+{
+  "canonicalUrl": "http://docs.rust-lang.org/nightly/core/mem/fn.swap.html",
+  "meta": {
+    "name": "swap",
+    "kind": "function",
+    "visibility": "public",
+    "definedAt": "core::mem::swap",
+    "crateName": "core",
+    "crateVersion": "1.98.0-nightly (f28ac764c 2026-06-23)"
+  },
+  "docs": [
+    {
+      "type": "truncatedBlock",
+      "nodes": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Swaps the values at two mutable locations, without deinitializing either one.",
+              "style": "Plain"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "If you want to swap with a default or dummy value, see ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "take",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/core/mem/fn.take.html"
+                    },
+                    { "text": ".", "style": "Plain" }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "spans": [
+                    {
+                      "text": "If you want to swap with a passed value, returning the old value, see ",
+                      "style": "Plain"
+                    },
+                    {
+                      "text": "replace",
+                      "style": "InlineCode",
+                      "url": "http://docs.rust-lang.org/nightly/core/mem/fn.replace.html"
+                    },
+                    { "text": ".", "style": "Plain" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": "Title",
+          "spans": [{ "text": "Examples", "style": "Plain" }]
+        },
+        {
+          "type": "codeBlock",
+          "lang": "rust",
+          "code": "use std::mem;\n\nlet mut x = 5;\nlet mut y = 42;\n\nmem::swap(&mut x, &mut y);\n\nassert_eq!(42, x);\nassert_eq!(5, y);"
+        }
+      ],
+      "level": "Full"
+    }
+  ],
+  "body": {
+    "kind": "function",
+    "name": "swap",
+    "isConst": true,
+    "signature": [
+      { "text": "const", "style": "Keyword" },
+      { "text": " ", "style": "Plain" },
+      { "text": "fn", "style": "Keyword" },
+      { "text": " ", "style": "Plain" },
+      {
+        "text": "swap",
+        "style": "Plain",
+        "url": "http://docs.rust-lang.org/nightly/core/mem/fn.swap.html"
+      },
+      { "text": "<", "style": "Punctuation" },
+      { "text": "T", "style": "Generic" },
+      { "text": ">", "style": "Punctuation" },
+      { "text": "(", "style": "Punctuation" },
+      { "text": "x", "style": "Plain" },
+      { "text": ":", "style": "Punctuation" },
+      { "text": " ", "style": "Plain" },
+      { "text": "&", "style": "Operator" },
+      { "text": "mut", "style": "Keyword" },
+      { "text": " ", "style": "Plain" },
+      { "text": "T", "style": "Generic" },
+      { "text": ",", "style": "Punctuation" },
+      { "text": " ", "style": "Plain" },
+      { "text": "y", "style": "Plain" },
+      { "text": ":", "style": "Punctuation" },
+      { "text": " ", "style": "Plain" },
+      { "text": "&", "style": "Operator" },
+      { "text": "mut", "style": "Keyword" },
+      { "text": " ", "style": "Plain" },
+      { "text": "T", "style": "Generic" },
+      { "text": ")", "style": "Punctuation" }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "error": "notFound",
+  "query": "std::vec::Voc",
+  "suggestions": [
+    {
+      "path": "std::vec::ExtractIf",
+      "kind": "struct",
+      "url": "http://docs.rust-lang.org/nightly/alloc/vec/extract_if/struct.ExtractIf.html"
+    },
+    {
+      "path": "std::vec::Splice",
+      "kind": "struct",
+      "url": "http://docs.rust-lang.org/nightly/alloc/vec/splice/struct.Splice.html"
+    },
+    {
+      "path": "std::vec::Drain",
+      "kind": "struct",
+      "url": "http://docs.rust-lang.org/nightly/alloc/vec/drain/struct.Drain.html"
+    },
+    {
+      "path": "std::vec::IntoIter",
+      "kind": "struct",
+      "url": "http://docs.rust-lang.org/nightly/alloc/vec/into_iter/struct.IntoIter.html"
+    },
+    {
+      "path": "std::vec::PeekMut",
+      "kind": "struct",
+      "url": "http://docs.rust-lang.org/nightly/alloc/vec/peek_mut/struct.PeekMut.html"
+    }
+  ]
+}

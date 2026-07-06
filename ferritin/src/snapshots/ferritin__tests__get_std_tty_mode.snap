@@ -292,19 +292,19 @@ Modules
   ◦ [hint](http://docs.rust-lang.org/nightly/core/hint/index.html) 
     Hints to compiler that affects how code should be emitted or optimized. [...]
 
-  ◦ [i128](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [i128](http://docs.rust-lang.org/nightly/core/i128/index.html) 
     Redundant constants module for the [i128](http://docs.rust-lang.org/nightly/core/primitive.i128.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i128.html). [...]
 
-  ◦ [i16](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [i16](http://docs.rust-lang.org/nightly/core/i16/index.html) 
     Redundant constants module for the [i16](http://docs.rust-lang.org/nightly/core/primitive.i16.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i16.html). [...]
 
-  ◦ [i32](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [i32](http://docs.rust-lang.org/nightly/core/i32/index.html) 
     Redundant constants module for the [i32](http://docs.rust-lang.org/nightly/core/primitive.i32.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i32.html). [...]
 
-  ◦ [i64](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [i64](http://docs.rust-lang.org/nightly/core/i64/index.html) 
     Redundant constants module for the [i64](http://docs.rust-lang.org/nightly/core/primitive.i64.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i64.html). [...]
 
-  ◦ [i8](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [i8](http://docs.rust-lang.org/nightly/core/i8/index.html) 
     Redundant constants module for the [i8](http://docs.rust-lang.org/nightly/core/primitive.i8.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.i8.html). [...]
 
   ◦ [intrinsics](http://docs.rust-lang.org/nightly/core/intrinsics/index.html) 
@@ -313,7 +313,7 @@ Modules
   ◦ [io](http://docs.rust-lang.org/nightly/std/io/index.html) 
     Traits, helpers, and type definitions for core I/O functionality. [...]
 
-  ◦ [isize](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [isize](http://docs.rust-lang.org/nightly/core/isize/index.html) 
     Redundant constants module for the [isize](http://docs.rust-lang.org/nightly/core/primitive.isize.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.isize.html). [...]
 
   ◦ [iter](http://docs.rust-lang.org/nightly/core/iter/index.html) 
@@ -407,25 +407,25 @@ Modules
   ◦ [time](http://docs.rust-lang.org/nightly/std/time/index.html) 
     Temporal quantification. [...]
 
-  ◦ [u128](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [u128](http://docs.rust-lang.org/nightly/core/u128/index.html) 
     Redundant constants module for the [u128](http://docs.rust-lang.org/nightly/core/primitive.u128.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u128.html). [...]
 
-  ◦ [u16](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [u16](http://docs.rust-lang.org/nightly/core/u16/index.html) 
     Redundant constants module for the [u16](http://docs.rust-lang.org/nightly/core/primitive.u16.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u16.html). [...]
 
-  ◦ [u32](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [u32](http://docs.rust-lang.org/nightly/core/u32/index.html) 
     Redundant constants module for the [u32](http://docs.rust-lang.org/nightly/core/primitive.u32.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u32.html). [...]
 
-  ◦ [u64](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [u64](http://docs.rust-lang.org/nightly/core/u64/index.html) 
     Redundant constants module for the [u64](http://docs.rust-lang.org/nightly/core/primitive.u64.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u64.html). [...]
 
-  ◦ [u8](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [u8](http://docs.rust-lang.org/nightly/core/u8/index.html) 
     Redundant constants module for the [u8](http://docs.rust-lang.org/nightly/core/primitive.u8.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.u8.html). [...]
 
   ◦ [unsafe_binder](http://docs.rust-lang.org/nightly/core/unsafe_binder/index.html) 
     Operators used to turn types into unsafe binders and back.
 
-  ◦ [usize](https://doc.rust-lang.org/nightly/core/) 
+  ◦ [usize](http://docs.rust-lang.org/nightly/core/usize/index.html) 
     Redundant constants module for the [usize](http://docs.rust-lang.org/nightly/core/primitive.usize.html)[ primitive type](http://docs.rust-lang.org/nightly/core/primitive.usize.html). [...]
 
   ◦ [vec](http://docs.rust-lang.org/nightly/alloc/vec/index.html) 

@@ -1,0 +1,4 @@
+dist
+src/api/schema.gen.ts
+pnpm-lock.yaml
+coverage
