@@ -312,7 +312,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestTrait\"), &
           {
             "text": "test_method",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html#method.test_method"
           },
           {
             "text": "(",
@@ -386,7 +386,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestTrait\"), &
           {
             "text": "process",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/"
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html#method.process"
           },
           {
             "text": "(",

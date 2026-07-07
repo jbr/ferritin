@@ -186,7 +186,7 @@ Struct in nested module</p>
 <type-name>link_resolution_tests::nested::Str</type-name> </p>
 <truncated level="single-line"><p>
 A UTF-8–encoded, growable string.</p>
-<inline-code>String</inline-code> is the most common string type. It has of the string, stored in a heap-allocatedRepresentation). It is closely related to its borrowed<inline-code>str</inline-code>. <elided chars="6862"/></truncated>
+<inline-code>String</inline-code> is the most common string type. It has of the string, stored in a heap-allocatedRepresentation). It is closely related to its borrowed<inline-code>str</inline-code>. <elided chars="6864"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::deeply_nested::DeepStruct</type-name> </p>
@@ -587,7 +587,7 @@ Appends an element to the back of a collection, returning a reference to it.</p>
 </item>
   <item><p>
 <type-name>Vec::recycle</type-name> </p>
-<truncated level="single-line">This clears out this <inline-code>Vec</inline-code> and recycles the allocation into a new <inline-code>Vec</inline-code>. The item type of the resulting <inline-code>Vec</inline-code> needs to have the same size and alignment as the item type of the original <inline-code>Vec</inline-code>. <elided chars="1144"/></truncated>
+<truncated level="single-line">This clears out this <inline-code>Vec</inline-code> and recycles the allocation into a new <inline-code>Vec</inline-code>. The item type of the resulting <inline-code>Vec</inline-code> needs to have the same size and alignment as the item type of the original <inline-code>Vec</inline-code>. <elided chars="1210"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::remove</type-name> </p>

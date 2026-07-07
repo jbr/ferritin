@@ -131,8 +131,7 @@ fn respond_json(conn: Conn, outcome: Option<sonic_rs::Result<(Status, String)>>)
     // `halt()` so the trailing frontend handler doesn't overwrite the JSON body
     // with the SPA index.
     if let Some(Ok((status, body))) = outcome {
-        conn
-            .with_status(status)
+        conn.with_status(status)
             .with_response_header("content-type", "application/json")
             .with_body(body)
             .halt()

@@ -1,5 +1,5 @@
 use ferritin_common::{DocRef, doc_ref::Path};
-use rustdoc_types::{Item, ItemEnum};
+use rustdoc_types::Item;
 
 pub(crate) fn generate_docsrs_url(item: DocRef<'_, Item>) -> String {
     let docs = item.crate_docs();
@@ -113,17 +113,13 @@ fn generate_url_for_associated_item(
     version: &str,
     is_std: bool,
 ) -> String {
-    let docs = item.crate_docs();
-    let item_id = &item.id;
     let item_name = item.name().unwrap_or("unknown");
     let kind = item.kind();
 
-    // Only these kinds actually live *inside* another item, so only they can be
-    // found by the parent scans below. Everything else — notably modules that
-    // lack a `paths` entry, like the compiler's per-integer `core::i32` support
-    // modules — would scan `all_items()` in vain. That scan forces the whole
-    // crate index to materialize from the archive (core is 61 MB) and finds
-    // nothing, so short-circuit before paying for it.
+    // Only these kinds actually live *inside* another item, so only they can
+    // have a parent to hang a fragment URL on. Everything else — notably
+    // modules that lack a `paths` entry, like the compiler's per-integer
+    // `core::i32` support modules — short-circuits.
     use rustdoc_types::ItemKind;
     if !matches!(
         kind,
@@ -145,72 +141,23 @@ fn generate_url_for_associated_item(
         return fallback_url(crate_name, version, is_std);
     }
 
-    // Search through all impl blocks to find which one contains this item
-    for impl_item in docs.all_items() {
-        if let ItemEnum::Impl(impl_block) = &impl_item.inner
-            && impl_block.items.contains(item_id)
-        {
-            // Found the parent impl
-            if let rustdoc_types::Type::ResolvedPath(path) = &impl_block.for_
-                && let Some(parent) = item.get(&path.id)
-            {
-                // Generate parent URL
-                let parent_url = generate_docsrs_url(parent);
-
-                // Generate fragment based on item kind
-                let fragment = match kind {
-                    rustdoc_types::ItemKind::Function => {
-                        if impl_block.trait_.is_some() {
-                            // Trait method
-                            format!("#method.{}", item_name)
-                        } else {
-                            // Inherent method
-                            format!("#method.{}", item_name)
-                        }
-                    }
-                    rustdoc_types::ItemKind::AssocConst => {
-                        format!("#associatedconstant.{}", item_name)
-                    }
-                    rustdoc_types::ItemKind::AssocType => {
-                        format!("#associatedtype.{}", item_name)
-                    }
-                    _ => String::new(),
-                };
-
-                return format!("{}{}", parent_url, fragment);
-            }
-        }
+    // The parent comes from traversal context when available, otherwise from
+    // the crate's derived parent index — never from an index scan. Blanket-impl
+    // members have neither (their shared items can't be attributed to one
+    // implementor) and take the fallback, as they always have.
+    if let Some(parent) = item.parent_item() {
+        let parent_url = generate_docsrs_url(parent);
+        let fragment = match kind {
+            ItemKind::Function => format!("#method.{item_name}"),
+            ItemKind::AssocConst => format!("#associatedconstant.{item_name}"),
+            ItemKind::AssocType => format!("#associatedtype.{item_name}"),
+            ItemKind::Variant => format!("#variant.{item_name}"),
+            ItemKind::StructField => format!("#structfield.{item_name}"),
+            _ => String::new(),
+        };
+        return format!("{parent_url}{fragment}");
     }
 
-    // Check if this is an enum variant
-    if matches!(kind, rustdoc_types::ItemKind::Variant) {
-        // Find the parent enum
-        for enum_item in docs.all_items() {
-            if let ItemEnum::Enum(enum_data) = &enum_item.inner
-                && enum_data.variants.contains(item_id)
-            {
-                let parent = item.build_ref(enum_item);
-                let parent_url = generate_docsrs_url(parent);
-                return format!("{}#variant.{}", parent_url, item_name);
-            }
-        }
-    }
-
-    // Check if this is a struct field
-    if matches!(kind, rustdoc_types::ItemKind::StructField) {
-        // Find the parent struct
-        for struct_item in docs.all_items() {
-            if let ItemEnum::Struct(struct_data) = &struct_item.inner
-                && matches!(&struct_data.kind, rustdoc_types::StructKind::Plain { fields, .. } if fields.contains(item_id))
-            {
-                let parent = item.build_ref(struct_item);
-                let parent_url = generate_docsrs_url(parent);
-                return format!("{}#structfield.{}", parent_url, item_name);
-            }
-        }
-    }
-
-    // Fallback - couldn't determine parent
     fallback_url(crate_name, version, is_std)
 }
 

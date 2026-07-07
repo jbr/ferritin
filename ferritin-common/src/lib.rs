@@ -6,6 +6,7 @@ mod archive;
 pub mod conversions;
 pub mod crate_name;
 pub mod doc_ref;
+mod indexes;
 pub mod iterators;
 mod navigator;
 mod resolver;

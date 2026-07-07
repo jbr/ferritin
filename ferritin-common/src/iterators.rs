@@ -8,25 +8,54 @@
 //! - [`LazyChildren`] / [`LazyChild`]: classify a module/enum's direct
 //!   children into real items, non-glob `Use`s, and glob `Use`s. Resolution
 //!   of `Use` source paths happens in `Resolver::resolve_lazy_child`.
-//! - [`MethodIter`], [`TraitIter`], [`ImplementorIter`]: scan a crate index
-//!   for impl blocks targeting a given item. No `Use` involvement.
+//! - [`MethodIter`], [`TraitIter`], [`ImplementorIter`]: walk the impl blocks
+//!   targeting a given item, via the precomputed reverse indexes
+//!   ([`crate::indexes`]) rather than a whole-index scan. No `Use` involvement.
 
 use crate::doc_ref::DocRef;
-use rustdoc_types::{Id, Item, ItemEnum, Type, Use};
-use std::collections::hash_map::Values;
+use rustdoc_types::{Id, Item, ItemEnum, Use};
+
+/// Walk a precomputed list of impl-block `Id`s, yielding each block as a
+/// `DocRef` in `anchor`'s crate. Shared machinery for the three impl iterators.
+struct ImplBlockIter<'a> {
+    anchor: DocRef<'a, Item>,
+    ids: std::vec::IntoIter<Id>,
+}
+
+impl<'a> ImplBlockIter<'a> {
+    fn new(anchor: DocRef<'a, Item>, ids: Vec<Id>) -> Self {
+        Self {
+            anchor,
+            ids: ids.into_iter(),
+        }
+    }
+}
+
+impl<'a> Iterator for ImplBlockIter<'a> {
+    type Item = DocRef<'a, Item>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        for id in &mut self.ids {
+            if let Some(item) = self.anchor.get(&id) {
+                return Some(item);
+            }
+        }
+        None
+    }
+}
 
 pub struct MethodIter<'a> {
     item: DocRef<'a, Item>,
-    impl_block_iter: InherentImplBlockIter<'a>,
+    impl_block_iter: ImplBlockIter<'a>,
     current_item_iter: Option<std::slice::Iter<'a, Id>>,
 }
 
 impl<'a> MethodIter<'a> {
     pub(crate) fn new(item: DocRef<'a, Item>) -> Self {
-        let impl_block_iter = InherentImplBlockIter::new(item);
+        let ids = item.crate_docs().inherent_impl_ids(&item.id);
         Self {
             item,
-            impl_block_iter,
+            impl_block_iter: ImplBlockIter::new(item, ids),
             current_item_iter: None,
         }
     }
@@ -140,14 +169,15 @@ impl<'a> Iterator for LazyChildren<'a> {
     }
 }
 
-pub struct TraitIter<'a> {
-    item: DocRef<'a, Item>,
-    item_iter: Values<'a, Id, Item>,
-}
+/// Iterator over the trait impl blocks targeting a type.
+pub struct TraitIter<'a>(ImplBlockIter<'a>);
+
 impl<'a> TraitIter<'a> {
     fn new(item: DocRef<'a, Item>) -> Self {
-        let item_iter = item.crate_docs().all_items();
-        Self { item, item_iter }
+        Self(ImplBlockIter::new(
+            item,
+            item.crate_docs().trait_impl_ids(&item.id),
+        ))
     }
 }
 
@@ -155,31 +185,19 @@ impl<'a> Iterator for TraitIter<'a> {
     type Item = DocRef<'a, Item>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        for item in &mut self.item_iter {
-            if let ItemEnum::Impl(impl_block) = &item.inner
-                && let Type::ResolvedPath(path) = &impl_block.for_
-                && path.id == self.item.id
-                && impl_block.trait_.is_some()
-            {
-                return Some(self.item.build_ref(item));
-            }
-        }
-        None
+        self.0.next()
     }
 }
 
-pub struct ImplementorIter<'a> {
-    trait_item: DocRef<'a, Item>,
-    item_iter: Values<'a, Id, Item>,
-}
+/// Iterator over the (non-negative) impl blocks implementing a trait.
+pub struct ImplementorIter<'a>(ImplBlockIter<'a>);
 
 impl<'a> ImplementorIter<'a> {
     fn new(trait_item: DocRef<'a, Item>) -> Self {
-        let item_iter = trait_item.crate_docs().all_items();
-        Self {
+        Self(ImplBlockIter::new(
             trait_item,
-            item_iter,
-        }
+            trait_item.crate_docs().implementor_ids(&trait_item.id),
+        ))
     }
 }
 
@@ -187,16 +205,11 @@ impl<'a> Iterator for ImplementorIter<'a> {
     type Item = DocRef<'a, Item>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        for item in &mut self.item_iter {
-            if let ItemEnum::Impl(impl_block) = &item.inner
-                && let Some(trait_path) = &impl_block.trait_
-                && trait_path.id == self.trait_item.id
-                && !impl_block.is_negative
-            {
-                return Some(self.trait_item.build_ref(item));
-            }
-        }
-        None
+        // The index includes negative impls (`impl !Send for …`); implementor
+        // listings exclude them, matching the historical scan's filter.
+        self.0.find(
+            |item| !matches!(item.inner(), ItemEnum::Impl(impl_block) if impl_block.is_negative),
+        )
     }
 }
 
@@ -221,34 +234,5 @@ impl<'a> Iterator for MethodIter<'a> {
                 return None;
             }
         }
-    }
-}
-
-pub(crate) struct InherentImplBlockIter<'a> {
-    item: DocRef<'a, Item>,
-    item_iter: Values<'a, Id, Item>,
-}
-
-impl<'a> InherentImplBlockIter<'a> {
-    pub(crate) fn new(item: DocRef<'a, Item>) -> Self {
-        let item_iter = item.crate_docs().all_items();
-        Self { item, item_iter }
-    }
-}
-
-impl<'a> Iterator for InherentImplBlockIter<'a> {
-    type Item = DocRef<'a, Item>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        for item in &mut self.item_iter {
-            if let ItemEnum::Impl(impl_block) = &item.inner
-                && let Type::ResolvedPath(path) = &impl_block.for_
-                && path.id == self.item.id
-                && impl_block.trait_.is_none()
-            {
-                return Some(DocRef::new(self.item.navigator(), self.item, item));
-            }
-        }
-        None
     }
 }

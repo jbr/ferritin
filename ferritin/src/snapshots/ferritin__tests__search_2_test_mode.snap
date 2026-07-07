@@ -54,7 +54,7 @@ This struct demonstrates basic since it only has one paragraph <elided chars="21
 std::clone::Clone  (Trait) - score: 63.0</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
-Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4423"/></truncated>
+Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>
 </item>
   <item><p>
 std::ops::Deref  (Trait) - score: 62.2</p>

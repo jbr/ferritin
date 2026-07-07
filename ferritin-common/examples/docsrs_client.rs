@@ -46,7 +46,6 @@ fn main() -> Result<()> {
                     println!();
                     println!("Crate: {}", data.name());
                     println!("Version: {}", data.crate_version().unwrap_or("unknown"));
-                    println!("Items in index: {}", data.all_items().len());
                     println!("External crates: {}", data.external_crates_iter().count());
                     println!("Cache path: {}", data.fs_path().display());
 
