@@ -55,9 +55,11 @@ pub struct Suggestion<'a> {
 ///
 /// Both addresses are stable for the lifetime of the `Navigator`: `crate_docs`
 /// because `working_set` is a `FrozenMap` that never moves entries; the inner
-/// pointer because each `Item` and each `Use` lives at a fixed location inside
-/// the rustdoc `Crate.index` map. We compare addresses as `usize` so the key
-/// stays `Send + Sync` and `Hash`able without unsafe.
+/// pointer because each `Item` lives at a fixed address in either the resident
+/// `Crate` (cold path) or the append-only `item_cache` (warm path) — a given
+/// `Id` is only ever materialized in one of them, so revisiting an item yields
+/// the same address. We compare addresses as `usize` so the key stays
+/// `Send + Sync` and `Hash`able without unsafe.
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub(crate) struct ItemKey {
     crate_docs: usize,

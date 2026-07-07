@@ -5,7 +5,6 @@ use rustc_hash::FxHashMap;
 use rustdoc_types::{ArchivedId, Crate, ExternalCrate, Id, Item, ItemKind, ItemSummary};
 use semver::{Version, VersionReq};
 use std::collections::HashMap;
-use std::collections::hash_map::Values;
 use std::fmt::{self, Debug, Formatter};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock};
@@ -14,6 +13,7 @@ use std::thread::JoinHandle;
 use crate::CrateProvenance;
 use crate::archive::{self, Archive};
 use crate::doc_ref::{self, DocRef};
+use crate::indexes::DerivedIndexes;
 use crate::navigator::{Navigator, parse_docsrs_url};
 
 /// Wrapper around a rustdoc `Crate` with convenient query methods.
@@ -29,8 +29,9 @@ use crate::navigator::{Navigator, parse_docsrs_url};
 ///   `item_cache`, so a lookup that touches one item out of a large crate does not
 ///   pay to parse the whole thing. The small structural maps (`paths`,
 ///   `external_crates`, `root`, `crate_version`) are materialized eagerly so
-///   accessors can hand out borrows; `full_index` holds the entire index once a
-///   caller must iterate every item (impl-block scans).
+///   accessors can hand out borrows; impl lookups go through the precomputed
+///   reverse indexes in the archive ([`crate::indexes`]), so nothing ever
+///   materializes the full index.
 #[derive(Fieldwork)]
 #[fieldwork(get, rename_predicates)]
 pub struct RustdocData {
@@ -42,8 +43,11 @@ pub struct RustdocData {
     archive: Option<Archive>,
     #[field = false]
     item_cache: FrozenMap<Id, Box<Item>>,
+    /// Cold path only: reverse impl indexes computed from the resident crate on
+    /// first use. On the warm path the equivalent maps are read directly from
+    /// the archive (they're precomputed at sidecar-write time).
     #[field = false]
-    full_index: OnceLock<FxHashMap<Id, Item>>,
+    derived_indexes: OnceLock<DerivedIndexes>,
     // The eager small maps below are populated only on the warm path; on the cold
     // path the resident `Crate` is consulted instead and these stay empty.
     #[field = false]
@@ -130,7 +134,7 @@ impl RustdocData {
             write_handle,
             archive: None,
             item_cache: FrozenMap::new(),
-            full_index: OnceLock::new(),
+            derived_indexes: OnceLock::new(),
             paths: FxHashMap::default(),
             external_crates: FxHashMap::default(),
             root: Id(0),
@@ -166,7 +170,7 @@ impl RustdocData {
             write_handle: None,
             archive: Some(archive),
             item_cache: FrozenMap::new(),
-            full_index: OnceLock::new(),
+            derived_indexes: OnceLock::new(),
             paths: parts.paths,
             external_crates: parts.external_crates,
             root: parts.root,
@@ -182,9 +186,8 @@ impl RustdocData {
     // ---- Accessors ----
     //
     // Each consults the resident `Crate` (cold path) when present, otherwise the
-    // eager maps / lazily-materialized archive (warm path). Point lookups are
-    // cheap; `all_items` forces full materialization and is used only by the
-    // impl-block scans.
+    // eager maps / lazily-materialized archive (warm path). All item access is
+    // point lookups; impl relationships come from the derived reverse indexes.
 
     /// The eagerly-available `paths` map — the resident crate's, or the small map
     /// deserialized from the archive on the warm path.
@@ -204,9 +207,6 @@ impl RustdocData {
     pub fn get_item(&self, id: &Id) -> Option<&Item> {
         if let Some(crate_data) = &self.resident {
             return crate_data.index.get(id);
-        }
-        if let Some(index) = self.full_index.get() {
-            return index.get(id);
         }
         if let Some(item) = self.item_cache.get(id) {
             return Some(item);
@@ -239,13 +239,56 @@ impl RustdocData {
         self.external_map().values()
     }
 
-    /// Iterate every item in the crate. On the warm path this forces full
-    /// materialization of the index (deserializing it from the archive on first
-    /// use); used only for whole-index impl-block scans.
-    pub fn all_items(&self) -> Values<'_, Id, Item> {
-        match &self.resident {
-            Some(crate_data) => crate_data.index.values(),
-            None => self.materialized_index().values(),
+    /// Cold-path derived indexes, computed from the resident crate on first use.
+    fn cold_indexes(&self, resident: &Crate) -> &DerivedIndexes {
+        self.derived_indexes
+            .get_or_init(|| DerivedIndexes::build(resident))
+    }
+
+    /// Impl blocks with no trait targeting `type_id` (inherent impls).
+    pub(crate) fn inherent_impl_ids(&self, type_id: &Id) -> Vec<Id> {
+        if let Some(resident) = &self.resident {
+            let map = &self.cold_indexes(resident).inherent_impls;
+            map.get(type_id).cloned().unwrap_or_default()
+        } else if let Some(archive) = &self.archive {
+            archive.inherent_impl_ids(type_id)
+        } else {
+            Vec::new()
+        }
+    }
+
+    /// Trait impl blocks targeting `type_id`.
+    pub(crate) fn trait_impl_ids(&self, type_id: &Id) -> Vec<Id> {
+        if let Some(resident) = &self.resident {
+            let map = &self.cold_indexes(resident).trait_impls;
+            map.get(type_id).cloned().unwrap_or_default()
+        } else if let Some(archive) = &self.archive {
+            archive.trait_impl_ids(type_id)
+        } else {
+            Vec::new()
+        }
+    }
+
+    /// Impl blocks implementing the trait `trait_id` (negative impls included).
+    pub(crate) fn implementor_ids(&self, trait_id: &Id) -> Vec<Id> {
+        if let Some(resident) = &self.resident {
+            let map = &self.cold_indexes(resident).implementors;
+            map.get(trait_id).cloned().unwrap_or_default()
+        } else if let Some(archive) = &self.archive {
+            archive.implementor_ids(trait_id)
+        } else {
+            Vec::new()
+        }
+    }
+
+    /// The containing item of an associated item / variant / field, if indexed
+    /// (impl-block members map to the impl's target type; blanket-impl members
+    /// are absent). See [`crate::indexes::DerivedIndexes::parents`].
+    pub(crate) fn assoc_parent_id(&self, id: &Id) -> Option<Id> {
+        if let Some(resident) = &self.resident {
+            self.cold_indexes(resident).parents.get(id).copied()
+        } else {
+            self.archive.as_ref()?.assoc_parent_id(id)
         }
     }
 
@@ -256,15 +299,6 @@ impl RustdocData {
             .map_or(self.crate_version.as_deref(), |c| {
                 c.crate_version.as_deref()
             })
-    }
-
-    /// The fully-materialized item index, deserialized from the archive on first
-    /// use and cached. Warm path only — the cold path reads the resident crate.
-    fn materialized_index(&self) -> &FxHashMap<Id, Item> {
-        self.full_index.get_or_init(|| match &self.archive {
-            Some(archive) => archive.full_index(),
-            None => FxHashMap::default(),
-        })
     }
 
     pub(crate) fn get<'a>(&'a self, navigator: &'a Navigator, id: &Id) -> Option<DocRef<'a, Item>> {

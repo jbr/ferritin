@@ -2795,6 +2795,83 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "link_resolution_tests::Tree::new",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.new",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Makes a new, empty ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "BTreeMap",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::clear",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.clear",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Clears the map, removing all elements.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::new_in",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.new_in",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Makes a new empty BTreeMap with a reasonable choice for B.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
         "path": "link_resolution_tests::Tree::get",
         "kind": "function",
         "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get",
@@ -3699,83 +3776,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
-        "path": "link_resolution_tests::Tree::new",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.new",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Makes a new, empty ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "BTreeMap",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::clear",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.clear",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Clears the map, removing all elements.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::new_in",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.new_in",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Makes a new empty BTreeMap with a reasonable choice for B.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
         "path": "link_resolution_tests::Tree::iter",
         "kind": "function",
         "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter",
@@ -4345,6 +4345,337 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   },
                   {
                     "text": " to hash the keys.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::with_hasher_in",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_hasher_in",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Creates a new empty hash set which will use the given hasher to hash",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "keys and will allocate memory using the provided allocator.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::with_capacity_and_hasher_in",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity_and_hasher_in",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Creates an empty ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "HashSet",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " with at least the specified capacity, using",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "hasher",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " to hash the keys and ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "alloc",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " to allocate memory.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::capacity",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.capacity",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns the number of elements the set can hold without reallocating.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::iter",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.iter",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "An iterator visiting all elements in arbitrary order.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "The iterator element type is ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "&'a T",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::len",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.len",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns the number of elements in the set.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::is_empty",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_empty",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "true",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " if the set contains no elements.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::drain",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.drain",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Clears the set, returning all elements as an iterator. Keeps the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "allocated memory for reuse.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::extract_if",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.extract_if",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Creates an iterator which uses a closure to determine if an element should be removed.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::retain",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.retain",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Retains only the elements specified by the predicate.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::clear",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.clear",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Clears the set, removing all values.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::HashSet::hasher",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.hasher",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns a reference to the set's ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "BuildHasher",
+                    "style": "InlineCode",
+                    "url": "https://doc.rust-lang.org/nightly/core/hash/index.html?search=core%3A%3Ahash%3A%3ABuildHasher",
+                    "path": "core::hash::BuildHasher"
+                  },
+                  {
+                    "text": ".",
                     "style": "Plain"
                   }
                 ]
@@ -5237,337 +5568,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "spans": [
                   {
                     "text": "Removes and returns the value in the set, if any, that is equal to the given one.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::with_hasher_in",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_hasher_in",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Creates a new empty hash set which will use the given hasher to hash",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "keys and will allocate memory using the provided allocator.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::with_capacity_and_hasher_in",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity_and_hasher_in",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Creates an empty ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "HashSet",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " with at least the specified capacity, using",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "hasher",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " to hash the keys and ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "alloc",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " to allocate memory.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::capacity",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.capacity",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns the number of elements the set can hold without reallocating.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::iter",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.iter",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "An iterator visiting all elements in arbitrary order.",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "The iterator element type is ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "&'a T",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::len",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.len",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns the number of elements in the set.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::is_empty",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_empty",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "true",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " if the set contains no elements.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::drain",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.drain",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Clears the set, returning all elements as an iterator. Keeps the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "allocated memory for reuse.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::extract_if",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.extract_if",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Creates an iterator which uses a closure to determine if an element should be removed.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::retain",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.retain",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Retains only the elements specified by the predicate.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::clear",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.clear",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Clears the set, removing all values.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::HashSet::hasher",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.hasher",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns a reference to the set's ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "BuildHasher",
-                    "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/hash/index.html?search=core%3A%3Ahash%3A%3ABuildHasher",
-                    "path": "core::hash::BuildHasher"
-                  },
-                  {
-                    "text": ".",
                     "style": "Plain"
                   }
                 ]
@@ -7083,273 +7083,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
-        "path": "Vec::into_flattened",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Takes a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec<[T; N]>",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " and flattens it into a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec<T>",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "Vec::splice",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Creates a splicing iterator that replaces the specified range in the vector",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "with the given ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "replace_with",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " iterator and yields the removed items.",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "replace_with",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " does not need to be the same length as ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "range",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "Vec::extract_if",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Creates an iterator which uses a closure to determine if an element in the range should be removed.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "Vec::resize",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Resizes the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " in-place so that ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "len",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is equal to ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "new_len",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "Vec::extend_from_slice",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_slice",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Clones and appends all elements in a slice to the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "Vec::extend_from_within",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_within",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Given a range ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "src",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", clones a slice of elements in that range and appends it to the end.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
-        "path": "Vec::dedup",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Removes consecutive repeated elements in the vector according to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "PartialEq",
-                    "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3APartialEq",
-                    "path": "core::cmp::PartialEq"
-                  },
-                  {
-                    "text": " trait implementation.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine",
-            "truncated": true
-          }
-        ]
-      },
-      {
         "path": "Vec::new",
         "kind": "function",
         "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new",
@@ -7674,6 +7407,91 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   },
                   {
                     "text": "called during compile time. (This is a no-op if called during runtime)",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vec::with_capacity_in",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity_in",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Constructs a new, empty ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<T, A>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " with at least the specified capacity",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "with the provided allocator.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vec::push",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Appends an element to the back of a collection.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vec::push_mut",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_mut",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Appends an element to the back of a collection, returning a reference to it.",
                     "style": "Plain"
                   }
                 ]
@@ -9738,9 +9556,9 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
-        "path": "Vec::with_capacity_in",
+        "path": "Vec::resize",
         "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity_in",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9749,15 +9567,155 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "paragraph",
                 "spans": [
                   {
-                    "text": "Constructs a new, empty ",
+                    "text": "Resizes the ",
                     "style": "Plain"
                   },
                   {
-                    "text": "Vec<T, A>",
+                    "text": "Vec",
                     "style": "InlineCode"
                   },
                   {
-                    "text": " with at least the specified capacity",
+                    "text": " in-place so that ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "len",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is equal to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "new_len",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vec::extend_from_slice",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_slice",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Clones and appends all elements in a slice to the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vec::extend_from_within",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_within",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Given a range ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "src",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", clones a slice of elements in that range and appends it to the end.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vec::into_flattened",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Takes a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<[T; N]>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " and flattens it into a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<T>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vec::dedup",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Removes consecutive repeated elements in the vector according to the",
                     "style": "Plain"
                   },
                   {
@@ -9765,7 +9723,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "Plain"
                   },
                   {
-                    "text": "with the provided allocator.",
+                    "text": "PartialEq",
+                    "style": "InlineCode",
+                    "url": "https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3APartialEq",
+                    "path": "core::cmp::PartialEq"
+                  },
+                  {
+                    "text": " trait implementation.",
                     "style": "Plain"
                   }
                 ]
@@ -9777,9 +9741,9 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
-        "path": "Vec::push",
+        "path": "Vec::splice",
         "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9788,7 +9752,43 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "paragraph",
                 "spans": [
                   {
-                    "text": "Appends an element to the back of a collection.",
+                    "text": "Creates a splicing iterator that replaces the specified range in the vector",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "with the given ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "replace_with",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " iterator and yields the removed items.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "replace_with",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " does not need to be the same length as ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "range",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
                     "style": "Plain"
                   }
                 ]
@@ -9800,9 +9800,9 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
-        "path": "Vec::push_mut",
+        "path": "Vec::extract_if",
         "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_mut",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9811,7 +9811,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "paragraph",
                 "spans": [
                   {
-                    "text": "Appends an element to the back of a collection, returning a reference to it.",
+                    "text": "Creates an iterator which uses a closure to determine if an element in the range should be removed.",
                     "style": "Plain"
                   }
                 ]

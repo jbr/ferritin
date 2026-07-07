@@ -16,19 +16,39 @@
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Arc;
 use std::thread::JoinHandle;
 
 use memmap2::Mmap;
 use rkyv::rancor::Error;
 use rustc_hash::FxHashMap;
-use rustdoc_types::{ArchivedCrate, Crate, ExternalCrate, FORMAT_VERSION, Id, Item, ItemSummary};
+use rustdoc_types::{
+    ArchivedCrate, ArchivedId, Crate, ExternalCrate, Id, ItemSummary, FORMAT_VERSION,
+};
+
+use crate::indexes::DerivedIndexes;
 
 /// Bumped whenever the on-disk archive layout could change incompatibly in a way
 /// not already captured by [`FORMAT_VERSION`] or the target tag — e.g. a new rkyv
 /// release or a change to which fields we archive.
-const ARCHIVE_SCHEMA: u32 = 1;
+///
+/// 2: archive root became [`Sidecar`] (`Crate` + [`DerivedIndexes`])
+const ARCHIVE_SCHEMA: u32 = 2;
+
+/// The archive root: the crate plus the derived reverse indexes, so the warm
+/// path can resolve impl lookups directly in the mapped bytes instead of
+/// scanning (and materializing) the whole item index.
+///
+/// The `Crate` is borrowed (`Inline`) because at write time it lives in an
+/// `Arc` shared with the resident [`RustdocData`](crate::RustdocData); the
+/// archived layout is identical to archiving an owned `Crate`.
+#[derive(rkyv::Archive, rkyv::Serialize)]
+struct Sidecar<'a> {
+    #[rkyv(with = rkyv::with::Inline)]
+    krate: &'a Crate,
+    indexes: DerivedIndexes,
+}
 
 /// A tag identifying the archive layout. An rkyv archive is not portable across
 /// target architectures or pointer widths, and its contents depend on the rustdoc
@@ -43,7 +63,7 @@ fn schema_tag() -> String {
 }
 
 /// The rkyv sidecar path for a cached JSON file, e.g.
-/// `…/1.40.0.json` → `…/1.40.0.json.rkyv1-fmt57-x86_64-64.rkyv`.
+/// `…/1.40.0.json` → `…/1.40.0.json.rkyv2-fmt60-x86_64-64.rkyv`.
 pub(crate) fn sidecar_path(json_path: &Path) -> PathBuf {
     let mut name = json_path.as_os_str().to_owned();
     name.push(format!(".{}.rkyv", schema_tag()));
@@ -58,8 +78,9 @@ pub(crate) fn write_archive(krate: &Crate, json_path: &Path) -> io::Result<()> {
     if json_path.as_os_str().is_empty() {
         return Ok(());
     }
-    let bytes =
-        rkyv::to_bytes::<Error>(krate).map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+    let indexes = DerivedIndexes::build(krate);
+    let bytes = rkyv::to_bytes::<Error>(&Sidecar { krate, indexes })
+        .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
     let sidecar = sidecar_path(json_path);
 
     // Unique per write: the pid keeps it distinct across processes, and an atomic
@@ -116,12 +137,42 @@ impl Archive {
         Some(Archive { mmap })
     }
 
-    /// The zero-copy archived view. O(1): a pointer cast over the mapped bytes,
+    /// The zero-copy archived root. O(1): a pointer cast over the mapped bytes,
     /// with the OS paging in only the regions actually touched.
-    pub(crate) fn krate(&self) -> &ArchivedCrate {
+    fn sidecar(&self) -> &ArchivedSidecar<'_> {
         // SAFETY: see `Archive::open` — the bytes are a validated-by-construction
         // archive produced by this same build.
-        unsafe { rkyv::access_unchecked::<ArchivedCrate>(&self.mmap[..]) }
+        unsafe { rkyv::access_unchecked::<ArchivedSidecar>(&self.mmap[..]) }
+    }
+
+    /// The zero-copy archived crate view.
+    pub(crate) fn krate(&self) -> &ArchivedCrate {
+        &self.sidecar().krate
+    }
+
+    /// Impl blocks with no trait targeting `type_id`, from the archived index.
+    pub(crate) fn inherent_impl_ids(&self, type_id: &Id) -> Vec<Id> {
+        archived_ids(&self.sidecar().indexes.inherent_impls, type_id)
+    }
+
+    /// Trait impl blocks targeting `type_id`, from the archived index.
+    pub(crate) fn trait_impl_ids(&self, type_id: &Id) -> Vec<Id> {
+        archived_ids(&self.sidecar().indexes.trait_impls, type_id)
+    }
+
+    /// Impl blocks implementing the trait `trait_id`, from the archived index.
+    pub(crate) fn implementor_ids(&self, trait_id: &Id) -> Vec<Id> {
+        archived_ids(&self.sidecar().indexes.implementors, trait_id)
+    }
+
+    /// The containing item of an associated item / variant / field, from the
+    /// archived index.
+    pub(crate) fn assoc_parent_id(&self, id: &Id) -> Option<Id> {
+        self.sidecar()
+            .indexes
+            .parents
+            .get(&ArchivedId(rkyv::rend::u32_le::from_native(id.0)))
+            .map(|parent| Id(parent.0.to_native()))
     }
 
     /// Deserialize the small, structural maps that every load needs eagerly
@@ -139,12 +190,6 @@ impl Archive {
             .ok()?,
         })
     }
-
-    /// Deserialize the entire item index (full materialization), used only for
-    /// whole-crate impl-block scans.
-    pub(crate) fn full_index(&self) -> FxHashMap<Id, Item> {
-        rkyv::deserialize::<FxHashMap<Id, Item>, Error>(&self.krate().index).unwrap_or_default()
-    }
 }
 
 /// The eagerly-materialized structural parts of a `Crate`.
@@ -153,6 +198,20 @@ pub(crate) struct EagerParts {
     pub(crate) crate_version: Option<String>,
     pub(crate) paths: FxHashMap<Id, ItemSummary>,
     pub(crate) external_crates: FxHashMap<u32, ExternalCrate>,
+}
+
+/// Look up `id` in an archived id→ids map, converting back to native `Id`s.
+/// Missing key yields an empty list (a type with no impls of that class).
+fn archived_ids(
+    map: &rkyv::collections::swiss_table::ArchivedHashMap<
+        ArchivedId,
+        rkyv::vec::ArchivedVec<ArchivedId>,
+    >,
+    id: &Id,
+) -> Vec<Id> {
+    map.get(&ArchivedId(rkyv::rend::u32_le::from_native(id.0)))
+        .map(|ids| ids.iter().map(|id| Id(id.0.to_native())).collect())
+        .unwrap_or_default()
 }
 
 fn is_fresh(sidecar: &Path, json_path: &Path) -> bool {

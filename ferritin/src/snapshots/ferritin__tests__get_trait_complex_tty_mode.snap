@@ -18,11 +18,11 @@ trait ComplexTrait<T>: [PartialEq](http://docs.rust-lang.org/nightly/core/cmp/tr
   ◦ const MAX_SIZE: usize = 100; 
     An associated constant
 
-  ◦ fn [process](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&self, input: T) -> Self::Output; 
+  ◦ fn [process](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html#method.process)(&self, input: T) -> Self::Output; 
     A simple method
 
-  ◦ fn [is_ready](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&self) -> bool { ... } 
+  ◦ fn [is_ready](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html#method.is_ready)(&self) -> bool { ... } 
     A method with default implementation
 
-  ◦ fn [transform](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)<U>(&self, data: U) -> [Result](http://docs.rust-lang.org/nightly/core/result/enum.Result.html)<T, [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)> where U: [Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)<T>; 
+  ◦ fn [transform](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html#method.transform)<U>(&self, data: U) -> [Result](http://docs.rust-lang.org/nightly/core/result/enum.Result.html)<T, [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)> where U: [Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)<T>; 
     A method with complex generics

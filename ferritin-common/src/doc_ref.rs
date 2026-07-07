@@ -62,14 +62,14 @@ pub struct DocRef<'a, T> {
 
 // Logical identity: crate name + item id, consistent with `Hash` below.
 //
-// This deliberately is *not* pointer identity. A single logical item can be
-// materialized at more than one address on the warm (rkyv sidecar) path — once
-// lazily in `item_cache` (via `get_item`) and once in the full-index scan store
-// (via `all_items`) — so comparing `&item` pointers would treat the same item as
-// distinct depending on which path produced it, breaking `HashSet`/`HashMap`
-// dedup keyed on `DocRef`. Crate name maps 1:1 to a `RustdocData` within a
-// `Navigator` (one version per crate name), and `id` is unique within a crate's
-// index, so `(name, id)` is a sound identity.
+// This deliberately is *not* pointer identity. Item addresses are an
+// implementation detail of `RustdocData`'s storage (resident crate vs. lazily
+// materialized `item_cache`); identity should not depend on which store
+// produced a reference. (Historically the warm path really did materialize one
+// logical item at two addresses, via the since-removed `full_index`.) Crate
+// name maps 1:1 to a `RustdocData` within a `Navigator` (one version per crate
+// name), and `id` is unique within a crate's index, so `(name, id)` is a sound
+// identity.
 impl PartialEq for DocRef<'_, Item> {
     fn eq(&self, other: &Self) -> bool {
         self.id == other.id && self.crate_docs.name() == other.crate_docs.name()
@@ -232,6 +232,27 @@ impl<'a> DocRef<'a, Item> {
         };
         let parent_path = parent.discriminated_path()?;
         Some(format!("{parent_path}::{disc}@{name}"))
+    }
+
+    /// The containing item — the target type for an impl-block member, the enum
+    /// for a variant, the struct for a field, the trait for a trait-declared
+    /// associated item.
+    ///
+    /// Prefers the parent recorded during tree traversal; falls back to the
+    /// crate's derived parent index, which covers items reached without
+    /// traversal context (e.g. a prose intra-doc link resolved straight from
+    /// the `links` map).
+    ///
+    /// The returned ref is *canonical*: a traversal parent's re-export name
+    /// override (a method reached through `pub use String as Str` has a parent
+    /// displayed as `Str`) is deliberately dropped, because callers use this to
+    /// identify the parent's real page/path — `String`'s, not `Str`'s.
+    pub fn parent_item(&self) -> Option<DocRef<'a, Item>> {
+        if let Some(parent) = self.parent {
+            return Some(DocRef::new(self.navigator, parent.crate_docs, parent.item));
+        }
+        let parent_id = self.crate_docs.assoc_parent_id(&self.id)?;
+        self.get(&parent_id)
     }
 
     pub fn kind(&self) -> ItemKind {

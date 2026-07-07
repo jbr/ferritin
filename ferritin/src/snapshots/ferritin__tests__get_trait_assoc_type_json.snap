@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestTrait::T\"), &\nget_fixture_crate_path ())"
 ---
 {
-  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/",
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html#associatedtype.T",
   "meta": {
     "name": "T",
     "kind": "assoctype",

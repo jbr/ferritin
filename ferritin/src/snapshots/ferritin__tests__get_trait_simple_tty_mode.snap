@@ -40,10 +40,10 @@ trait TestTrait { ... }
   ◦ type T: [Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html); 
     trait associated type
 
-  ◦ fn [test_method](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&self) -> [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html); 
+  ◦ fn [test_method](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html#method.test_method)(&self) -> [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html); 
     A method
 
-  ◦ fn [process](https://docs.rs/fixture-crate/0.1.0/fixture-crate/)(&mut self, data: &str) -> [Result](http://docs.rust-lang.org/nightly/core/result/enum.Result.html)<(), [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)>; 
+  ◦ fn [process](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html#method.process)(&mut self, data: &str) -> [Result](http://docs.rust-lang.org/nightly/core/result/enum.Result.html)<(), [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)>; 
     Another method with parameters
 
 Implementors (this crate)

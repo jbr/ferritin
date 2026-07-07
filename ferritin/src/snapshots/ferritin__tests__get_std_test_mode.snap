@@ -140,7 +140,7 @@ under UNIX, before main, file descriptors 0, 1, and 2 may be unchanged (they are
 <type-name>alloc</type-name> </p>
 <truncated level="single-line"><p>
 Memory allocation APIs.</p>
-In a given program, the standard library has one that is used for example by <inline-code>Box<T></inline-code> and <inline-code>Vec<T></inline-code>. <elided chars="1529"/></truncated>
+In a given program, the standard library has one that is used for example by <inline-code>Box<T></inline-code> and <inline-code>Vec<T></inline-code>. <elided chars="1530"/></truncated>
 </item>
   <item><p>
 <type-name>any</type-name> </p>
@@ -177,7 +177,7 @@ If you've found yourself with an asynchronous and needed to perform an operation
 </item>
   <item><p>
 <type-name>autodiff</type-name> </p>
-<truncated level="single-line">This module provides support for automatic differentiation. For precise differences between the <inline-code>autodiff_forward</inline-code> and <inline-code>autodiff_reverse</inline-code> macros and how to use them, see their respective documentation. <elided chars="4139"/></truncated>
+<truncated level="single-line">This module provides support for automatic differentiation. For precise differences between the <inline-code>autodiff_forward</inline-code> and <inline-code>autodiff_reverse</inline-code> macros and how to use them, see their respective documentation. <elided chars="4146"/></truncated>
 </item>
   <item><p>
 <type-name>backtrace</type-name> </p>
@@ -195,7 +195,7 @@ A module for working with borrowed data.</p>
 <type-name>boxed</type-name> </p>
 <truncated level="single-line"><p>
 The <inline-code>Box<T></inline-code> type for heap allocation.</p>
-<inline-code>Box<T></inline-code>, casually referred to as a 'box', provides heap allocation in Rust. Boxes provide drop their contents when they go out of never allocate more than <inline-code>isize::MAX</inline-code> bytes. <elided chars="5817"/></truncated>
+<inline-code>Box<T></inline-code>, casually referred to as a 'box', provides heap allocation in Rust. Boxes provide drop their contents when they go out of never allocate more than <inline-code>isize::MAX</inline-code> bytes. <elided chars="5839"/></truncated>
 </item>
   <item><p>
 <type-name>bstr</type-name> </p>
@@ -412,7 +412,7 @@ This module provides some extra types work. See the individual documentation <el
 </item>
   <item><p>
 <type-name>offload</type-name> </p>
-<truncated level="single-line">This module provides support for gpu offloading. For technical details<inline-code>offload_kernel</inline-code> and how to use it, see their respective documentation. <elided chars="1303"/></truncated>
+<truncated level="single-line">This module provides support for gpu offloading. For technical details<inline-code>offload_kernel</inline-code> and how to use it, see their respective documentation. <elided chars="1305"/></truncated>
 </item>
   <item><p>
 <type-name>ops</type-name> </p>
@@ -424,7 +424,7 @@ Implementing these traits allows you to overload certain <elided chars="3850"/><
 <type-name>option</type-name> </p>
 <truncated level="single-line"><p>
 Optional values.</p>
-Type <inline-code>Option</inline-code> represents an optional value: every <inline-code>Option</inline-code> is either <inline-code>Some</inline-code> and contains a value, or <inline-code>None</inline-code>, and does not. <inline-code>Option</inline-code> types are very common in Rust code, as they have a number of uses: <elided chars="15067"/></truncated>
+Type <inline-code>Option</inline-code> represents an optional value: every <inline-code>Option</inline-code> is either <inline-code>Some</inline-code> and contains a value, or <inline-code>None</inline-code>, and does not. <inline-code>Option</inline-code> types are very common in Rust code, as they have a number of uses: <elided chars="15100"/></truncated>
 </item>
   <item><p>
 <type-name>os</type-name> </p>
@@ -961,7 +961,7 @@ The size of this primitive is how many location in memory. For example, on a 32 
 <type-name>never</type-name> </p>
 <truncated level="single-line"><p>
 The <inline-code>!</inline-code> type, also called "never".</p>
-<inline-code>!</inline-code> represents the type of computations which the <inline-code>exit</inline-code> function <inline-code>fn exit(code: i32) -> !</inline-code> exits the process without ever returning, and so returns <inline-code>!</inline-code>. <elided chars="6667"/></truncated>
+<inline-code>!</inline-code> represents the type of computations which the <inline-code>exit</inline-code> function <inline-code>fn exit(code: i32) -> !</inline-code> exits the process without ever returning, and so returns <inline-code>!</inline-code>. <elided chars="6668"/></truncated>
 </item>
   <item><p>
 <type-name>pointer</type-name> </p>
