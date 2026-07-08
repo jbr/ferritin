@@ -204,11 +204,6 @@ impl LocalSource {
         self.manifest_path.parent().unwrap_or(&self.manifest_path)
     }
 
-    /// Check if this source can provide a given crate
-    pub fn can_load(&self, crate_name: &str) -> bool {
-        self.crates.contains_key(crate_name)
-    }
-
     /// Get the JSON path for a crate
     fn json_path(&self, crate_name: &str) -> PathBuf {
         let doc_dir = self.target_dir.join("doc");
@@ -448,7 +443,7 @@ impl Source for LocalSource {
 
     fn canonicalize(&self, input_name: &str) -> Option<CrateName<'static>> {
         self.crates
-            .get_key_value(input_name)
+            .get_key_value(&CrateName::from(input_name.to_owned()))
             .map(|(k, _)| k.clone())
     }
 }

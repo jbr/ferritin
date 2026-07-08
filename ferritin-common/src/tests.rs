@@ -18,6 +18,17 @@ fn test_navigator() -> Navigator {
     ))
 }
 
+/// `LocalSource::canonicalize` returns the manifest-form name for either
+/// dash/underscore spelling. (Regression test: it used to be a silent no-op —
+/// its `&str` map lookups went through `CrateName`'s since-deleted
+/// `Borrow<str>` impl, whose hash never matched `CrateName`'s own.)
+#[test]
+fn local_canonicalize_returns_manifest_name() {
+    let nav = test_navigator();
+    assert_eq!(&*nav.canonicalize("fixture-crate"), "fixture-crate");
+    assert_eq!(&*nav.canonicalize("fixture_crate"), "fixture-crate");
+}
+
 /// Resolve a path, panicking with a helpful message on failure.
 fn resolve<'a>(nav: &'a Navigator, path: &str) -> crate::DocRef<'a, rustdoc_types::Item> {
     Resolver::new(nav)
