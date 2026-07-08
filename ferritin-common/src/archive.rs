@@ -30,11 +30,20 @@ use rustdoc_types::{
 use crate::indexes::DerivedIndexes;
 
 /// Bumped whenever the on-disk archive layout could change incompatibly in a way
-/// not already captured by [`FORMAT_VERSION`] or the target tag — e.g. a new rkyv
-/// release or a change to which fields we archive.
+/// not already captured by [`FORMAT_VERSION`], [`RKYV_VERSION`], or the target
+/// tag — i.e. a change to which fields we archive.
 ///
 /// 2: archive root became [`Sidecar`] (`Crate` + [`DerivedIndexes`])
 const ARCHIVE_SCHEMA: u32 = 2;
+
+/// The exact rkyv version this build serializes with, pinned into the schema
+/// tag: the warm path reads archives via `access_unchecked` (no validation),
+/// so any change to rkyv's archived representations must invalidate old
+/// sidecars *by construction*, not by semver trust — rkyv documents which
+/// features are format-breaking but makes no written stability promise
+/// between releases. A unit test asserts this matches Cargo.lock, so a rkyv
+/// bump fails tests until the constant (and therefore the tag) is updated.
+const RKYV_VERSION: &str = "0.8.17";
 
 /// The archive root: the crate plus the derived reverse indexes, so the warm
 /// path can resolve impl lookups directly in the mapped bytes instead of
@@ -56,14 +65,14 @@ struct Sidecar<'a> {
 /// archive simply isn't found by name and is regenerated from JSON.
 fn schema_tag() -> String {
     format!(
-        "rkyv{ARCHIVE_SCHEMA}-fmt{FORMAT_VERSION}-{}-{}",
+        "rkyv{ARCHIVE_SCHEMA}.{RKYV_VERSION}-fmt{FORMAT_VERSION}-{}-{}",
         std::env::consts::ARCH,
         usize::BITS,
     )
 }
 
 /// The rkyv sidecar path for a cached JSON file, e.g.
-/// `…/1.40.0.json` → `…/1.40.0.json.rkyv2-fmt60-x86_64-64.rkyv`.
+/// `…/1.40.0.json` → `…/1.40.0.json.rkyv2.0.8.17-fmt60-x86_64-64.rkyv`.
 pub(crate) fn sidecar_path(json_path: &Path) -> PathBuf {
     let mut name = json_path.as_os_str().to_owned();
     name.push(format!(".{}.rkyv", schema_tag()));
@@ -94,7 +103,61 @@ pub(crate) fn write_archive(krate: &Crate, json_path: &Path) -> io::Result<()> {
     let tmp = PathBuf::from(tmp);
 
     fs::write(&tmp, &bytes)?;
-    fs::rename(&tmp, &sidecar)
+    fs::rename(&tmp, &sidecar)?;
+    remove_stale_siblings(json_path, &sidecar);
+    Ok(())
+}
+
+/// How old an orphaned temp file must be before cleanup will remove it, so an
+/// in-flight write from a concurrent process isn't yanked out from under its
+/// rename.
+const TMP_ORPHAN_AGE: std::time::Duration = std::time::Duration::from_secs(60 * 60);
+
+/// Best-effort removal of `json_path`'s sidecars written under other schema
+/// tags, plus orphaned temp files from interrupted writes. Runs right after a
+/// successful write — a new sidecar means every differently-tagged sibling is
+/// stale for this build — so each regeneration (rkyv bump, format bump, schema
+/// bump) reclaims the previous generation instead of accumulating one file per
+/// tag forever.
+///
+/// A sibling another *build* still uses (older binary, different arch sharing
+/// the cache) is deleted too; that build regenerates it on its next cold load.
+/// Alternating between two builds therefore costs a JSON re-parse per switch —
+/// accepted, since coexisting tags should be transient.
+fn remove_stale_siblings(json_path: &Path, current: &Path) {
+    let Some(dir) = json_path.parent() else {
+        return;
+    };
+    let Some(json_name) = json_path.file_name().and_then(|name| name.to_str()) else {
+        return;
+    };
+    let prefix = format!("{json_name}.");
+    let Ok(entries) = fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let name = entry.file_name();
+        let Some(name) = name.to_str() else { continue };
+        // Only files this module produces: "{json}.{tag}.rkyv" and their
+        // ".tmp.{pid}.{seq}" suffixed temp files.
+        if !name.starts_with(&prefix) || !name.contains(".rkyv") {
+            continue;
+        }
+        let path = entry.path();
+        if path == current {
+            continue;
+        }
+        let fresh_tmp = name.contains(".tmp.")
+            && entry
+                .metadata()
+                .and_then(|metadata| metadata.modified())
+                .is_ok_and(|modified| modified.elapsed().unwrap_or_default() < TMP_ORPHAN_AGE);
+        if fresh_tmp {
+            continue;
+        }
+        log::debug!("removing stale sidecar {}", path.display());
+        let _ = fs::remove_file(&path);
+    }
 }
 
 /// Spawn a background thread to serialize and write the sidecar, so a cold load
@@ -221,5 +284,79 @@ fn is_fresh(sidecar: &Path, json_path: &Path) -> bool {
         // JSON gone but archive present: trust the archive.
         (Some(_), None) => true,
         _ => false,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{RKYV_VERSION, remove_stale_siblings, sidecar_path};
+
+    /// Stale-tag sidecars and old temp files are removed; the current sidecar,
+    /// the JSON itself, fresh temp files, and unrelated siblings (search
+    /// `.index`, other versions' files) survive.
+    #[test]
+    fn stale_sibling_cleanup() {
+        let dir = std::env::temp_dir().join(format!(
+            "ferritin-archive-cleanup-test-{}",
+            std::process::id()
+        ));
+        std::fs::create_dir_all(&dir).unwrap();
+
+        let json = dir.join("1.40.0.json");
+        let current = sidecar_path(&json);
+        let stale = dir.join("1.40.0.json.rkyv1-fmt59-x86_64-64.rkyv");
+        let fresh_tmp = {
+            let mut name = current.clone().into_os_string();
+            name.push(".tmp.12345.0");
+            std::path::PathBuf::from(name)
+        };
+        let index = dir.join("1.40.0.index");
+        let other_version = dir.join("1.39.0.json.rkyv1-fmt59-x86_64-64.rkyv");
+        for file in [&json, &current, &stale, &fresh_tmp, &index, &other_version] {
+            std::fs::write(file, b"x").unwrap();
+        }
+
+        remove_stale_siblings(&json, &current);
+
+        assert!(!stale.exists(), "stale-tag sidecar should be removed");
+        assert!(current.exists(), "current sidecar must survive");
+        assert!(json.exists(), "the JSON itself must survive");
+        assert!(fresh_tmp.exists(), "a fresh temp file must survive");
+        assert!(index.exists(), "the search index must survive");
+        assert!(
+            other_version.exists(),
+            "another version's sidecar must survive (cleanup is per-JSON)"
+        );
+
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
+
+    /// [`RKYV_VERSION`] must track Cargo.lock exactly. If this fails, rkyv was
+    /// bumped: update the constant so the schema tag invalidates sidecars
+    /// written with the previous version's layout. Shipping without the bump
+    /// would let `access_unchecked` reinterpret old archives with the new
+    /// layout — undefined behavior, not a clean cache miss.
+    #[test]
+    fn rkyv_version_constant_matches_cargo_lock() {
+        let lock_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../Cargo.lock");
+        let lock = std::fs::read_to_string(&lock_path).expect("read workspace Cargo.lock");
+        let mut lines = lock.lines();
+        let locked_version = loop {
+            match lines.next() {
+                Some("name = \"rkyv\"") => {
+                    break lines
+                        .next()
+                        .and_then(|line| line.strip_prefix("version = \""))
+                        .and_then(|rest| rest.strip_suffix('"'))
+                        .expect("version line follows rkyv's name line");
+                }
+                Some(_) => {}
+                None => panic!("no rkyv package in {}", lock_path.display()),
+            }
+        };
+        assert_eq!(
+            RKYV_VERSION, locked_version,
+            "rkyv was bumped in Cargo.lock; update archive::RKYV_VERSION to match"
+        );
     }
 }
