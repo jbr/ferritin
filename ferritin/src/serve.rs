@@ -10,11 +10,17 @@
 //! — the model is serialized to bytes inside the worker. This mirrors the TUI,
 //! which likewise owns `Navigator` on a request thread and passes owned results
 //! back over a channel.
+//!
+//! The shared state is an `Arc<Store>` (bounded caches, singleflight, negative
+//! TTLs); each request builds its own short-lived [`Navigator`] on the worker,
+//! pinning whatever crates it touches for exactly the request's duration. That
+//! per-query pinning is what lets the Store evict under memory pressure without
+//! invalidating any in-flight request.
 
 use std::sync::Arc;
 
 use ferritin_common::{
-    Navigator,
+    Navigator, Store,
     sources::{DocsRsSource, StdSource},
 };
 use percent_encoding::percent_decode_str;
@@ -40,10 +46,29 @@ const WORKER_STACK_SIZE: usize = 16 * 1024 * 1024;
 /// Default number of results for the crate-scoped search endpoint.
 const SEARCH_LIMIT: usize = 10;
 
+/// Default byte cap for the in-memory crate cache, overridable via
+/// `FERRITIN_CACHE_BYTES` (weight proxy: JSON file size at load).
+const DEFAULT_CACHE_BYTES: u64 = 2 * 1024 * 1024 * 1024;
+
+/// The crate-cache byte cap: `FERRITIN_CACHE_BYTES` or the default.
+fn cache_bytes() -> u64 {
+    std::env::var("FERRITIN_CACHE_BYTES")
+        .ok()
+        .and_then(|value| value.parse().ok())
+        .unwrap_or(DEFAULT_CACHE_BYTES)
+}
+
 pub fn serve() {
-    let navigator = Navigator::default()
-        .with_std_source(StdSource::from_rustup())
-        .with_docsrs_source(DocsRsSource::from_default_cache());
+    let cache_bytes = cache_bytes();
+    let store = Arc::new(
+        Store::default()
+            .with_std_source(StdSource::from_rustup())
+            .with_docsrs_source(DocsRsSource::from_default_cache())
+            .with_weight_cap(cache_bytes)
+            // Search indexes are far smaller than crate JSON; give them a
+            // proportional slice.
+            .with_search_weight_cap(cache_bytes / 8),
+    );
 
     let pool = Arc::new(
         ThreadPoolBuilder::new()
@@ -54,7 +79,7 @@ pub fn serve() {
     );
 
     let server_handle = trillium_smol::config()
-        .with_shared_state(Arc::new(navigator))
+        .with_shared_state(store)
         .with_shared_state(pool)
         .spawn(handler());
 
@@ -119,10 +144,10 @@ fn decoded_param(conn: &Conn, name: &str) -> Option<String> {
 }
 
 /// The two shared-state handles every documentation handler needs.
-fn context(conn: &Conn) -> Option<(Arc<Navigator>, Arc<ThreadPool>)> {
-    let navigator = conn.shared_state::<Arc<Navigator>>().cloned()?;
+fn context(conn: &Conn) -> Option<(Arc<Store>, Arc<ThreadPool>)> {
+    let store = conn.shared_state::<Arc<Store>>().cloned()?;
     let pool = conn.shared_state::<Arc<ThreadPool>>().cloned()?;
-    Some((navigator, pool))
+    Some((store, pool))
 }
 
 /// Apply a worker outcome to the response: the JSON body on success, a 500 when
@@ -141,7 +166,7 @@ fn respond_json(conn: Conn, outcome: Option<sonic_rs::Result<(Status, String)>>)
 }
 
 async fn get_crate(conn: Conn) -> Conn {
-    let Some((navigator, pool)) = context(&conn) else {
+    let Some((store, pool)) = context(&conn) else {
         return conn.with_status(Status::InternalServerError).halt();
     };
 
@@ -150,6 +175,7 @@ async fn get_crate(conn: Conn) -> Conn {
     };
 
     let outcome = run_blocking(&pool, move || {
+        let navigator = Navigator::new(store);
         let mut request = Request::new(&navigator, FormatContext::new());
         match commands::get::model(&mut request, &path, false, false) {
             JsonOutcome::Found {
@@ -168,7 +194,7 @@ async fn get_crate(conn: Conn) -> Conn {
 }
 
 async fn search_crate(conn: Conn) -> Conn {
-    let Some((navigator, pool)) = context(&conn) else {
+    let Some((store, pool)) = context(&conn) else {
         return conn.with_status(Status::InternalServerError).halt();
     };
 
@@ -182,6 +208,7 @@ async fn search_crate(conn: Conn) -> Conn {
     };
 
     let outcome = run_blocking(&pool, move || {
+        let navigator = Navigator::new(store);
         let mut request = Request::new(&navigator, FormatContext::new());
         let model = commands::search::model(&mut request, &q, SEARCH_LIMIT, Some(&crate_name));
         json::search_to_string(&model).map(|body| (Status::Ok, body))

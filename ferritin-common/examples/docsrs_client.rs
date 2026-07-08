@@ -29,7 +29,7 @@ fn main() -> Result<()> {
     let cache_dir = env::temp_dir().join("rustdoc-cache-example");
     let source = DocsRsSource::new(cache_dir)?;
 
-    match source.lookup(crate_name, &version) {
+    match source.lookup(crate_name, &version)? {
         Some(crate_info) => {
             println!(
                 "Resolved {}@{}: {}\n",
@@ -40,7 +40,7 @@ fn main() -> Result<()> {
                     .unwrap_or_default()
                     .replace('\n', " ")
             );
-            match source.load(crate_info.name(), crate_info.version()) {
+            match source.load(crate_info.name(), crate_info.version())? {
                 Some(data) => {
                     println!("✓ Successfully fetched rustdoc data!");
                     println!();

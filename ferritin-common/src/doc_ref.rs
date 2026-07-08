@@ -1,6 +1,4 @@
-use crate::{
-    Navigator, RustdocData, navigator::parse_docsrs_url, rustdoc_data::kind_discriminator,
-};
+use crate::{Navigator, RustdocData, rustdoc_data::kind_discriminator, store::parse_docsrs_url};
 use fieldwork::Fieldwork;
 use rustdoc_types::{
     ExternalCrate, Id, Item, ItemEnum, ItemKind, ItemSummary, MacroKind, ProcMacro, Use, Visibility,

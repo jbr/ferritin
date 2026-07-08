@@ -1,5 +1,5 @@
 use ferritin_common::sources::{DocsRsSource, LocalSource, StdSource};
-use ferritin_common::{Navigator, Resolver};
+use ferritin_common::{Navigator, Resolver, Store};
 use std::ops::{Deref, DerefMut};
 use std::path::PathBuf;
 
@@ -33,10 +33,14 @@ impl<'a> Request<'a> {
     }
 }
 
-/// Build a [`Navigator`] configured with all sources for the given manifest path.
+/// Build a [`Navigator`] configured with all sources for the given manifest
+/// path. One Navigator serves the whole MCP session (status quo memory
+/// behavior: everything the session touches stays pinned).
 pub(crate) fn build_navigator(manifest_path: PathBuf) -> Navigator {
-    Navigator::default()
-        .with_std_source(StdSource::from_rustup())
-        .with_local_source(LocalSource::load(&manifest_path).ok())
-        .with_docsrs_source(DocsRsSource::from_default_cache())
+    Navigator::new(std::sync::Arc::new(
+        Store::default()
+            .with_std_source(StdSource::from_rustup())
+            .with_local_source(LocalSource::load(&manifest_path).ok())
+            .with_docsrs_source(DocsRsSource::from_default_cache()),
+    ))
 }

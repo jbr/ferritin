@@ -189,8 +189,8 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
     log_reader: LogReader,
     features: Option<ferritin_common::sources::FeatureSelection>,
 ) -> io::Result<()> {
-    use ferritin_common::Navigator;
     use ferritin_common::sources::{DocsRsSource, LocalSource, StdSource};
+    use ferritin_common::{Navigator, Store};
 
     // Build interactive theme from render context
     let interactive_theme = InteractiveTheme::from_render_context(&render_context);
@@ -224,7 +224,7 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
         );
     }
 
-    let navigator = if local {
+    let store = if local {
         log::info!(
             "Looking for a cargo workspace from {}",
             manifest_path.display()
@@ -235,7 +235,7 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
         if let Some(ls) = &local_source {
             log::info!("Found cargo workspace at {}", ls.manifest_path().display());
         }
-        Navigator::default()
+        Store::default()
             .with_std_source(std_source)
             .with_local_source(local_source)
     } else {
@@ -247,11 +247,14 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
                 d.client().cache_dir().display()
             );
         }
-        Navigator::default()
+        Store::default()
             .with_std_source(std_source)
             .with_docsrs_source(docsrs_source)
     };
-    let navigator = navigator_lock.get_or_init(|| navigator);
+    // One Navigator for the whole TUI session: status quo memory behavior —
+    // everything the session touches stays pinned (no eviction benefit yet;
+    // per-view scopes are deferred until history holds owned paths).
+    let navigator = navigator_lock.get_or_init(|| Navigator::new(std::sync::Arc::new(store)));
     let mut request = Request::new(navigator, format_context);
 
     // Execute initial command and send to UI

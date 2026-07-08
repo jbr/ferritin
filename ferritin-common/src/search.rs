@@ -61,41 +61,46 @@ impl Navigator {
 
     /// Get or build a search index for the given crate
     ///
-    /// Returns Err with suggestions if the crate cannot be found
+    /// Returns Err with suggestions if the crate cannot be found.
+    ///
+    /// The index comes from the Store's search cache (singleflight, negative
+    /// TTL, evictable) and is pinned in this Navigator so the borrow is stable
+    /// for the query. Suggestions borrow this Navigator, so they can't live in
+    /// the shared slot: only the caller whose closure ran the failing build
+    /// gets them — a caller hitting a cached failure gets an empty list, as
+    /// cached failures always did.
     fn get_or_build_search_index<'nav>(
         &'nav self,
         crate_name: &str,
     ) -> Result<&'nav SearchIndex, Vec<Suggestion<'nav>>> {
+        use crate::store::LoadFailure;
+        use std::sync::Arc;
+
         let crate_name = self.canonicalize(crate_name);
 
-        if let Some(cached) = self.search_indexes.get(&crate_name) {
-            if let Some(index) = cached.as_ref() {
-                return Ok(index);
-            } else {
-                // Permanent failure cached - return empty suggestions
-                return Err(vec![]);
-            }
+        if let Some(index) = self.search_indexes.get(&crate_name) {
+            return Ok(index);
         }
 
-        log::info!("Loading search index for {}", crate_name);
-
-        // Use existing SearchIndex::load_or_build which handles disk caching
-        let result = SearchIndex::load_or_build(self, crate_name.as_ref());
+        let mut fresh_suggestions = None;
+        let result = self.store().search_index(&crate_name, || {
+            log::info!("Loading search index for {}", crate_name);
+            // Use existing SearchIndex::load_or_build which handles disk caching
+            match SearchIndex::load_or_build(self, crate_name.as_ref()) {
+                Ok(index) => Ok(Arc::new(index)),
+                Err(suggestions) => {
+                    fresh_suggestions = Some(suggestions);
+                    // A failed build means the crate didn't resolve; the crate
+                    // cache already remembers that with its own kind-specific
+                    // TTL, so keep this one short and let retries stay cheap.
+                    Err(LoadFailure::Transient)
+                }
+            }
+        });
 
         match result {
-            Ok(index) => {
-                let index_ref = self
-                    .search_indexes
-                    .insert(crate_name, Box::new(Some(index)))
-                    .as_ref()
-                    .unwrap();
-                Ok(index_ref)
-            }
-            Err(suggestions) => {
-                // Cache the failure
-                self.search_indexes.insert(crate_name, Box::new(None));
-                Err(suggestions)
-            }
+            Ok(index) => Ok(self.search_indexes.insert(crate_name, index)),
+            Err(_) => Err(fresh_suggestions.unwrap_or_default()),
         }
     }
 }

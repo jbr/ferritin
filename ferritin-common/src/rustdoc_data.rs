@@ -14,7 +14,8 @@ use crate::CrateProvenance;
 use crate::archive::{self, Archive};
 use crate::doc_ref::{self, DocRef};
 use crate::indexes::DerivedIndexes;
-use crate::navigator::{Navigator, parse_docsrs_url};
+use crate::navigator::Navigator;
+use crate::store::parse_docsrs_url;
 
 /// Wrapper around a rustdoc `Crate` with convenient query methods.
 ///

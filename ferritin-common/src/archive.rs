@@ -16,15 +16,15 @@
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::thread::JoinHandle;
 
 use memmap2::Mmap;
 use rkyv::rancor::Error;
 use rustc_hash::FxHashMap;
 use rustdoc_types::{
-    ArchivedCrate, ArchivedId, Crate, ExternalCrate, Id, ItemSummary, FORMAT_VERSION,
+    ArchivedCrate, ArchivedId, Crate, ExternalCrate, FORMAT_VERSION, Id, ItemSummary,
 };
 
 use crate::indexes::DerivedIndexes;

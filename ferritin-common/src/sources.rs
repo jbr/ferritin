@@ -4,7 +4,8 @@
 //! - StdSource: rustup-managed std library docs
 //! - LocalSource: workspace-local crates (built on demand)
 //! - DocsRsSource: fetched from docs.rs and cached
-use crate::{CrateName, RustdocData, navigator::CrateInfo};
+use crate::{CrateName, RustdocData, store::CrateInfo};
+use anyhow::Result;
 use semver::{Version, VersionReq};
 use serde::{Deserialize, Deserializer, Serialize};
 
@@ -113,11 +114,23 @@ pub trait Source {
         None
     }
 
-    /// Look up a crate by name, returning canonical name and metadata if found
-    fn lookup<'a>(&'a self, crate_name: &str, version: &VersionReq) -> Option<Cow<'a, CrateInfo>>;
+    /// Look up a crate by name, returning canonical name and metadata if found.
+    ///
+    /// `Ok(None)` means this source definitively does not have the crate;
+    /// `Err` means a transient failure (e.g. a network error reaching
+    /// crates.io) that must not be cached as long-lived absence.
+    fn lookup<'a>(
+        &'a self,
+        crate_name: &str,
+        version: &VersionReq,
+    ) -> Result<Option<Cow<'a, CrateInfo>>>;
 
-    /// Load the rustdoc JSON data for a crate (by canonical name)
-    fn load(&self, crate_name: &str, version: Option<&Version>) -> Option<RustdocData>;
+    /// Load the rustdoc JSON data for a crate (by canonical name).
+    ///
+    /// The same `Ok(None)`-versus-`Err` distinction as [`Source::lookup`]
+    /// applies: `Ok(None)` is definitive absence (e.g. docs.rs has no rustdoc
+    /// JSON for this release), `Err` is transient.
+    fn load(&self, crate_name: &str, version: Option<&Version>) -> Result<Option<RustdocData>>;
 
     /// List all available crates from this source
     /// Returns None if this source doesn't support listing (e.g., DocsRsSource)

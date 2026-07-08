@@ -1,8 +1,9 @@
 use crate::CrateName;
 use crate::RustdocData;
-use crate::navigator::CrateInfo;
 use crate::sources::CrateProvenance;
 use crate::sources::Source;
+use crate::store::CrateInfo;
+use anyhow::Result;
 use fieldwork::Fieldwork;
 use rustc_hash::FxHashMap;
 use semver::Version;
@@ -99,14 +100,23 @@ impl StdSource {
 }
 
 impl Source for StdSource {
-    fn lookup<'a>(&'a self, name: &str, _version_req: &VersionReq) -> Option<Cow<'a, CrateInfo>> {
-        let canonical = self.canonicalize(name)?;
-        self.crates.get(&*canonical).map(Cow::Borrowed)
+    fn lookup<'a>(
+        &'a self,
+        name: &str,
+        _version_req: &VersionReq,
+    ) -> Result<Option<Cow<'a, CrateInfo>>> {
+        Ok(self
+            .canonicalize(name)
+            .and_then(|canonical| self.crates.get(&*canonical).map(Cow::Borrowed)))
     }
 
-    fn load(&self, crate_name: &str, _version: Option<&Version>) -> Option<RustdocData> {
-        let crate_info = self.lookup(crate_name, &VersionReq::STAR)?;
-        let json_path = crate_info.json_path.as_ref()?.to_owned();
+    fn load(&self, crate_name: &str, _version: Option<&Version>) -> Result<Option<RustdocData>> {
+        let Some(crate_info) = self.lookup(crate_name, &VersionReq::STAR)? else {
+            return Ok(None);
+        };
+        let Some(json_path) = crate_info.json_path.as_ref().map(|p| p.to_owned()) else {
+            return Ok(None);
+        };
         let version = Some(self.rustc_version.clone());
 
         // Warm path: memory-map the rkyv sidecar instead of parsing JSON.
@@ -116,23 +126,27 @@ impl Source for StdSource {
             CrateProvenance::Std,
             version.clone(),
         ) {
-            return Some(data);
+            return Ok(Some(data));
         }
 
-        let content = std::fs::read(&json_path).ok()?;
+        let Ok(content) = std::fs::read(&json_path) else {
+            return Ok(None);
+        };
 
         // Normalize through the conversions module like the other sources, so
         // older (55/56) and newer additive (60+) rustdoc formats both load.
         // rustup's std JSON tracks the nightly toolchain, which can be ahead of
         // the rustdoc-types we build against.
-        let crate_data = crate::conversions::load_and_normalize(&content, None).ok()?;
-        Some(RustdocData::from_crate(
+        let Ok(crate_data) = crate::conversions::load_and_normalize(&content, None) else {
+            return Ok(None);
+        };
+        Ok(Some(RustdocData::from_crate(
             crate_data,
             crate_name.to_string(),
             CrateProvenance::Std,
             json_path,
             version,
-        ))
+        )))
     }
 
     fn list_available<'a>(&'a self) -> Box<dyn Iterator<Item = &'a CrateInfo> + '_> {
