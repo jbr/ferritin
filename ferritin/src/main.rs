@@ -7,10 +7,10 @@ mod themes {
     include!(concat!(env!("OUT_DIR"), "/themes.rs"));
 }
 use ferritin_common::{
-    Navigator,
+    Navigator, Store,
     sources::{DocsRsSource, FeatureSelection, LocalSource, StdSource},
 };
-use std::{path::PathBuf, process::ExitCode};
+use std::{path::PathBuf, process::ExitCode, sync::Arc};
 use terminal_size::{Width, terminal_size};
 
 use crate::{
@@ -245,24 +245,25 @@ fn main() -> ExitCode {
 
     // Non-interactive mode: build sources eagerly and handle errors upfront
     let std_source = StdSource::from_rustup();
-    let navigator = if use_local {
+    let store = if use_local {
         let local_source = LocalSource::load(&path);
         if let Err(error) = &local_source {
             eprintln!("could not load rust project at {}", path.display());
             log::error!("{error:?}");
             return ExitCode::FAILURE;
         }
-        Navigator::default()
+        Store::default()
             .with_std_source(std_source)
             .with_local_source(local_source.ok().map(|ls| {
                 ls.with_force_rebuild(cli.rebuild)
                     .with_features(requested_features)
             }))
     } else {
-        Navigator::default()
+        Store::default()
             .with_std_source(std_source)
             .with_docsrs_source(DocsRsSource::from_default_cache())
     };
+    let navigator = Navigator::new(Arc::new(store));
 
     let format_context = FormatContext::new().with_public(cli.public);
     let mut request = Request::new(&navigator, format_context);

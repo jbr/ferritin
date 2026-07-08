@@ -13,15 +13,17 @@ mod resolver;
 mod rustdoc_data;
 pub mod search;
 pub mod sources;
+mod store;
 pub mod string_utils;
 
 // Re-export commonly used types
 pub use crate_name::CrateName;
 pub use doc_ref::DocRef;
-pub use navigator::{CrateInfo, Navigator};
+pub use navigator::Navigator;
 pub use resolver::{Resolver, Suggestion};
 pub use rustdoc_data::RustdocData;
 pub use sources::CrateProvenance;
+pub use store::{CrateInfo, Store};
 
 #[cfg(test)]
 mod tests;

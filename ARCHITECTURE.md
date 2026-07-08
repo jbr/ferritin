@@ -16,7 +16,7 @@ This document focuses primarily on ferritin-common and ferritin, as rustdoc-mcp 
 
 ### Zero-Copy Architecture
 
-Throughout the codebase, data is borrowed rather than copied. The `Navigator` owns all `RustdocData` instances in a `FrozenMap`, and all references (`&'a RustdocData`, `DocRef<'a>`) borrow from this single source. String data uses `Cow<'a, str>` to borrow wherever possible, minimizing allocations and memory pressure.
+Throughout the codebase, data is borrowed rather than copied. Crate data lives in a long-lived, shared `Store` behind `Arc`s; each query's `Navigator` clones those `Arc`s into an append-only pin map (`FrozenMap<CrateName, Arc<RustdocData>>`), and all references (`&'a RustdocData`, `DocRef<'a>`) borrow from that map — `'a` means "this query". Because the pin map never removes entries and `Arc` is `StableDeref`, every borrow handed out stays valid for the Navigator's lifetime even if the Store evicts the entry; the pin keeps the data alive until the query ends. String data uses `Cow<'a, str>` to borrow wherever possible, minimizing allocations and memory pressure.
 
 The per-item data those references point at is *materialized lazily* from a memory-mapped rkyv archive (see [Sparse Storage](#rustdocdata---per-crate-documentation) and [rkyv Sidecar Cache](#rkyv-sidecar-cache)) and cached in an append-only `FrozenMap<Id, Box<Item>>`, so a lookup that touches one item out of a huge crate (e.g. one type from the 61 MB `core`) does not pay to parse the whole thing. The `FrozenMap` hands out stable addresses, so `&'a Item` borrows stay valid as more items are materialized — the same interior-mutability trick the `working_set` itself uses.
 
@@ -26,9 +26,9 @@ A key architectural challenge is handling re-exports and cross-crate references.
 
 ### Runtime Model
 
-**CLI mode** is single-threaded; blocking operations occur on the main thread. **Interactive TUI mode** uses scoped threads for parallelism: a request thread owns `Navigator` and handles documentation operations, while a UI thread handles rendering and input. Channel-based communication maintains the zero-copy borrowing architecture across thread boundaries (`Navigator` and `DocRef` are `Send + Sync`).
+**CLI mode** is single-threaded; blocking operations occur on the main thread. **Interactive TUI mode** uses scoped threads for parallelism: a request thread owns `Navigator` and handles documentation operations, while a UI thread handles rendering and input. Channel-based communication maintains the zero-copy borrowing architecture across thread boundaries (`Navigator` and `DocRef` are `Send + Sync`). **Serve mode** shares one `Arc<Store>` across requests and builds a short-lived `Navigator` per request on a big-stack rayon worker, so nothing borrowed crosses an `.await` and Store eviction never invalidates an in-flight request.
 
-Errors are handled via `Option` types with fail-fast or skip semantics—nonexistent crates and load failures are not distinguished.
+Query-level errors are handled via `Option` types with fail-fast or skip semantics. At the Store layer, definitive absence (no such crate, no rustdoc JSON for a release) and transient failures (network errors) are distinguished and negatively cached with different TTLs; the `Source` trait encodes the distinction as `Ok(None)` versus `Err`.
 
 ---
 
@@ -36,9 +36,12 @@ Errors are handled via `Option` types with fail-fast or skip semantics—nonexis
 
 The common library provides the core functionality for loading, caching, navigating, and searching Rust documentation.
 
-## Navigator - Central Orchestrator
+## Store & Navigator - Central Orchestrators
 
-The `Navigator` is the main entry point for all documentation operations. It coordinates between multiple data sources and manages in-memory caching.
+Documentation access is split between two types:
+
+- **`Store`** (long-lived, shared): owns the source backends, the evictable in-memory caches (crate data and search indexes), and the external-crate name map. Where it is shared — serve mode, potentially many Navigators — it sits behind an `Arc`.
+- **`Navigator`** (per-query): the entry point for documentation operations. It resolves through the Store and pins everything the query touches in its own append-only maps, so borrows are stable for the query's lifetime.
 
 ### Data Sources
 
@@ -55,14 +58,15 @@ Each source implements the `Source` trait, providing name canonicalization, meta
 ### Navigator Lifecycle
 
 A `Navigator` instance is created:
-- **CLI mode:** Once per command invocation (discarded after rendering)
-- **TUI mode:** Once at startup, persists for the entire interactive session
+- **CLI mode:** Once per command invocation, over its own `Store` (both discarded after rendering)
+- **TUI and MCP modes:** Once at startup, persists for the entire session — everything the session touches stays pinned (status-quo memory behavior; per-view scopes are deferred until history holds owned paths instead of `DocRef`s)
+- **Serve mode:** Once per HTTP request, over the shared `Arc<Store>`
 
 This explains why the single-version-per-crate limitation (described below) is tolerable in practice: CLI invocations are short-lived, and TUI sessions rarely need conflicting versions of the same crate.
 
 ### Source Fallthrough & Two-Phase Resolution
 
-When loading a crate (e.g., `tokio` or `tokio@1.40`), Navigator performs two-phase resolution:
+When loading a crate (e.g., `tokio` or `tokio@1.40`), the Store performs two-phase resolution (on a cache miss, inside the entry's singleflight slot):
 
 **Phase 1: Lookup metadata (CrateInfo)**
 
@@ -81,7 +85,7 @@ If a source has the crate but not a matching version, it returns `None` and the 
 
 **Phase 2: Load documentation (RustdocData)**
 
-Using the resolved `CrateInfo`, Navigator calls the appropriate source's `load` method to fetch/build the actual rustdoc JSON and parse it into `RustdocData`.
+Using the resolved `CrateInfo`, the Store calls the appropriate source's `load` method to fetch/build the actual rustdoc JSON and parse it into `RustdocData`.
 
 **Why two phases?** Separating metadata lookup from data loading allows:
 - Fast version resolution without parsing large JSON files
@@ -90,27 +94,42 @@ Using the resolved `CrateInfo`, Navigator calls the appropriate source's `load` 
 
 ### In-Memory Cache
 
+Two layers, keyed by canonicalized crate name:
+
+**Store cache** (shared, evictable):
+
 ```rust
-working_set: FrozenMap<CrateName, Box<Option<RustdocData>>>
+crates: Mutex<HashMap<CrateName, Entry>>   // Entry { slot: Arc<OnceLock<Result<Arc<RustdocData>, LoadFailure>>>, weight, access_count, last_access, loaded_at }
 ```
 
-This is **the only place** in ferritin-common that owns `RustdocData` instances. All `&'a RustdocData` and `DocRef<'a>` references borrow from this map. The `elsa::sync::FrozenMap` provides thread-safe interior mutability with `&self`, enabling caching without mutable borrows while supporting multi-threaded access.
+- **Singleflight:** concurrent loaders of the same crate block on the slot's `OnceLock::get_or_init` and share the winner's result, so a cold crate is loaded once no matter how many requests race for it.
+- **Negative caching with TTL:** failures are cached as `LoadFailure::NotAvailable` (definitive — no such crate, no rustdoc JSON for the release; long TTL) or `LoadFailure::Transient` (network error; short TTL). A docs.rs blip no longer poisons a crate for the process lifetime. The cached entry covers the *whole* pipeline — a failed crates.io metadata lookup is negatively cached too.
+- **Eviction:** runs on insert when summed entry weights exceed a byte cap (weight proxy: JSON file size at load; unbounded by default, serve mode sets caps via `FERRITIN_CACHE_BYTES`). The policy is deliberately dumb — least-recently-accessed first, **among entries no query currently pins** (`Arc::strong_count > 1` means a pin exists, so evicting would free no memory) — but entries record the metadata (weight, access count, timestamps) a smarter policy will use once there is real traffic data. Evicted entries are dropped outside the map lock, since dropping the last `Arc<RustdocData>` joins its sidecar write thread. Because eviction only runs on insert, a pin-heavy burst can leave the cache transiently over cap until the next load sweeps it.
 
-**Known limitation:** The cache stores only one version of each crate per `Navigator` instance. Multiple crates with conflicting dependency versions may load the wrong version or fail. This is not currently a practical issue but noted for future consideration.
+Search indexes get the same treatment in a second cache (`search_indexes`, weight proxy: on-disk index file size). The `external_crate_names` map is append-only and tiny; it is never evicted.
+
+**Navigator pin map** (per-query):
+
+```rust
+working_set: FrozenMap<CrateName, Arc<RustdocData>>
+```
+
+All `&'a RustdocData` and `DocRef<'a>` references borrow from this map. The `elsa::sync::FrozenMap` provides thread-safe interior mutability with `&self` and never removes entries, so addresses are stable within a query — `ItemKey` cycle detection and `DocRef` identity are unaffected by anything the Store does. The safety argument for eviction is entirely borrow-checker-visible: Store eviction drops an `Arc`; a query's pin keeps the data alive until the query ends. Memory bound = cache cap + in-flight pins.
+
+**Known limitation:** Both layers store only one version of each crate (per Store, and per query). Multiple crates with conflicting dependency versions may load the wrong version or fail. Versioned Store keys (with per-query one-version pins preserved for `DocRef` identity) are the planned fix.
 
 ### Cross-Crate Traversal
 
-When a crate is loaded, `Navigator` indexes its `external_crates` field, which contains `html_root_url` entries like `https://docs.rs/tokio/1.0.0`. These are parsed to extract real crate names and exact version numbers, stored in:
+When a crate is loaded, the Store indexes its `external_crates` field, which contains `html_root_url` entries like `https://docs.rs/tokio/1.0.0`. These are parsed to extract real crate names and exact version numbers, stored in:
 
 ```rust
 external_crate_names: FrozenMap<CrateName, Box<ExternalCrateInfo>>
 ```
 
 When resolving an item reference to an external crate:
-1. Check if the external crate is already loaded in `working_set`
-2. If not, look up in `external_crate_names` to get real name and version
-3. Load the external crate (which caches it in `working_set`)
-4. Return the item from the external crate
+1. Check if the external crate is already pinned in the query's `working_set`
+2. If not, load it through the Store (which checks `external_crate_names` for the real name and version, and caches the result)
+3. Pin the `Arc` in `working_set` and return the item from the external crate
 
 This makes viewing `std::vec::Vec` automatically load the `alloc` crate transparently.
 
@@ -526,7 +545,7 @@ Both ferritin and rustdoc-mcp use insta snapshot tests to catch regressions in o
 
 The ferritin architecture achieves its goals through several key design choices:
 
-1. **Zero-copy borrowing** from a single source of truth (`Navigator`'s `working_set`)
+1. **Zero-copy borrowing** from per-query pins (`Navigator`'s `working_set`) over a shared, evictable `Store`
 2. **Transparent cross-crate traversal** via `DocRef` and automatic crate loading
 3. **Smart iterators** that hide re-export complexity
 4. **Two-stage rendering** separating content from presentation

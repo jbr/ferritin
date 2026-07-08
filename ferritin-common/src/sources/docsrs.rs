@@ -44,16 +44,21 @@ impl DocsRsSource {
 }
 
 impl Source for DocsRsSource {
-    fn lookup<'a>(&'a self, name: &str, version_req: &VersionReq) -> Option<Cow<'a, CrateInfo>> {
-        let ResolvedMetadata {
+    fn lookup<'a>(
+        &'a self,
+        name: &str,
+        version_req: &VersionReq,
+    ) -> Result<Option<Cow<'a, CrateInfo>>> {
+        let Some(ResolvedMetadata {
             name,
             version,
             description,
-        } = block_on(self.client.resolve(name, version_req))
-            .ok()
-            .flatten()?;
+        }) = block_on(self.client.resolve(name, version_req))?
+        else {
+            return Ok(None);
+        };
 
-        Some(Cow::Owned(CrateInfo {
+        Ok(Some(Cow::Owned(CrateInfo {
             provenance: CrateProvenance::DocsRs,
             version: Some(version),
             description: Some(description),
@@ -61,12 +66,13 @@ impl Source for DocsRsSource {
             default_crate: false,
             used_by: vec![],
             json_path: None,
-        }))
+        })))
     }
 
-    fn load(&self, crate_name: &str, version: Option<&Version>) -> Option<RustdocData> {
-        block_on(self.load_async(crate_name, version?))
-            .ok()
-            .flatten()
+    fn load(&self, crate_name: &str, version: Option<&Version>) -> Result<Option<RustdocData>> {
+        let Some(version) = version else {
+            return Ok(None);
+        };
+        block_on(self.load_async(crate_name, version))
     }
 }

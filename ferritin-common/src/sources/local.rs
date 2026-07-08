@@ -3,9 +3,9 @@ use super::FeatureSelection;
 use super::workspace_metadata::WorkspaceMetadata;
 use crate::RustdocData;
 use crate::crate_name::CrateName;
-use crate::navigator::CrateInfo;
 use crate::sources::RustdocVersion;
 use crate::sources::Source;
+use crate::store::CrateInfo;
 use anyhow::{Result, anyhow};
 use cargo_metadata::MetadataCommand;
 use fieldwork::Fieldwork;
@@ -291,7 +291,8 @@ impl LocalSource {
         crate_name: CrateName<'_>,
         version: Option<&Version>,
     ) -> Option<RustdocData> {
-        let info = self.lookup(&crate_name, &VersionReq::STAR)?;
+        // Local lookup is infallible (no network), so the `Result` layer never errs.
+        let info = self.lookup(&crate_name, &VersionReq::STAR).ok().flatten()?;
         let json_path = info.json_path.as_deref()?;
         let info_version = info.version.as_ref();
 
@@ -404,25 +405,32 @@ impl LocalSource {
 }
 
 impl Source for LocalSource {
-    fn lookup<'a>(&'a self, name: &str, _version: &VersionReq) -> Option<Cow<'a, CrateInfo>> {
+    fn lookup<'a>(
+        &'a self,
+        name: &str,
+        _version: &VersionReq,
+    ) -> Result<Option<Cow<'a, CrateInfo>>> {
         // Handle "crate" alias for single-package workspaces
         let search_name = if name == "crate" {
-            self.root_crate()?
+            match self.root_crate() {
+                Some(root_crate) => root_crate,
+                None => return Ok(None),
+            }
         } else {
             &CrateName::from(name.to_owned())
         };
 
-        self.crates.get(search_name).map(Cow::Borrowed)
+        Ok(self.crates.get(search_name).map(Cow::Borrowed))
     }
 
-    fn load(&self, crate_name: &str, version: Option<&Version>) -> Option<RustdocData> {
+    fn load(&self, crate_name: &str, version: Option<&Version>) -> Result<Option<RustdocData>> {
         let crate_name = CrateName::from(crate_name);
 
-        if self.is_workspace_package(&crate_name) {
+        Ok(if self.is_workspace_package(&crate_name) {
             self.load_workspace_crate(crate_name)
         } else {
             self.load_dep(crate_name, version)
-        }
+        })
     }
 
     fn list_available<'a>(&'a self) -> Box<dyn Iterator<Item = &'a CrateInfo> + '_> {

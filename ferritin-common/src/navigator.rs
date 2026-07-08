@@ -1,139 +1,104 @@
-//! Navigator — long-lived data store of loaded rustdoc crates.
+//! Navigator — a query's pinned view of the shared [`Store`].
 //!
-//! Holds the source backends, the working set of cached `RustdocData`, and the
-//! map of external-crate name aliases. All path/name/Use resolution lives on
-//! [`crate::Resolver`], which borrows a `Navigator`.
+//! A `Navigator` is created per query (per CLI invocation, per HTTP request,
+//! per TUI session) and holds `Arc` pins on every crate and search index the
+//! query touches. The pin maps are `elsa::FrozenMap`s of `Arc`s: append-only,
+//! so every `&RustdocData` or [`crate::DocRef`] borrow handed out stays valid
+//! for the Navigator's lifetime even if the Store evicts the entry — the pin
+//! keeps it alive. All path/name/Use resolution lives on [`crate::Resolver`],
+//! which borrows a `Navigator`.
 
 use crate::CrateName;
 use crate::RustdocData;
 use crate::search::SearchIndex;
-use crate::sources::{CrateProvenance, DocsRsSource, LocalSource, Source, StdSource};
+use crate::store::{CrateInfo, Store};
 use elsa::sync::FrozenMap;
-use fieldwork::Fieldwork;
-use semver::Version;
 use semver::VersionReq;
 use std::borrow::Cow;
 use std::fmt;
 use std::fmt::Debug;
-use std::path::PathBuf;
+use std::sync::Arc;
 
-/// Parse a docs.rs URL to extract crate name and version
-///
-/// Examples:
-/// - "https://docs.rs/tokio-macros/2.6.0/x86_64-unknown-linux-gnu/" -> ("tokio-macros", "2.6.0")
-/// - "https://docs.rs/serde/1.0.228" -> ("serde", "1.0.228")
-pub(crate) fn parse_docsrs_url(url: &str) -> Option<(&str, &str)> {
-    let url = url
-        .strip_prefix("https://docs.rs/")
-        .or_else(|| url.strip_prefix("http://docs.rs/"))?;
-
-    // Split by '/' to get parts
-    let parts: Vec<&str> = url.split('/').collect();
-    if parts.len() >= 2 {
-        Some((parts[0], parts[1]))
-    } else {
-        None
-    }
-}
-
-/// External crate info extracted from html_root_url
-#[derive(Debug, Clone)]
-struct ExternalCrateInfo {
-    /// The real crate name (with dashes, as it appears on crates.io)
-    name: String,
-    /// The version this crate was built against
-    version: Version,
-}
-
-#[derive(Debug, Clone, Fieldwork)]
-#[fieldwork(get, rename_predicates)]
-pub struct CrateInfo {
-    #[field(copy)]
-    pub(crate) provenance: CrateProvenance,
-    pub(crate) version: Option<Version>,
-    pub(crate) description: Option<String>,
-    pub(crate) name: String,
-    pub(crate) default_crate: bool,
-    pub(crate) used_by: Vec<String>,
-    pub(crate) json_path: Option<PathBuf>,
-}
-
-/// Navigator orchestrates documentation lookup across multiple sources
-///
-/// Sources are checked in this order:
-/// 1. std (if crate name matches RUST_CRATES)
-/// 2. local (if LocalSource is present and has the crate)
-/// 3. docs.rs (if DocsRsSource is present)
-#[derive(Fieldwork, Default)]
-#[fieldwork(get, opt_in, with)]
+/// A per-query view of a [`Store`]: resolution goes through the Store's
+/// caches, and everything the query touches is pinned here so borrows are
+/// stable for the query's lifetime.
 pub struct Navigator {
-    #[field]
-    std_source: Option<StdSource>,
-    #[field]
-    docsrs_source: Option<DocsRsSource>,
-    #[field]
-    local_source: Option<LocalSource>,
+    store: Arc<Store>,
 
-    /// Cached docs.
+    /// Crate data pinned by this query.
     ///
-    /// This is the only place in all of ferritin-common that stores RustdocData, and
-    /// all references to &'a RustdocData or DocRef<'a> are borrowing from this map.
-    ///
-    /// A None value indicates permanent failure.
-    pub(crate) working_set: FrozenMap<CrateName<'static>, Box<Option<RustdocData>>>,
+    /// This map is append-only and its values are `Arc`s (`StableDeref`), so
+    /// all `&'a RustdocData` and `DocRef<'a>` borrows handed out are stable for
+    /// the Navigator's lifetime. Keyed by the canonicalized requested name.
+    pub(crate) working_set: FrozenMap<CrateName<'static>, Arc<RustdocData>>,
 
-    /// Map from internal name (underscores) to real name/version from external_crates
-    external_crate_names: FrozenMap<CrateName<'static>, Box<ExternalCrateInfo>>,
-
-    /// Cached search indexes, built lazily on first search.
-    ///
-    /// A None value indicates permanent failure to build index.
-    pub(crate) search_indexes: FrozenMap<CrateName<'static>, Box<Option<SearchIndex>>>,
+    /// Search indexes pinned by this query; same model as `working_set`.
+    pub(crate) search_indexes: FrozenMap<CrateName<'static>, Arc<SearchIndex>>,
 }
 
 impl Debug for Navigator {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Navigator")
-            .field("std_source", &self.std_source)
-            .field("docsrs_source", &self.docsrs_source)
-            .field("local_source", &self.local_source)
+            .field("store", &self.store)
             .finish()
     }
 }
+
+impl Default for Navigator {
+    /// A Navigator over its own empty `Store` — no sources. Mostly useful in
+    /// tests; real construction sites share one Store across Navigators.
+    fn default() -> Self {
+        Self::new(Arc::new(Store::default()))
+    }
+}
+
 impl Navigator {
-    /// List all available crate names from all sources
-    /// Returns crate names from std library and local workspace/dependencies
-    pub fn list_available_crates(&self) -> impl Iterator<Item = &CrateInfo> {
-        std::iter::empty()
-            .chain(self.std_source.iter().flat_map(|x| x.list_available()))
-            .chain(self.local_source.iter().flat_map(|x| x.list_available()))
+    pub fn new(store: Arc<Store>) -> Self {
+        Self {
+            store,
+            working_set: FrozenMap::new(),
+            search_indexes: FrozenMap::new(),
+        }
     }
 
-    /// Look up a crate by name, returning canonical name and metadata
-    /// Tries sources in priority order: std, local, docs.rs
+    pub fn store(&self) -> &Store {
+        &self.store
+    }
+
+    /// The local source, if configured. See [`Store::local_source`].
+    pub fn local_source(&self) -> Option<&crate::sources::LocalSource> {
+        self.store.local_source()
+    }
+
+    /// List all available crate names from all sources
+    pub fn list_available_crates(&self) -> impl Iterator<Item = &CrateInfo> {
+        self.store.list_available_crates()
+    }
+
+    /// Look up a crate by name, returning canonical name and metadata.
+    ///
+    /// A lossy view of [`Store::lookup_crate`]: transient source failures are
+    /// logged and reported as `None`, which is fine for the display call sites
+    /// this serves — cacheability decisions go through [`Self::load_crate`].
     pub fn lookup_crate<'a>(
         &'a self,
         name: &str,
         version: &VersionReq,
     ) -> Option<Cow<'a, CrateInfo>> {
-        log::info!("Resolving {name:?}, version {version}");
-        self.std_source()
-            .and_then(|s| s.lookup(name, version))
-            .or_else(|| self.local_source().and_then(|s| s.lookup(name, version)))
-            .or_else(|| self.docsrs_source().and_then(|s| s.lookup(name, version)))
+        self.store
+            .lookup_crate(name, version)
+            .map_err(|e| log::warn!("transient failure resolving {name}: {e:?}"))
+            .ok()
+            .flatten()
     }
 
     /// Get the project root path if a local context exists
     pub fn project_root(&self) -> Option<&std::path::Path> {
-        self.local_source.as_ref().map(|p| p.project_root())
+        self.store.project_root()
     }
 
     pub fn canonicalize(&self, name: &str) -> CrateName<'static> {
-        self.std_source()
-            .and_then(|s| s.canonicalize(name))
-            .or_else(|| self.local_source().and_then(|s| s.canonicalize(name)))
-            .or_else(|| self.docsrs_source().and_then(|s| s.canonicalize(name)))
-            .unwrap_or_else(|| CrateName::from(String::from(name)))
+        self.store.canonicalize(name)
     }
 
     /// Load a crate by name and optional version
@@ -143,118 +108,17 @@ impl Navigator {
     /// - For local context crates: use the locked version from Cargo.lock
     /// - For arbitrary crates: use "latest"
     ///
-    /// Returns None if the crate cannot be found in any source
+    /// Returns None if the crate cannot be found in any source. The loaded
+    /// data is pinned in this Navigator, so the borrow survives Store
+    /// eviction.
     pub fn load_crate(&self, name: &str, version_req: &VersionReq) -> Option<&RustdocData> {
         let crate_name = self.canonicalize(name);
         if let Some(data) = self.working_set.get(&crate_name) {
-            return data.as_ref();
+            return Some(data);
         }
 
-        log::info!("Loading {name}@{version_req}");
-
-        let (resolved_name, resolved_version, provenance_hint) =
-            if let Some(external_crate) = self.external_crate_names.get(&crate_name) {
-                log::debug!("Found {crate_name} in external_crates");
-                (
-                    external_crate.name.to_string(),
-                    Some(external_crate.version.clone()),
-                    None,
-                )
-            } else {
-                let lookup_result = self.lookup_crate(name, version_req)?;
-                (
-                    lookup_result.name.to_string(),
-                    lookup_result.version.clone(),
-                    Some(lookup_result.provenance),
-                )
-            };
-
-        // Try loading from the appropriate source based on provenance
-        if let Some(rv) = resolved_version.as_ref() {
-            log::info!("Resolved {resolved_name}@{rv}");
-        } else {
-            log::info!("Resolved {resolved_name}");
-        }
-        let start = std::time::Instant::now();
-        let result = self.load(&resolved_name, resolved_version.as_ref(), provenance_hint);
-        let elapsed = start.elapsed();
-        log::debug!("⏱️ Total load time for {}: {:?}", resolved_name, elapsed);
-
-        match result {
-            Some(mut data) => {
-                // Index external crates for future lookups
-                self.index_external_crates(&data);
-
-                // Build reverse path index before caching
-                data.build_path_index();
-
-                // Cache in working set
-                self.working_set
-                    .insert(CrateName::from(resolved_name), Box::new(Some(data)))
-                    .as_ref()
-            }
-            None => {
-                // // Mark as failed
-                self.working_set
-                    .insert(CrateName::from(resolved_name), Box::new(None));
-                None
-            }
-        }
-    }
-
-    /// Try loading from the appropriate source based on lookup result
-    fn load(
-        &self,
-        crate_name: &str,
-        version: Option<&Version>,
-        provenance_hint: Option<CrateProvenance>,
-    ) -> Option<RustdocData> {
-        match provenance_hint {
-            Some(CrateProvenance::Std) => {
-                log::debug!("loading from std");
-                self.std_source()?.load(crate_name, version)
-            }
-            Some(CrateProvenance::Workspace | CrateProvenance::LocalDependency) => {
-                log::debug!("loading from local");
-                self.local_source()?.load(crate_name, version)
-            }
-            Some(CrateProvenance::DocsRs) => {
-                log::debug!("loading from docs.rs");
-                self.docsrs_source()?.load(crate_name, version)
-            }
-            None => {
-                log::debug!("No provenance hint available, cascading lookup for {crate_name}");
-                self.std_source()
-                    .and_then(|s| s.load(crate_name, version))
-                    .or_else(|| {
-                        self.local_source()
-                            .and_then(|s| s.load(crate_name, version))
-                    })
-                    .or_else(|| {
-                        self.docsrs_source()
-                            .and_then(|s| s.load(crate_name, version))
-                    })
-            }
-        }
-    }
-
-    /// Index external crates from a loaded crate
-    fn index_external_crates(&self, crate_data: &RustdocData) {
-        log::debug!("Indexing external crates from {}", crate_data.name());
-        for external in crate_data.external_crates_iter() {
-            if let Some(url) = &external.html_root_url
-                && let Some((real_name, version)) = parse_docsrs_url(url)
-                && let Ok(version) = Version::parse(version)
-            {
-                log::trace!("{}@{}", real_name, version);
-                let info = ExternalCrateInfo {
-                    name: real_name.to_string(),
-                    version,
-                };
-                self.external_crate_names
-                    .insert(CrateName::from(external.name.clone()), Box::new(info));
-            }
-        }
+        let data = self.store.load_crate(&crate_name, name, version_req).ok()?;
+        Some(self.working_set.insert(crate_name, data))
     }
 }
 

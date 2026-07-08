@@ -11,9 +11,11 @@ fn get_fixture_crate_path() -> PathBuf {
 }
 
 fn test_navigator() -> Navigator {
-    Navigator::default()
-        .with_local_source(LocalSource::load(&get_fixture_crate_path()).ok())
-        .with_std_source(StdSource::from_rustup())
+    Navigator::new(std::sync::Arc::new(
+        crate::Store::default()
+            .with_local_source(LocalSource::load(&get_fixture_crate_path()).ok())
+            .with_std_source(StdSource::from_rustup()),
+    ))
 }
 
 /// Resolve a path, panicking with a helpful message on failure.
@@ -399,9 +401,9 @@ fn build_prefix_test_navigator() -> Navigator {
 
     let nav = Navigator::default();
     nav.working_set
-        .insert(CrateName::from("home_crate"), Box::new(Some(home)));
+        .insert(CrateName::from("home_crate"), std::sync::Arc::new(home));
     nav.working_set
-        .insert(CrateName::from("target_crate"), Box::new(Some(target)));
+        .insert(CrateName::from("target_crate"), std::sync::Arc::new(target));
     nav
 }
 
@@ -582,7 +584,7 @@ fn iterator_skips_unresolvable_use_items() {
     // unresolvable case we want to exercise.
     let nav = Navigator::default();
     nav.working_set
-        .insert(CrateName::from("fake_crate"), Box::new(Some(data)));
+        .insert(CrateName::from("fake_crate"), std::sync::Arc::new(data));
 
     let root = nav
         .load_crate("fake_crate", &semver::VersionReq::STAR)

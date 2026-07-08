@@ -505,6 +505,14 @@ pub struct SearchIndex {
     #[field(get)]
     crate_name: String,
     terms: SearchableTerms,
+    /// Size of the on-disk index file, used as the Store's eviction weight proxy.
+    disk_weight: u64,
+}
+
+impl SearchIndex {
+    pub(crate) fn disk_weight(&self) -> u64 {
+        self.disk_weight
+    }
 }
 
 impl SearchableTerms {
@@ -612,7 +620,12 @@ impl SearchIndex {
 
         if let Some(terms) = Self::load(&path, mtime) {
             log::debug!("Loaded cached index from disk for {crate_name}");
-            Ok(Self { crate_name, terms })
+            let disk_weight = path.metadata().map_or(0, |m| m.len());
+            Ok(Self {
+                crate_name,
+                terms,
+                disk_weight,
+            })
         } else {
             log::debug!("Building new index for {crate_name}");
             let mut terms = Terms::default();
@@ -620,7 +633,12 @@ impl SearchIndex {
             let terms = terms.finalize();
             log::debug!("Finished building index for {crate_name}");
             Self::store(&terms, &path);
-            Ok(Self { terms, crate_name })
+            let disk_weight = path.metadata().map_or(0, |m| m.len());
+            Ok(Self {
+                terms,
+                crate_name,
+                disk_weight,
+            })
         }
     }
 

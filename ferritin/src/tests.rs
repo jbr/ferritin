@@ -6,7 +6,7 @@ use crate::{
     request::Request,
 };
 use ferritin_common::{
-    Navigator,
+    Navigator, Store,
     sources::{LocalSource, StdSource},
 };
 use ratatui::backend::TestBackend;
@@ -27,9 +27,11 @@ fn get_test_workspace_path() -> PathBuf {
 /// `Request` that borrows it; tests typically stash it in a local then pass
 /// `&navigator` to `Request::new`.
 fn build_test_navigator(path: &std::path::Path) -> Navigator {
-    Navigator::default()
-        .with_local_source(LocalSource::load(path).ok())
-        .with_std_source(StdSource::from_rustup())
+    Navigator::new(std::sync::Arc::new(
+        Store::default()
+            .with_local_source(LocalSource::load(path).ok())
+            .with_std_source(StdSource::from_rustup()),
+    ))
 }
 
 /// Convert OSC8 hyperlinks to markdown-style [text](url) before stripping ANSI
