@@ -1,5 +1,5 @@
 use std::{
-    borrow::{Borrow, Cow},
+    borrow::Cow,
     cmp::Ordering,
     fmt::Display,
     hash::{Hash, Hasher},
@@ -18,12 +18,6 @@ impl CrateName<'_> {
 impl<'a> std::fmt::Debug for CrateName<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:?}", self.0)
-    }
-}
-
-impl Borrow<str> for CrateName<'_> {
-    fn borrow(&self) -> &str {
-        self.0.borrow()
     }
 }
 
