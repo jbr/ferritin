@@ -432,7 +432,9 @@ The `public` preference (CLI `--public`) filters non-`pub` items at format time 
 
 ### JSON output
 
-`--format json` bypasses the `Document` render pipeline. For `get`, it serializes the `ItemDoc` domain model: structured `meta` (name/kind/visibility/path/crate), and a `body` that is structural for modeled kinds — `struct` → `{ shape, fields, methods, traitImpls }`, `enum` → `{ variants, methods, traitImpls }`, `trait` → `{ supertraits, members, implementors, implementorOverflow }` (each implementor `{ typeName, typeUrl, forType, assocTypes, methods, … }`), `module` → `{ items: [{ path, kind, url, docs }] }`, `function` → `{ name, isAsync, isConst, isUnsafe, returns, signature }`, `type-alias` → `{ name, aliased }`, `const` → `{ name, type, value? }`, `static` → `{ name, type, value }`, `macro` → `{ definition }`, `union` → `{ name, fields, methods, traitImpls }`, `assocItem` → `{ assocKind, name, signature }` (a directly-queried trait assoc type/const; `assocKind` avoids colliding with the body's `kind` tag) — or a faithful JSON mirror of presentation nodes for the rare unknown kind. Methods carry `{ kind, visibility, isAsync, returns, signature, … }`; trait members carry `hasDefault` (required vs. provided); each `traitImpls` entry is structural — `{ traitName, traitUrl, args, assocTypes, methods, providedMethods, isNegative, isUnsafe, isSynthetic, isStd, blanket, docs }` — exposing impl data the terminal omits. Leaf references carry two navigation pointers: `url` — the external docs.rs/std page — and `path` — a `::`-joined item path (e.g. `trillium::Conn`) the web client routes to in-app (present whenever the target resolves to an item with its own page; absent for associated items and variants, which fall back to `url`). Both derive from the span's `TuiAction` (`Span::url`/`Span::nav_path`). The item itself carries a `canonicalUrl`. The other commands also serialize structural models: a **not-found** result (when a `get` path doesn't resolve, shared with search's no-crates case) is `{ error: "notFound", query, suggestions: [{ path, kind?, url? }] }` (top-5 score-ranked candidates); **search** is `{ query, results: [{ path, kind, url, score, docs? }] }` (an empty query or no matches → `results: []`; no crates loaded → `{ error: "noCratesLoaded", suggestions }`); **list** is `{ crates: [{ name, version?, isDefault, isWorkspace, usedBy, description? }] }`. Search follows the same **model+lower** seam as item kinds — `search::model` → `SearchDoc`, `lower_search` reproduces the terminal `Document` (so the TUI is unaffected), and `execute = lower_search(model())`. `list` is a deliberately minimal **JSON-only** projection (`list::json_model`), since the command is slated for rework; its terminal `execute` is untouched. So the generic `document_to_string` (`{ nodes: [...] }`) is no longer reached by any first-class command — it remains only as a fallback.
+`--format json` bypasses the `Document` render pipeline. For `get`, it serializes the `ItemDoc` domain model: structured `meta` (name/kind/visibility/path/crate), and a `body` that is structural for modeled kinds — `struct` → `{ shape, fields, methods, traitImpls }`, `enum` → `{ variants, methods, traitImpls }`, `trait` → `{ supertraits, members, implementors, implementorOverflow }` (each implementor `{ typeName, typeUrl, forType, assocTypes, methods, … }`), `module` → `{ items: [{ path, kind, url, docs }] }`, `function` → `{ name, isAsync, isConst, isUnsafe, returns, signature }`, `type-alias` → `{ name, aliased }`, `const` → `{ name, type, value? }`, `static` → `{ name, type, value }`, `macro` → `{ definition }`, `union` → `{ name, fields, methods, traitImpls }`, `assocItem` → `{ assocKind, name, signature }` (a directly-queried trait assoc type/const; `assocKind` avoids colliding with the body's `kind` tag) — or a faithful JSON mirror of presentation nodes for the rare unknown kind. Methods carry `{ kind, visibility, isAsync, returns, signature, … }`; trait members carry `hasDefault` (required vs. provided); each `traitImpls` entry is structural — `{ traitName, traitUrl, args, assocTypes, methods, providedMethods, isNegative, isUnsafe, isSynthetic, isStd, blanket, docs }` — exposing impl data the terminal omits. Leaf references carry two navigation pointers: `url` — the external docs.rs/std page — and `path` — a `::`-joined item path (e.g. `trillium::Conn`) the web client routes to in-app. Both derive from the span's `TuiAction` (`Span::url`/`Span::nav_path`). An item with its own page uses its `paths` entry directly. Associated items, variants, and fields have none — rustdoc documents them in a fragment on their parent's page — so `Span::nav_path` walks `parent_item()`, mirroring exactly how `generate_docsrs_url` hangs `#method.{name}` off the parent's URL.
+
+**Struct fields stop at the parent** rather than appending their name, because `resolve_path` cannot reach a field; the struct is the page the field's URL names anyway, so only the `#structfield.x` anchor is lost. `DocsRsLink::parse` makes the identical choice from the other direction, declining to fold `#structfield.x` into the path (see `FRAGMENT_KINDS`) — the two must agree, or a docs.rs link to a field would resolve differently from an intra-doc one. Between them, every span pointing at a documented item now carries a `path`; only genuinely external links (blog posts, repositories) and same-page anchors fall back to `url`. Blanket-impl members are the residual gap: they have no attributable parent, so they get neither a precise URL nor a path. The item itself carries a `canonicalUrl`. The other commands also serialize structural models: a **not-found** result (when a `get` path doesn't resolve, shared with search's no-crates case) is `{ error: "notFound", query, suggestions: [{ path, kind?, url? }] }` (top-5 score-ranked candidates); **search** is `{ query, results: [{ path, kind, url, score, docs? }] }` (an empty query or no matches → `results: []`; no crates loaded → `{ error: "noCratesLoaded", suggestions }`); **list** is `{ crates: [{ name, version?, isDefault, isWorkspace, usedBy, description? }] }`. Search follows the same **model+lower** seam as item kinds — `search::model` → `SearchDoc`, `lower_search` reproduces the terminal `Document` (so the TUI is unaffected), and `execute = lower_search(model())`. `list` is a deliberately minimal **JSON-only** projection (`list::json_model`), since the command is slated for rework; its terminal `execute` is untouched. So the generic `document_to_string` (`{ nodes: [...] }`) is no longer reached by any first-class command — it remains only as a fallback.
 
 Serialization lives in the `json` module: `#[derive(Serialize)]` DTOs (`JsonItem`/`JsonNode`/`JsonSpan`/…) that borrow (`Cow`) from the model, serialized with `sonic-rs`. The JSON path is CLI-only today, but `model_item` is the reusable seam a future web server would call directly, rendering to owned bytes without the model crossing an `.await`.
 
@@ -443,37 +445,61 @@ A subtle challenge: real-world documentation contains multiple link formats due 
 ### Link Format Variations
 
 1. **Modern intra-doc links:** `[Vec]`, `[std::vec::Vec]`
-2. **Older relative HTML links:** `task/index.html`, `macro.trace.html`
-3. **Quirk:** Links in rustdoc's `links` map may have backticks or not: `HashMap` vs `` `HashMap` ``
+2. **Older relative HTML links:** `task/index.html`, `macro.trace.html`, `../attr.main.html`
+3. **Absolute rendered-documentation URLs:** `https://docs.rs/futures-io/latest/futures_io/trait.AsyncRead.html` — written out by hand in place of an intra-doc link, both across crates and within one. Common enough in real crates to be worth resolving rather than treating as an ordinary external link.
+4. **Quirk:** Links in rustdoc's `links` map may have backticks or not: `HashMap` vs `` `HashMap` ``
 
 ### Resolution Strategy (`extract_link_target`)
 
 ```rust
-fn extract_link_target(origin: DocRef<Item>, url: &str)
-    -> Option<(String, LinkTarget)>
+fn extract_link_target(origin: DocRef<'a, Item>, url: &str)
+    -> Option<LinkTarget<'a>>
 ```
 
-**Returns:** Absolute docs.rs URL + LinkTarget (either resolved DocRef or unresolved path string)
+**Returns:** a `LinkTarget` — either a resolved `DocRef` or an unresolved path string paired with an optional authoritative URL. `None` means "not a link we can resolve; keep it as an external URL."
 
 **Algorithm:**
 
-1. **Check if external URL or fragment** → Keep as-is
+1. **Fragment-only link** (`#method.foo`) → keep as-is
 
-2. **If relative HTML path** (`.html` suffix or contains `/`):
-   - Parse to item path (e.g., `task/index.html` → `tokio::task`)
-   - Convert to absolute docs.rs URL
+2. **Absolute URL** → try [`DocsRsLink::parse`](#docsrs_url---itemurl-in-both-directions). On success the link becomes a path *plus* the original URL, so it navigates in-app while the external pointer stays byte-exact (it is authoritative about version and anchor, and a regenerated one would not be). On failure, keep as-is.
 
-3. **For intra-doc links:**
+3. **Relative HTML path** (`.html` suffix or contains `/`) → resolve against the page `origin` is *itself* rendered on. `generate_docsrs_url(origin)` names that page, its directory is the link's base, and joining the two yields an absolute URL that step 2's parser reads. This is why the two directions have to live together: resolving `../attr.main.html` in `tokio::runtime`'s docs to `tokio::main` requires knowing what URL `tokio::runtime` would be generated at.
+
+   Relative links can only address the origin's own crate, so a link walking out of its documentation tree (`../../other_crate/…`) is broken and left as-is; and being same-crate, the resolved path carries no version qualifier. Resolving against the origin's *module* — rather than assuming the crate root — is what makes `struct.TcpStream.html` inside `tokio::net` mean `tokio::net::TcpStream`.
+
+4. **For intra-doc links:**
    - Look up in `origin.links` map (try both with and without backticks)
    - If same crate: return resolved `DocRef` (fast path, no loading)
    - If external crate: extract path from `ItemSummary` without loading the crate
-   - Use `html_root_url` to generate accurate docs.rs URL
 
-4. **Fallback:**
+5. **Fallback:**
    - Handle `crate::`/`self::` prefixes
-   - Generate search URL
+   - Emit a bare path; the renderer derives a heuristic search URL
 
-**Key insight:** We avoid loading external crates during link resolution. Same-crate links get resolved `DocRef`s for instant navigation. External links become path strings with accurate docs.rs URLs that lazily resolve when clicked in the TUI.
+**Key insight:** We avoid loading external crates during link resolution. Same-crate links get resolved `DocRef`s for instant navigation. External links become path strings that lazily resolve when clicked in the TUI, carrying a URL only when one was already known.
+
+## `docsrs_url` - item↔URL in both directions
+
+`generate_docsrs_url` maps a `DocRef` to the docs.rs (or doc.rust-lang.org) page documenting it; `DocsRsLink::parse` maps such a URL back to a path `Navigator::resolve_path` accepts. Both read one `SIGILS` table — the `{sigil}.{Name}.html` filename vocabulary rustdoc emits — so the two directions cannot drift. (They did: all three proc-macro kinds once generated `macro.{name}.html`, which 404s for attributes and derives.)
+
+### Package name vs. library name
+
+A URL's shape is `docs.rs/{crate_name}/{version}/{target}?/{lib_name}/…`, and the two names are not interchangeable:
+
+- **`RustdocData::name`** is the *package* name, a field each `Source` fills in with whatever it resolved (`futures-io`). It is what the Store is keyed by and what the version qualifies, so it belongs in the URL prefix.
+- **`RustdocData::lib_name`** is the *library* name, the Rust identifier rustdoc writes into every item path (`futures_io`), read from the eagerly-materialized `paths` map at the root. It is the directory rustdoc roots its output at, so it belongs after the version.
+
+They coincide for std, fold together under dash/underscore for most crates, and genuinely diverge when a crate declares an explicit `[lib] name` — `sha-1` vs `sha1`, where `sha1` is an *unrelated* crate on crates.io. rustdoc JSON records only the library name (in `paths`, in `index[root].name`, and in each `external_crates[i].name`); the package name appears nowhere as a field, and is recoverable for *external* crates only by parsing it back out of an `html_root_url` — which is what `store::parse_docsrs_url` does for cross-crate version resolution. A crate's own package name is therefore knowable only from the `Source` that loaded it.
+
+Generation uses `name` for the prefix and `lib_name` for everything after it; parsing does the inverse, keeping the slug and dropping the library-name segment. Emitting one where the other belongs 404s.
+
+Parsing is otherwise lossy in one direction only, and deliberately:
+
+- **An optional target triple precedes the library name** for crates documented on several targets. A triple always contains a hyphen and a library name — a Rust identifier — never can, which tells them apart unambiguously.
+- **`latest` becomes no version at all**, since an absent version requirement means the same thing to the resolver.
+- **Anchors naming a child item are folded into the path**, so `struct.Runtime.html#method.spawn` is the single lookup path `tokio::runtime::Runtime::spawn` and the parsed kind describes the child. Anchors naming no item (`#impl-Display-for-Foo`, the disambiguated `#method.spawn-1`) are kept verbatim.
+- **URLs addressing no single item return `None`** — `all.html`, source listings, docs.rs site routes, and the hand-written prose at `doc.rust-lang.org/book/`.
 
 ## Commands
 

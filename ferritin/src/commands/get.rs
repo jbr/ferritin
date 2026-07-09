@@ -68,7 +68,7 @@ pub(crate) fn model<'a>(
     let mut suggestions = vec![];
     match request.resolve_path(path, &mut suggestions) {
         Some(item) => JsonOutcome::Found {
-            canonical_url: crate::generate_docsrs_url::generate_docsrs_url(item),
+            canonical_url: crate::docsrs_url::generate_docsrs_url(item),
             model: request.model_item(item),
         },
         None => JsonOutcome::NotFound(NotFoundDoc::new(path, &suggestions)),

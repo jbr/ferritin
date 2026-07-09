@@ -132,7 +132,7 @@ impl<'a> JsonSearch<'a> {
                     .map(|s| JsonSuggestion {
                         path: s.path.clone(),
                         kind: s.item.map(|i| format!("{:?}", i.kind()).to_lowercase()),
-                        url: s.item.map(crate::generate_docsrs_url::generate_docsrs_url),
+                        url: s.item.map(crate::docsrs_url::generate_docsrs_url),
                     })
                     .collect(),
             },
@@ -159,7 +159,7 @@ impl<'a> JsonSearchResult<'a> {
         Self {
             path: result.path.clone(),
             kind: format!("{:?}", result.item.kind()).to_lowercase(),
-            url: crate::generate_docsrs_url::generate_docsrs_url(result.item),
+            url: crate::docsrs_url::generate_docsrs_url(result.item),
             score: result.score,
             docs: result.docs.as_deref().map(json_nodes).unwrap_or_default(),
         }
@@ -246,7 +246,7 @@ impl JsonNotFound {
                 .map(|s| JsonSuggestion {
                     path: s.path.clone(),
                     kind: s.item.map(|i| format!("{:?}", i.kind()).to_lowercase()),
-                    url: s.item.map(crate::generate_docsrs_url::generate_docsrs_url),
+                    url: s.item.map(crate::docsrs_url::generate_docsrs_url),
                 })
                 .collect(),
         }
@@ -563,7 +563,7 @@ impl<'a> JsonModuleItem<'a> {
         Self {
             path: item.path.clone(),
             kind: format!("{:?}", item.kind).to_lowercase(),
-            url: crate::generate_docsrs_url::generate_docsrs_url(item.target),
+            url: crate::docsrs_url::generate_docsrs_url(item.target),
             docs: item.docs.as_deref().map(json_nodes).unwrap_or_default(),
         }
     }

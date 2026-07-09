@@ -9,27 +9,27 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::DoesNotExist\")
     {
       "path": "crate::submodule",
       "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html"
     },
     {
       "path": "crate::link_resolution_tests",
       "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/index.html"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/index.html"
     },
     {
       "path": "crate::reexport_mod",
       "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/reexport_mod/index.html"
     },
     {
       "path": "crate::markdown_test",
       "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/markdown_test/index.html"
     },
     {
       "path": "crate::namespace_collisions",
       "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/index.html"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/index.html"
     }
   ]
 }

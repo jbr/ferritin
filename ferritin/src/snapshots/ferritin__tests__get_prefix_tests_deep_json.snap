@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::deep\"), &\nget_fixture_crate_path ())"
 ---
 {
-  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html",
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/index.html",
   "meta": {
     "name": "deep",
     "kind": "module",
@@ -59,7 +59,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "glob_reexport",
         "kind": "module",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/glob_reexport/index.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/glob_reexport/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -89,7 +89,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "DeepMarker",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DeepMarker.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/struct.DeepMarker.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -119,7 +119,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "DocDeep",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DocDeep.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/struct.DocDeep.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -142,7 +142,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "SelfAliasDeep",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.SelfAliasDeep.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/struct.SelfAliasDeep.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -172,7 +172,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "SuperAlias",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.SuperAlias.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.SuperAlias.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -210,7 +210,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "SuperSuperAlias",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.SuperSuperAlias.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.SuperSuperAlias.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -233,7 +233,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "CrateAlias",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.CrateAlias.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.CrateAlias.html",
         "docs": [
           {
             "type": "truncatedBlock",

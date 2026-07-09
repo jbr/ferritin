@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate_b\"), &\nget_test_workspace_path ())"
 ---
 {
-  "canonicalUrl": "https://docs.rs/crate-b/0.1.0/crate-b/index.html",
+  "canonicalUrl": "https://docs.rs/crate-b/0.1.0/crate_b/index.html",
   "meta": {
     "name": "crate_b",
     "kind": "module",
@@ -18,27 +18,27 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate_b\"), &\nget_tes
       {
         "path": "prefix_inner",
         "kind": "module",
-        "url": "https://docs.rs/crate-b/0.1.0/crate-b/prefix_inner/index.html"
+        "url": "https://docs.rs/crate-b/0.1.0/crate_b/prefix_inner/index.html"
       },
       {
         "path": "PrefixCrateAAlias",
         "kind": "struct",
-        "url": "https://docs.rs/crate-a/0.1.0/crate-a/struct.PrefixCrateAAlias.html"
+        "url": "https://docs.rs/crate-a/0.1.0/crate_a/struct.PrefixCrateAAlias.html"
       },
       {
         "path": "SelfPrefixAlias",
         "kind": "struct",
-        "url": "https://docs.rs/crate-a/0.1.0/crate-a/struct.SelfPrefixAlias.html"
+        "url": "https://docs.rs/crate-a/0.1.0/crate_a/struct.SelfPrefixAlias.html"
       },
       {
         "path": "AliasedCrateAStruct",
         "kind": "struct",
-        "url": "https://docs.rs/crate-a/0.1.0/crate-a/struct.AliasedCrateAStruct.html"
+        "url": "https://docs.rs/crate-a/0.1.0/crate_a/struct.AliasedCrateAStruct.html"
       },
       {
         "path": "CrateBProcessor",
         "kind": "struct",
-        "url": "https://docs.rs/crate-b/0.1.0/crate-b/struct.CrateBProcessor.html"
+        "url": "https://docs.rs/crate-b/0.1.0/crate_b/struct.CrateBProcessor.html"
       }
     ]
   }

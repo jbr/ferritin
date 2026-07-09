@@ -2,8 +2,8 @@ use std::borrow::Cow;
 
 use super::*;
 use crate::markdown::MarkdownRenderer;
+use crate::docsrs_url::{DocsRsLink, crate_base_url, generate_docsrs_url, resolve_relative};
 use crate::styled_string::{DocumentNode, LinkTarget, TruncationLevel};
-use rustdoc_types::ItemKind;
 
 /// Information about documentation text with truncation details
 #[derive(Debug, Clone, Default)]
@@ -57,28 +57,26 @@ impl<'a> Request<'a> {
             return None; // Keep as-is
         }
 
-        // Handle external URLs
+        // Handle external URLs. A rendered-documentation URL (docs.rs,
+        // doc.rust-lang.org) names an item we can resolve, so it navigates in-app
+        // rather than opening a browser — plenty of crates write these out by hand
+        // instead of using an intra-doc link. We keep the original URL rather than
+        // regenerating one, since it is authoritative about version and anchor.
         if url.starts_with("http://") || url.starts_with("https://") {
-            return None; // Keep as-is
+            return DocsRsLink::parse(url).map(|link| LinkTarget::Path {
+                path: Cow::Owned(link.to_string()),
+                url: Some(Cow::Owned(url.to_string())),
+            });
         }
 
         // Split off any fragment/anchor
         let (path, _fragment) = url.split_once('#').unwrap_or((url, ""));
 
-        // Check if this is a relative HTML URL (e.g., "task/index.html", "attr.main.html")
+        // Check if this is a relative HTML URL (e.g., "task/index.html", "../attr.main.html")
         // These are hand-written markdown links in the source that point to HTML docs
         if path.ends_with(".html") || path.contains("/") {
-            log::trace!("extract_link_target: parsing relative URL '{}'", path);
-
-            // Try to extract the item path from the HTML filename for navigation
-            if let Some(item_path) = self.parse_html_path_to_item_path(origin, path) {
-                log::trace!("  → Extracted item path: '{}'", item_path);
-                return Some(LinkTarget::Path(Cow::Owned(item_path)));
-            } else {
-                // Can't parse to an item path - return None to keep as external URL
-                log::trace!("  → Could not extract item path, keeping as external URL");
-                return None;
-            }
+            log::trace!("extract_link_target: parsing relative URL '{}'", url);
+            return self.resolve_relative_html(origin, url);
         }
 
         log::trace!("extract_link_target: processing link '{}'", path);
@@ -112,7 +110,10 @@ impl<'a> Request<'a> {
                     item_summary.kind
                 );
                 let full_path = item_summary.path.join("::");
-                return Some(LinkTarget::Path(Cow::Owned(full_path)));
+                return Some(LinkTarget::Path {
+                    path: Cow::Owned(full_path),
+                    url: None,
+                });
             }
         }
 
@@ -130,86 +131,64 @@ impl<'a> Request<'a> {
         };
 
         log::trace!("  → Qualified path: '{}'", qualified_path);
-        Some(LinkTarget::Path(Cow::Owned(qualified_path)))
+        Some(LinkTarget::Path {
+            path: Cow::Owned(qualified_path),
+            url: None,
+        })
     }
 
-    /// Parse a relative HTML path to an item path for navigation
+    /// Resolve a hand-written relative link into rustdoc's HTML output —
+    /// `../attr.main.html`, `task/index.html`, `index.html#anchor` — against the page
+    /// `origin` is itself rendered on.
     ///
-    /// Examples:
-    /// - `./macro.trace.html` → `log::trace`
-    /// - `macro.trace.html` → `log::trace`
-    /// - `task/index.html` → `tokio::task`
-    /// - `task/spawn/index.html` → `tokio::task::spawn`
-    /// - `struct.TcpStream.html` → `tokio::TcpStream`
-    fn parse_html_path_to_item_path(
+    /// Such links are relative to the *directory* holding the origin's page, and
+    /// [`generate_docsrs_url`] is exactly what names that page: `…/tokio/runtime/index.html`
+    /// for a module, `…/tokio/runtime/struct.Runtime.html#method.block_on` for one of its
+    /// methods. Both sit in `…/tokio/runtime/`. Joining the link onto that directory
+    /// gives an absolute URL, which [`DocsRsLink::parse`] already knows how to read —
+    /// sigils, `index.html`, and item-naming fragments included.
+    ///
+    /// A relative link can only address the origin's own crate, so one that walks out of
+    /// its documentation tree is broken and left alone. Being same-crate, the resulting
+    /// path needs no version qualifier, exactly like the intra-doc links below.
+    fn resolve_relative_html(
         &self,
-        origin: DocRef<'_, Item>,
-        html_path: &str,
-    ) -> Option<String> {
-        let crate_name = origin.crate_docs().name();
-
-        // Strip leading ./
-        let path = html_path.strip_prefix("./").unwrap_or(html_path);
-
-        // Must end with .html
-        if !path.ends_with(".html") {
+        origin: DocRef<'a, Item>,
+        relative: &str,
+    ) -> Option<LinkTarget<'a>> {
+        let (page_part, _) = relative.split_once('#').unwrap_or((relative, ""));
+        if !page_part.ends_with(".html") {
             return None;
         }
 
-        // Handle module paths: "task/index.html" or "task/spawn/index.html"
-        if path.ends_with("/index.html") {
-            let module_path = path.strip_suffix("/index.html")?;
-            let module_parts: Vec<&str> = module_path.split('/').collect();
-            return Some(format!("{}::{}", crate_name, module_parts.join("::")));
+        let absolute = resolve_relative(&generate_docsrs_url(origin), relative)?;
+
+        // Confine the link to this crate's own tree: `..` can walk up into a sibling
+        // crate's directory, where the path we'd derive would name the wrong crate.
+        let docs = origin.crate_docs();
+        let lib_name = docs.lib_name();
+        let within_crate = absolute
+            .strip_prefix(&crate_base_url(docs))
+            .and_then(|rest| rest.strip_prefix('/'))
+            .is_some_and(|rest| {
+                rest == lib_name || rest.strip_prefix(lib_name).is_some_and(|r| r.starts_with('/'))
+            });
+        if !within_crate {
+            log::trace!("  → relative link '{relative}' escapes {lib_name}, keeping as-is");
+            return None;
         }
 
-        // Handle item-specific HTML files: "struct.Name.html", "macro.trace.html", etc.
-        // Format: "{kind}.{name}.html"
-        let without_html = path.strip_suffix(".html")?;
-
-        // Check for kind.name pattern
-        if let Some((_kind, name)) = without_html.split_once('.') {
-            // The kind prefix (struct, enum, macro, etc.) tells us the type,
-            // but we just need the name for the path
-            return Some(format!("{}::{}", crate_name, name));
-        }
-
-        // Fallback: if no dot separator, treat whole thing as name
-        // (e.g., "something.html" -> "crate::something")
-        Some(format!("{}::{}", crate_name, without_html))
-    }
-
-    /// Convert a relative HTML URL to an absolute docs.rs URL
-    ///
-    /// Hand-written markdown in documentation often contains relative HTML links
-    /// like `task/index.html` or `../other_crate/index.html`. We convert these
-    /// to absolute URLs based on the current crate's documentation location.
-    fn make_relative_url_absolute(&self, origin: DocRef<'_, Item>, relative_url: &str) -> String {
-        let crate_docs = origin.crate_docs();
-        let crate_name = crate_docs.name();
-        let version = crate_docs
-            .version()
-            .map(|v| v.to_string())
-            .unwrap_or_else(|| "latest".to_string());
-
-        let is_std = crate_docs.provenance().is_std();
-
-        let base = if is_std {
-            format!("https://doc.rust-lang.org/nightly/{}", crate_name)
-        } else {
-            format!("https://docs.rs/{}/{}/{}", crate_name, version, crate_name)
+        let path = {
+            let mut link = DocsRsLink::parse(&absolute)?;
+            link.version = None;
+            link.to_string()
         };
 
-        // Join the relative URL with the base
-        // Remove leading "./" if present
-        let relative = relative_url.strip_prefix("./").unwrap_or(relative_url);
-
-        // If it starts with "../", we can't easily resolve it, just use crate root
-        if relative.starts_with("../") {
-            return format!("{}/{}", base, relative.trim_start_matches("../"));
-        }
-
-        format!("{}/{}", base, relative)
+        log::trace!("  → Resolved '{relative}' to '{path}' ({absolute})");
+        Some(LinkTarget::Path {
+            path: Cow::Owned(path),
+            url: Some(Cow::Owned(absolute)),
+        })
     }
 
     /// Get the full path of an item (e.g., "std::vec::Vec")
@@ -220,179 +199,6 @@ impl<'a> Request<'a> {
             format!("{}::{}", item.crate_docs().name(), name)
         } else {
             item.crate_docs().name().to_string()
-        }
-    }
-
-    /// Generate a docs.rs URL from a path and ItemKind
-    fn generate_url_from_path_and_kind(&self, path: &str, kind: rustdoc_types::ItemKind) -> String {
-        let parts: Vec<&str> = path.split("::").collect();
-        if parts.is_empty() {
-            return String::new();
-        }
-
-        let crate_name = parts[0];
-        let is_std = matches!(crate_name, "std" | "core" | "alloc" | "proc_macro");
-
-        let base = if is_std {
-            "https://doc.rust-lang.org/nightly".to_string()
-        } else {
-            format!("https://docs.rs/{}/latest", crate_name)
-        };
-
-        if parts.len() == 1 {
-            // Just the crate name
-            return format!("{}/{}/index.html", base, crate_name);
-        }
-
-        // Assume the last part is the item name, everything before is the module path
-        let module_parts = &parts[1..parts.len() - 1];
-        let item_name = parts[parts.len() - 1];
-
-        let module_path = if module_parts.is_empty() {
-            crate_name.to_string()
-        } else {
-            format!("{}/{}", crate_name, module_parts.join("/"))
-        };
-
-        // Generate URL based on the actual item kind
-        match kind {
-            ItemKind::Module => {
-                // Modules use the full path with index.html
-                let full_module_path = format!("{}/{}", module_path, item_name);
-                format!("{}/{}/index.html", base, full_module_path)
-            }
-            ItemKind::Struct => format!("{}/{}/struct.{}.html", base, module_path, item_name),
-            ItemKind::Enum => format!("{}/{}/enum.{}.html", base, module_path, item_name),
-            ItemKind::Trait => format!("{}/{}/trait.{}.html", base, module_path, item_name),
-            ItemKind::Function => format!("{}/{}/fn.{}.html", base, module_path, item_name),
-            ItemKind::TypeAlias => format!("{}/{}/type.{}.html", base, module_path, item_name),
-            ItemKind::Constant => format!("{}/{}/constant.{}.html", base, module_path, item_name),
-            ItemKind::Static => format!("{}/{}/static.{}.html", base, module_path, item_name),
-            ItemKind::Union => format!("{}/{}/union.{}.html", base, module_path, item_name),
-            ItemKind::Macro | ItemKind::ProcAttribute | ItemKind::ProcDerive => {
-                format!("{}/{}/macro.{}.html", base, module_path, item_name)
-            }
-            ItemKind::Primitive => format!("{}/{}/primitive.{}.html", base, crate_name, item_name),
-            _ => {
-                // Fallback for unknown kinds - default to struct guess
-                format!("{}/{}/struct.{}.html", base, module_path, item_name)
-            }
-        }
-    }
-
-    /// Generate a heuristic docs.rs URL from a path like "std::vec::Vec" when we don't know the kind
-    fn generate_heuristic_url(&self, path: &str) -> String {
-        // Default to struct as a reasonable guess
-        self.generate_url_from_path_and_kind(path, rustdoc_types::ItemKind::Struct)
-    }
-
-    /// Generate a search URL for a path when we can't determine the item kind
-    ///
-    /// Example: "tokio::something::UnknownType" becomes
-    /// "https://docs.rs/tokio/latest/tokio/index.html?search=tokio::something::UnknownType"
-    fn generate_search_url(&self, path: &str) -> String {
-        let parts: Vec<&str> = path.split("::").collect();
-        if parts.is_empty() {
-            return String::new();
-        }
-
-        let crate_name = parts[0];
-        let is_std = matches!(crate_name, "std" | "core" | "alloc" | "proc_macro");
-
-        let base = if is_std {
-            "https://doc.rust-lang.org/nightly".to_string()
-        } else {
-            format!("https://docs.rs/{}/latest", crate_name)
-        };
-
-        // Link to the deepest module we can infer, with a search query for the full path
-        let module_path = if parts.len() > 2 {
-            // Use parent module path
-            parts[1..parts.len() - 1].join("/")
-        } else if parts.len() == 2 {
-            // Just one level deep - link to crate root
-            String::new()
-        } else {
-            String::new()
-        };
-
-        let index_path = if module_path.is_empty() {
-            format!("{}/{}/index.html", base, crate_name)
-        } else {
-            format!("{}/{}/{}/index.html", base, crate_name, module_path)
-        };
-
-        // Add search query for the full path
-        use percent_encoding::{NON_ALPHANUMERIC, utf8_percent_encode};
-        format!(
-            "{}?search={}",
-            index_path,
-            utf8_percent_encode(path, NON_ALPHANUMERIC)
-        )
-    }
-
-    /// Generate a documentation URL from html_root_url and item path
-    ///
-    /// The html_root_url points to the crate root (e.g., "https://docs.rs/tokio/1.49.0")
-    /// We need to append the correct path based on item kind and location
-    fn generate_url_from_html_root(
-        &self,
-        html_root: &str,
-        path: &[String],
-        kind: rustdoc_types::ItemKind,
-    ) -> String {
-        // Strip trailing slash from html_root to avoid double slashes
-        let html_root = html_root.trim_end_matches('/');
-
-        if path.is_empty() {
-            return html_root.to_string();
-        }
-
-        // path[0] is the crate name, skip it since html_root already includes it
-        let crate_name = &path[0];
-        let remaining_parts = &path[1..];
-
-        if remaining_parts.is_empty() {
-            // Just the crate root
-            return format!("{}/{}/index.html", html_root, crate_name);
-        }
-
-        let item_name = &remaining_parts[remaining_parts.len() - 1];
-        let module_parts = &remaining_parts[..remaining_parts.len() - 1];
-
-        let module_path = if module_parts.is_empty() {
-            crate_name.to_string()
-        } else {
-            format!("{}/{}", crate_name, module_parts.join("/"))
-        };
-
-        // Generate URL based on the actual item kind
-        use rustdoc_types::ItemKind;
-        match kind {
-            ItemKind::Module => {
-                let full_module_path = format!("{}/{}", module_path, item_name);
-                format!("{}/{}/index.html", html_root, full_module_path)
-            }
-            ItemKind::Struct => format!("{}/{}/struct.{}.html", html_root, module_path, item_name),
-            ItemKind::Enum => format!("{}/{}/enum.{}.html", html_root, module_path, item_name),
-            ItemKind::Trait => format!("{}/{}/trait.{}.html", html_root, module_path, item_name),
-            ItemKind::Function => format!("{}/{}/fn.{}.html", html_root, module_path, item_name),
-            ItemKind::TypeAlias => format!("{}/{}/type.{}.html", html_root, module_path, item_name),
-            ItemKind::Constant => {
-                format!("{}/{}/constant.{}.html", html_root, module_path, item_name)
-            }
-            ItemKind::Static => format!("{}/{}/static.{}.html", html_root, module_path, item_name),
-            ItemKind::Union => format!("{}/{}/union.{}.html", html_root, module_path, item_name),
-            ItemKind::Macro | ItemKind::ProcAttribute | ItemKind::ProcDerive => {
-                format!("{}/{}/macro.{}.html", html_root, module_path, item_name)
-            }
-            ItemKind::Primitive => {
-                format!("{}/{}/primitive.{}.html", html_root, crate_name, item_name)
-            }
-            _ => {
-                // Fallback for unknown kinds
-                format!("{}/{}/struct.{}.html", html_root, module_path, item_name)
-            }
         }
     }
 

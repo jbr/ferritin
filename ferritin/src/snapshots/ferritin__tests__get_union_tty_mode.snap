@@ -5,15 +5,15 @@ expression: "render_for_tests_rooted(Commands::get(\"crate::TestUnion\"), Output
 Item: TestUnion
 Kind: Union
 Visibility: Public
-Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html)::[TestUnion](https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html)
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture_crate/index.html)::[TestUnion](https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html)
 In crate: fixture-crate (0.1.0)
 
 A union for testing union formatting.
 
 Demonstrates a union with public and private fields, a generic parameter, and
-an inherent method — the union counterpart to [TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html).
+an inherent method — the union counterpart to [TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html).
 
-union TestUnion<T: [Copy](http://docs.rust-lang.org/nightly/core/marker/trait.Copy.html)> {
+union TestUnion<T: [Copy](https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html)> {
     pub as_int: u64,
     pub as_float: f64,
     private: T,
@@ -32,37 +32,37 @@ Fields:
 
 Methods
 
-  ◦ pub fn [from_int](https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html#method.from_int)(as_int: u64) -> Self
+  ◦ pub fn [from_int](https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html#method.from_int)(as_int: u64) -> Self
     Construct a TestUnion from its integer view.
 
 Trait Implementations
 
 std: [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom)<T>
 
-  ◦ impl<T: 'static + ?[Sized](http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Any](http://docs.rust-lang.org/nightly/core/any/trait.Any.html)
+  ◦ impl<T: 'static + ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Any](https://doc.rust-lang.org/nightly/core/any/trait.Any.html)
 
-  ◦ impl<T: ?[Sized](http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Borrow](http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html)<T>
+  ◦ impl<T: ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)<T>
 
-  ◦ impl<T: ?[Sized](http://docs.rust-lang.org/nightly/core/marker/trait.Sized.html)> [BorrowMut](http://docs.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html)<T>
+  ◦ impl<T: ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)> [BorrowMut](https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html)<T>
 
-  ◦ impl<T: [Freeze](http://docs.rust-lang.org/nightly/core/marker/trait.Freeze.html)> [Freeze](http://docs.rust-lang.org/nightly/core/marker/trait.Freeze.html)
+  ◦ impl<T: [Freeze](https://doc.rust-lang.org/nightly/core/marker/trait.Freeze.html)> [Freeze](https://doc.rust-lang.org/nightly/core/marker/trait.Freeze.html)
 
-  ◦ impl<T, U: [From](http://docs.rust-lang.org/nightly/core/convert/trait.From.html)<T>> [Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)<U>
+  ◦ impl<T, U: [From](https://doc.rust-lang.org/nightly/core/convert/trait.From.html)<T>> [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<U>
 
-  ◦ impl<T: [RefUnwindSafe](http://docs.rust-lang.org/nightly/core/panic/unwind_safe/trait.RefUnwindSafe.html)> [RefUnwindSafe](http://docs.rust-lang.org/nightly/core/panic/unwind_safe/trait.RefUnwindSafe.html)
+  ◦ impl<T: [RefUnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.RefUnwindSafe.html)> [RefUnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.RefUnwindSafe.html)
 
-  ◦ impl<T: [Send](http://docs.rust-lang.org/nightly/core/marker/trait.Send.html)> [Send](http://docs.rust-lang.org/nightly/core/marker/trait.Send.html)
+  ◦ impl<T: [Send](https://doc.rust-lang.org/nightly/core/marker/trait.Send.html)> [Send](https://doc.rust-lang.org/nightly/core/marker/trait.Send.html)
 
-  ◦ impl<T: [Sync](http://docs.rust-lang.org/nightly/core/marker/trait.Sync.html)> [Sync](http://docs.rust-lang.org/nightly/core/marker/trait.Sync.html)
+  ◦ impl<T: [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html)> [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html)
 
-  ◦ impl<T, U: [Into](http://docs.rust-lang.org/nightly/core/convert/trait.Into.html)<T>> [TryFrom](http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<U>
-        type Error = [Infallible](http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html)
+  ◦ impl<T, U: [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<T>> [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<U>
+        type Error = [Infallible](https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html)
 
-  ◦ impl<T, U: [TryFrom](http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>> [TryInto](http://docs.rust-lang.org/nightly/core/convert/trait.TryInto.html)<U>
-        type Error = <U as [TryFrom](http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>>::Error
+  ◦ impl<T, U: [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>> [TryInto](https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html)<U>
+        type Error = <U as [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>>::Error
 
-  ◦ impl<T: [Unpin](http://docs.rust-lang.org/nightly/core/marker/trait.Unpin.html)> [Unpin](http://docs.rust-lang.org/nightly/core/marker/trait.Unpin.html)
+  ◦ impl<T: [Unpin](https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html)> [Unpin](https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html)
 
-  ◦ impl<T: [UnsafeUnpin](http://docs.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html)> [UnsafeUnpin](http://docs.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html)
+  ◦ impl<T: [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html)> [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html)
 
-  ◦ impl<T: [UnwindSafe](http://docs.rust-lang.org/nightly/core/panic/unwind_safe/trait.UnwindSafe.html)> [UnwindSafe](http://docs.rust-lang.org/nightly/core/panic/unwind_safe/trait.UnwindSafe.html)
+  ◦ impl<T: [UnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.UnwindSafe.html)> [UnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.UnwindSafe.html)

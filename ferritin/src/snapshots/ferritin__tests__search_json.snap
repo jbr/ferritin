@@ -8,7 +8,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "fixture-crate::TestTrait",
       "kind": "trait",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html",
       "score": 100.0,
       "docs": [
         {
@@ -32,7 +32,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "std::line",
       "kind": "macro",
-      "url": "http://docs.rust-lang.org/nightly/core/macro.line.html",
+      "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
       "score": 54.4,
       "docs": [
         {
@@ -56,7 +56,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "core::line",
       "kind": "macro",
-      "url": "http://docs.rust-lang.org/nightly/core/macro.line.html",
+      "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
       "score": 54.3,
       "docs": [
         {
@@ -80,7 +80,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "proc_macro::Span::line",
       "kind": "function",
-      "url": "http://docs.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line",
+      "url": "https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line",
       "score": 39.3,
       "docs": [
         {
@@ -104,7 +104,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "core::panic::Location::line",
       "kind": "function",
-      "url": "http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
+      "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
       "score": 39.2,
       "docs": [
         {
@@ -128,7 +128,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "std::panic::Location::line",
       "kind": "function",
-      "url": "http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
+      "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
       "score": 39.2,
       "docs": [
         {
@@ -152,7 +152,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "core::arch::x86::_mm_prefetch",
       "kind": "function",
-      "url": "http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
+      "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
       "score": 30.9,
       "docs": [
         {
@@ -192,7 +192,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "std::arch::x86::_mm_prefetch",
       "kind": "function",
-      "url": "http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
+      "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
       "score": 30.9,
       "docs": [
         {
@@ -232,7 +232,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "alloc::collections::BTreeMap",
       "kind": "struct",
-      "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html",
+      "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html",
       "score": 30.9,
       "docs": [
         {
@@ -265,7 +265,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "std::io::LineWriter",
       "kind": "struct",
-      "url": "http://docs.rust-lang.org/nightly/std/io/buffered/linewriter/struct.LineWriter.html",
+      "url": "https://doc.rust-lang.org/nightly/std/io/buffered/linewriter/struct.LineWriter.html",
       "score": 30.7,
       "docs": [
         {

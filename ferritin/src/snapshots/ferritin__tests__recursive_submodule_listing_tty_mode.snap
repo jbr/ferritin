@@ -1,55 +1,55 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::submodule\").recursive(), OutputMode ::\nTty)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::submodule\").recursive(),\nOutputMode :: Tty, & get_fixture_crate_path ())"
 ---
 Item: submodule
 Kind: Module
 Visibility: Public
-Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html)::[submodule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html)
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture_crate/index.html)::[submodule](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html)
 In crate: fixture-crate (0.1.0)
 
 A module with items
 
 Structs
 
-  ◦ [SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html) 
+  ◦ [SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
 Enums
 
-  ◦ [TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html) 
+  ◦ [TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html) 
     An enum for testing [...]
 
 Functions
 
-  ◦ [SubStruct::double](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.double) 
+  ◦ [SubStruct::double](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html#method.double) 
     Double the value
 
-  ◦ [SubStruct::get_value](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.get_value) 
+  ◦ [SubStruct::get_value](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html#method.get_value) 
     Get the value
 
-  ◦ [SubStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.new) 
+  ◦ [SubStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html#method.new) 
     Create a new SubStruct
 
-  ◦ [sub_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html) 
+  ◦ [sub_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/fn.sub_function.html) 
     A function in a submodule
 
 Variants
 
-  ◦ [TestEnum::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
+  ◦ [TestEnum::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
+    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html))
 
-  ◦ [TestEnum::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [TestEnum::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant B with data
 
-  ◦ [TestEnum::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [TestEnum::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant C with struct data (name and value)
 
-  ◦ [VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
+  ◦ [VariantA](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
+    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html))
 
-  ◦ [VariantB](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [VariantB](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant B with data
 
-  ◦ [VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [VariantC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant C with struct data (name and value)

@@ -1,6 +1,6 @@
 use ferritin_common::DocRef;
 use percent_encoding::{NON_ALPHANUMERIC, utf8_percent_encode};
-use rustdoc_types::Item;
+use rustdoc_types::{Item, ItemKind};
 use std::borrow::Cow;
 
 /// Interactive action that can be attached to a span
@@ -36,7 +36,7 @@ impl<'a> TuiAction<'a> {
             TuiAction::Navigate { doc_ref, url } => {
                 url.clone().or_else(|| {
                     // Generate URL from DocRef
-                    Some(Cow::Owned(crate::generate_docsrs_url::generate_docsrs_url(
+                    Some(Cow::Owned(crate::docsrs_url::generate_docsrs_url(
                         *doc_ref,
                     )))
                 })
@@ -131,7 +131,13 @@ pub enum LinkTarget<'a> {
     /// A resolved item reference (for same-crate items we already loaded)
     Resolved(DocRef<'a, Item>),
     /// An unresolved path string (for external items or fallback)
-    Path(Cow<'a, str>),
+    Path {
+        path: Cow<'a, str>,
+        /// The item's external URL, when the link was already written as one.
+        /// `None` leaves the renderer to derive a heuristic URL from `path`, which
+        /// it cannot do for a version-qualified path like `tokio@1.40.0::net::Foo`.
+        url: Option<Cow<'a, str>>,
+    },
 }
 
 /// A semantic content tree for Rust documentation
@@ -287,17 +293,51 @@ impl<'a> Span<'a> {
     /// (e.g. `trillium::Conn`) that [`Navigator::resolve_path`] accepts. Distinct
     /// from [`url`](Self::url), which is the external docs.rs/std pointer: the web
     /// client navigates within the app by `path`, falling back to `url` only for
-    /// targets that have no resolvable path (associated items, variants, external
-    /// URLs). `None` when the span carries no navigable action.
+    /// targets with no resolvable path (struct fields, external URLs). `None` when
+    /// the span carries no navigable action.
     pub fn nav_path(&self) -> Option<Cow<'a, str>> {
         match self.action.as_ref()? {
-            TuiAction::Navigate { doc_ref, .. } => {
-                doc_ref.path().map(|path| Cow::Owned(path.to_string()))
-            }
+            TuiAction::Navigate { doc_ref, .. } => item_nav_path(*doc_ref).map(Cow::Owned),
             TuiAction::NavigateToPath { path, .. } => Some(path.clone()),
             _ => None,
         }
     }
+}
+
+/// The `::`-joined path [`Navigator::resolve_path`] would take to reach `item`.
+///
+/// The kinds handled here are exactly those `generate_docsrs_url` gives a *fragment*
+/// URL to: they have no entry of their own in the crate's `paths` map, because
+/// rustdoc documents them inside their parent's page. Their path is therefore built
+/// from the parent's, just as their URL is.
+///
+/// Struct fields stop *at* the parent rather than appending their name, because
+/// `resolve_path` cannot reach a field — appending would yield a dead in-app link.
+/// The struct is the page the field's URL points at regardless, so navigating there
+/// loses only the `#structfield.x` anchor. Blanket-impl members have no attributable
+/// parent and get no path at all, exactly as they get no precise URL.
+fn item_nav_path(item: DocRef<'_, Item>) -> Option<String> {
+    if let Some(path) = item.path() {
+        return Some(path.to_string());
+    }
+
+    let kind = item.kind();
+    if !matches!(
+        kind,
+        ItemKind::Function
+            | ItemKind::AssocConst
+            | ItemKind::AssocType
+            | ItemKind::Variant
+            | ItemKind::StructField
+    ) {
+        return None;
+    }
+
+    let parent = item_nav_path(item.parent_item()?)?;
+    if kind == ItemKind::StructField {
+        return Some(parent);
+    }
+    Some(format!("{parent}::{}", item.name()?))
 }
 
 /// Semantic styling categories for Rust code elements

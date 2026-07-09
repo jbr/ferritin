@@ -5,422 +5,422 @@ expression: "render_for_tests_rooted(Commands::get(\"crate\").recursive(), Outpu
 Item: fixture_crate
 Kind: Module
 Visibility: Public
-Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html)
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture_crate/index.html)
 In crate: fixture-crate (0.1.0)
 
 A minimal test crate for rustdoc JSON testing
 
 Modules
 
-  ◦ [link_resolution_tests](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/index.html) 
+  ◦ [link_resolution_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/index.html) 
     Module for testing intra-doc link resolution
 
-  ◦ [link_resolution_tests::nested](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/nested/index.html) 
+  ◦ [link_resolution_tests::nested](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/nested/index.html) 
     Nested module for testing scoped resolution
 
-  ◦ [link_resolution_tests::nested::deeply_nested](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/nested/deeply_nested/index.html) 
+  ◦ [link_resolution_tests::nested::deeply_nested](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/nested/deeply_nested/index.html) 
     Another nested module
 
-  ◦ [markdown_test](https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html) 
+  ◦ [markdown_test](https://docs.rs/fixture-crate/0.1.0/fixture_crate/markdown_test/index.html) 
     Markdown: Syntax [...]
 
-  ◦ [namespace_collisions](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/index.html) 
+  ◦ [namespace_collisions](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/index.html) 
     Module for testing namespace disambiguation with kind discriminators. [...]
 
-  ◦ [namespace_collisions::both](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/both/index.html) 
-    A module sharing its name with [both()](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/fn.both.html) below.
+  ◦ [namespace_collisions::both](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/both/index.html) 
+    A module sharing its name with [both()](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/fn.both.html) below.
 
-  ◦ [prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html) 
+  ◦ [prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/index.html) 
     Edge cases for path-prefix resolution in use-item sources and intra-doc links. [...]
 
-  ◦ [prefix_tests::deep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html) 
+  ◦ [prefix_tests::deep](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/index.html) 
     A nested module to exercise self::, super::, and super::super::.
 
-  ◦ [prefix_tests::deep::glob_reexport](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/glob_reexport/index.html) 
+  ◦ [prefix_tests::deep::glob_reexport](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/glob_reexport/index.html) 
     Exercises the "glob brings a name into scope, then re-export that name"
     pattern, all within the same crate.
 
-  ◦ [prefix_tests::deep::glob_reexport::deep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html) 
+  ◦ [prefix_tests::deep::glob_reexport::deep](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/index.html) 
     A nested module to exercise self::, super::, and super::super::.
 
-  ◦ [private_detail](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/index.html) 
+  ◦ [private_detail](https://docs.rs/fixture-crate/0.1.0/fixture_crate/private_detail/index.html) 
     Private module whose items are accessible only via re-export. [...]
 
-  ◦ [reexport_mod](https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html) 
+  ◦ [reexport_mod](https://docs.rs/fixture-crate/0.1.0/fixture_crate/reexport_mod/index.html) 
 
-  ◦ [submodule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html) 
+  ◦ [submodule](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html) 
     A module with items
 
 Structs
 
-  ◦ [GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.GenericStruct.html) 
+  ◦ [GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.GenericStruct.html) 
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ [MarkerOne](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerOne.html) 
-    First implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html).
+  ◦ [MarkerOne](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerOne.html) 
+    First implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html).
 
-  ◦ [MarkerTwo](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerTwo.html) 
-    Second implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html).
+  ◦ [MarkerTwo](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerTwo.html) 
+    Second implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html).
 
-  ◦ [NotThreadSafe](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.NotThreadSafe.html) 
+  ◦ [NotThreadSafe](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.NotThreadSafe.html) 
     A type that is not thread-safe, to exercise negative auto-trait impls (!Send/
     !Sync, which rustdoc synthesizes for types holding a raw pointer).
 
-  ◦ [ReachableViaPrivateModule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html) 
+  ◦ [ReachableViaPrivateModule](https://docs.rs/fixture-crate/0.1.0/fixture_crate/private_detail/struct.ReachableViaPrivateModule.html) 
     A struct accessible only via re-export from a private module.
 
-  ◦ [SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html) 
+  ◦ [SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
-  ◦ [TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html) 
+  ◦ [TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html) 
     A simple struct for testing basic functionality. [...]
 
-  ◦ [TupleStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TupleStruct.html) 
+  ◦ [TupleStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TupleStruct.html) 
     A tuple struct for testing
 
-  ◦ [UnitStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.UnitStruct.html) 
+  ◦ [UnitStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.UnitStruct.html) 
     A unit struct for testing
 
-  ◦ [Vec](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html) 
+  ◦ [Vec](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html) 
     A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
 
-  ◦ [link_resolution_tests::HashSet](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html) 
+  ◦ [link_resolution_tests::HashSet](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html) 
     A [hash set](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3Acollections) implemented as a HashMap where the value is (). [...]
 
-  ◦ [link_resolution_tests::LinkTestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/struct.LinkTestStruct.html) 
+  ◦ [link_resolution_tests::LinkTestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/struct.LinkTestStruct.html) 
     Struct in link test module
 
-  ◦ [link_resolution_tests::RenamedTestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.RenamedTestStruct.html) 
+  ◦ [link_resolution_tests::RenamedTestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.RenamedTestStruct.html) 
     A simple struct for testing basic functionality. [...]
 
-  ◦ [link_resolution_tests::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html) 
+  ◦ [link_resolution_tests::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
-  ◦ [link_resolution_tests::Tree](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.Tree.html) 
+  ◦ [link_resolution_tests::Tree](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.Tree.html) 
     An ordered map based on a [B-Tree](https://en.wikipedia.org/wiki/B-tree). [...]
 
-  ◦ [link_resolution_tests::nested::NestedStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/nested/struct.NestedStruct.html) 
+  ◦ [link_resolution_tests::nested::NestedStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/nested/struct.NestedStruct.html) 
     Struct in nested module
 
-  ◦ [link_resolution_tests::nested::Str](http://docs.rust-lang.org/nightly/alloc/string/struct.Str.html) 
+  ◦ [link_resolution_tests::nested::Str](https://doc.rust-lang.org/nightly/alloc/string/struct.Str.html) 
     A UTF-8–encoded, growable string. [...]
 
-  ◦ [link_resolution_tests::nested::deeply_nested::DeepStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/nested/deeply_nested/struct.DeepStruct.html) 
+  ◦ [link_resolution_tests::nested::deeply_nested::DeepStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/nested/deeply_nested/struct.DeepStruct.html) 
     Struct in deeply nested module
 
-  ◦ [namespace_collisions::both::Inside](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/both/struct.Inside.html) 
+  ◦ [namespace_collisions::both::Inside](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/both/struct.Inside.html) 
     An item inside the colliding module.
 
-  ◦ [prefix_tests::DocOuter](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.DocOuter.html) 
+  ◦ [prefix_tests::DocOuter](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.DocOuter.html) 
     Intra-doc links from the outer module: [...]
 
-  ◦ [prefix_tests::PrefixMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html) 
+  ◦ [prefix_tests::PrefixMarker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.PrefixMarker.html) 
     A sibling target for self:: / super::PrefixMarker references.
 
-  ◦ [prefix_tests::deep::CrateAlias](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.CrateAlias.html) 
+  ◦ [prefix_tests::deep::CrateAlias](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.CrateAlias.html) 
     A struct in a submodule
 
-  ◦ [prefix_tests::deep::DeepMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DeepMarker.html) 
+  ◦ [prefix_tests::deep::DeepMarker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/struct.DeepMarker.html) 
     A marker target inside deep.
 
-  ◦ [prefix_tests::deep::DocDeep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.DocDeep.html) 
+  ◦ [prefix_tests::deep::DocDeep](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/struct.DocDeep.html) 
     Intra-doc links from a nested module: [...]
 
-  ◦ [prefix_tests::deep::SelfAliasDeep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/struct.SelfAliasDeep.html) 
+  ◦ [prefix_tests::deep::SelfAliasDeep](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/struct.SelfAliasDeep.html) 
     A marker target inside deep.
 
-  ◦ [prefix_tests::deep::SuperAlias](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.SuperAlias.html) 
+  ◦ [prefix_tests::deep::SuperAlias](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.SuperAlias.html) 
     A sibling target for self:: / super::PrefixMarker references.
 
-  ◦ [prefix_tests::deep::SuperSuperAlias](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.SuperSuperAlias.html) 
+  ◦ [prefix_tests::deep::SuperSuperAlias](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.SuperSuperAlias.html) 
     A simple struct for testing basic functionality. [...]
 
-  ◦ [prefix_tests::deep::glob_reexport::DocOuter](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.DocOuter.html) 
+  ◦ [prefix_tests::deep::glob_reexport::DocOuter](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.DocOuter.html) 
     Intra-doc links from the outer module: [...]
 
-  ◦ [prefix_tests::deep::glob_reexport::GlobReexportedMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.GlobReexportedMarker.html) 
+  ◦ [prefix_tests::deep::glob_reexport::GlobReexportedMarker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.GlobReexportedMarker.html) 
     A sibling target for self:: / super::PrefixMarker references.
 
-  ◦ [prefix_tests::deep::glob_reexport::PrefixMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html) 
+  ◦ [prefix_tests::deep::glob_reexport::PrefixMarker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.PrefixMarker.html) 
     A sibling target for self:: / super::PrefixMarker references.
 
-  ◦ [private_detail::ReachableViaPrivateModule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html) 
+  ◦ [private_detail::ReachableViaPrivateModule](https://docs.rs/fixture-crate/0.1.0/fixture_crate/private_detail/struct.ReachableViaPrivateModule.html) 
     A struct accessible only via re-export from a private module.
 
-  ◦ [reexport_mod::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html) 
+  ◦ [reexport_mod::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
-  ◦ [submodule::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html) 
+  ◦ [submodule::SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
 Enums
 
-  ◦ [GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html) 
+  ◦ [GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html) 
     A generic enum for testing [...]
 
-  ◦ [TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html) 
+  ◦ [TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html) 
     An enum for testing [...]
 
-  ◦ [reexport_mod::TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html) 
+  ◦ [reexport_mod::TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html) 
     An enum for testing [...]
 
-  ◦ [submodule::TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html) 
+  ◦ [submodule::TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html) 
     An enum for testing [...]
 
 Traits
 
-  ◦ [ComplexTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html) 
+  ◦ [ComplexTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html) 
     A more complex trait demonstrating various features
 
-  ◦ [Marker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html) 
+  ◦ [Marker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html) 
     A marker trait (no associated items) to exercise the compact implementors list
     — implementors with no bounds and no assoc types render comma-separated.
 
-  ◦ [TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html) 
+  ◦ [TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html) 
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
-  ◦ [link_resolution_tests::nested::TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html) 
+  ◦ [link_resolution_tests::nested::TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html) 
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
 Unions
 
-  ◦ [TestUnion](https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html) 
+  ◦ [TestUnion](https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html) 
     A union for testing union formatting. [...]
 
 Functions
 
-  ◦ [NotThreadSafe::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.NotThreadSafe.html#method.new) 
+  ◦ [NotThreadSafe::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.NotThreadSafe.html#method.new) 
     Wrap a raw pointer.
 
-  ◦ [TestUnion::from_int](https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html#method.from_int) 
+  ◦ [TestUnion::from_int](https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html#method.from_int) 
     Construct a TestUnion from its integer view.
 
-  ◦ [Vec::allocator](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.allocator) 
+  ◦ [Vec::allocator](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.allocator) 
     Returns a reference to the underlying allocator.
 
-  ◦ [Vec::append](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append) 
+  ◦ [Vec::append](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append) 
     Moves all the elements of other into self, leaving other empty. [...]
 
-  ◦ [Vec::as_mut_ptr](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_ptr) 
+  ◦ [Vec::as_mut_ptr](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_ptr) 
     Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer
     valid for zero sized reads if the vector didn't allocate. [...]
 
-  ◦ [Vec::as_mut_slice](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_slice) 
+  ◦ [Vec::as_mut_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_slice) 
     Extracts a mutable slice of the entire vector. [...]
 
-  ◦ [Vec::as_non_null](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_non_null) 
+  ◦ [Vec::as_non_null](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_non_null) 
     Returns a NonNull pointer to the vector's buffer, or a dangling NonNull pointer
     valid for zero sized reads if the vector didn't allocate. [...]
 
-  ◦ [Vec::as_ptr](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_ptr) 
+  ◦ [Vec::as_ptr](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_ptr) 
     Returns a raw pointer to the vector's buffer, or a dangling raw pointer valid
     for zero sized reads if the vector didn't allocate. [...]
 
-  ◦ [Vec::as_slice](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_slice) 
+  ◦ [Vec::as_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_slice) 
     Extracts a slice containing the entire vector. [...]
 
-  ◦ [Vec::capacity](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.capacity) 
+  ◦ [Vec::capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.capacity) 
     Returns the total number of elements the vector can hold without reallocating. [...]
 
-  ◦ [Vec::clear](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.clear) 
+  ◦ [Vec::clear](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.clear) 
     Clears the vector, removing all values. [...]
 
-  ◦ [Vec::const_make_global](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.const_make_global) 
+  ◦ [Vec::const_make_global](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.const_make_global) 
     Interns the Vec<T>, making the underlying memory read-only. This method should
     be called during compile time. (This is a no-op if called during runtime) [...]
 
-  ◦ [Vec::dedup](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup) 
+  ◦ [Vec::dedup](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup) 
     Removes consecutive repeated elements in the vector according to the [PartialEq](https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3APartialEq)
     trait implementation. [...]
 
-  ◦ [Vec::dedup_by](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by) 
+  ◦ [Vec::dedup_by](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by) 
     Removes all but the first of consecutive elements in the vector satisfying a
     given equality relation. [...]
 
-  ◦ [Vec::dedup_by_key](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by_key) 
+  ◦ [Vec::dedup_by_key](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by_key) 
     Removes all but the first of consecutive elements in the vector that resolve to
     the same key. [...]
 
-  ◦ [Vec::drain](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.drain) 
+  ◦ [Vec::drain](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.drain) 
     Removes the subslice indicated by the given range from the vector, returning a
     double-ended iterator over the removed subslice. [...]
 
-  ◦ [Vec::extend_from_slice](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_slice) 
+  ◦ [Vec::extend_from_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_slice) 
     Clones and appends all elements in a slice to the Vec. [...]
 
-  ◦ [Vec::extend_from_within](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_within) 
+  ◦ [Vec::extend_from_within](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_within) 
     Given a range src, clones a slice of elements in that range and appends it to
     the end. [...]
 
-  ◦ [Vec::extract_if](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if) 
+  ◦ [Vec::extract_if](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if) 
     Creates an iterator which uses a closure to determine if an element in the
     range should be removed. [...]
 
-  ◦ [Vec::from_fn](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_fn) 
+  ◦ [Vec::from_fn](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_fn) 
     Creates a Vec<T> where each element is produced by calling f with that
     element's index while walking forward through the Vec<T>. [...]
 
-  ◦ [Vec::from_parts](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_parts) 
+  ◦ [Vec::from_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_parts) 
     Creates a Vec<T> directly from a NonNull pointer, a length, and a capacity. [...]
 
-  ◦ [Vec::from_parts_in](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_parts_in) 
+  ◦ [Vec::from_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_parts_in) 
     Creates a Vec<T, A> directly from a NonNull pointer, a length, a capacity, and
     an allocator. [...]
 
-  ◦ [Vec::from_raw_parts](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_raw_parts) 
+  ◦ [Vec::from_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_raw_parts) 
     Creates a Vec<T> directly from a pointer, a length, and a capacity. [...]
 
-  ◦ [Vec::from_raw_parts_in](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_raw_parts_in) 
+  ◦ [Vec::from_raw_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_raw_parts_in) 
     Creates a Vec<T, A> directly from a pointer, a length, a capacity, and an
     allocator. [...]
 
-  ◦ [Vec::insert](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.insert) 
+  ◦ [Vec::insert](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.insert) 
     Inserts an element at position index within the vector, shifting all elements
     after it to the right. [...]
 
-  ◦ [Vec::insert_mut](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.insert_mut) 
+  ◦ [Vec::insert_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.insert_mut) 
     Inserts an element at position index within the vector, shifting all elements
     after it to the right, and returning a reference to the new element. [...]
 
-  ◦ [Vec::into_array](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_array) 
+  ◦ [Vec::into_array](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_array) 
     Converts the Vec into a boxed array. This conversion will discard any spare
-    capacity, if there is any, see [Vec::shrink_to_fit](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to_fit). If you merely wish for a
+    capacity, if there is any, see [Vec::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to_fit). If you merely wish for a
     reference to an array, use [as_array](https://doc.rust-lang.org/stable/std/primitive.slice.html#method.as_array). [...]
 
-  ◦ [Vec::into_boxed_slice](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_boxed_slice) 
-    Converts the vector into [Box<[T]>](http://docs.rust-lang.org/nightly/alloc/boxed/struct.Box.html). [...]
+  ◦ [Vec::into_boxed_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_boxed_slice) 
+    Converts the vector into [Box<[T]>](https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html). [...]
 
-  ◦ [Vec::into_chunks](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_chunks) 
+  ◦ [Vec::into_chunks](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_chunks) 
     Groups every N elements in the Vec<T> into chunks to produce a Vec<[T; N]>,
     dropping elements in the remainder. N must be greater than zero. [...]
 
-  ◦ [Vec::into_flattened](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened) 
+  ◦ [Vec::into_flattened](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened) 
     Takes a Vec<[T; N]> and flattens it into a Vec<T>. [...]
 
-  ◦ [Vec::into_parts](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts) 
+  ◦ [Vec::into_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts) 
     Decomposes a Vec<T> into its raw components: (NonNull pointer, length, capacity)
     . [...]
 
-  ◦ [Vec::into_parts_with_alloc](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts_with_alloc) 
+  ◦ [Vec::into_parts_with_alloc](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts_with_alloc) 
     Decomposes a Vec<T> into its raw components: (NonNull pointer, length,
     capacity, allocator). [...]
 
-  ◦ [Vec::into_raw_parts](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts) 
+  ◦ [Vec::into_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts) 
     Decomposes a Vec<T> into its raw components: (pointer, length, capacity). [...]
 
-  ◦ [Vec::into_raw_parts_with_alloc](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts_with_alloc) 
+  ◦ [Vec::into_raw_parts_with_alloc](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts_with_alloc) 
     Decomposes a Vec<T> into its raw components: (pointer, length, capacity,
     allocator). [...]
 
-  ◦ [Vec::is_empty](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.is_empty) 
+  ◦ [Vec::is_empty](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.is_empty) 
     Returns true if the vector contains no elements. [...]
 
-  ◦ [Vec::leak](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.leak) 
+  ◦ [Vec::leak](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.leak) 
     Consumes and leaks the Vec, returning a mutable reference to the contents, &'a
     mut [T]. [...]
 
-  ◦ [Vec::len](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.len) 
+  ◦ [Vec::len](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.len) 
     Returns the number of elements in the vector, also referred to as its 'length'. [...]
 
-  ◦ [Vec::new](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new) 
+  ◦ [Vec::new](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new) 
     Constructs a new, empty Vec<T>. [...]
 
-  ◦ [Vec::new_in](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new_in) 
+  ◦ [Vec::new_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new_in) 
     Constructs a new, empty Vec<T, A>. [...]
 
-  ◦ [Vec::peek_mut](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.peek_mut) 
+  ◦ [Vec::peek_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.peek_mut) 
     Returns a mutable reference to the last item in the vector, or None if it is
     empty. [...]
 
-  ◦ [Vec::pop](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop) 
+  ◦ [Vec::pop](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop) 
     Removes the last element from a vector and returns it, or [None](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone) if it is empty. [...]
 
-  ◦ [Vec::pop_if](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop_if) 
+  ◦ [Vec::pop_if](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop_if) 
     Removes and returns the last element from a vector if the predicate returns true
     , or [None](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone) if the predicate returns false or the vector is empty (the predicate
     will not be called in that case). [...]
 
-  ◦ [Vec::push](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push) 
+  ◦ [Vec::push](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push) 
     Appends an element to the back of a collection. [...]
 
-  ◦ [Vec::push_mut](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_mut) 
+  ◦ [Vec::push_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_mut) 
     Appends an element to the back of a collection, returning a reference to it. [...]
 
-  ◦ [Vec::push_within_capacity](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_within_capacity) 
+  ◦ [Vec::push_within_capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_within_capacity) 
     Appends an element and returns a reference to it if there is sufficient spare
     capacity, otherwise an error is returned with the element. [...]
 
-  ◦ [Vec::recycle](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.recycle) 
+  ◦ [Vec::recycle](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.recycle) 
     This clears out this Vec and recycles the allocation into a new Vec. The item
     type of the resulting Vec needs to have the same size and alignment as the item
     type of the original Vec. [...]
 
-  ◦ [Vec::remove](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.remove) 
+  ◦ [Vec::remove](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.remove) 
     Removes and returns the element at position index within the vector, shifting
     all elements after it to the left. [...]
 
-  ◦ [Vec::reserve](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve) 
+  ◦ [Vec::reserve](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve) 
     Reserves capacity for at least additional more elements to be inserted in the
     given Vec<T>. The collection may reserve more space to speculatively avoid
     frequent reallocations. After calling reserve, capacity will be greater than or
     equal to self.len() + additional. Does nothing if capacity is already
     sufficient. [...]
 
-  ◦ [Vec::reserve_exact](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve_exact) 
+  ◦ [Vec::reserve_exact](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve_exact) 
     Reserves the minimum capacity for at least additional more elements to be
-    inserted in the given Vec<T>. Unlike [reserve](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve), this will not deliberately
+    inserted in the given Vec<T>. Unlike [reserve](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve), this will not deliberately
     over-allocate to speculatively avoid frequent allocations. After calling 
     reserve_exact, capacity will be greater than or equal to self.len() + additional
     . Does nothing if the capacity is already sufficient. [...]
 
-  ◦ [Vec::resize](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize) 
+  ◦ [Vec::resize](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize) 
     Resizes the Vec in-place so that len is equal to new_len. [...]
 
-  ◦ [Vec::resize_with](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize_with) 
+  ◦ [Vec::resize_with](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize_with) 
     Resizes the Vec in-place so that len is equal to new_len. [...]
 
-  ◦ [Vec::retain](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain) 
+  ◦ [Vec::retain](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain) 
     Retains only the elements specified by the predicate. [...]
 
-  ◦ [Vec::retain_mut](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain_mut) 
+  ◦ [Vec::retain_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain_mut) 
     Retains only the elements specified by the predicate, passing a mutable
     reference to it. [...]
 
-  ◦ [Vec::set_len](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.set_len) 
+  ◦ [Vec::set_len](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.set_len) 
     Forces the length of the vector to new_len. [...]
 
-  ◦ [Vec::shrink_to](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to) 
+  ◦ [Vec::shrink_to](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to) 
     Shrinks the capacity of the vector with a lower bound. [...]
 
-  ◦ [Vec::shrink_to_fit](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to_fit) 
+  ◦ [Vec::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to_fit) 
     Shrinks the capacity of the vector as much as possible. [...]
 
-  ◦ [Vec::spare_capacity_mut](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.spare_capacity_mut) 
+  ◦ [Vec::spare_capacity_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.spare_capacity_mut) 
     Returns the remaining spare capacity of the vector as a slice of MaybeUninit<T>. [...]
 
-  ◦ [Vec::splice](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice) 
+  ◦ [Vec::splice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice) 
     Creates a splicing iterator that replaces the specified range in the vector with
     the given replace_with iterator and yields the removed items. replace_with does
     not need to be the same length as range. [...]
 
-  ◦ [Vec::split_at_spare_mut](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_at_spare_mut) 
+  ◦ [Vec::split_at_spare_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_at_spare_mut) 
     Returns vector content as a slice of T, along with the remaining spare capacity
     of the vector as a slice of MaybeUninit<T>. [...]
 
-  ◦ [Vec::split_off](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_off) 
+  ◦ [Vec::split_off](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_off) 
     Splits the collection into two at the given index. [...]
 
-  ◦ [Vec::swap_remove](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.swap_remove) 
+  ◦ [Vec::swap_remove](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.swap_remove) 
     Removes an element from the vector and returns it. [...]
 
-  ◦ [Vec::truncate](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.truncate) 
+  ◦ [Vec::truncate](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.truncate) 
     Shortens the vector, keeping the first len elements and dropping the rest. [...]
 
-  ◦ [Vec::try_remove](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_remove) 
+  ◦ [Vec::try_remove](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_remove) 
     Remove and return the element at position index within the vector, shifting all
     elements after it to the left, or [None](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone) if it does not exist. [...]
 
-  ◦ [Vec::try_reserve](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve) 
+  ◦ [Vec::try_reserve](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve) 
     Tries to reserve capacity for at least additional more elements to be inserted 
     in the given Vec<T>. The collection may reserve more space to speculatively
     avoid frequent reallocations. After calling try_reserve, capacity will be 
@@ -428,600 +428,600 @@ Functions
     nothing if capacity is already sufficient. This method preserves the contents
     even if an error occurs. [...]
 
-  ◦ [Vec::try_reserve_exact](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve_exact) 
+  ◦ [Vec::try_reserve_exact](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve_exact) 
     Tries to reserve the minimum capacity for at least additional elements to be
-    inserted in the given Vec<T>. Unlike [try_reserve](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve), this will not deliberately
+    inserted in the given Vec<T>. Unlike [try_reserve](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve), this will not deliberately
     over-allocate to speculatively avoid frequent allocations. After calling 
     try_reserve_exact, capacity will be greater than or equal to self.len() +
     additional if it returns Ok(()). Does nothing if the capacity is already
     sufficient. [...]
 
-  ◦ [Vec::try_shrink_to](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_shrink_to) 
+  ◦ [Vec::try_shrink_to](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_shrink_to) 
     Shrinks the capacity of the vector with a lower bound. [...]
 
-  ◦ [Vec::try_shrink_to_fit](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_shrink_to_fit) 
+  ◦ [Vec::try_shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_shrink_to_fit) 
     Tries to shrink the capacity of the vector as much as possible [...]
 
-  ◦ [Vec::try_with_capacity](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_with_capacity) 
+  ◦ [Vec::try_with_capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_with_capacity) 
     Constructs a new, empty Vec<T> with at least the specified capacity. [...]
 
-  ◦ [Vec::try_with_capacity_in](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_with_capacity_in) 
+  ◦ [Vec::try_with_capacity_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_with_capacity_in) 
     Constructs a new, empty Vec<T, A> with at least the specified capacity with the
     provided allocator. [...]
 
-  ◦ [Vec::with_capacity](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity) 
+  ◦ [Vec::with_capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity) 
     Constructs a new, empty Vec<T> with at least the specified capacity. [...]
 
-  ◦ [Vec::with_capacity_in](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity_in) 
+  ◦ [Vec::with_capacity_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity_in) 
     Constructs a new, empty Vec<T, A> with at least the specified capacity with the
     provided allocator. [...]
 
-  ◦ [async_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.async_function.html) 
+  ◦ [async_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.async_function.html) 
     An async function
 
-  ◦ [generic_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.generic_function.html) 
+  ◦ [generic_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.generic_function.html) 
     A generic function
 
-  ◦ [link_resolution_tests::HashSet::capacity](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.capacity) 
+  ◦ [link_resolution_tests::HashSet::capacity](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.capacity) 
     Returns the number of elements the set can hold without reallocating. [...]
 
-  ◦ [link_resolution_tests::HashSet::clear](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.clear) 
+  ◦ [link_resolution_tests::HashSet::clear](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.clear) 
     Clears the set, removing all values. [...]
 
-  ◦ [link_resolution_tests::HashSet::contains](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.contains) 
+  ◦ [link_resolution_tests::HashSet::contains](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.contains) 
     Returns true if the set contains a value. [...]
 
-  ◦ [link_resolution_tests::HashSet::difference](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.difference) 
+  ◦ [link_resolution_tests::HashSet::difference](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.difference) 
     Visits the values representing the difference, i.e., the values that are in self
      but not in other. [...]
 
-  ◦ [link_resolution_tests::HashSet::drain](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.drain) 
+  ◦ [link_resolution_tests::HashSet::drain](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.drain) 
     Clears the set, returning all elements as an iterator. Keeps the allocated
     memory for reuse. [...]
 
-  ◦ [link_resolution_tests::HashSet::entry](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.entry) 
+  ◦ [link_resolution_tests::HashSet::entry](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.entry) 
     Gets the given value's corresponding entry in the set for in-place manipulation. [...]
 
-  ◦ [link_resolution_tests::HashSet::extract_if](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.extract_if) 
+  ◦ [link_resolution_tests::HashSet::extract_if](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.extract_if) 
     Creates an iterator which uses a closure to determine if an element should be
     removed. [...]
 
-  ◦ [link_resolution_tests::HashSet::get](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.get) 
+  ◦ [link_resolution_tests::HashSet::get](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.get) 
     Returns a reference to the value in the set, if any, that is equal to the given
     value. [...]
 
-  ◦ [link_resolution_tests::HashSet::get_or_insert](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.get_or_insert) 
+  ◦ [link_resolution_tests::HashSet::get_or_insert](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.get_or_insert) 
     Inserts the given value into the set if it is not present, then returns a
     reference to the value in the set. [...]
 
-  ◦ [link_resolution_tests::HashSet::get_or_insert_with](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.get_or_insert_with) 
+  ◦ [link_resolution_tests::HashSet::get_or_insert_with](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.get_or_insert_with) 
     Inserts a value computed from f into the set if the given value is not present,
     then returns a reference to the value in the set. [...]
 
-  ◦ [link_resolution_tests::HashSet::hasher](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.hasher) 
+  ◦ [link_resolution_tests::HashSet::hasher](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.hasher) 
     Returns a reference to the set's [BuildHasher](https://doc.rust-lang.org/nightly/core/hash/index.html?search=core%3A%3Ahash%3A%3ABuildHasher). [...]
 
-  ◦ [link_resolution_tests::HashSet::insert](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.insert) 
+  ◦ [link_resolution_tests::HashSet::insert](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.insert) 
     Adds a value to the set. [...]
 
-  ◦ [link_resolution_tests::HashSet::intersection](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.intersection) 
+  ◦ [link_resolution_tests::HashSet::intersection](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.intersection) 
     Visits the values representing the intersection, i.e., the values that are both
     in self and other. [...]
 
-  ◦ [link_resolution_tests::HashSet::is_disjoint](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_disjoint) 
+  ◦ [link_resolution_tests::HashSet::is_disjoint](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_disjoint) 
     Returns true if self has no elements in common with other. This is equivalent
     to checking for an empty intersection. [...]
 
-  ◦ [link_resolution_tests::HashSet::is_empty](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_empty) 
+  ◦ [link_resolution_tests::HashSet::is_empty](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_empty) 
     Returns true if the set contains no elements. [...]
 
-  ◦ [link_resolution_tests::HashSet::is_subset](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_subset) 
+  ◦ [link_resolution_tests::HashSet::is_subset](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_subset) 
     Returns true if the set is a subset of another, i.e., other contains at least
     all the values in self. [...]
 
-  ◦ [link_resolution_tests::HashSet::is_superset](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_superset) 
+  ◦ [link_resolution_tests::HashSet::is_superset](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.is_superset) 
     Returns true if the set is a superset of another, i.e., self contains at least
     all the values in other. [...]
 
-  ◦ [link_resolution_tests::HashSet::iter](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.iter) 
+  ◦ [link_resolution_tests::HashSet::iter](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.iter) 
     An iterator visiting all elements in arbitrary order. The iterator element type
     is &'a T. [...]
 
-  ◦ [link_resolution_tests::HashSet::len](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.len) 
+  ◦ [link_resolution_tests::HashSet::len](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.len) 
     Returns the number of elements in the set. [...]
 
-  ◦ [link_resolution_tests::HashSet::new](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.new) 
+  ◦ [link_resolution_tests::HashSet::new](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.new) 
     Creates an empty HashSet. [...]
 
-  ◦ [link_resolution_tests::HashSet::new_in](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.new_in) 
+  ◦ [link_resolution_tests::HashSet::new_in](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.new_in) 
     Creates an empty HashSet in the provided allocator. [...]
 
-  ◦ [link_resolution_tests::HashSet::remove](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.remove) 
+  ◦ [link_resolution_tests::HashSet::remove](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.remove) 
     Removes a value from the set. Returns whether the value was present in the set. [...]
 
-  ◦ [link_resolution_tests::HashSet::replace](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.replace) 
+  ◦ [link_resolution_tests::HashSet::replace](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.replace) 
     Adds a value to the set, replacing the existing value, if any, that is equal to
     the given one. Returns the replaced value. [...]
 
-  ◦ [link_resolution_tests::HashSet::reserve](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.reserve) 
+  ◦ [link_resolution_tests::HashSet::reserve](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.reserve) 
     Reserves capacity for at least additional more elements to be inserted in the 
     HashSet. The collection may reserve more space to speculatively avoid frequent
     reallocations. After calling reserve, capacity will be greater than or equal to 
     self.len() + additional. Does nothing if capacity is already sufficient. [...]
 
-  ◦ [link_resolution_tests::HashSet::retain](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.retain) 
+  ◦ [link_resolution_tests::HashSet::retain](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.retain) 
     Retains only the elements specified by the predicate. [...]
 
-  ◦ [link_resolution_tests::HashSet::shrink_to](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.shrink_to) 
+  ◦ [link_resolution_tests::HashSet::shrink_to](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.shrink_to) 
     Shrinks the capacity of the set with a lower limit. It will drop down no lower
     than the supplied limit while maintaining the internal rules and possibly
     leaving some space in accordance with the resize policy. [...]
 
-  ◦ [link_resolution_tests::HashSet::shrink_to_fit](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.shrink_to_fit) 
+  ◦ [link_resolution_tests::HashSet::shrink_to_fit](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.shrink_to_fit) 
     Shrinks the capacity of the set as much as possible. It will drop down as much
     as possible while maintaining the internal rules and possibly leaving some
     space in accordance with the resize policy. [...]
 
-  ◦ [link_resolution_tests::HashSet::symmetric_difference](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.symmetric_difference) 
+  ◦ [link_resolution_tests::HashSet::symmetric_difference](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.symmetric_difference) 
     Visits the values representing the symmetric difference, i.e., the values that
     are in self or in other but not in both. [...]
 
-  ◦ [link_resolution_tests::HashSet::take](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.take) 
+  ◦ [link_resolution_tests::HashSet::take](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.take) 
     Removes and returns the value in the set, if any, that is equal to the given
     one. [...]
 
-  ◦ [link_resolution_tests::HashSet::try_reserve](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.try_reserve) 
+  ◦ [link_resolution_tests::HashSet::try_reserve](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.try_reserve) 
     Tries to reserve capacity for at least additional more elements to be inserted 
     in the HashSet. The collection may reserve more space to speculatively avoid
     frequent reallocations. After calling try_reserve, capacity will be greater
     than or equal to self.len() + additional if it returns Ok(()). Does nothing if
     capacity is already sufficient. [...]
 
-  ◦ [link_resolution_tests::HashSet::union](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.union) 
+  ◦ [link_resolution_tests::HashSet::union](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.union) 
     Visits the values representing the union, i.e., all the values in self or other,
     without duplicates. [...]
 
-  ◦ [link_resolution_tests::HashSet::with_capacity](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity) 
+  ◦ [link_resolution_tests::HashSet::with_capacity](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity) 
     Creates an empty HashSet with at least the specified capacity. [...]
 
-  ◦ [link_resolution_tests::HashSet::with_capacity_and_hasher](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity_and_hasher) 
+  ◦ [link_resolution_tests::HashSet::with_capacity_and_hasher](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity_and_hasher) 
     Creates an empty HashSet with at least the specified capacity, using hasher to
     hash the keys. [...]
 
-  ◦ [link_resolution_tests::HashSet::with_capacity_and_hasher_in](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity_and_hasher_in) 
+  ◦ [link_resolution_tests::HashSet::with_capacity_and_hasher_in](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity_and_hasher_in) 
     Creates an empty HashSet with at least the specified capacity, using hasher to
     hash the keys and alloc to allocate memory. [...]
 
-  ◦ [link_resolution_tests::HashSet::with_capacity_in](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity_in) 
+  ◦ [link_resolution_tests::HashSet::with_capacity_in](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_capacity_in) 
     Creates an empty HashSet with at least the specified capacity. [...]
 
-  ◦ [link_resolution_tests::HashSet::with_hasher](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_hasher) 
+  ◦ [link_resolution_tests::HashSet::with_hasher](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_hasher) 
     Creates a new empty hash set which will use the given hasher to hash keys. [...]
 
-  ◦ [link_resolution_tests::HashSet::with_hasher_in](http://docs.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_hasher_in) 
+  ◦ [link_resolution_tests::HashSet::with_hasher_in](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.with_hasher_in) 
     Creates a new empty hash set which will use the given hasher to hash keys and
     will allocate memory using the provided allocator. [...]
 
-  ◦ [link_resolution_tests::LinkTestStruct::get_data](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/struct.LinkTestStruct.html#method.get_data) 
+  ◦ [link_resolution_tests::LinkTestStruct::get_data](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/struct.LinkTestStruct.html#method.get_data) 
     Another method
 
-  ◦ [link_resolution_tests::LinkTestStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/struct.LinkTestStruct.html#method.new) 
+  ◦ [link_resolution_tests::LinkTestStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/struct.LinkTestStruct.html#method.new) 
     Method for testing Self resolution
 
-  ◦ [link_resolution_tests::RenamedTestStruct::get_field](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.get_field) 
+  ◦ [link_resolution_tests::RenamedTestStruct::get_field](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.get_field) 
     Get the field value
 
-  ◦ [link_resolution_tests::RenamedTestStruct::increment_count](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.increment_count) 
+  ◦ [link_resolution_tests::RenamedTestStruct::increment_count](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.increment_count) 
     Update the count
 
-  ◦ [link_resolution_tests::RenamedTestStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#method.new) 
+  ◦ [link_resolution_tests::RenamedTestStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.new) 
     Create a new TestStruct
 
-  ◦ [link_resolution_tests::Tree::append](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.append) 
+  ◦ [link_resolution_tests::Tree::append](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.append) 
     Moves all elements from other into self, leaving other empty. [...]
 
-  ◦ [link_resolution_tests::Tree::clear](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.clear) 
+  ◦ [link_resolution_tests::Tree::clear](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.clear) 
     Clears the map, removing all elements. [...]
 
-  ◦ [link_resolution_tests::Tree::contains_key](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.contains_key) 
+  ◦ [link_resolution_tests::Tree::contains_key](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.contains_key) 
     Returns true if the map contains a value for the specified key. [...]
 
-  ◦ [link_resolution_tests::Tree::entry](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.entry) 
+  ◦ [link_resolution_tests::Tree::entry](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.entry) 
     Gets the given key's corresponding entry in the map for in-place manipulation. [...]
 
-  ◦ [link_resolution_tests::Tree::extract_if](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.extract_if) 
+  ◦ [link_resolution_tests::Tree::extract_if](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.extract_if) 
     Creates an iterator that visits elements (key-value pairs) in the specified
     range in ascending key order and uses a closure to determine if an element 
     should be removed. [...]
 
-  ◦ [link_resolution_tests::Tree::first_entry](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.first_entry) 
+  ◦ [link_resolution_tests::Tree::first_entry](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.first_entry) 
     Returns the first entry in the map for in-place manipulation. The key of this
     entry is the minimum key in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::first_key_value](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.first_key_value) 
+  ◦ [link_resolution_tests::Tree::first_key_value](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.first_key_value) 
     Returns the first key-value pair in the map. The key in this pair is the
     minimum key in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::get](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get) 
+  ◦ [link_resolution_tests::Tree::get](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get) 
     Returns a reference to the value corresponding to the key. [...]
 
-  ◦ [link_resolution_tests::Tree::get_key_value](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get_key_value) 
+  ◦ [link_resolution_tests::Tree::get_key_value](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get_key_value) 
     Returns the key-value pair corresponding to the supplied key. This is 
     potentially useful: [...]
 
-  ◦ [link_resolution_tests::Tree::get_mut](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get_mut) 
+  ◦ [link_resolution_tests::Tree::get_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get_mut) 
     Returns a mutable reference to the value corresponding to the key. [...]
 
-  ◦ [link_resolution_tests::Tree::insert](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.insert) 
+  ◦ [link_resolution_tests::Tree::insert](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.insert) 
     Inserts a key-value pair into the map. [...]
 
-  ◦ [link_resolution_tests::Tree::into_keys](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_keys) 
+  ◦ [link_resolution_tests::Tree::into_keys](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_keys) 
     Creates a consuming iterator visiting all the keys, in sorted order. The map
     cannot be used after calling this. The iterator element type is K. [...]
 
-  ◦ [link_resolution_tests::Tree::into_values](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_values) 
+  ◦ [link_resolution_tests::Tree::into_values](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_values) 
     Creates a consuming iterator visiting all the values, in order by key. The map
     cannot be used after calling this. The iterator element type is V. [...]
 
-  ◦ [link_resolution_tests::Tree::is_empty](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.is_empty) 
+  ◦ [link_resolution_tests::Tree::is_empty](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.is_empty) 
     Returns true if the map contains no elements. [...]
 
-  ◦ [link_resolution_tests::Tree::iter](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter) 
+  ◦ [link_resolution_tests::Tree::iter](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter) 
     Gets an iterator over the entries of the map, sorted by key. [...]
 
-  ◦ [link_resolution_tests::Tree::iter_mut](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter_mut) 
+  ◦ [link_resolution_tests::Tree::iter_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter_mut) 
     Gets a mutable iterator over the entries of the map, sorted by key. [...]
 
-  ◦ [link_resolution_tests::Tree::keys](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.keys) 
+  ◦ [link_resolution_tests::Tree::keys](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.keys) 
     Gets an iterator over the keys of the map, in sorted order. [...]
 
-  ◦ [link_resolution_tests::Tree::last_entry](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.last_entry) 
+  ◦ [link_resolution_tests::Tree::last_entry](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.last_entry) 
     Returns the last entry in the map for in-place manipulation. The key of this
     entry is the maximum key in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::last_key_value](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.last_key_value) 
+  ◦ [link_resolution_tests::Tree::last_key_value](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.last_key_value) 
     Returns the last key-value pair in the map. The key in this pair is the maximum
     key in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::len](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.len) 
+  ◦ [link_resolution_tests::Tree::len](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.len) 
     Returns the number of elements in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::lower_bound](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound) 
-    Returns a [Cursor](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html) pointing at the gap before the smallest key greater than the
+  ◦ [link_resolution_tests::Tree::lower_bound](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound) 
+    Returns a [Cursor](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html) pointing at the gap before the smallest key greater than the
     given bound. [...]
 
-  ◦ [link_resolution_tests::Tree::lower_bound_mut](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound_mut) 
-    Returns a [CursorMut](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html) pointing at the gap before the smallest key greater than
+  ◦ [link_resolution_tests::Tree::lower_bound_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound_mut) 
+    Returns a [CursorMut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html) pointing at the gap before the smallest key greater than
     the given bound. [...]
 
-  ◦ [link_resolution_tests::Tree::merge](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.merge) 
+  ◦ [link_resolution_tests::Tree::merge](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.merge) 
     Moves all elements from other into self, leaving other empty. [...]
 
-  ◦ [link_resolution_tests::Tree::new](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.new) 
+  ◦ [link_resolution_tests::Tree::new](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.new) 
     Makes a new, empty BTreeMap. [...]
 
-  ◦ [link_resolution_tests::Tree::new_in](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.new_in) 
+  ◦ [link_resolution_tests::Tree::new_in](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.new_in) 
     Makes a new empty BTreeMap with a reasonable choice for B. [...]
 
-  ◦ [link_resolution_tests::Tree::pop_first](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.pop_first) 
+  ◦ [link_resolution_tests::Tree::pop_first](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.pop_first) 
     Removes and returns the first element in the map. The key of this element is
     the minimum key that was in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::pop_last](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.pop_last) 
+  ◦ [link_resolution_tests::Tree::pop_last](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.pop_last) 
     Removes and returns the last element in the map. The key of this element is the
     maximum key that was in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::range](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.range) 
+  ◦ [link_resolution_tests::Tree::range](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.range) 
     Constructs a double-ended iterator over a sub-range of elements in the map. The
     simplest way is to use the range syntax min..max, thus range(min..max) will 
     yield elements from min (inclusive) to max (exclusive). The range may also be
     entered as (Bound<T>, Bound<T>), so for example range((Excluded(4),
     Included(10))) will yield a left-exclusive, right-inclusive range from 4 to 10. [...]
 
-  ◦ [link_resolution_tests::Tree::range_mut](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.range_mut) 
+  ◦ [link_resolution_tests::Tree::range_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.range_mut) 
     Constructs a mutable double-ended iterator over a sub-range of elements in the
     map. The simplest way is to use the range syntax min..max, thus range(min..max)
     will yield elements from min (inclusive) to max (exclusive). The range may also
     be entered as (Bound<T>, Bound<T>), so for example range((Excluded(4),
     Included(10))) will yield a left-exclusive, right-inclusive range from 4 to 10. [...]
 
-  ◦ [link_resolution_tests::Tree::remove](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.remove) 
+  ◦ [link_resolution_tests::Tree::remove](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.remove) 
     Removes a key from the map, returning the value at the key if the key was
     previously in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::remove_entry](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.remove_entry) 
+  ◦ [link_resolution_tests::Tree::remove_entry](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.remove_entry) 
     Removes a key from the map, returning the stored key and value if the key was
     previously in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::retain](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.retain) 
+  ◦ [link_resolution_tests::Tree::retain](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.retain) 
     Retains only the elements specified by the predicate. [...]
 
-  ◦ [link_resolution_tests::Tree::split_off](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.split_off) 
+  ◦ [link_resolution_tests::Tree::split_off](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.split_off) 
     Splits the collection into two at the given key. Returns everything after the
     given key, including the key. If the key is not present, the split will occur
     at the nearest greater key, or return an empty map if no such key exists. [...]
 
-  ◦ [link_resolution_tests::Tree::try_insert](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.try_insert) 
+  ◦ [link_resolution_tests::Tree::try_insert](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.try_insert) 
     Tries to insert a key-value pair into the map, and returns a mutable reference
     to the value in the entry. [...]
 
-  ◦ [link_resolution_tests::Tree::upper_bound](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound) 
-    Returns a [Cursor](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html) pointing at the gap after the greatest key smaller than the
+  ◦ [link_resolution_tests::Tree::upper_bound](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound) 
+    Returns a [Cursor](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html) pointing at the gap after the greatest key smaller than the
     given bound. [...]
 
-  ◦ [link_resolution_tests::Tree::upper_bound_mut](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound_mut) 
-    Returns a [CursorMut](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html) pointing at the gap after the greatest key smaller than the
+  ◦ [link_resolution_tests::Tree::upper_bound_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound_mut) 
+    Returns a [CursorMut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html) pointing at the gap after the greatest key smaller than the
     given bound. [...]
 
-  ◦ [link_resolution_tests::Tree::values](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values) 
+  ◦ [link_resolution_tests::Tree::values](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values) 
     Gets an iterator over the values of the map, in order by key. [...]
 
-  ◦ [link_resolution_tests::Tree::values_mut](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values_mut) 
+  ◦ [link_resolution_tests::Tree::values_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values_mut) 
     Gets a mutable iterator over the values of the map, in order by key. [...]
 
-  ◦ [link_resolution_tests::nested::NestedStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/nested/struct.NestedStruct.html#method.new) 
+  ◦ [link_resolution_tests::nested::NestedStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/nested/struct.NestedStruct.html#method.new) 
     Create new NestedStruct
 
-  ◦ [link_resolution_tests::nested::Str::as_bytes](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_bytes) 
+  ◦ [link_resolution_tests::nested::Str::as_bytes](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_bytes) 
     Returns a byte slice of this String's contents. [...]
 
-  ◦ [link_resolution_tests::nested::Str::as_mut_str](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_mut_str) 
+  ◦ [link_resolution_tests::nested::Str::as_mut_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_mut_str) 
     Converts a String into a mutable string slice. [...]
 
-  ◦ [link_resolution_tests::nested::Str::as_mut_vec](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_mut_vec) 
+  ◦ [link_resolution_tests::nested::Str::as_mut_vec](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_mut_vec) 
     Returns a mutable reference to the contents of this String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::as_str](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_str) 
+  ◦ [link_resolution_tests::nested::Str::as_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_str) 
     Extracts a string slice containing the entire String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::capacity](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.capacity) 
+  ◦ [link_resolution_tests::nested::Str::capacity](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.capacity) 
     Returns this String's capacity, in bytes. [...]
 
-  ◦ [link_resolution_tests::nested::Str::clear](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.clear) 
+  ◦ [link_resolution_tests::nested::Str::clear](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.clear) 
     Truncates this String, removing all contents. [...]
 
-  ◦ [link_resolution_tests::nested::Str::drain](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.drain) 
+  ◦ [link_resolution_tests::nested::Str::drain](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.drain) 
     Removes the specified range from the string in bulk, returning all removed
     characters as an iterator. [...]
 
-  ◦ [link_resolution_tests::nested::Str::extend_from_within](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.extend_from_within) 
+  ◦ [link_resolution_tests::nested::Str::extend_from_within](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.extend_from_within) 
     Copies elements from src range to the end of the string. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_raw_parts](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_raw_parts) 
+  ◦ [link_resolution_tests::nested::Str::from_raw_parts](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_raw_parts) 
     Creates a new String from a pointer, a length and a capacity. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf16](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16) 
+  ◦ [link_resolution_tests::nested::Str::from_utf16](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16) 
     Decode a native endian UTF-16–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr)
     if v contains any invalid data. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf16_lossy](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16_lossy) 
+  ◦ [link_resolution_tests::nested::Str::from_utf16_lossy](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16_lossy) 
     Decode a native endian UTF-16–encoded slice v into a String, replacing
     invalid data with [the replacement character (](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[U+FFFD](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[)](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER). [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf16be](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16be) 
+  ◦ [link_resolution_tests::nested::Str::from_utf16be](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16be) 
     Decode a UTF-16BE–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr) if v contains
     any invalid data. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf16be_lossy](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16be_lossy) 
+  ◦ [link_resolution_tests::nested::Str::from_utf16be_lossy](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16be_lossy) 
     Decode a UTF-16BE–encoded slice v into a String, replacing invalid data with 
     [the replacement character (](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[U+FFFD](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[)](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER). [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf16le](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16le) 
+  ◦ [link_resolution_tests::nested::Str::from_utf16le](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16le) 
     Decode a UTF-16LE–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr) if v contains
     any invalid data. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf16le_lossy](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16le_lossy) 
+  ◦ [link_resolution_tests::nested::Str::from_utf16le_lossy](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16le_lossy) 
     Decode a UTF-16LE–encoded slice v into a String, replacing invalid data with 
     [the replacement character (](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[U+FFFD](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[)](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER). [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf8](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8) 
+  ◦ [link_resolution_tests::nested::Str::from_utf8](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8) 
     Converts a vector of bytes to a String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf8_lossy](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_lossy) 
+  ◦ [link_resolution_tests::nested::Str::from_utf8_lossy](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_lossy) 
     Converts a slice of bytes to a string, including invalid characters. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf8_lossy_owned](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_lossy_owned) 
-    Converts a [Vec<u8>](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html) to a String, substituting invalid UTF-8 sequences with
+  ◦ [link_resolution_tests::nested::Str::from_utf8_lossy_owned](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_lossy_owned) 
+    Converts a [Vec<u8>](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html) to a String, substituting invalid UTF-8 sequences with
     replacement characters. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf8_unchecked](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_unchecked) 
+  ◦ [link_resolution_tests::nested::Str::from_utf8_unchecked](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_unchecked) 
     Converts a vector of bytes to a String without checking that the string
     contains valid UTF-8. [...]
 
-  ◦ [link_resolution_tests::nested::Str::insert](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.insert) 
+  ◦ [link_resolution_tests::nested::Str::insert](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.insert) 
     Inserts a character into this String at byte position idx. [...]
 
-  ◦ [link_resolution_tests::nested::Str::insert_str](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.insert_str) 
+  ◦ [link_resolution_tests::nested::Str::insert_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.insert_str) 
     Inserts a string slice into this String at byte position idx. [...]
 
-  ◦ [link_resolution_tests::nested::Str::into_boxed_str](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_boxed_str) 
-    Converts this String into a [Box](http://docs.rust-lang.org/nightly/alloc/boxed/struct.Box.html)<[str](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Astr)>. [...]
+  ◦ [link_resolution_tests::nested::Str::into_boxed_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_boxed_str) 
+    Converts this String into a [Box](https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html)<[str](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Astr)>. [...]
 
-  ◦ [link_resolution_tests::nested::Str::into_bytes](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_bytes) 
+  ◦ [link_resolution_tests::nested::Str::into_bytes](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_bytes) 
     Converts a String into a byte vector. [...]
 
-  ◦ [link_resolution_tests::nested::Str::into_chars](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_chars) 
+  ◦ [link_resolution_tests::nested::Str::into_chars](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_chars) 
     Converts a String into an iterator over the [char](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar)s of the string. [...]
 
-  ◦ [link_resolution_tests::nested::Str::into_raw_parts](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_raw_parts) 
+  ◦ [link_resolution_tests::nested::Str::into_raw_parts](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_raw_parts) 
     Decomposes a String into its raw components: (pointer, length, capacity). [...]
 
-  ◦ [link_resolution_tests::nested::Str::is_empty](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.is_empty) 
+  ◦ [link_resolution_tests::nested::Str::is_empty](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.is_empty) 
     Returns true if this String has a length of zero, and false otherwise. [...]
 
-  ◦ [link_resolution_tests::nested::Str::leak](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.leak) 
+  ◦ [link_resolution_tests::nested::Str::leak](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.leak) 
     Consumes and leaks the String, returning a mutable reference to the contents, 
     &'a mut str. [...]
 
-  ◦ [link_resolution_tests::nested::Str::len](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.len) 
+  ◦ [link_resolution_tests::nested::Str::len](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.len) 
     Returns the length of this String, in bytes, not [char](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar)s or graphemes. In other
     words, it might not be what a human considers the length of the string. [...]
 
-  ◦ [link_resolution_tests::nested::Str::new](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.new) 
+  ◦ [link_resolution_tests::nested::Str::new](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.new) 
     Creates a new empty String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::pop](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.pop) 
+  ◦ [link_resolution_tests::nested::Str::pop](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.pop) 
     Removes the last character from the string buffer and returns it. [...]
 
-  ◦ [link_resolution_tests::nested::Str::push](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.push) 
+  ◦ [link_resolution_tests::nested::Str::push](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push) 
     Appends the given [char](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar) to the end of this String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::push_str](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.push_str) 
+  ◦ [link_resolution_tests::nested::Str::push_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push_str) 
     Appends a given string slice onto the end of this String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::remove](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.remove) 
+  ◦ [link_resolution_tests::nested::Str::remove](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.remove) 
     Removes a [char](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar) from this String at byte position idx and returns it. [...]
 
-  ◦ [link_resolution_tests::nested::Str::remove_matches](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.remove_matches) 
+  ◦ [link_resolution_tests::nested::Str::remove_matches](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.remove_matches) 
     Remove all matches of pattern pat in the String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::replace_first](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.replace_first) 
+  ◦ [link_resolution_tests::nested::Str::replace_first](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.replace_first) 
     Replaces the leftmost occurrence of a pattern with another string, in-place. [...]
 
-  ◦ [link_resolution_tests::nested::Str::replace_last](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.replace_last) 
+  ◦ [link_resolution_tests::nested::Str::replace_last](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.replace_last) 
     Replaces the rightmost occurrence of a pattern with another string, in-place. [...]
 
-  ◦ [link_resolution_tests::nested::Str::replace_range](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.replace_range) 
+  ◦ [link_resolution_tests::nested::Str::replace_range](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.replace_range) 
     Removes the specified range in the string, and replaces it with the given
     string. The given string doesn't need to be the same length as the range. [...]
 
-  ◦ [link_resolution_tests::nested::Str::reserve](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve) 
+  ◦ [link_resolution_tests::nested::Str::reserve](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve) 
     Reserves capacity for at least additional bytes more than the current length.
     The allocator may reserve more space to speculatively avoid frequent
     allocations. After calling reserve, capacity will be greater than or equal to 
     self.len() + additional. Does nothing if capacity is already sufficient. [...]
 
-  ◦ [link_resolution_tests::nested::Str::reserve_exact](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve_exact) 
+  ◦ [link_resolution_tests::nested::Str::reserve_exact](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve_exact) 
     Reserves the minimum capacity for at least additional bytes more than the
-    current length. Unlike [reserve](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve), this will not deliberately over-allocate to
+    current length. Unlike [reserve](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve), this will not deliberately over-allocate to
     speculatively avoid frequent allocations. After calling reserve_exact, capacity
     will be greater than or equal to self.len() + additional. Does nothing if the
     capacity is already sufficient. [...]
 
-  ◦ [link_resolution_tests::nested::Str::retain](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.retain) 
+  ◦ [link_resolution_tests::nested::Str::retain](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.retain) 
     Retains only the characters specified by the predicate. [...]
 
-  ◦ [link_resolution_tests::nested::Str::shrink_to](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.shrink_to) 
+  ◦ [link_resolution_tests::nested::Str::shrink_to](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.shrink_to) 
     Shrinks the capacity of this String with a lower bound. [...]
 
-  ◦ [link_resolution_tests::nested::Str::shrink_to_fit](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.shrink_to_fit) 
+  ◦ [link_resolution_tests::nested::Str::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.shrink_to_fit) 
     Shrinks the capacity of this String to match its length. [...]
 
-  ◦ [link_resolution_tests::nested::Str::split_off](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.split_off) 
+  ◦ [link_resolution_tests::nested::Str::split_off](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.split_off) 
     Splits the string into two at the given byte index. [...]
 
-  ◦ [link_resolution_tests::nested::Str::truncate](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.truncate) 
+  ◦ [link_resolution_tests::nested::Str::truncate](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.truncate) 
     Shortens this String to the specified length. [...]
 
-  ◦ [link_resolution_tests::nested::Str::try_reserve](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve) 
+  ◦ [link_resolution_tests::nested::Str::try_reserve](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve) 
     Tries to reserve capacity for at least additional bytes more than the current
     length. The allocator may reserve more space to speculatively avoid frequent
     allocations. After calling try_reserve, capacity will be greater than or equal
     to self.len() + additional if it returns Ok(()). Does nothing if capacity is
     already sufficient. This method preserves the contents even if an error occurs. [...]
 
-  ◦ [link_resolution_tests::nested::Str::try_reserve_exact](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve_exact) 
+  ◦ [link_resolution_tests::nested::Str::try_reserve_exact](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve_exact) 
     Tries to reserve the minimum capacity for at least additional bytes more than
-    the current length. Unlike [try_reserve](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve), this will not deliberately
+    the current length. Unlike [try_reserve](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve), this will not deliberately
     over-allocate to speculatively avoid frequent allocations. After calling 
     try_reserve_exact, capacity will be greater than or equal to self.len() +
     additional if it returns Ok(()). Does nothing if the capacity is already
     sufficient. [...]
 
-  ◦ [link_resolution_tests::nested::Str::try_with_capacity](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_with_capacity) 
+  ◦ [link_resolution_tests::nested::Str::try_with_capacity](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_with_capacity) 
     Creates a new empty String with at least the specified capacity. [...]
 
-  ◦ [link_resolution_tests::nested::Str::with_capacity](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html#method.with_capacity) 
+  ◦ [link_resolution_tests::nested::Str::with_capacity](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.with_capacity) 
     Creates a new empty String with at least the specified capacity. [...]
 
-  ◦ [namespace_collisions::both](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/fn.both.html) 
+  ◦ [namespace_collisions::both](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/fn.both.html) 
     A function sharing its name with the [both](https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3Aboth) module above.
 
-  ◦ [private_detail::ReachableViaPrivateModule::private_module_method](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html#method.private_module_method) 
+  ◦ [private_detail::ReachableViaPrivateModule::private_module_method](https://docs.rs/fixture-crate/0.1.0/fixture_crate/private_detail/struct.ReachableViaPrivateModule.html#method.private_module_method) 
     A method on a struct whose module is private. [...]
 
-  ◦ [private_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.private_function.html) 
+  ◦ [private_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.private_function.html) 
     A private function
 
-  ◦ [reexport_mod::sub_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html) 
+  ◦ [reexport_mod::sub_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/fn.sub_function.html) 
     A function in a submodule
 
-  ◦ [sub_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html) 
+  ◦ [sub_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/fn.sub_function.html) 
     A function in a submodule
 
-  ◦ [submodule::SubStruct::double](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.double) 
+  ◦ [submodule::SubStruct::double](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html#method.double) 
     Double the value
 
-  ◦ [submodule::SubStruct::get_value](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.get_value) 
+  ◦ [submodule::SubStruct::get_value](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html#method.get_value) 
     Get the value
 
-  ◦ [submodule::SubStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html#method.new) 
+  ◦ [submodule::SubStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html#method.new) 
     Create a new SubStruct
 
-  ◦ [submodule::sub_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html) 
+  ◦ [submodule::sub_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/fn.sub_function.html) 
     A function in a submodule
 
-  ◦ [test_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.test_function.html) 
+  ◦ [test_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.test_function.html) 
     A public function
 
 Constants
 
-  ◦ [TEST_CONSTANT](https://docs.rs/fixture-crate/0.1.0/fixture-crate/constant.TEST_CONSTANT.html) 
+  ◦ [TEST_CONSTANT](https://docs.rs/fixture-crate/0.1.0/fixture_crate/constant.TEST_CONSTANT.html) 
     A const for testing
 
 Statics
 
-  ◦ [TEST_STATIC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/static.TEST_STATIC.html) 
+  ◦ [TEST_STATIC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/static.TEST_STATIC.html) 
     A static for testing
 
 Variants
 
-  ◦ [GenericEnum::Mixed](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [GenericEnum::Mixed](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant with mixed generics
 
-  ◦ [GenericEnum::Simple](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [GenericEnum::Simple](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Simple variant
 
-  ◦ [GenericEnum::WithData](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [GenericEnum::WithData](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant with generic data
 
-  ◦ [VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
+  ◦ [VariantA](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
+    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html))
 
-  ◦ [VariantB](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [VariantB](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant B with data
 
-  ◦ [VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [VariantC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant C with struct data (name and value)
 
-  ◦ [reexport_mod::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
+  ◦ [reexport_mod::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
+    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html))
 
-  ◦ [reexport_mod::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [reexport_mod::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant B with data
 
-  ◦ [reexport_mod::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [reexport_mod::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant C with struct data (name and value)
 
-  ◦ [submodule::TestEnum::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
+  ◦ [submodule::TestEnum::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
+    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html))
 
-  ◦ [submodule::TestEnum::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [submodule::TestEnum::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant B with data
 
-  ◦ [submodule::TestEnum::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [submodule::TestEnum::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant C with struct data (name and value)
 
-  ◦ [submodule::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
+  ◦ [submodule::VariantA](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
+    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html))
 
-  ◦ [submodule::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [submodule::VariantB](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant B with data
 
-  ◦ [submodule::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [submodule::VariantC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant C with struct data (name and value)
 
 AssocConst
 
-  ◦ [link_resolution_tests::RenamedTestStruct::ASSOCIATED_CONST](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html#associatedconstant.ASSOCIATED_CONST) 
+  ◦ [link_resolution_tests::RenamedTestStruct::ASSOCIATED_CONST](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#associatedconstant.ASSOCIATED_CONST) 
     This is an associated constant for a struct

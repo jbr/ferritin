@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_crate_path\n())"
 ---
 {
-  "canonicalUrl": "http://docs.rust-lang.org/nightly/std/index.html",
+  "canonicalUrl": "https://doc.rust-lang.org/nightly/std/index.html",
   "meta": {
     "name": "std",
     "kind": "module",
@@ -115,7 +115,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "I/O",
               "style": "Plain",
-              "url": "http://docs.rust-lang.org/nightly/std/io/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/io/index.html",
               "path": "std::io"
             },
             {
@@ -129,7 +129,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "multithreading",
               "style": "Plain",
-              "url": "http://docs.rust-lang.org/nightly/std/thread/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/thread/index.html",
               "path": "std::thread"
             },
             {
@@ -169,8 +169,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "use",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch07%2D02%2Ddefining%2Dmodules%2Dto%2Dcontrol%2Dscope%2Dand%2Dprivacy",
-              "path": "std::./book/ch07-02-defining-modules-to-control-scope-and-privacy"
+              "url": "../book/ch07-02-defining-modules-to-control-scope-and-privacy.html"
             },
             {
               "text": " statements through the path",
@@ -191,7 +190,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "use std::env",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3Aenv",
+              "url": "https://doc.rust-lang.org/nightly/std/env/index.html",
               "path": "std::env"
             },
             {
@@ -310,7 +309,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                     {
                       "text": "The Rust Prelude",
                       "style": "Plain",
-                      "url": "http://docs.rust-lang.org/nightly/std/prelude/index.html",
+                      "url": "https://doc.rust-lang.org/nightly/std/prelude/index.html",
                       "path": "std::prelude"
                     }
                   ]
@@ -548,8 +547,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "primitive types",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch03%2D02%2Ddata%2Dtypes",
-              "path": "std::./book/ch03-02-data-types"
+              "url": "../book/ch03-02-data-types.html"
             },
             {
               "text": " are documented here. This can",
@@ -665,19 +663,19 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "page for the primitive type",
               "style": "Plain",
-              "url": "http://docs.rust-lang.org/nightly/std/primitive.char.html",
+              "url": "https://doc.rust-lang.org/nightly/std/primitive.char.html",
               "path": "std::char"
             },
             {
               "text": " ",
               "style": "Plain",
-              "url": "http://docs.rust-lang.org/nightly/std/primitive.char.html",
+              "url": "https://doc.rust-lang.org/nightly/std/primitive.char.html",
               "path": "std::char"
             },
             {
               "text": "char",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/primitive.char.html",
+              "url": "https://doc.rust-lang.org/nightly/std/primitive.char.html",
               "path": "std::char"
             },
             {
@@ -734,7 +732,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "str",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/primitive.str.html",
+              "url": "https://doc.rust-lang.org/nightly/std/primitive.str.html",
               "path": "std::str"
             },
             {
@@ -744,7 +742,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "[T]",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/primitive.slice.html",
+              "url": "https://doc.rust-lang.org/nightly/std/primitive.slice.html",
               "path": "std::slice"
             },
             {
@@ -790,7 +788,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "str",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/primitive.str.html",
+              "url": "https://doc.rust-lang.org/nightly/std/primitive.str.html",
               "path": "std::str"
             },
             {
@@ -800,7 +798,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "[T]",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/primitive.slice.html",
+              "url": "https://doc.rust-lang.org/nightly/std/primitive.slice.html",
               "path": "std::slice"
             },
             {
@@ -810,20 +808,17 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "deref",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch15%2D02%2Dderef",
-              "path": "std::./book/ch15-02-deref"
+              "url": "../book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods"
             },
             {
               "text": " ",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch15%2D02%2Dderef",
-              "path": "std::./book/ch15-02-deref"
+              "url": "../book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods"
             },
             {
               "text": "coercions",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch15%2D02%2Dderef",
-              "path": "std::./book/ch15-02-deref"
+              "url": "../book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods"
             },
             {
               "text": ".",
@@ -841,7 +836,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "The Rust Prelude",
               "style": "Plain",
-              "url": "http://docs.rust-lang.org/nightly/std/prelude/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/prelude/index.html",
               "path": "std::prelude"
             },
             {
@@ -1138,8 +1133,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "for",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3A%2E%2Fbook%2Fch03%2D05%2Dcontrol%2Dflow",
-              "path": "std::./book/ch03-05-control-flow"
+              "url": "../book/ch03-05-control-flow.html#looping-through-a-collection-with-for"
             },
             {
               "text": " loop to",
@@ -1210,7 +1204,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                     {
                       "text": "[T; N]",
                       "style": "InlineCode",
-                      "url": "http://docs.rust-lang.org/nightly/std/primitive.array.html",
+                      "url": "https://doc.rust-lang.org/nightly/std/primitive.array.html",
                       "path": "std::array"
                     },
                     {
@@ -1237,7 +1231,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                     {
                       "text": "[T]",
                       "style": "InlineCode",
-                      "url": "http://docs.rust-lang.org/nightly/std/primitive.slice.html",
+                      "url": "https://doc.rust-lang.org/nightly/std/primitive.slice.html",
                       "path": "std::slice"
                     },
                     {
@@ -1367,7 +1361,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "str",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/primitive.str.html",
+              "url": "https://doc.rust-lang.org/nightly/std/primitive.str.html",
               "path": "std::str"
             },
             {
@@ -1385,7 +1379,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "str",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/primitive.str.html",
+              "url": "https://doc.rust-lang.org/nightly/std/primitive.str.html",
               "path": "std::str"
             },
             {
@@ -1535,7 +1529,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Mutex",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/sync/poison/mutex/struct.Mutex.html",
+              "url": "https://doc.rust-lang.org/nightly/std/sync/poison/mutex/struct.Mutex.html",
               "path": "std::sync::poison::mutex::Mutex"
             },
             {
@@ -1562,7 +1556,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "collections",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/collections/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/collections/index.html",
               "path": "std::collections"
             },
             {
@@ -1580,7 +1574,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "HashMap<K, V>",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html",
+              "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html",
               "path": "std::collections::hash::map::HashMap"
             },
             {
@@ -1634,7 +1628,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "files",
               "style": "Plain",
-              "url": "http://docs.rust-lang.org/nightly/std/fs/struct.File.html",
+              "url": "https://doc.rust-lang.org/nightly/std/fs/struct.File.html",
               "path": "std::fs::File"
             },
             {
@@ -1644,7 +1638,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "TCP",
               "style": "Plain",
-              "url": "http://docs.rust-lang.org/nightly/std/net/tcp/struct.TcpStream.html",
+              "url": "https://doc.rust-lang.org/nightly/std/net/tcp/struct.TcpStream.html",
               "path": "std::net::tcp::TcpStream"
             },
             {
@@ -1654,7 +1648,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "UDP",
               "style": "Plain",
-              "url": "http://docs.rust-lang.org/nightly/std/net/udp/struct.UdpSocket.html",
+              "url": "https://doc.rust-lang.org/nightly/std/net/udp/struct.UdpSocket.html",
               "path": "std::net::udp::UdpSocket"
             },
             {
@@ -1672,7 +1666,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "io",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/io/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/io/index.html",
               "path": "std::io"
             },
             {
@@ -1682,7 +1676,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "fs",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/fs/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/fs/index.html",
               "path": "std::fs"
             },
             {
@@ -1692,7 +1686,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "net",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/net/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/net/index.html",
               "path": "std::net"
             },
             {
@@ -1711,7 +1705,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "thread",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/thread/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/thread/index.html",
               "path": "std::thread"
             },
             {
@@ -1721,7 +1715,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "sync",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/sync/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/sync/index.html",
               "path": "std::sync"
             },
             {
@@ -1745,7 +1739,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "mpmc",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/sync/mpmc/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/sync/mpmc/index.html",
               "path": "std::sync::mpmc"
             },
             {
@@ -1759,7 +1753,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "mpsc",
               "style": "InlineCode",
-              "url": "http://docs.rust-lang.org/nightly/std/sync/mpsc/index.html",
+              "url": "https://doc.rust-lang.org/nightly/std/sync/mpsc/index.html",
               "path": "std::sync::mpsc"
             },
             {
@@ -1939,7 +1933,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                             {
                               "text": "thread::current()",
                               "style": "InlineCode",
-                              "url": "http://docs.rust-lang.org/nightly/std/thread/current/fn.current.html",
+                              "url": "https://doc.rust-lang.org/nightly/std/thread/current/fn.current.html",
                               "path": "std::thread::current::current"
                             }
                           ]
@@ -1991,7 +1985,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "prelude",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/prelude/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/prelude/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2015,7 +2009,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "f128",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/f128/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/f128/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2046,7 +2040,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "f16",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/f16/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/f16/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2077,7 +2071,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "f32",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/f32/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/f32/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2108,7 +2102,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "f64",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/f64/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/f64/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2139,7 +2133,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "thread",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/thread/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/thread/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2162,7 +2156,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "ascii",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/ascii/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/ascii/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2185,7 +2179,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "backtrace",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/backtrace/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/backtrace/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2208,7 +2202,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "bstr",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/bstr/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/bstr/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2246,7 +2240,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "collections",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/collections/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2269,7 +2263,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "env",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/env/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/env/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2292,7 +2286,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "error",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/error/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/error/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2315,7 +2309,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "ffi",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/ffi/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/ffi/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2338,7 +2332,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "fs",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/fs/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/fs/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2361,7 +2355,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "hash",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/hash/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/hash/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2384,7 +2378,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "io",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/io/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/io/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2407,7 +2401,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "net",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/net/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/net/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2430,7 +2424,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "num",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/num/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/num/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2453,7 +2447,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "os",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/os/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/os/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2475,7 +2469,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "panic",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/panic/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/panic/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2497,7 +2491,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "pat",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/pat/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/pat/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2527,7 +2521,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "path",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/path/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/path/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2550,7 +2544,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "process",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/process/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/process/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2573,7 +2567,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "random",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/random/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/random/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2595,7 +2589,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "sync",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/sync/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/sync/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2618,7 +2612,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "time",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/time/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/time/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2641,7 +2635,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "simd",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/simd/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/simd/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2664,7 +2658,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "autodiff",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/autodiff/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/autodiff/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2719,7 +2713,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "offload",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/offload/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/offload/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2754,7 +2748,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "task",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/task/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/task/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2776,7 +2770,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "arch",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/arch/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/arch/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2799,7 +2793,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "alloc",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/alloc/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/alloc/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2822,7 +2816,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "from",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/std/from/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/from/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2852,7 +2846,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "any",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/any/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/any/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2875,7 +2869,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "array",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/array/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/array/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2898,7 +2892,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "async_iter",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/async_iter/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/async_iter/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2921,7 +2915,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "cell",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/cell/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/cell/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2944,7 +2938,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "char",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/char/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/char/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2975,7 +2969,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "clone",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/clone/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/clone/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3006,7 +3000,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "cmp",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/cmp/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/cmp/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3029,7 +3023,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "convert",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/convert/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/convert/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3052,7 +3046,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "default",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/default/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/default/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3082,7 +3076,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "field",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/field/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/field/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3104,7 +3098,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "future",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/future/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/future/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3127,7 +3121,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "hint",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/hint/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/hint/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3150,7 +3144,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i8",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/i8/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/i8/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3165,13 +3159,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i8",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i8.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i8.html",
                     "path": "core::i8"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i8.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i8.html",
                     "path": "core::i8"
                   },
                   {
@@ -3189,7 +3183,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i16",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/i16/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/i16/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3204,13 +3198,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i16",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i16.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i16.html",
                     "path": "core::i16"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i16.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i16.html",
                     "path": "core::i16"
                   },
                   {
@@ -3228,7 +3222,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i32",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/i32/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/i32/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3243,13 +3237,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i32",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i32.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i32.html",
                     "path": "core::i32"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i32.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i32.html",
                     "path": "core::i32"
                   },
                   {
@@ -3267,7 +3261,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i64",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/i64/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/i64/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3282,13 +3276,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i64",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i64.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i64.html",
                     "path": "core::i64"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i64.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i64.html",
                     "path": "core::i64"
                   },
                   {
@@ -3306,7 +3300,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i128",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/i128/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/i128/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3321,13 +3315,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i128",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i128.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i128.html",
                     "path": "core::i128"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.i128.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i128.html",
                     "path": "core::i128"
                   },
                   {
@@ -3345,7 +3339,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "intrinsics",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/intrinsics/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/intrinsics/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3368,7 +3362,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "isize",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/isize/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/isize/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3383,13 +3377,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "isize",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.isize.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.isize.html",
                     "path": "core::isize"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.isize.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.isize.html",
                     "path": "core::isize"
                   },
                   {
@@ -3407,7 +3401,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "iter",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/iter/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/iter/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3430,7 +3424,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "marker",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/marker/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/marker/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3453,7 +3447,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "mem",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/mem/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/mem/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3476,7 +3470,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "ops",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/ops/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/ops/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3499,7 +3493,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "option",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/option/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/option/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3522,7 +3516,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "pin",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/pin/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/pin/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3545,7 +3539,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "ptr",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/ptr/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/ptr/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3568,7 +3562,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "range",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/range/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/range/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3592,7 +3586,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "result",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/result/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/result/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3623,7 +3617,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u8",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/u8/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/u8/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3638,13 +3632,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u8",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u8.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u8.html",
                     "path": "core::u8"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u8.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u8.html",
                     "path": "core::u8"
                   },
                   {
@@ -3662,7 +3656,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u16",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/u16/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/u16/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3677,13 +3671,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u16",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u16.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u16.html",
                     "path": "core::u16"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u16.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u16.html",
                     "path": "core::u16"
                   },
                   {
@@ -3701,7 +3695,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u32",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/u32/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/u32/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3716,13 +3710,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u32",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u32.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u32.html",
                     "path": "core::u32"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u32.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u32.html",
                     "path": "core::u32"
                   },
                   {
@@ -3740,7 +3734,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u64",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/u64/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/u64/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3755,13 +3749,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u64",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u64.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u64.html",
                     "path": "core::u64"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u64.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u64.html",
                     "path": "core::u64"
                   },
                   {
@@ -3779,7 +3773,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u128",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/u128/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/u128/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3794,13 +3788,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u128",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u128.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u128.html",
                     "path": "core::u128"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.u128.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u128.html",
                     "path": "core::u128"
                   },
                   {
@@ -3818,7 +3812,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "unsafe_binder",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/unsafe_binder/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/unsafe_binder/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3840,7 +3834,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "usize",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/usize/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/usize/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3855,13 +3849,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "usize",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.usize.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.usize.html",
                     "path": "core::usize"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "http://docs.rust-lang.org/nightly/core/primitive.usize.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/primitive.usize.html",
                     "path": "core::usize"
                   },
                   {
@@ -3879,7 +3873,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "borrow",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/alloc/borrow/index.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/borrow/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3901,7 +3895,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "boxed",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/alloc/boxed/index.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/boxed/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3932,7 +3926,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "fmt",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/alloc/fmt/index.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/fmt/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3963,7 +3957,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "format",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/alloc/macro.format.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/macro.format.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3994,7 +3988,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "rc",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/alloc/rc/index.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/rc/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4025,7 +4019,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "slice",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/alloc/slice/index.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/slice/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4048,7 +4042,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "str",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/alloc/str/index.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/str/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4079,7 +4073,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "string",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/alloc/string/index.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4102,7 +4096,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "vec",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/index.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4137,7 +4131,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "vec",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/alloc/macro.vec.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/macro.vec.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4152,7 +4146,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "Vec",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html",
+                    "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html",
                     "path": "alloc::vec::Vec"
                   },
                   {
@@ -4170,7 +4164,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "cfg_select",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macros/macro.cfg_select.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macros/macro.cfg_select.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4201,7 +4195,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "concat_bytes",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.concat_bytes.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.concat_bytes.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4224,7 +4218,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "derive",
         "kind": "procattribute",
-        "url": "http://docs.rust-lang.org/nightly/core/macros/builtin/macro.derive.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macros/builtin/attr.derive.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4247,7 +4241,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "matches",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.matches.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.matches.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4270,7 +4264,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "primitive",
         "kind": "module",
-        "url": "http://docs.rust-lang.org/nightly/core/primitive/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/primitive/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4301,7 +4295,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "todo",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.todo.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.todo.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4324,7 +4318,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "assert",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.assert.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.assert.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4355,7 +4349,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "cfg",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.cfg.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.cfg.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4378,7 +4372,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "column",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.column.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.column.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4401,7 +4395,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "compile_error",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.compile_error.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.compile_error.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4424,7 +4418,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "concat",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.concat.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.concat.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4447,7 +4441,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "const_format_args",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.const_format_args.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.const_format_args.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4462,7 +4456,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "format_args",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/macro.format_args.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/macro.format_args.html",
                     "path": "core::format_args"
                   },
                   {
@@ -4480,7 +4474,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "env",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.env.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.env.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4503,7 +4497,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "file",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.file.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.file.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4526,7 +4520,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "format_args",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.format_args.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.format_args.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4549,7 +4543,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "include",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.include.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.include.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4572,7 +4566,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "include_bytes",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.include_bytes.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.include_bytes.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4595,7 +4589,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "include_str",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.include_str.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.include_str.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4618,7 +4612,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "line",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.line.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4641,7 +4635,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "log_syntax",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.log_syntax.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.log_syntax.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4663,7 +4657,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "module_path",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.module_path.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.module_path.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4686,7 +4680,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "option_env",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.option_env.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.option_env.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4709,7 +4703,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "stringify",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.stringify.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.stringify.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4732,7 +4726,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "trace_macros",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.trace_macros.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.trace_macros.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4754,7 +4748,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "assert_eq",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.assert_eq.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.assert_eq.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4769,7 +4763,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "PartialEq",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/cmp/trait.PartialEq.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html",
                     "path": "core::cmp::PartialEq"
                   },
                   {
@@ -4787,7 +4781,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "assert_ne",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.assert_ne.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.assert_ne.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4802,7 +4796,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "PartialEq",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/core/cmp/trait.PartialEq.html",
+                    "url": "https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html",
                     "path": "core::cmp::PartialEq"
                   },
                   {
@@ -4820,7 +4814,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "debug_assert",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.debug_assert.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.debug_assert.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4851,7 +4845,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "debug_assert_eq",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.debug_assert_eq.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.debug_assert_eq.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4874,7 +4868,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "debug_assert_ne",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.debug_assert_ne.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.debug_assert_ne.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4897,7 +4891,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "try",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.try.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.try.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4920,7 +4914,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "unimplemented",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.unimplemented.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.unimplemented.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4943,7 +4937,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "unreachable",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.unreachable.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.unreachable.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4966,7 +4960,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "write",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.write.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.write.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4989,7 +4983,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "writeln",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macro.writeln.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.writeln.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5012,7 +5006,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "assert_matches",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macros/macro.assert_matches.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macros/macro.assert_matches.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5035,7 +5029,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "debug_assert_matches",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/core/macros/macro.debug_assert_matches.html",
+        "url": "https://doc.rust-lang.org/nightly/core/macros/macro.debug_assert_matches.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5058,7 +5052,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "panic",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/std/macro.panic.html",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.panic.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5081,7 +5075,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "print",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/std/macro.print.html",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.print.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5104,7 +5098,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "println",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/std/macro.println.html",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.println.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5127,7 +5121,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "eprint",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/std/macro.eprint.html",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.eprint.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5150,7 +5144,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "eprintln",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/std/macro.eprintln.html",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.eprintln.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5173,7 +5167,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "dbg",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/std/macro.dbg.html",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.dbg.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5204,7 +5198,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "hash_map",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/std/macro.hash_map.html",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.hash_map.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5219,7 +5213,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "HashMap",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html",
+                    "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html",
                     "path": "std::collections::hash::map::HashMap"
                   },
                   {
@@ -5237,7 +5231,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "thread_local",
         "kind": "macro",
-        "url": "http://docs.rust-lang.org/nightly/std/macro.thread_local.html",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.thread_local.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5252,7 +5246,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "std::thread::LocalKey",
                     "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/std/thread/local/struct.LocalKey.html",
+                    "url": "https://doc.rust-lang.org/nightly/std/thread/local/struct.LocalKey.html",
                     "path": "std::thread::local::LocalKey"
                   },
                   {
@@ -5270,7 +5264,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "bool",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.bool.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.bool.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5293,7 +5287,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "never",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.never.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.never.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5324,7 +5318,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "char",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.char.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.char.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5347,7 +5341,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "unit",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.unit.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.unit.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5378,7 +5372,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "pointer",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.pointer.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.pointer.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5417,7 +5411,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "array",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.array.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.array.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5472,7 +5466,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "slice",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.slice.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.slice.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5503,7 +5497,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "str",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.str.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.str.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5526,7 +5520,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "tuple",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.tuple.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.tuple.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5557,7 +5551,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "f16",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.f16.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.f16.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5580,7 +5574,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "f32",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.f32.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.f32.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5603,7 +5597,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "f64",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.f64.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.f64.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5626,7 +5620,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "f128",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.f128.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.f128.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5649,7 +5643,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i8",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.i8.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.i8.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5671,7 +5665,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i16",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.i16.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.i16.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5693,7 +5687,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i32",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.i32.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.i32.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5715,7 +5709,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i64",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.i64.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.i64.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5737,7 +5731,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i128",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.i128.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.i128.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5760,7 +5754,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u8",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.u8.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.u8.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5782,7 +5776,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u16",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.u16.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.u16.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5804,7 +5798,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u32",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.u32.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.u32.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5826,7 +5820,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u64",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.u64.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.u64.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5848,7 +5842,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u128",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.u128.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.u128.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5871,7 +5865,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "isize",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.isize.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.isize.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5894,7 +5888,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "usize",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.usize.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.usize.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5917,7 +5911,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "reference",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.reference.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.reference.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5956,7 +5950,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "fn",
         "kind": "primitive",
-        "url": "http://docs.rust-lang.org/nightly/std/primitive.fn.html",
+        "url": "https://doc.rust-lang.org/nightly/std/primitive.fn.html",
         "docs": [
           {
             "type": "truncatedBlock",

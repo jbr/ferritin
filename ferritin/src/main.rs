@@ -22,7 +22,7 @@ mod color_scheme;
 mod commands;
 mod format;
 mod format_context;
-mod generate_docsrs_url;
+mod docsrs_url;
 mod highlight;
 mod indent;
 mod json;
