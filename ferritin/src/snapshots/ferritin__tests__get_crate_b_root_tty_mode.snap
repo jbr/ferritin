@@ -5,19 +5,19 @@ expression: "render_for_tests_rooted(Commands::get(\"crate_b\"), OutputMode :: T
 Item: crate_b
 Kind: Module
 Visibility: Public
-Defined at: [crate_b](https://docs.rs/crate-b/0.1.0/crate-b/index.html)
+Defined at: [crate_b](https://docs.rs/crate-b/0.1.0/crate_b/index.html)
 In crate: crate-b (0.1.0)
 
 Modules
 
-  ◦ [prefix_inner](https://docs.rs/crate-b/0.1.0/crate-b/prefix_inner/index.html) 
+  ◦ [prefix_inner](https://docs.rs/crate-b/0.1.0/crate_b/prefix_inner/index.html) 
 
 Structs
 
-  ◦ [AliasedCrateAStruct](https://docs.rs/crate-a/0.1.0/crate-a/struct.AliasedCrateAStruct.html) 
+  ◦ [AliasedCrateAStruct](https://docs.rs/crate-a/0.1.0/crate_a/struct.AliasedCrateAStruct.html) 
 
-  ◦ [CrateBProcessor](https://docs.rs/crate-b/0.1.0/crate-b/struct.CrateBProcessor.html) 
+  ◦ [CrateBProcessor](https://docs.rs/crate-b/0.1.0/crate_b/struct.CrateBProcessor.html) 
 
-  ◦ [PrefixCrateAAlias](https://docs.rs/crate-a/0.1.0/crate-a/struct.PrefixCrateAAlias.html) 
+  ◦ [PrefixCrateAAlias](https://docs.rs/crate-a/0.1.0/crate_a/struct.PrefixCrateAAlias.html) 
 
-  ◦ [SelfPrefixAlias](https://docs.rs/crate-a/0.1.0/crate-a/struct.SelfPrefixAlias.html)
+  ◦ [SelfPrefixAlias](https://docs.rs/crate-a/0.1.0/crate_a/struct.SelfPrefixAlias.html)

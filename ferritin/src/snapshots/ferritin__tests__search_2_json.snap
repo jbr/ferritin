@@ -8,7 +8,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "fixture-crate::GenericStruct",
       "kind": "struct",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.GenericStruct.html",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.GenericStruct.html",
       "score": 100.0,
       "docs": [
         {
@@ -32,7 +32,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "alloc::borrow::Borrow",
       "kind": "trait",
-      "url": "http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
+      "url": "https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
       "score": 67.9,
       "docs": [
         {
@@ -56,7 +56,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "fixture-crate::GenericEnum",
       "kind": "enum",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
       "score": 67.4,
       "docs": [
         {
@@ -80,7 +80,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "core::mem::type_info::Generic",
       "kind": "enum",
-      "url": "http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html",
+      "url": "https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html",
       "score": 64.5,
       "docs": [
         {
@@ -103,7 +103,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "std::mem::type_info::Generic",
       "kind": "enum",
-      "url": "http://docs.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html",
+      "url": "https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html",
       "score": 64.5,
       "docs": [
         {
@@ -126,7 +126,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "std::borrow::Borrow",
       "kind": "trait",
-      "url": "http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
+      "url": "https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
       "score": 64.3,
       "docs": [
         {
@@ -150,7 +150,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "core::borrow::Borrow",
       "kind": "trait",
-      "url": "http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
+      "url": "https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
       "score": 64.0,
       "docs": [
         {
@@ -174,7 +174,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "fixture-crate::TestStruct",
       "kind": "struct",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
       "score": 63.5,
       "docs": [
         {
@@ -198,7 +198,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "std::clone::Clone",
       "kind": "trait",
-      "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html",
+      "url": "https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html",
       "score": 63.0,
       "docs": [
         {
@@ -222,7 +222,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
     {
       "path": "std::ops::Deref",
       "kind": "trait",
-      "url": "http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html",
+      "url": "https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html",
       "score": 62.2,
       "docs": [
         {

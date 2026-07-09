@@ -5,33 +5,33 @@ expression: "render_for_tests_rooted(Commands::search(\"trigger line-based trunc
 Search results for 'trigger line-based truncation'
 ================================================================================
 
-  ◦ [fixture-crate::TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html)  (Trait) - score: 100.0
+  ◦ [fixture-crate::TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html)  (Trait) - score: 100.0
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
-  ◦ [std::line](http://docs.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 54.4
+  ◦ [std::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 54.4
     Expands to the line number on which it was invoked. [...]
 
-  ◦ [core::line](http://docs.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 54.3
+  ◦ [core::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 54.3
     Expands to the line number on which it was invoked. [...]
 
-  ◦ [proc_macro::Span::line](http://docs.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line)  (Function) - score: 39.3
+  ◦ [proc_macro::Span::line](https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line)  (Function) - score: 39.3
     The one-indexed line of the source file where the span starts. [...]
 
-  ◦ [core::panic::Location::line](http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function) - score: 39.2
+  ◦ [core::panic::Location::line](https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function) - score: 39.2
     Returns the line number from which the panic originated. [...]
 
-  ◦ [std::panic::Location::line](http://docs.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function) - score: 39.2
+  ◦ [std::panic::Location::line](https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function) - score: 39.2
     Returns the line number from which the panic originated. [...]
 
-  ◦ [core::arch::x86::_mm_prefetch](http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.9
+  ◦ [core::arch::x86::_mm_prefetch](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.9
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ [std::arch::x86::_mm_prefetch](http://docs.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.9
+  ◦ [std::arch::x86::_mm_prefetch](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.9
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ [alloc::collections::BTreeMap](http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html)  (Struct) - score: 30.9
+  ◦ [alloc::collections::BTreeMap](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html)  (Struct) - score: 30.9
     An ordered map based on a [B-Tree](https://en.wikipedia.org/wiki/B-tree). [...]
 
-  ◦ [std::io::LineWriter](http://docs.rust-lang.org/nightly/std/io/buffered/linewriter/struct.LineWriter.html)  (Struct) - score: 30.7
+  ◦ [std::io::LineWriter](https://doc.rust-lang.org/nightly/std/io/buffered/linewriter/struct.LineWriter.html)  (Struct) - score: 30.7
     Wraps a writer and buffers output to it, flushing whenever a newline (0x0a, '\n'
     ) is detected. [...]

@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\"), &\nget_fixture_crate_path ())"
 ---
 {
-  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html",
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html",
   "meta": {
     "name": "submodule",
     "kind": "module",
@@ -35,7 +35,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\"), &
       {
         "path": "SubStruct",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -57,7 +57,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\"), &
       {
         "path": "sub_function",
         "kind": "function",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/fn.sub_function.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -79,7 +79,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\"), &
       {
         "path": "TestEnum",
         "kind": "enum",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -102,7 +102,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\"), &
       {
         "path": "VariantA",
         "kind": "variant",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -117,7 +117,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\"), &
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
                     "path": "fixture_crate::GenericEnum"
                   },
                   {
@@ -134,7 +134,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\"), &
       {
         "path": "VariantB",
         "kind": "variant",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -156,7 +156,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule\"), &
       {
         "path": "VariantC",
         "kind": "variant",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/",
         "docs": [
           {
             "type": "truncatedBlock",

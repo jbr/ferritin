@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate_b::prefix_inner\"), &\nget_test_workspace_path ())"
 ---
 {
-  "canonicalUrl": "https://docs.rs/crate-b/0.1.0/crate-b/prefix_inner/index.html",
+  "canonicalUrl": "https://docs.rs/crate-b/0.1.0/crate_b/prefix_inner/index.html",
   "meta": {
     "name": "prefix_inner",
     "kind": "module",
@@ -18,12 +18,12 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate_b::prefix_inner\
       {
         "path": "SuperPrefixAlias",
         "kind": "struct",
-        "url": "https://docs.rs/crate-a/0.1.0/crate-a/struct.SuperPrefixAlias.html"
+        "url": "https://docs.rs/crate-a/0.1.0/crate_a/struct.SuperPrefixAlias.html"
       },
       {
         "path": "CratePrefixAlias",
         "kind": "struct",
-        "url": "https://docs.rs/crate-a/0.1.0/crate-a/struct.CratePrefixAlias.html"
+        "url": "https://docs.rs/crate-a/0.1.0/crate_a/struct.CratePrefixAlias.html"
       }
     ]
   }

@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixture_crate_path\n())"
 ---
 {
-  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html",
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/index.html",
   "meta": {
     "name": "fixture_crate",
     "kind": "module",
@@ -35,7 +35,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "submodule",
         "kind": "module",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -57,7 +57,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "link_resolution_tests",
         "kind": "module",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/index.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -79,12 +79,12 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "reexport_mod",
         "kind": "module",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html"
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/reexport_mod/index.html"
       },
       {
         "path": "markdown_test",
         "kind": "module",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/markdown_test/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -108,7 +108,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "namespace_collisions",
         "kind": "module",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/index.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -131,7 +131,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "private_detail",
         "kind": "module",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/index.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/private_detail/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -154,7 +154,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "prefix_tests",
         "kind": "module",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -177,7 +177,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "TestStruct",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -200,7 +200,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "GenericStruct",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.GenericStruct.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.GenericStruct.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -223,7 +223,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "TestUnion",
         "kind": "union",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -246,7 +246,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "NotThreadSafe",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.NotThreadSafe.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.NotThreadSafe.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -292,7 +292,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "Marker",
         "kind": "trait",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -322,7 +322,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "MarkerOne",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerOne.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerOne.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -337,7 +337,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
                   {
                     "text": "Marker",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html",
                     "path": "fixture_crate::Marker"
                   },
                   {
@@ -354,7 +354,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "MarkerTwo",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerTwo.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerTwo.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -369,7 +369,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
                   {
                     "text": "Marker",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html",
                     "path": "fixture_crate::Marker"
                   },
                   {
@@ -386,7 +386,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "TestTrait",
         "kind": "trait",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -409,7 +409,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "test_function",
         "kind": "function",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.test_function.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.test_function.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -431,7 +431,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "generic_function",
         "kind": "function",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.generic_function.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.generic_function.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -453,7 +453,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "async_function",
         "kind": "function",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.async_function.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.async_function.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -475,7 +475,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "private_function",
         "kind": "function",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.private_function.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.private_function.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -497,7 +497,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "TEST_CONSTANT",
         "kind": "constant",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/constant.TEST_CONSTANT.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/constant.TEST_CONSTANT.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -519,7 +519,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "TEST_STATIC",
         "kind": "static",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/static.TEST_STATIC.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/static.TEST_STATIC.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -541,7 +541,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "UnitStruct",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.UnitStruct.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.UnitStruct.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -563,7 +563,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "TupleStruct",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TupleStruct.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TupleStruct.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -585,7 +585,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "GenericEnum",
         "kind": "enum",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -608,7 +608,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "ComplexTrait",
         "kind": "trait",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -630,7 +630,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "Vec",
         "kind": "struct",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -661,7 +661,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "ReachableViaPrivateModule",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/private_detail/struct.ReachableViaPrivateModule.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -683,7 +683,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "SubStruct",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -705,7 +705,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "sub_function",
         "kind": "function",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/fn.sub_function.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -727,7 +727,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "TestEnum",
         "kind": "enum",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -750,7 +750,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "VariantA",
         "kind": "variant",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -765,7 +765,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html",
+                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
                     "path": "fixture_crate::GenericEnum"
                   },
                   {
@@ -782,7 +782,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "VariantB",
         "kind": "variant",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -804,7 +804,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
       {
         "path": "VariantC",
         "kind": "variant",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/",
         "docs": [
           {
             "type": "truncatedBlock",

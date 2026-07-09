@@ -5,7 +5,7 @@ expression: "render_for_tests_rooted(Commands::get(\"crate::TestTrait\"), Output
 Item: TestTrait
 Kind: Trait
 Visibility: Public
-Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html)::[TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html)
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture_crate/index.html)::[TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html)
 In crate: fixture-crate (0.1.0)
 
 A trait for testing extremely long documentation that exceeds line limits.
@@ -37,16 +37,16 @@ trait TestTrait { ... }
   ◦ const ASSOCIATED_CONSTANT: (); 
     trait associated constant
 
-  ◦ type T: [Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html); 
+  ◦ type T: [Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html); 
     trait associated type
 
-  ◦ fn [test_method](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html#method.test_method)(&self) -> [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html); 
+  ◦ fn [test_method](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#method.test_method)(&self) -> [String](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html); 
     A method
 
-  ◦ fn [process](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html#method.process)(&mut self, data: &str) -> [Result](http://docs.rust-lang.org/nightly/core/result/enum.Result.html)<(), [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)>; 
+  ◦ fn [process](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#method.process)(&mut self, data: &str) -> [Result](https://doc.rust-lang.org/nightly/core/result/enum.Result.html)<(), [String](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html)>; 
     Another method with parameters
 
 Implementors (this crate)
 
-  ◦ [TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html)
-        type T = [String](http://docs.rust-lang.org/nightly/alloc/string/struct.String.html)
+  ◦ [TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html)
+        type T = [String](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html)

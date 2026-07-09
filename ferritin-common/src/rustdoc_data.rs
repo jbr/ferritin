@@ -248,6 +248,24 @@ impl RustdocData {
         self.resident.as_ref().map_or(&self.root, |c| &c.root)
     }
 
+    /// The crate's *library* name — the Rust identifier rustdoc writes into every
+    /// item path (`futures_io`), and the directory its rendered output is rooted at.
+    ///
+    /// Distinct from [`name`](Self::name), the package name whichever `Source`
+    /// resolved this crate (`futures-io`) — that is what carries the version and
+    /// what the Store is keyed by. The two coincide for std, fold together for most
+    /// crates, and genuinely diverge when a crate declares an explicit `[lib] name`
+    /// (`sha-1` → `sha1`, an unrelated crate on crates.io).
+    ///
+    /// Read from the eagerly-materialized `paths` map, so this costs no item
+    /// materialization. Falls back to the package name if the root somehow has no
+    /// path entry.
+    pub fn lib_name(&self) -> &str {
+        self.path(self.root_id())
+            .and_then(|path| path.into_iter().next())
+            .unwrap_or(&self.name)
+    }
+
     /// Look up an external-crate entry by its `crate_id`.
     pub fn external_crate(&self, crate_id: &u32) -> Option<&ExternalCrate> {
         self.external_map().get(crate_id)

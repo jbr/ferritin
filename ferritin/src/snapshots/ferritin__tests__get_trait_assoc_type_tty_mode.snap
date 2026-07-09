@@ -8,4 +8,4 @@ Visibility: Private
 
 trait associated type
 
-type T: [Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html);
+type T: [Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html);

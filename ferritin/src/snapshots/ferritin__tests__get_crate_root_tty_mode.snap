@@ -5,125 +5,125 @@ expression: "render_for_tests_rooted(Commands::get(\"crate\"), OutputMode :: Tty
 Item: fixture_crate
 Kind: Module
 Visibility: Public
-Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html)
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture_crate/index.html)
 In crate: fixture-crate (0.1.0)
 
 A minimal test crate for rustdoc JSON testing
 
 Modules
 
-  ◦ [link_resolution_tests](https://docs.rs/fixture-crate/0.1.0/fixture-crate/link_resolution_tests/index.html) 
+  ◦ [link_resolution_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/index.html) 
     Module for testing intra-doc link resolution
 
-  ◦ [markdown_test](https://docs.rs/fixture-crate/0.1.0/fixture-crate/markdown_test/index.html) 
+  ◦ [markdown_test](https://docs.rs/fixture-crate/0.1.0/fixture_crate/markdown_test/index.html) 
     Markdown: Syntax [...]
 
-  ◦ [namespace_collisions](https://docs.rs/fixture-crate/0.1.0/fixture-crate/namespace_collisions/index.html) 
+  ◦ [namespace_collisions](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/index.html) 
     Module for testing namespace disambiguation with kind discriminators. [...]
 
-  ◦ [prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html) 
+  ◦ [prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/index.html) 
     Edge cases for path-prefix resolution in use-item sources and intra-doc links. [...]
 
-  ◦ [private_detail](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/index.html) 
+  ◦ [private_detail](https://docs.rs/fixture-crate/0.1.0/fixture_crate/private_detail/index.html) 
     Private module whose items are accessible only via re-export. [...]
 
-  ◦ [reexport_mod](https://docs.rs/fixture-crate/0.1.0/fixture-crate/reexport_mod/index.html) 
+  ◦ [reexport_mod](https://docs.rs/fixture-crate/0.1.0/fixture_crate/reexport_mod/index.html) 
 
-  ◦ [submodule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/index.html) 
+  ◦ [submodule](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html) 
     A module with items
 
 Structs
 
-  ◦ [GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.GenericStruct.html) 
+  ◦ [GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.GenericStruct.html) 
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ [MarkerOne](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerOne.html) 
-    First implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html).
+  ◦ [MarkerOne](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerOne.html) 
+    First implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html).
 
-  ◦ [MarkerTwo](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerTwo.html) 
-    Second implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html).
+  ◦ [MarkerTwo](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerTwo.html) 
+    Second implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html).
 
-  ◦ [NotThreadSafe](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.NotThreadSafe.html) 
+  ◦ [NotThreadSafe](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.NotThreadSafe.html) 
     A type that is not thread-safe, to exercise negative auto-trait impls (!Send/
     !Sync, which rustdoc synthesizes for types holding a raw pointer).
 
-  ◦ [ReachableViaPrivateModule](https://docs.rs/fixture-crate/0.1.0/fixture-crate/private_detail/struct.ReachableViaPrivateModule.html) 
+  ◦ [ReachableViaPrivateModule](https://docs.rs/fixture-crate/0.1.0/fixture_crate/private_detail/struct.ReachableViaPrivateModule.html) 
     A struct accessible only via re-export from a private module.
 
-  ◦ [SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/struct.SubStruct.html) 
+  ◦ [SubStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/struct.SubStruct.html) 
     A struct in a submodule
 
-  ◦ [TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html) 
+  ◦ [TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html) 
     A simple struct for testing basic functionality. [...]
 
-  ◦ [TupleStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TupleStruct.html) 
+  ◦ [TupleStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TupleStruct.html) 
     A tuple struct for testing
 
-  ◦ [UnitStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.UnitStruct.html) 
+  ◦ [UnitStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.UnitStruct.html) 
     A unit struct for testing
 
-  ◦ [Vec](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html) 
+  ◦ [Vec](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html) 
     A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
 
 Enums
 
-  ◦ [GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html) 
+  ◦ [GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html) 
     A generic enum for testing [...]
 
-  ◦ [TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/enum.TestEnum.html) 
+  ◦ [TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html) 
     An enum for testing [...]
 
 Traits
 
-  ◦ [ComplexTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.ComplexTrait.html) 
+  ◦ [ComplexTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html) 
     A more complex trait demonstrating various features
 
-  ◦ [Marker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html) 
+  ◦ [Marker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html) 
     A marker trait (no associated items) to exercise the compact implementors list
     — implementors with no bounds and no assoc types render comma-separated.
 
-  ◦ [TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.TestTrait.html) 
+  ◦ [TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html) 
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
 Unions
 
-  ◦ [TestUnion](https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html) 
+  ◦ [TestUnion](https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html) 
     A union for testing union formatting. [...]
 
 Functions
 
-  ◦ [async_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.async_function.html) 
+  ◦ [async_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.async_function.html) 
     An async function
 
-  ◦ [generic_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.generic_function.html) 
+  ◦ [generic_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.generic_function.html) 
     A generic function
 
-  ◦ [private_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.private_function.html) 
+  ◦ [private_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.private_function.html) 
     A private function
 
-  ◦ [sub_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/submodule/fn.sub_function.html) 
+  ◦ [sub_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/fn.sub_function.html) 
     A function in a submodule
 
-  ◦ [test_function](https://docs.rs/fixture-crate/0.1.0/fixture-crate/fn.test_function.html) 
+  ◦ [test_function](https://docs.rs/fixture-crate/0.1.0/fixture_crate/fn.test_function.html) 
     A public function
 
 Constants
 
-  ◦ [TEST_CONSTANT](https://docs.rs/fixture-crate/0.1.0/fixture-crate/constant.TEST_CONSTANT.html) 
+  ◦ [TEST_CONSTANT](https://docs.rs/fixture-crate/0.1.0/fixture_crate/constant.TEST_CONSTANT.html) 
     A const for testing
 
 Statics
 
-  ◦ [TEST_STATIC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/static.TEST_STATIC.html) 
+  ◦ [TEST_STATIC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/static.TEST_STATIC.html) 
     A static for testing
 
 Variants
 
-  ◦ [VariantA](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
-    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture-crate/enum.GenericEnum.html))
+  ◦ [VariantA](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
+    Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html))
 
-  ◦ [VariantB](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [VariantB](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant B with data
 
-  ◦ [VariantC](https://docs.rs/fixture-crate/0.1.0/fixture-crate/) 
+  ◦ [VariantC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant C with struct data (name and value)

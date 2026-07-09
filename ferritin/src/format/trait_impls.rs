@@ -3,7 +3,7 @@ use rustdoc_types::{AssocItemConstraintKind, GenericArg, GenericArgs, GenericPar
 use semver::VersionReq;
 
 use super::*;
-use crate::generate_docsrs_url::generate_docsrs_url;
+use crate::docsrs_url::generate_docsrs_url;
 use crate::styled_string::{DocumentNode, ListItem, Span};
 
 /// Semantic model of a single trait implementation on a type. The IR captures

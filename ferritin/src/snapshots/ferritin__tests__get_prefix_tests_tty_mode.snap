@@ -1,11 +1,11 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::prefix_tests\"), OutputMode :: Tty)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::prefix_tests\"), OutputMode ::\nTty, & get_fixture_crate_path ())"
 ---
 Item: prefix_tests
 Kind: Module
 Visibility: Public
-Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture-crate/index.html)::[prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/index.html)
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture_crate/index.html)::[prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/index.html)
 In crate: fixture-crate (0.1.0)
 
 Edge cases for path-prefix resolution in use-item sources and intra-doc links.
@@ -22,13 +22,13 @@ same prefix handling on the extract_link_target side (rendered in snapshots).
 
 Modules
 
-  ◦ [deep](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html) 
+  ◦ [deep](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/index.html) 
     A nested module to exercise self::, super::, and super::super::.
 
 Structs
 
-  ◦ [DocOuter](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.DocOuter.html) 
+  ◦ [DocOuter](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.DocOuter.html) 
     Intra-doc links from the outer module: [...]
 
-  ◦ [PrefixMarker](https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html) 
+  ◦ [PrefixMarker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.PrefixMarker.html) 
     A sibling target for self:: / super::PrefixMarker references.

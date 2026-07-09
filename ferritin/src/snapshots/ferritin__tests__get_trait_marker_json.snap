@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate::Marker\"), &\nget_fixture_crate_path ())"
 ---
 {
-  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/trait.Marker.html",
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html",
   "meta": {
     "name": "Marker",
     "kind": "trait",
@@ -43,24 +43,24 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::Marker\"), &\ng
     "implementors": [
       {
         "typeName": "MarkerOne",
-        "typeUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerOne.html",
+        "typeUrl": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerOne.html",
         "forType": [
           {
             "text": "MarkerOne",
             "style": "TypeName",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerOne.html",
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerOne.html",
             "path": "fixture_crate::MarkerOne"
           }
         ]
       },
       {
         "typeName": "MarkerTwo",
-        "typeUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerTwo.html",
+        "typeUrl": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerTwo.html",
         "forType": [
           {
             "text": "MarkerTwo",
             "style": "TypeName",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.MarkerTwo.html",
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerTwo.html",
             "path": "fixture_crate::MarkerTwo"
           }
         ]

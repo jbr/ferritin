@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &\nget_fixture_crate_path ())"
 ---
 {
-  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html",
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html",
   "meta": {
     "name": "TestUnion",
     "kind": "union",
@@ -51,7 +51,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
             {
               "text": "TestStruct",
               "style": "InlineCode",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html",
+              "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
               "path": "fixture_crate::TestStruct"
             },
             {
@@ -87,7 +87,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
       {
         "text": "Copy",
         "style": "TypeName",
-        "url": "http://docs.rust-lang.org/nightly/core/marker/trait.Copy.html",
+        "url": "https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html",
         "path": "core::marker::Copy"
       },
       {
@@ -209,7 +209,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
           {
             "text": "from_int",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/union.TestUnion.html#method.from_int"
+            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html#method.from_int",
+            "path": "fixture_crate::TestUnion::from_int"
           },
           {
             "text": "(",
@@ -282,7 +283,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
     "traitImpls": [
       {
         "traitName": "Any",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/any/trait.Any.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/any/trait.Any.html",
         "isStd": true,
         "blanket": [
           {
@@ -293,7 +294,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
       },
       {
         "traitName": "Borrow",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
         "args": [
           {
             "text": "<",
@@ -318,7 +319,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
       },
       {
         "traitName": "BorrowMut",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html",
         "args": [
           {
             "text": "<",
@@ -343,13 +344,13 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
       },
       {
         "traitName": "Freeze",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.Freeze.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/marker/trait.Freeze.html",
         "isSynthetic": true,
         "isStd": true
       },
       {
         "traitName": "From",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/convert/trait.From.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/convert/trait.From.html",
         "args": [
           {
             "text": "<",
@@ -374,7 +375,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
       },
       {
         "traitName": "Into",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/convert/trait.Into.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/convert/trait.Into.html",
         "args": [
           {
             "text": "<",
@@ -399,25 +400,25 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
       },
       {
         "traitName": "RefUnwindSafe",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/panic/unwind_safe/trait.RefUnwindSafe.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.RefUnwindSafe.html",
         "isSynthetic": true,
         "isStd": true
       },
       {
         "traitName": "Send",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.Send.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/marker/trait.Send.html",
         "isSynthetic": true,
         "isStd": true
       },
       {
         "traitName": "Sync",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.Sync.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html",
         "isSynthetic": true,
         "isStd": true
       },
       {
         "traitName": "TryFrom",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
         "args": [
           {
             "text": "<",
@@ -439,7 +440,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
               {
                 "text": "Infallible",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/convert/enum.Infallible.html",
+                "url": "https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html",
                 "path": "core::convert::Infallible"
               }
             ]
@@ -455,7 +456,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
       },
       {
         "traitName": "TryInto",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/convert/trait.TryInto.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html",
         "args": [
           {
             "text": "<",
@@ -497,7 +498,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
               {
                 "text": "TryFrom",
                 "style": "TypeName",
-                "url": "http://docs.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
+                "url": "https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
                 "path": "core::convert::TryFrom"
               },
               {
@@ -537,19 +538,19 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
       },
       {
         "traitName": "Unpin",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.Unpin.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html",
         "isSynthetic": true,
         "isStd": true
       },
       {
         "traitName": "UnsafeUnpin",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html",
         "isSynthetic": true,
         "isStd": true
       },
       {
         "traitName": "UnwindSafe",
-        "traitUrl": "http://docs.rust-lang.org/nightly/core/panic/unwind_safe/trait.UnwindSafe.html",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/panic/unwind_safe/trait.UnwindSafe.html",
         "isSynthetic": true,
         "isStd": true
       }

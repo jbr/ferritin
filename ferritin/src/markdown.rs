@@ -126,10 +126,9 @@ impl MarkdownRenderer {
                                     doc_ref,
                                     url: None, // URL generation deferred to renderer
                                 },
-                                LinkTarget::Path(path) => TuiAction::NavigateToPath {
-                                    path,
-                                    url: None, // URL generation deferred to renderer
-                                },
+                                LinkTarget::Path { path, url } => {
+                                    TuiAction::NavigateToPath { path, url }
+                                }
                             }
                         } else {
                             TuiAction::OpenUrl(dest_url.to_string().into())

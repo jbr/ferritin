@@ -3,7 +3,7 @@ source: ferritin/src/tests.rs
 expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::deep::glob_reexport\"),\n& get_fixture_crate_path ())"
 ---
 {
-  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/glob_reexport/index.html",
+  "canonicalUrl": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/glob_reexport/index.html",
   "meta": {
     "name": "glob_reexport",
     "kind": "module",
@@ -43,7 +43,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "GlobReexportedMarker",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.GlobReexportedMarker.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.GlobReexportedMarker.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -81,7 +81,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "deep",
         "kind": "module",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/deep/index.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -127,7 +127,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "PrefixMarker",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.PrefixMarker.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.PrefixMarker.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -165,7 +165,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
       {
         "path": "DocOuter",
         "kind": "struct",
-        "url": "https://docs.rs/fixture-crate/0.1.0/fixture-crate/prefix_tests/struct.DocOuter.html",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.DocOuter.html",
         "docs": [
           {
             "type": "truncatedBlock",
