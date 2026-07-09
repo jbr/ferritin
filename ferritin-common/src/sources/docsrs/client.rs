@@ -6,9 +6,7 @@ use rustdoc_types::FORMAT_VERSION;
 use semver::{Version, VersionReq};
 use serde::{Deserialize, Serialize};
 use std::{
-    collections::HashMap,
     path::PathBuf,
-    sync::Mutex,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 use trillium_client::{Client, HeaderValue, KnownHeaderName, Status};
@@ -93,10 +91,6 @@ pub struct DocsRsClient {
     #[field(get)]
     cache_dir: PathBuf,
     format_version: u32,
-    /// In-process tier of the version cache, over the on-disk tier. Shared across
-    /// lookups within one server run or CLI invocation; the disk files bridge
-    /// across invocations.
-    version_cache: Mutex<HashMap<String, CachedMetadata>>,
 }
 
 #[derive(Debug)]
@@ -133,7 +127,6 @@ impl DocsRsClient {
             http_client,
             cache_dir,
             format_version: FORMAT_VERSION,
-            version_cache: Mutex::default(),
         })
     }
 
@@ -266,11 +259,12 @@ impl DocsRsClient {
         Ok(Some(data))
     }
 
-    /// Resolve crates.io metadata through the two-tier version cache before
-    /// touching the network: an in-process map (tier 1) over a per-crate on-disk
-    /// file (tier 2), falling back to a crates.io fetch (tier 3). `need_versions`
-    /// requires the full version list, not just the latest — a fresh entry that
-    /// only knows the latest can't answer a range lookup, so it falls through.
+    /// Resolve crates.io metadata through the per-crate on-disk version cache
+    /// (the tier that survives across CLI processes) before touching the
+    /// network. In-process caching lives above this client, in the Store's
+    /// resolution cache. `need_versions` requires the full version list, not
+    /// just the latest — a fresh entry that only knows the latest can't
+    /// answer a range lookup, so it falls through.
     ///
     /// Returns `Ok(None)` if crates.io doesn't have the crate.
     async fn cached_metadata(
@@ -278,39 +272,17 @@ impl DocsRsClient {
         crate_name: &str,
         need_versions: bool,
     ) -> Result<Option<CachedMetadata>> {
-        // Tier 1: in-process memory.
-        if let Some(entry) = self.mem_lookup(crate_name)
-            && entry.satisfies(need_versions)
-        {
-            return Ok(Some(entry));
-        }
-
-        // Tier 2: on-disk — the tier that survives across CLI processes.
         if let Some(entry) = self.disk_lookup(crate_name).await?
             && entry.satisfies(need_versions)
         {
-            self.mem_store(crate_name, entry.clone());
             return Ok(Some(entry));
         }
 
-        // Tier 3: crates.io. Write through to both cache tiers.
         let Some(entry) = self.fetch_metadata(crate_name, need_versions).await? else {
             return Ok(None);
         };
         self.disk_store(crate_name, &entry).await?;
-        self.mem_store(crate_name, entry.clone());
         Ok(Some(entry))
-    }
-
-    fn mem_lookup(&self, crate_name: &str) -> Option<CachedMetadata> {
-        self.version_cache.lock().unwrap().get(crate_name).cloned()
-    }
-
-    fn mem_store(&self, crate_name: &str, entry: CachedMetadata) {
-        self.version_cache
-            .lock()
-            .unwrap()
-            .insert(crate_name.to_string(), entry);
     }
 
     /// On-disk location of a crate's cached version metadata.

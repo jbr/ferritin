@@ -79,7 +79,7 @@ impl StdSource {
                     name,
                     CrateInfo {
                         provenance: CrateProvenance::Std,
-                        version: Some(rustc_version.clone()),
+                        version: rustc_version.clone(),
                         description: Some(description.to_string()),
                         name: name.to_string(),
                         default_crate: false,
@@ -110,7 +110,7 @@ impl Source for StdSource {
             .and_then(|canonical| self.crates.get(&*canonical).map(Cow::Borrowed)))
     }
 
-    fn load(&self, crate_name: &str, _version: Option<&Version>) -> Result<Option<RustdocData>> {
+    fn load(&self, crate_name: &str, _version: &Version) -> Result<Option<RustdocData>> {
         let Some(crate_info) = self.lookup(crate_name, &VersionReq::STAR)? else {
             return Ok(None);
         };

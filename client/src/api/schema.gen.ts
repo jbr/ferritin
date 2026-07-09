@@ -178,7 +178,7 @@ export interface components {
             isWorkspace?: boolean;
             name: string;
             usedBy?: string[];
-            version?: string | null;
+            version: string;
         };
         JsonEnum: {
             generics?: components["schemas"]["JsonSpan"][];

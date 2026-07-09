@@ -11,7 +11,7 @@ pub(crate) struct ListDoc {
 
 pub(crate) struct CrateEntry {
     pub(crate) name: String,
-    pub(crate) version: Option<String>,
+    pub(crate) version: String,
     pub(crate) is_default: bool,
     pub(crate) is_workspace: bool,
     pub(crate) used_by: Vec<String>,
@@ -31,7 +31,7 @@ pub(crate) fn json_model(request: &Request<'_>) -> ListDoc {
         .iter()
         .map(|c| CrateEntry {
             name: c.name().to_string(),
-            version: c.version().map(|v| v.to_string()),
+            version: c.version().to_string(),
             is_default: c.is_default_crate(),
             is_workspace: c.provenance().is_workspace(),
             used_by: c.used_by().iter().map(|u| u.to_string()).collect(),
@@ -94,9 +94,7 @@ pub(crate) fn execute<'a>(request: &mut Request<'a>) -> (Document<'a>, bool, Opt
         } else if is_workspace {
             spans.push(Span::plain(" (workspace-local)"));
         } else {
-            if let Some(version) = version {
-                spans.push(Span::plain(format!(" {version}")));
-            }
+            spans.push(Span::plain(format!(" {version}")));
 
             if !used_by.is_empty() {
                 spans.push(Span::plain(" ("));

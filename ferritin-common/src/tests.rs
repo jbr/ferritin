@@ -2,7 +2,7 @@ use rustdoc_types::ItemKind;
 use std::path::PathBuf;
 
 use crate::{
-    CrateName, Navigator, Resolver, RustdocData,
+    Navigator, Resolver, RustdocData,
     sources::{CrateProvenance, LocalSource, StdSource},
 };
 
@@ -411,10 +411,8 @@ fn build_prefix_test_navigator() -> Navigator {
     );
 
     let nav = Navigator::default();
-    nav.working_set
-        .insert(CrateName::from("home_crate"), std::sync::Arc::new(home));
-    nav.working_set
-        .insert(CrateName::from("target_crate"), std::sync::Arc::new(target));
+    nav.pin_for_test("home_crate", home);
+    nav.pin_for_test("target_crate", target);
     nav
 }
 
@@ -594,8 +592,7 @@ fn iterator_skips_unresolvable_use_items() {
     // lookup_crate, which with no sources configured returns None — exactly the
     // unresolvable case we want to exercise.
     let nav = Navigator::default();
-    nav.working_set
-        .insert(CrateName::from("fake_crate"), std::sync::Arc::new(data));
+    nav.pin_for_test("fake_crate", data);
 
     let root = nav
         .load_crate("fake_crate", &semver::VersionReq::STAR)

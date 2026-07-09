@@ -55,7 +55,7 @@ impl Tool<RustdocTools> for ListCrates {
                 " (workspace-local, aliased as \"crate\")".to_string()
             } else if crate_info.provenance().is_workspace() {
                 " (workspace-local)".to_string()
-            } else if let Some(version) = crate_info.version() {
+            } else {
                 // Add workspace member usage info when showing full workspace view
                 let usage_info = if !crate_info.used_by().is_empty() {
                     format!(" ({})", crate_info.used_by().join(", "))
@@ -63,9 +63,7 @@ impl Tool<RustdocTools> for ListCrates {
                     String::new()
                 };
 
-                format!(" {version}{usage_info}")
-            } else {
-                String::new()
+                format!(" {}{usage_info}", crate_info.version())
             };
             result.write_fmt(format_args!("• {crate_name}{note}\n"));
             if let Some(description) = crate_info.description() {

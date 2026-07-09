@@ -125,12 +125,13 @@ pub trait Source {
         version: &VersionReq,
     ) -> Result<Option<Cow<'a, CrateInfo>>>;
 
-    /// Load the rustdoc JSON data for a crate (by canonical name).
+    /// Load the rustdoc JSON data for a crate (by canonical name) at an exact
+    /// version, as previously resolved by [`Source::lookup`].
     ///
     /// The same `Ok(None)`-versus-`Err` distinction as [`Source::lookup`]
     /// applies: `Ok(None)` is definitive absence (e.g. docs.rs has no rustdoc
     /// JSON for this release), `Err` is transient.
-    fn load(&self, crate_name: &str, version: Option<&Version>) -> Result<Option<RustdocData>>;
+    fn load(&self, crate_name: &str, version: &Version) -> Result<Option<RustdocData>>;
 
     /// List all available crates from this source
     /// Returns None if this source doesn't support listing (e.g., DocsRsSource)

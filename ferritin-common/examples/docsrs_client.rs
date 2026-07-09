@@ -34,7 +34,7 @@ fn main() -> Result<()> {
             println!(
                 "Resolved {}@{}: {}\n",
                 crate_info.name(),
-                crate_info.version().unwrap(),
+                crate_info.version(),
                 crate_info
                     .description()
                     .unwrap_or_default()

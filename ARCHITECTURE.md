@@ -40,7 +40,7 @@ The common library provides the core functionality for loading, caching, navigat
 
 Documentation access is split between two types:
 
-- **`Store`** (long-lived, shared): owns the source backends, the evictable in-memory caches (crate data and search indexes), and the external-crate name map. Where it is shared — serve mode, potentially many Navigators — it sits behind an `Arc`.
+- **`Store`** (long-lived, shared): owns the source backends and the in-memory caches — resolution (which exact version a request means), crate data, and search indexes. Where it is shared — serve mode, potentially many Navigators — it sits behind an `Arc`.
 - **`Navigator`** (per-query): the entry point for documentation operations. It resolves through the Store and pins everything the query touches in its own append-only maps, so borrows are stable for the query's lifetime.
 
 ### Data Sources
@@ -62,11 +62,11 @@ A `Navigator` instance is created:
 - **TUI and MCP modes:** Once at startup, persists for the entire session — everything the session touches stays pinned (status-quo memory behavior; per-view scopes are deferred until history holds owned paths instead of `DocRef`s)
 - **Serve mode:** Once per HTTP request, over the shared `Arc<Store>`
 
-This explains why the single-version-per-crate limitation (described below) is tolerable in practice: CLI invocations are short-lived, and TUI sessions rarely need conflicting versions of the same crate.
+This explains why the per-query one-version-per-name pinning (described below) is tolerable in practice: CLI invocations are short-lived, and TUI sessions rarely need conflicting versions of the same crate.
 
 ### Source Fallthrough & Two-Phase Resolution
 
-When loading a crate (e.g., `tokio` or `tokio@1.40`), the Store performs two-phase resolution (on a cache miss, inside the entry's singleflight slot):
+When loading a crate (e.g., `tokio` or `tokio@1.40`), the Store performs two-phase resolution, each phase behind its own cache (see In-Memory Cache below). An exact request (`=1.2.3` — what cross-crate traversal produces) skips phase 1 entirely: the version *is* the data-cache key, and absence surfaces at load time.
 
 **Phase 1: Lookup metadata (CrateInfo)**
 
@@ -85,7 +85,7 @@ If a source has the crate but not a matching version, it returns `None` and the 
 
 **Phase 2: Load documentation (RustdocData)**
 
-Using the resolved `CrateInfo`, the Store calls the appropriate source's `load` method to fetch/build the actual rustdoc JSON and parse it into `RustdocData`.
+Using the resolved name and exact version, the Store calls the appropriate source's `load` method (falling through all sources when the version came from an exact request and carries no provenance hint) to fetch/build the actual rustdoc JSON and parse it into `RustdocData`.
 
 **Why two phases?** Separating metadata lookup from data loading allows:
 - Fast version resolution without parsing large JSON files
@@ -94,44 +94,44 @@ Using the resolved `CrateInfo`, the Store calls the appropriate source's `load` 
 
 ### In-Memory Cache
 
-Two layers, keyed by canonicalized crate name:
-
-**Store cache** (shared, evictable):
+**Store caches** (shared): three instances of one generic `Cache<K, T>` — singleflight slots plus eviction/TTL metadata under a mutex:
 
 ```rust
-crates: Mutex<HashMap<CrateName, Entry>>   // Entry { slot: Arc<OnceLock<Result<Arc<RustdocData>, LoadFailure>>>, weight, access_count, last_access, loaded_at }
+resolutions:    Cache<(CrateName, VersionReq), Resolved>     // Resolved { name, version, provenance }
+crates:         Cache<(CrateName, Version), RustdocData>
+search_indexes: Cache<(CrateName, Version), SearchIndex>
 ```
 
-- **Singleflight:** concurrent loaders of the same crate block on the slot's `OnceLock::get_or_init` and share the winner's result, so a cold crate is loaded once no matter how many requests race for it.
-- **Negative caching with TTL:** failures are cached as `LoadFailure::NotAvailable` (definitive — no such crate, no rustdoc JSON for the release; long TTL) or `LoadFailure::Transient` (network error; short TTL). A docs.rs blip no longer poisons a crate for the process lifetime. The cached entry covers the *whole* pipeline — a failed crates.io metadata lookup is negatively cached too.
+The resolution cache is keyed by the canonicalized *requested* name; the data caches by *resolved* name and exact version, so aliases that only resolution can collapse (the local `crate` shorthand) share one data entry, and different versions of one crate are distinct entries — the Store serves them concurrently. "Crate doesn't exist" negative-caches at the resolution layer; "no rustdoc JSON for this release" at the data layer.
+
+- **Singleflight:** concurrent loaders of the same key block on the slot's `OnceLock::get_or_init` and share the winner's result, so a cold crate is loaded once no matter how many requests race for it.
+- **Negative caching with TTL:** failures are cached as `LoadFailure::NotAvailable` (definitive; long TTL) or `LoadFailure::Transient` (network error; short TTL). A docs.rs blip no longer poisons a crate for the process lifetime.
+- **Positive TTL** (resolution cache only): what a floating req (`*`, `^1`) resolves to moves when a new version publishes, so successful resolutions expire after `RESOLUTION_TTL`. Crate data for a released version is immutable and has no positive TTL.
+- **Expired-entry sweep:** an expired entry is otherwise only replaced on re-access, so a stream of never-repeated keys (a crawler walking garbage names) would grow a map forever. When a map outgrows its sweep threshold, expired entries are dropped and the threshold doubles — amortized O(1) per insert.
 - **Eviction:** runs on insert when summed entry weights exceed a byte cap (weight proxy: JSON file size at load; unbounded by default, serve mode sets caps via `FERRITIN_CACHE_BYTES`). The policy is deliberately dumb — least-recently-accessed first, **among entries no query currently pins** (`Arc::strong_count > 1` means a pin exists, so evicting would free no memory) — but entries record the metadata (weight, access count, timestamps) a smarter policy will use once there is real traffic data. Evicted entries are dropped outside the map lock, since dropping the last `Arc<RustdocData>` joins its sidecar write thread. Because eviction only runs on insert, a pin-heavy burst can leave the cache transiently over cap until the next load sweeps it.
 
-Search indexes get the same treatment in a second cache (`search_indexes`, weight proxy: on-disk index file size). The `external_crate_names` map is append-only and tiny; it is never evicted.
-
-**Navigator pin map** (per-query):
+**Navigator pin maps** (per-query):
 
 ```rust
-working_set: FrozenMap<CrateName, Arc<RustdocData>>
+working_set:     FrozenMap<CrateName, Arc<RustdocData>>
+pinned_versions: FrozenMap<CrateName, Box<Version>>   // the data-cache key each pin was loaded at
 ```
 
-All `&'a RustdocData` and `DocRef<'a>` references borrow from this map. The `elsa::sync::FrozenMap` provides thread-safe interior mutability with `&self` and never removes entries, so addresses are stable within a query — `ItemKey` cycle detection and `DocRef` identity are unaffected by anything the Store does. The safety argument for eviction is entirely borrow-checker-visible: Store eviction drops an `Arc`; a query's pin keeps the data alive until the query ends. Memory bound = cache cap + in-flight pins.
+All `&'a RustdocData` and `DocRef<'a>` references borrow from `working_set`. The `elsa::sync::FrozenMap` provides thread-safe interior mutability with `&self` and never removes entries, so addresses are stable within a query — `ItemKey` cycle detection and `DocRef` identity are unaffected by anything the Store does. The safety argument for eviction is entirely borrow-checker-visible: Store eviction drops an `Arc`; a query's pin keeps the data alive until the query ends. Memory bound = cache cap + in-flight pins.
 
-**Known limitation:** Both layers store only one version of each crate (per Store, and per query). Multiple crates with conflicting dependency versions may load the wrong version or fail. Versioned Store keys (with per-query one-version pins preserved for `DocRef` identity) are the planned fix.
+The pin map stays keyed by *name*: one version per name per query, first pin wins, which is what `DocRef` identity relies on. A later request for a different exact version of an already-pinned name is served the pin (logged at debug). The Store itself has no version limit — conflicting versions across concurrent queries are simply different data-cache entries.
 
 ### Cross-Crate Traversal
 
-When a crate is loaded, the Store indexes its `external_crates` field, which contains `html_root_url` entries like `https://docs.rs/tokio/1.0.0`. These are parsed to extract real crate names and exact version numbers, stored in:
+Every crate's `external_crates` table records the exact versions of its entire build graph (docs.rs builds carry them in `html_root_url`s like `https://docs.rs/tokio/1.0.0` — transitive dependencies included, and real crates.io names, which can differ from internal names beyond dash/underscore folding, e.g. `sha1` → `sha-1`).
 
-```rust
-external_crate_names: FrozenMap<CrateName, Box<ExternalCrateInfo>>
-```
+When resolving an item reference to an external crate, the version comes from a fallback chain:
 
-When resolving an item reference to an external crate:
-1. Check if the external crate is already pinned in the query's `working_set`
-2. If not, load it through the Store (which checks `external_crate_names` for the real name and version, and caches the result)
-3. Pin the `Arc` in `working_set` and return the item from the external crate
+1. **Entrypoint version authority:** the query's first-loaded crate (its *entrypoint* — the CLI query root, serve's request crate) is the version oracle. If its build graph pins the name (`RustdocData::built_against`, a lazy index over its `external_crates`), traversal requests exactly that version — so every crate the entrypoint knows resolves to the entrypoint's version, independent of traversal order.
+2. **The referencing crate's own `html_root_url`** — for names outside the entrypoint's graph (e.g. pulled in by an intermediate crate's feature-gated deps).
+3. **Latest** (`VersionReq::STAR`), when no exact version is recorded anywhere.
 
-This makes viewing `std::vec::Vec` automatically load the `alloc` crate transparently.
+Exact versions become `=x.y.z` requests, which skip resolution and hit the data cache directly — traversal never touches crates.io. The loaded `Arc` is pinned in `working_set` (first pin per name wins) and the item is returned from the external crate. This makes viewing `std::vec::Vec` automatically load the `alloc` crate transparently.
 
 ### Path Resolution
 
@@ -203,7 +203,7 @@ pub fn traverse_to_crate_by_id(&self, navigator: &Navigator, crate_id: u32)
 When an `Id` references an item in another crate (indicated by `crate_id` in the item's `ItemSummary`):
 1. If `crate_id == 0`, return self (same crate)
 2. Look up `external_crates[crate_id]` to get the external crate info
-3. Parse `html_root_url` to extract real name and version
+3. Determine name and exact version via the fallback chain above (entrypoint authority → own `html_root_url` → latest)
 4. Call `Navigator::load_crate` to load the external crate (cached)
 5. Navigate within the external crate to find the item
 

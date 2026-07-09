@@ -51,6 +51,21 @@ pub struct Suggestion<'a> {
     score: f64,
 }
 
+impl<'a> Suggestion<'a> {
+    /// Crate-name suggestions for a failed crate load, scored against the
+    /// requested name.
+    pub(crate) fn for_crate_name(navigator: &'a Navigator, requested: &str) -> Vec<Self> {
+        navigator
+            .list_available_crates()
+            .map(|crate_info| Suggestion {
+                path: crate_info.name().to_string(),
+                item: None,
+                score: case_aware_jaro_winkler(crate_info.name(), requested),
+            })
+            .collect()
+    }
+}
+
 /// Stable identity for any borrowed item, used as the cycle-detection key.
 ///
 /// Both addresses are stable for the lifetime of the `Navigator`: `crate_docs`
@@ -170,13 +185,7 @@ impl<'a> Resolver<'a> {
         };
 
         let Some(crate_data) = self.navigator.load_crate(crate_name, &version_req) else {
-            suggestions.extend(self.navigator.list_available_crates().map(|crate_info| {
-                Suggestion {
-                    path: crate_info.name().to_string(),
-                    item: None,
-                    score: case_aware_jaro_winkler(crate_info.name(), crate_name),
-                }
-            }));
+            suggestions.extend(Suggestion::for_crate_name(self.navigator, crate_name));
             return None;
         };
 

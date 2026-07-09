@@ -12,10 +12,22 @@ use std::thread::JoinHandle;
 
 use crate::CrateProvenance;
 use crate::archive::{self, Archive};
+use crate::crate_name::CrateName;
 use crate::doc_ref::{self, DocRef};
 use crate::indexes::DerivedIndexes;
 use crate::navigator::Navigator;
 use crate::store::parse_docsrs_url;
+
+/// A dependency pin extracted from an `external_crates` entry's docs.rs
+/// `html_root_url`: the real crates.io name (which can differ from the
+/// internal name beyond dash/underscore folding, e.g. `sha1` → `sha-1`) and
+/// the exact version the referencing crate was built against.
+#[derive(Debug, Clone, Fieldwork)]
+#[fieldwork(get)]
+pub(crate) struct ExternalCrateInfo {
+    name: String,
+    version: Version,
+}
 
 /// Wrapper around a rustdoc `Crate` with convenient query methods.
 ///
@@ -49,6 +61,10 @@ pub struct RustdocData {
     /// the archive (they're precomputed at sidecar-write time).
     #[field = false]
     derived_indexes: OnceLock<DerivedIndexes>,
+    /// The dependency versions this crate was built against, extracted from
+    /// `external_crates` on first use; see [`RustdocData::built_against`].
+    #[field = false]
+    external_versions: OnceLock<FxHashMap<CrateName<'static>, ExternalCrateInfo>>,
     // The eager small maps below are populated only on the warm path; on the cold
     // path the resident `Crate` is consulted instead and these stay empty.
     #[field = false]
@@ -136,6 +152,7 @@ impl RustdocData {
             archive: None,
             item_cache: FrozenMap::new(),
             derived_indexes: OnceLock::new(),
+            external_versions: OnceLock::new(),
             paths: FxHashMap::default(),
             external_crates: FxHashMap::default(),
             root: Id(0),
@@ -172,6 +189,7 @@ impl RustdocData {
             archive: Some(archive),
             item_cache: FrozenMap::new(),
             derived_indexes: OnceLock::new(),
+            external_versions: OnceLock::new(),
             paths: parts.paths,
             external_crates: parts.external_crates,
             root: parts.root,
@@ -238,6 +256,42 @@ impl RustdocData {
     /// Iterate every external-crate entry.
     pub fn external_crates_iter(&self) -> impl Iterator<Item = &ExternalCrate> {
         self.external_map().values()
+    }
+
+    /// The exact version of `name` this crate was built against, if its
+    /// `external_crates` table records one (docs.rs builds record the whole
+    /// build graph in `html_root_url`s; local builds only what dependencies
+    /// self-declare).
+    ///
+    /// Indexed under both the internal (underscored) and real (crates.io)
+    /// names, which can differ beyond what `CrateName` folding equates.
+    pub(crate) fn built_against(&self, name: &CrateName<'static>) -> Option<&ExternalCrateInfo> {
+        self.external_versions
+            .get_or_init(|| {
+                let mut map = FxHashMap::default();
+                for external in self.external_crates_iter() {
+                    let Some((real_name, version)) = external
+                        .html_root_url
+                        .as_deref()
+                        .and_then(parse_docsrs_url)
+                    else {
+                        continue;
+                    };
+                    let Ok(version) = Version::parse(version) else {
+                        continue;
+                    };
+                    let info = ExternalCrateInfo {
+                        name: real_name.to_string(),
+                        version,
+                    };
+                    map.entry(CrateName::from(real_name.to_string()))
+                        .or_insert_with(|| info.clone());
+                    map.entry(CrateName::from(external.name.clone()))
+                        .or_insert(info);
+                }
+                map
+            })
+            .get(name)
     }
 
     /// Cold-path derived indexes, computed from the resident crate on first use.
@@ -368,11 +422,21 @@ impl RustdocData {
             ..
         } = self.external_crate(&id)?;
 
+        // Version fallback chain: the query entrypoint's build graph first —
+        // so any name the entrypoint knows resolves to the entrypoint's
+        // version, independent of traversal order — then this crate's own
+        // html_root_url (for names outside the entrypoint's graph), then
+        // latest.
+        if let Some((name, version_req)) = navigator.built_against(name) {
+            return navigator.load_crate(name, &version_req);
+        }
+
         let (name, version_req) = html_root_url.as_deref().and_then(parse_docsrs_url).map_or(
             (&**name, VersionReq::STAR),
             |(name, version)| {
-                let version_req =
-                    VersionReq::parse(&format!("={version}")).unwrap_or(VersionReq::STAR);
+                let version_req = Version::parse(version)
+                    .map(|v| crate::store::exact_req(&v))
+                    .unwrap_or(VersionReq::STAR);
 
                 (name, version_req)
             },

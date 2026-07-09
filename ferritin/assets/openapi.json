@@ -424,12 +424,12 @@
             }
           },
           "version": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "required": [
-          "name"
+          "name",
+          "version"
         ]
       },
       "JsonEnum": {

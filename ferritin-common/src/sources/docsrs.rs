@@ -60,7 +60,7 @@ impl Source for DocsRsSource {
 
         Ok(Some(Cow::Owned(CrateInfo {
             provenance: CrateProvenance::DocsRs,
-            version: Some(version),
+            version,
             description: Some(description),
             name,
             default_crate: false,
@@ -69,10 +69,7 @@ impl Source for DocsRsSource {
         })))
     }
 
-    fn load(&self, crate_name: &str, version: Option<&Version>) -> Result<Option<RustdocData>> {
-        let Some(version) = version else {
-            return Ok(None);
-        };
+    fn load(&self, crate_name: &str, version: &Version) -> Result<Option<RustdocData>> {
         block_on(self.load_async(crate_name, version))
     }
 }
