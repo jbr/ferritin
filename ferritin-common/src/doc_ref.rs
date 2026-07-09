@@ -362,11 +362,20 @@ impl<'a> DocRef<'a, ExternalCrate> {
     }
 
     /// Load the RustdocData for this external crate.
+    ///
+    /// Same version fallback chain as `traverse_to_crate_by_id`: the query
+    /// entrypoint's build graph, then this entry's own `html_root_url`, then
+    /// latest.
     pub fn load(&self) -> Option<&'a RustdocData> {
+        if let Some((name, version_req)) = self.navigator().built_against(&self.item.name) {
+            return self.navigator().load_crate(name, &version_req);
+        }
+
         let name = self.crate_name();
         let version_req = if let Some(url) = &self.item.html_root_url {
             parse_docsrs_url(url)
-                .and_then(|(_, version)| VersionReq::parse(&format!("={version}")).ok())
+                .and_then(|(_, version)| semver::Version::parse(version).ok())
+                .map(|v| crate::store::exact_req(&v))
                 .unwrap_or(VersionReq::STAR)
         } else {
             VersionReq::STAR

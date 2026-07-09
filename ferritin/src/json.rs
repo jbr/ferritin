@@ -205,8 +205,7 @@ pub(crate) struct JsonList {
 #[serde(rename_all = "camelCase")]
 struct JsonCrate {
     name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    version: Option<String>,
+    version: String,
     #[serde(skip_serializing_if = "is_false")]
     is_default: bool,
     #[serde(skip_serializing_if = "is_false")]

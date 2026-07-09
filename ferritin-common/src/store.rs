@@ -28,7 +28,6 @@ use crate::CrateName;
 use crate::RustdocData;
 use crate::search::SearchIndex;
 use crate::sources::{CrateProvenance, DocsRsSource, LocalSource, Source, StdSource};
-use elsa::sync::FrozenMap;
 use fieldwork::Fieldwork;
 use semver::{Version, VersionReq};
 use std::borrow::Cow;
@@ -46,6 +45,12 @@ const NOT_AVAILABLE_TTL: Duration = Duration::from_secs(60 * 60);
 /// How long a transient failure (network error) is remembered — long enough to
 /// shield the upstream from a retry storm, short enough to recover promptly.
 const TRANSIENT_TTL: Duration = Duration::from_secs(30);
+
+/// How long a successful resolution of a floating version req (`*`, `^1`)
+/// stays fresh: what "latest" means moves when a new version publishes.
+/// Exact reqs never enter the resolution cache — they skip resolution
+/// entirely (see [`exact_version`]).
+const RESOLUTION_TTL: Duration = Duration::from_secs(15 * 60);
 
 /// Why a load failed, determining how long the failure is cached.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -77,8 +82,8 @@ struct Entry<T> {
     weight: u64,
     access_count: u64,
     last_access: Instant,
-    /// When the slot was created, refreshed when its load completes; failure
-    /// TTLs are measured from here.
+    /// When the slot was created, refreshed when its load completes; TTLs are
+    /// measured from here.
     loaded_at: Instant,
 }
 
@@ -94,9 +99,16 @@ impl<T> Entry<T> {
         }
     }
 
-    /// Whether this entry holds an expired cached failure and should be retried.
-    fn is_expired(&self) -> bool {
-        matches!(self.slot.get(), Some(Err(failure)) if self.loaded_at.elapsed() >= failure.ttl())
+    /// Whether this entry's cached result has outlived its TTL and should be
+    /// retried on next access (or dropped by a sweep). Failures expire by
+    /// their [`LoadFailure`] TTL; successes only if the cache has a
+    /// `positive_ttl`. In-flight entries never expire.
+    fn is_expired(&self, positive_ttl: Option<Duration>) -> bool {
+        match self.slot.get() {
+            Some(Err(failure)) => self.loaded_at.elapsed() >= failure.ttl(),
+            Some(Ok(_)) => positive_ttl.is_some_and(|ttl| self.loaded_at.elapsed() >= ttl),
+            None => false,
+        }
     }
 
     /// Whether some Navigator currently pins this entry's data (i.e. clones of
@@ -110,47 +122,103 @@ impl<T> Entry<T> {
     }
 }
 
-/// A bounded, singleflight, negative-TTL cache keyed by crate name.
-struct Cache<T> {
-    entries: Mutex<HashMap<CrateName<'static>, Entry<T>>>,
-    /// Byte cap over the sum of entry weights; eviction runs on insert.
-    cap: u64,
+/// The map half of a [`Cache`], bundled with its sweep trigger so both live
+/// under one lock.
+struct Entries<K, T> {
+    map: HashMap<K, Entry<T>>,
+    /// Map size that triggers the next expired-entry sweep. Expired entries
+    /// are otherwise only *replaced* on re-access, never removed — a stream of
+    /// never-repeated keys (a crawler walking garbage crate names) would grow
+    /// the map forever. Doubling after each sweep amortizes the cost to O(1)
+    /// per insert.
+    sweep_at: usize,
 }
 
-impl<T> Default for Cache<T> {
+const INITIAL_SWEEP_THRESHOLD: usize = 128;
+
+impl<K, T> Default for Entries<K, T> {
+    fn default() -> Self {
+        Self {
+            map: HashMap::default(),
+            sweep_at: INITIAL_SWEEP_THRESHOLD,
+        }
+    }
+}
+
+impl<K: Eq + std::hash::Hash, T> Entries<K, T> {
+    /// Drop every expired entry and reset the sweep trigger. Returns the
+    /// dropped entries so the caller can release them outside the map lock.
+    fn sweep(&mut self, positive_ttl: Option<Duration>) -> Vec<Entry<T>> {
+        let swept = self
+            .map
+            .extract_if(|_, entry| entry.is_expired(positive_ttl))
+            .map(|(_, entry)| entry)
+            .collect();
+        self.sweep_at = (self.map.len() * 2).max(INITIAL_SWEEP_THRESHOLD);
+        swept
+    }
+}
+
+/// A bounded, singleflight, TTL-aware cache.
+///
+/// `K` is the lookup key (crate name today, `(name, version)` and
+/// `(name, req)` with versioned keys); values are shared as `Arc<T>`.
+struct Cache<K, T> {
+    entries: Mutex<Entries<K, T>>,
+    /// Byte cap over the sum of entry weights; eviction runs on insert.
+    cap: u64,
+    /// TTL for successful entries. `None` (crate data) means a success is
+    /// cached until evicted — the data for a released version is immutable.
+    /// `Some` (resolution of floating version reqs) means success goes stale:
+    /// what `*` or `^1` resolves to moves when a new version publishes.
+    positive_ttl: Option<Duration>,
+}
+
+impl<K, T> Default for Cache<K, T> {
     fn default() -> Self {
         Self {
             entries: Mutex::default(),
             cap: u64::MAX,
+            positive_ttl: None,
         }
     }
 }
 
-impl<T> Cache<T> {
-    /// The slot for `name`: touches access metadata, replaces an expired
-    /// negative entry, and creates the entry if absent.
-    fn slot(&self, name: &CrateName<'static>) -> Slot<T> {
-        let mut entries = self.entries.lock().unwrap();
-        let entry = entries.entry(name.clone()).or_insert_with(Entry::new);
-        if entry.is_expired() {
-            *entry = Entry::new();
-        }
-        entry.access_count += 1;
-        entry.last_access = Instant::now();
-        entry.slot.clone()
+impl<K: Eq + std::hash::Hash + Clone + Debug, T> Cache<K, T> {
+    /// The slot for `key`: touches access metadata, replaces an expired
+    /// entry, creates the entry if absent, and runs the expired-entry sweep
+    /// when the map has grown past its trigger.
+    fn slot(&self, key: &K) -> Slot<T> {
+        let (slot, swept) = {
+            let mut entries = self.entries.lock().unwrap();
+            let swept = (entries.map.len() >= entries.sweep_at)
+                .then(|| entries.sweep(self.positive_ttl));
+            let entry = entries.map.entry(key.clone()).or_insert_with(Entry::new);
+            if entry.is_expired(self.positive_ttl) {
+                *entry = Entry::new();
+            }
+            entry.access_count += 1;
+            entry.last_access = Instant::now();
+            (entry.slot.clone(), swept)
+        };
+        // Swept entries are dropped here, outside the map lock — dropping the
+        // last Arc to a RustdocData joins its sidecar write thread, which must
+        // not stall unrelated lookups.
+        drop(swept);
+        slot
     }
 
-    /// Look up `name`, running `init` to load it on a miss. Concurrent callers
-    /// for the same name block on the winner's `init` and share its result
+    /// Look up `key`, running `init` to load it on a miss. Concurrent callers
+    /// for the same key block on the winner's `init` and share its result
     /// (singleflight). After a completed load, `weigh` records the entry's
     /// byte weight and eviction runs if the cache is over its cap.
     fn get_or_load(
         &self,
-        name: &CrateName<'static>,
+        key: &K,
         weigh: impl FnOnce(&T) -> u64,
         init: impl FnOnce() -> Result<Arc<T>, LoadFailure>,
     ) -> Result<Arc<T>, LoadFailure> {
-        let slot = self.slot(name);
+        let slot = self.slot(key);
         let mut initialized = false;
         let result = slot
             .get_or_init(|| {
@@ -159,26 +227,19 @@ impl<T> Cache<T> {
             })
             .clone();
         if initialized {
-            let evicted = self.record_load(name, &slot, result.as_deref().ok().map(weigh));
-            // Dropped here, outside the map lock: dropping the last Arc to a
-            // RustdocData joins its sidecar write thread, which must not stall
-            // unrelated lookups.
+            let evicted = self.record_load(key, &slot, result.as_deref().ok().map(weigh));
+            // Dropped outside the map lock; see `slot` for why.
             drop(evicted);
         }
         result
     }
 
-    /// Record a completed load on `name`'s entry and evict while over the byte
+    /// Record a completed load on `key`'s entry and evict while over the byte
     /// cap. Returns the evicted entries so the caller can drop them after the
     /// map lock is released.
-    fn record_load(
-        &self,
-        name: &CrateName<'static>,
-        slot: &Slot<T>,
-        weight: Option<u64>,
-    ) -> Vec<Entry<T>> {
+    fn record_load(&self, key: &K, slot: &Slot<T>, weight: Option<u64>) -> Vec<Entry<T>> {
         let mut entries = self.entries.lock().unwrap();
-        if let Some(entry) = entries.get_mut(name)
+        if let Some(entry) = entries.map.get_mut(key)
             && Arc::ptr_eq(&entry.slot, slot)
         {
             entry.loaded_at = Instant::now();
@@ -187,7 +248,7 @@ impl<T> Cache<T> {
 
         let mut evicted = Vec::new();
         loop {
-            let total: u64 = entries.values().map(|entry| entry.weight).sum();
+            let total: u64 = entries.map.values().map(|entry| entry.weight).sum();
             if total <= self.cap {
                 break;
             }
@@ -197,12 +258,11 @@ impl<T> Cache<T> {
             // memory, see `is_pinned`), and so is the entry that triggered
             // this pass (evicting it immediately would just thrash).
             let Some(victim) = entries
+                .map
                 .iter()
-                .filter(|(key, entry)| {
-                    entry.slot.get().is_some() && !entry.is_pinned() && *key != name
-                })
+                .filter(|(k, entry)| entry.slot.get().is_some() && !entry.is_pinned() && *k != key)
                 .min_by_key(|(_, entry)| entry.last_access)
-                .map(|(key, _)| key.clone())
+                .map(|(k, _)| k.clone())
             else {
                 log::info!(
                     "cache over cap ({total} > {}) but everything is pinned or in flight; \
@@ -211,9 +271,9 @@ impl<T> Cache<T> {
                 );
                 break;
             };
-            if let Some(entry) = entries.remove(&victim) {
+            if let Some(entry) = entries.map.remove(&victim) {
                 log::info!(
-                    "evicting {victim} (weight {}, {} accesses, resident {:?}; total {total} > cap {})",
+                    "evicting {victim:?} (weight {}, {} accesses, resident {:?}; total {total} > cap {})",
                     entry.weight,
                     entry.access_count,
                     entry.loaded_at.elapsed(),
@@ -244,13 +304,46 @@ pub(crate) fn parse_docsrs_url(url: &str) -> Option<(&str, &str)> {
     }
 }
 
-/// External crate info extracted from html_root_url
-#[derive(Debug, Clone)]
-struct ExternalCrateInfo {
-    /// The real crate name (with dashes, as it appears on crates.io)
+/// The output of phase-1 resolution: the exact version to load, plus what is
+/// needed to load and attribute it.
+#[derive(Debug)]
+struct Resolved {
+    /// The real crate name (with dashes, as it appears on crates.io).
     name: String,
-    /// The version this crate was built against
     version: Version,
+    provenance: CrateProvenance,
+}
+
+/// The single version a `VersionReq` pins, if it pins exactly one
+/// (`=1.2.3`). Such reqs skip resolution: the version *is* the cache key.
+/// Note that a bare `1.2.3` parses as caret (a range), so only explicit `=`
+/// reqs with all three components qualify.
+pub(crate) fn exact_version(req: &VersionReq) -> Option<Version> {
+    match &*req.comparators {
+        [c] if c.op == semver::Op::Exact => Some(Version {
+            major: c.major,
+            minor: c.minor?,
+            patch: c.patch?,
+            pre: c.pre.clone(),
+            build: semver::BuildMetadata::EMPTY,
+        }),
+        _ => None,
+    }
+}
+
+/// The `=version` req pinning exactly `version` — the inverse of
+/// [`exact_version`], so reqs built here take the resolution-skipping fast
+/// path in [`Store::load_crate`].
+pub(crate) fn exact_req(version: &Version) -> VersionReq {
+    VersionReq {
+        comparators: vec![semver::Comparator {
+            op: semver::Op::Exact,
+            major: version.major,
+            minor: Some(version.minor),
+            patch: Some(version.patch),
+            pre: version.pre.clone(),
+        }],
+    }
 }
 
 #[derive(Debug, Clone, Fieldwork)]
@@ -258,7 +351,7 @@ struct ExternalCrateInfo {
 pub struct CrateInfo {
     #[field(copy)]
     pub(crate) provenance: CrateProvenance,
-    pub(crate) version: Option<Version>,
+    pub(crate) version: Version,
     pub(crate) description: Option<String>,
     pub(crate) name: String,
     pub(crate) default_crate: bool,
@@ -275,7 +368,7 @@ pub struct CrateInfo {
 ///
 /// One `Store` (behind an `Arc` where it is shared) serves many short-lived
 /// [`crate::Navigator`]s; see the module docs for the eviction/pinning model.
-#[derive(Fieldwork, Default)]
+#[derive(Fieldwork)]
 #[fieldwork(get, opt_in, with)]
 pub struct Store {
     #[field]
@@ -285,16 +378,36 @@ pub struct Store {
     #[field]
     local_source: Option<LocalSource>,
 
-    /// Evictable crate-data cache. Values are handed out as `Arc`s that
-    /// Navigators pin per query.
-    crates: Cache<RustdocData>,
+    /// Resolution cache: which exact version a (name, req) request means, or
+    /// why it couldn't be resolved ("crate doesn't exist" negative-caches
+    /// here). Keyed by the canonicalized *requested* name; unbounded by
+    /// weight (entries are tiny — the sweep keeps garbage names from
+    /// accumulating), with a positive TTL so floating reqs track releases.
+    resolutions: Cache<(CrateName<'static>, VersionReq), Resolved>,
 
-    /// Evictable search-index cache, same mechanism as `crates`.
-    search_indexes: Cache<SearchIndex>,
+    /// Evictable crate-data cache, keyed by resolved name and exact version
+    /// ("no rustdoc JSON for this release" negative-caches here). Values are
+    /// handed out as `Arc`s that Navigators pin per query.
+    crates: Cache<(CrateName<'static>, Version), RustdocData>,
 
-    /// Map from internal name (underscores) to real name/version from
-    /// external_crates. Append-only and tiny; never evicted.
-    external_crate_names: FrozenMap<CrateName<'static>, Box<ExternalCrateInfo>>,
+    /// Evictable search-index cache, same keys and mechanism as `crates`.
+    search_indexes: Cache<(CrateName<'static>, Version), SearchIndex>,
+}
+
+impl Default for Store {
+    fn default() -> Self {
+        Self {
+            std_source: None,
+            docsrs_source: None,
+            local_source: None,
+            resolutions: Cache {
+                positive_ttl: Some(RESOLUTION_TTL),
+                ..Cache::default()
+            },
+            crates: Cache::default(),
+            search_indexes: Cache::default(),
+        }
+    }
 }
 
 impl Debug for Store {
@@ -374,91 +487,103 @@ impl Store {
             .unwrap_or_else(|| CrateName::from(String::from(name)))
     }
 
-    /// Load `requested_name` through the crate cache: singleflight on a miss,
-    /// negative-TTL on failure, eviction on insert. `crate_name` must be the
-    /// canonicalized form of `requested_name` (the cache key).
+    /// Load `requested_name` at `version_req` through the two cache layers:
+    /// resolution (which exact version the req means) and data (that
+    /// version's rustdoc JSON), each singleflight with negative TTLs and
+    /// eviction on insert. `crate_name` must be the canonicalized form of
+    /// `requested_name` (the resolution-cache key).
     ///
-    /// Note the key is the *requested* name: an alias that only resolution can
-    /// collapse (the local `crate` shorthand for the workspace root) gets its
-    /// own entry holding independently loaded data. Dash/underscore variants
-    /// are not affected (`CrateName` equates them), and the std aliases
-    /// collapse in `canonicalize`.
+    /// Returns the exact version alongside the data — the data-cache key the
+    /// caller's pin is for, which the data's self-reported version cannot
+    /// stand in for (it can be absent).
+    ///
+    /// An exact req (`=1.2.3`) skips resolution entirely: the version is the
+    /// data key. Anything else resolves first, so the data cache is keyed by
+    /// *resolved* name — aliases that resolution collapses (the local `crate`
+    /// shorthand) share one data entry with their target.
     pub(crate) fn load_crate(
         &self,
         crate_name: &CrateName<'static>,
         requested_name: &str,
         version_req: &VersionReq,
-    ) -> Result<Arc<RustdocData>, LoadFailure> {
-        self.crates.get_or_load(
-            crate_name,
+    ) -> Result<(Version, Arc<RustdocData>), LoadFailure> {
+        let (name, version, provenance_hint) = if let Some(version) = exact_version(version_req) {
+            (crate_name.clone(), version, None)
+        } else {
+            let resolved = self.resolve(crate_name, requested_name, version_req)?;
+            (
+                CrateName::from(resolved.name.clone()),
+                resolved.version.clone(),
+                Some(resolved.provenance),
+            )
+        };
+
+        let data = self.crates.get_or_load(
+            &(name.clone(), version.clone()),
             |data| data.fs_path().metadata().map_or(0, |m| m.len()),
-            || self.load_pipeline(crate_name, requested_name, version_req),
-        )
+            || self.load_data(&name, &version, provenance_hint),
+        )?;
+        Ok((version, data))
     }
 
-    /// Look up `crate_name`'s search index, running `build` on a miss with the
-    /// same singleflight/negative-TTL/eviction treatment as crate data.
+    /// Look up a search index by resolved crate name and exact version,
+    /// running `build` on a miss with the same singleflight/negative-TTL/
+    /// eviction treatment as crate data.
     pub(crate) fn search_index(
         &self,
-        crate_name: &CrateName<'static>,
+        key: &(CrateName<'static>, Version),
         build: impl FnOnce() -> Result<Arc<SearchIndex>, LoadFailure>,
     ) -> Result<Arc<SearchIndex>, LoadFailure> {
         self.search_indexes
-            .get_or_load(crate_name, |index| index.disk_weight(), build)
+            .get_or_load(key, |index| index.disk_weight(), build)
     }
 
-    /// The full resolution pipeline for a cache miss: external-name check,
-    /// metadata lookup (phase 1), then source load (phase 2).
-    fn load_pipeline(
+    /// Phase 1 for a resolution-cache miss: the source-cascade metadata
+    /// lookup, reduced to what the data layer needs.
+    fn resolve(
         &self,
         crate_name: &CrateName<'static>,
         requested_name: &str,
         version_req: &VersionReq,
-    ) -> Result<Arc<RustdocData>, LoadFailure> {
-        log::info!("Loading {requested_name}@{version_req}");
-
-        let (resolved_name, resolved_version, provenance_hint) =
-            if let Some(external_crate) = self.external_crate_names.get(crate_name) {
-                log::debug!("Found {crate_name} in external_crates");
-                (
-                    external_crate.name.to_string(),
-                    Some(external_crate.version.clone()),
-                    None,
-                )
-            } else {
-                match self.lookup_crate(requested_name, version_req) {
-                    Ok(Some(info)) => (
-                        info.name.to_string(),
-                        info.version.clone(),
-                        Some(info.provenance),
-                    ),
-                    Ok(None) => return Err(LoadFailure::NotAvailable),
-                    Err(e) => {
-                        log::warn!("transient failure resolving {requested_name}: {e:?}");
-                        return Err(LoadFailure::Transient);
-                    }
+    ) -> Result<Arc<Resolved>, LoadFailure> {
+        self.resolutions.get_or_load(
+            &(crate_name.clone(), version_req.clone()),
+            |_| 0,
+            || match self.lookup_crate(requested_name, version_req) {
+                Ok(Some(info)) => {
+                    let resolved = Resolved {
+                        name: info.name.clone(),
+                        version: info.version.clone(),
+                        provenance: info.provenance,
+                    };
+                    log::info!("Resolved {requested_name}@{version_req} -> {resolved:?}");
+                    Ok(Arc::new(resolved))
                 }
-            };
+                Ok(None) => Err(LoadFailure::NotAvailable),
+                Err(e) => {
+                    log::warn!("transient failure resolving {requested_name}: {e:?}");
+                    Err(LoadFailure::Transient)
+                }
+            },
+        )
+    }
 
-        if let Some(rv) = resolved_version.as_ref() {
-            log::info!("Resolved {resolved_name}@{rv}");
-        } else {
-            log::info!("Resolved {resolved_name}");
-        }
+    /// Phase 2 for a data-cache miss: load `name` at exactly `version` from
+    /// the sources and prepare it for publication.
+    fn load_data(
+        &self,
+        name: &CrateName<'static>,
+        version: &Version,
+        provenance_hint: Option<CrateProvenance>,
+    ) -> Result<Arc<RustdocData>, LoadFailure> {
+        log::info!("Loading {name}@{version}");
 
         let start = Instant::now();
-        let result =
-            self.load_from_sources(&resolved_name, resolved_version.as_ref(), provenance_hint);
-        log::debug!(
-            "⏱️ Total load time for {resolved_name}: {:?}",
-            start.elapsed()
-        );
+        let result = self.load_from_sources(name.as_ref(), version, provenance_hint);
+        log::debug!("⏱️ Total load time for {name}: {:?}", start.elapsed());
 
         match result {
             Ok(Some(mut data)) => {
-                // Index external crates for future lookups
-                self.index_external_crates(&data);
-
                 // Build reverse path index before publishing
                 data.build_path_index();
 
@@ -466,7 +591,7 @@ impl Store {
             }
             Ok(None) => Err(LoadFailure::NotAvailable),
             Err(e) => {
-                log::warn!("transient failure loading {resolved_name}: {e:?}");
+                log::warn!("transient failure loading {name}: {e:?}");
                 Err(LoadFailure::Transient)
             }
         }
@@ -476,7 +601,7 @@ impl Store {
     fn load_from_sources(
         &self,
         crate_name: &str,
-        version: Option<&Version>,
+        version: &Version,
         provenance_hint: Option<CrateProvenance>,
     ) -> anyhow::Result<Option<RustdocData>> {
         match provenance_hint {
@@ -519,24 +644,6 @@ impl Store {
         }
     }
 
-    /// Index external crates from a loaded crate
-    fn index_external_crates(&self, crate_data: &RustdocData) {
-        log::debug!("Indexing external crates from {}", crate_data.name());
-        for external in crate_data.external_crates_iter() {
-            if let Some(url) = &external.html_root_url
-                && let Some((real_name, version)) = parse_docsrs_url(url)
-                && let Ok(version) = Version::parse(version)
-            {
-                log::trace!("{}@{}", real_name, version);
-                let info = ExternalCrateInfo {
-                    name: real_name.to_string(),
-                    version,
-                };
-                self.external_crate_names
-                    .insert(CrateName::from(external.name.clone()), Box::new(info));
-            }
-        }
-    }
 }
 
 // Compile-time assertion that Store can be shared across threads (serve.rs
@@ -560,7 +667,7 @@ mod cache_tests {
 
     #[test]
     fn singleflight_caches_first_result() {
-        let cache = Cache::<String>::default();
+        let cache = Cache::<CrateName<'static>, String>::default();
         let name = CrateName::from("a".to_string());
         let first = cache
             .get_or_load(&name, |_| 1, || load_ok("first"))
@@ -573,7 +680,7 @@ mod cache_tests {
 
     #[test]
     fn negative_entries_are_cached_until_expiry() {
-        let cache = Cache::<String>::default();
+        let cache = Cache::<CrateName<'static>, String>::default();
         let name = CrateName::from("a".to_string());
         let failure = cache
             .get_or_load(&name, |_| 1, || Err(LoadFailure::Transient))
@@ -590,6 +697,7 @@ mod cache_tests {
             .entries
             .lock()
             .unwrap()
+            .map
             .get_mut(&name)
             .unwrap()
             .loaded_at -= TRANSIENT_TTL;
@@ -601,7 +709,7 @@ mod cache_tests {
 
     #[test]
     fn eviction_skips_pinned_entries() {
-        let cache = Cache::<String> {
+        let cache = Cache::<CrateName<'static>, String> {
             cap: 25,
             ..Default::default()
         };
@@ -617,23 +725,23 @@ mod cache_tests {
         cache.get_or_load(&c, |_| 10, || load_ok("c")).unwrap();
         {
             let entries = cache.entries.lock().unwrap();
-            assert!(entries.contains_key(&a));
-            assert!(!entries.contains_key(&b));
-            assert!(entries.contains_key(&c));
+            assert!(entries.map.contains_key(&a));
+            assert!(!entries.map.contains_key(&b));
+            assert!(entries.map.contains_key(&c));
         }
 
         // Once the pin is released, the next over-cap insert can evict `a`.
         drop(pin_a);
         cache.get_or_load(&d, |_| 10, || load_ok("d")).unwrap();
         let entries = cache.entries.lock().unwrap();
-        assert!(!entries.contains_key(&a));
-        assert!(entries.contains_key(&c));
-        assert!(entries.contains_key(&d));
+        assert!(!entries.map.contains_key(&a));
+        assert!(entries.map.contains_key(&c));
+        assert!(entries.map.contains_key(&d));
     }
 
     #[test]
     fn eviction_removes_least_recently_accessed_when_over_cap() {
-        let cache = Cache::<String> {
+        let cache = Cache::<CrateName<'static>, String> {
             cap: 25,
             ..Default::default()
         };
@@ -649,8 +757,8 @@ mod cache_tests {
         cache.get_or_load(&c, |_| 10, || load_ok("c")).unwrap();
 
         let entries = cache.entries.lock().unwrap();
-        assert!(entries.contains_key(&a));
-        assert!(!entries.contains_key(&b));
-        assert!(entries.contains_key(&c));
+        assert!(entries.map.contains_key(&a));
+        assert!(!entries.map.contains_key(&b));
+        assert!(entries.map.contains_key(&c));
     }
 }

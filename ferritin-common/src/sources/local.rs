@@ -110,7 +110,7 @@ impl LocalSource {
                 package.name.to_string().into(),
                 CrateInfo {
                     provenance,
-                    version: Some(package.version.clone()),
+                    version: package.version.clone(),
                     description: package.description.clone(),
                     name: package.name.to_string(),
                     default_crate: root_crate
@@ -194,9 +194,7 @@ impl LocalSource {
         crate_name: &'b str,
     ) -> Option<&'a Version> {
         let crate_name = CrateName::from(crate_name);
-        self.crates
-            .get(&crate_name)
-            .and_then(|lsm| lsm.version.as_ref())
+        self.crates.get(&crate_name).map(|lsm| &lsm.version)
     }
 
     /// Get the project root
@@ -281,20 +279,12 @@ impl LocalSource {
     }
 
     /// Load a dependency crate (may rebuild if needed)
-    pub fn load_dep(
-        &self,
-        crate_name: CrateName<'_>,
-        version: Option<&Version>,
-    ) -> Option<RustdocData> {
+    pub fn load_dep(&self, crate_name: CrateName<'_>, version: &Version) -> Option<RustdocData> {
         // Local lookup is infallible (no network), so the `Result` layer never errs.
         let info = self.lookup(&crate_name, &VersionReq::STAR).ok().flatten()?;
         let json_path = info.json_path.as_deref()?;
-        let info_version = info.version.as_ref();
 
-        if let Some(version) = version
-            && let Some(info_version) = info_version
-            && version != info_version
-        {
+        if *version != info.version {
             return None;
         }
 
@@ -317,14 +307,14 @@ impl LocalSource {
                     CrateProvenance::LocalDependency,
                     None,
                 )
-                && data.version() == version
+                && data.version() == Some(version)
             {
                 break Some(data);
             } else if !feature_rebuild
                 && let Ok(content) = std::fs::read(json_path)
                 && let Ok(RustdocVersion { crate_version, .. }) =
                     sonic_rs::serde::from_slice(&content)
-                && crate_version.as_ref() == version
+                && crate_version.as_ref() == Some(version)
                 && let Ok(crate_data) = crate::conversions::load_and_normalize(&content, None)
             {
                 let version = crate_data
@@ -343,7 +333,7 @@ impl LocalSource {
                 tried_rebuilding = true;
                 feature_rebuild = false;
                 if self
-                    .rebuild_docs(&crate_name, version, false, &features)
+                    .rebuild_docs(&crate_name, Some(version), false, &features)
                     .is_ok()
                 {
                     metadata.set_features(crate_name.as_ref(), features.clone());
@@ -418,7 +408,7 @@ impl Source for LocalSource {
         Ok(self.crates.get(search_name).map(Cow::Borrowed))
     }
 
-    fn load(&self, crate_name: &str, version: Option<&Version>) -> Result<Option<RustdocData>> {
+    fn load(&self, crate_name: &str, version: &Version) -> Result<Option<RustdocData>> {
         let crate_name = CrateName::from(crate_name);
 
         Ok(if self.is_workspace_package(&crate_name) {
