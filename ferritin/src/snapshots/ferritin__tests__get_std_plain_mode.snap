@@ -354,6 +354,9 @@ Modules
   ◦ vec 
     A contiguous growable array type with heap-allocated contents, written Vec<T>. [...]
 
+  ◦ view 
+    Helper module for exporting the view_types macro.
+
 Macros
 
   ◦ assert 

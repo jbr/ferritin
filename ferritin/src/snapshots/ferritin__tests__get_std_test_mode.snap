@@ -531,7 +531,7 @@ This module contains the <inline-code>String</inline-code> type, the <inline-cod
 <truncated level="single-line"><p>
 Useful synchronization primitives.</p>
 <section-heading>The need for synchronization</section-heading>
-Conceptually, a be executed on a program is <elided chars="5253"/></truncated>
+Conceptually, a be executed on a program is <elided chars="5737"/></truncated>
 </item>
   <item><p>
 <type-name>task</type-name> </p>
@@ -600,6 +600,12 @@ New code should use the <elided chars="52"/></truncated>
 <truncated level="single-line"><p>
 A contiguous growable array type with heap-allocated contents, written <inline-code>Vec<T></inline-code>.</p>
 Ve<emphasis>O</emphasis>(1<emphasis>O</emphasis>(1 <emphasis>O</emphasis>(1 <elided chars="1654"/></truncated>
+</item>
+  <item><p>
+<type-name>view</type-name> </p>
+<truncated level="single-line"><p>
+Helper module for exporting the <inline-code>view_types</inline-code> macro.</p>
+</truncated>
 </item>
 </list>
 </section><section><section-title>Macros</section-title><list>

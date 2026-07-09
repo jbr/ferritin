@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests_rooted(Commands::get(\"std\"), OutputMode :: Ai, &\nget_fixture_crate_path ())"
+expression: "render_for_tests_rooted(Commands::get(\"std\"), OutputMode :: Agent, &\nget_fixture_crate_path ())"
 ---
 Module std — in std (RUST_VERSION)
 
@@ -168,7 +168,7 @@ Non-exhaustive list of known limitations:
 - slice — Utilities for the slice primitive type. [+3 lines]
 - str — Utilities for the str primitive type. [+1 lines]
 - string — A UTF-8–encoded, growable string. [+8 lines]
-- sync — Useful synchronization primitives. [+19 lines]
+- sync — Useful synchronization primitives. [+22 lines]
 - task — Types and Traits for working with asynchronous tasks.
 - thread — Native threads. [+31 lines]
 - time — Temporal quantification. [+5 lines]
@@ -180,6 +180,7 @@ Non-exhaustive list of known limitations:
 - unsafe_binder — Operators used to turn types into unsafe binders and back.
 - usize — Redundant constants module for the usize primitive type. [+1 lines]
 - vec — A contiguous growable array type with heap-allocated contents, written Vec<T>. [+16 lines]
+- view — Helper module for exporting the view_types macro.
 
 ## Macros
 
