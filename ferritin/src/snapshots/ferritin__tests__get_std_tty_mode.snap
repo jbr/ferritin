@@ -431,6 +431,9 @@ Modules
   ◦ [vec](http://docs.rust-lang.org/nightly/alloc/vec/index.html) 
     A contiguous growable array type with heap-allocated contents, written Vec<T>. [...]
 
+  ◦ [view](http://docs.rust-lang.org/nightly/std/view/index.html) 
+    Helper module for exporting the view_types macro.
+
 Macros
 
   ◦ [assert](http://docs.rust-lang.org/nightly/core/macro.assert.html) 

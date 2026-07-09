@@ -84,7 +84,7 @@ simd // Portable SIMD module. [+38 more lines]
 slice // Utilities for the slice primitive type. [+8 more lines]
 str // Utilities for the `str` primitive type. [+2 more lines]
 string // A UTF-8–encoded, growable string. [+40 more lines]
-sync // Useful synchronization primitives. [+165 more lines]
+sync // Useful synchronization primitives. [+173 more lines]
 task // Types and Traits for working with asynchronous tasks.
 thread // Native threads. [+152 more lines]
 time // Temporal quantification. [+29 more lines]
@@ -96,6 +96,7 @@ u8 // Redundant constants module for the [`u8` primitive type][u8]. [+2 more lin
 unsafe_binder // Operators used to turn types into unsafe binders and back.
 usize // Redundant constants module for the [`usize` primitive type][usize]. [+2 more lines]
 vec // A contiguous growable array type with heap-allocated contents, written [+71 more lines]
+view // Helper module for exporting the `view_types` macro.
 
 Macros:
 assert // Asserts that a boolean expression is `true` at runtime. [+46 more lines]
