@@ -29,7 +29,7 @@ Search results for 'generic struct'
   ◦ fixture-crate::TestStruct  (Struct) - score: 63.3
     A simple struct for testing basic functionality. [...]
 
-  ◦ std::clone::Clone  (Trait) - score: 63.0
+  ◦ std::clone::Clone  (Trait) - score: 63.1
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ std::ops::Deref  (Trait) - score: 62.2

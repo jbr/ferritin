@@ -2966,7 +2966,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
               {
                 "type": "codeBlock",
                 "lang": "rust",
-                "code": "#![feature(string_from_utf8_lossy_owned)]\n// some bytes, in a vector\nlet sparkle_heart = vec![240, 159, 146, 150];\n\nlet sparkle_heart = String::from_utf8_lossy_owned(sparkle_heart);\n\nassert_eq!(String::from(\"💖\"), sparkle_heart);"
+                "code": "// some bytes, in a vector\nlet sparkle_heart = vec![240, 159, 146, 150];\n\nlet sparkle_heart = String::from_utf8_lossy_owned(sparkle_heart);\n\nassert_eq!(String::from(\"💖\"), sparkle_heart);"
               },
               {
                 "type": "paragraph",
@@ -2980,7 +2980,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
               {
                 "type": "codeBlock",
                 "lang": "rust",
-                "code": "#![feature(string_from_utf8_lossy_owned)]\n// some invalid bytes\nlet input: Vec<u8> = b\"Hello \\xF0\\x90\\x80World\".into();\nlet output = String::from_utf8_lossy_owned(input);\n\nassert_eq!(String::from(\"Hello �World\"), output);"
+                "code": "// some invalid bytes\nlet input: Vec<u8> = b\"Hello \\xF0\\x90\\x80World\".into();\nlet output = String::from_utf8_lossy_owned(input);\n\nassert_eq!(String::from(\"Hello �World\"), output);"
               }
             ],
             "level": "SingleLine"
@@ -8377,6 +8377,853 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "link_resolution_tests::Tree::iter",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Gets an iterator over the entries of the map, sorted by key.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "use std::collections::BTreeMap;\n\nlet mut map = BTreeMap::new();\nmap.insert(3, \"c\");\nmap.insert(2, \"b\");\nmap.insert(1, \"a\");\n\nfor (key, value) in map.iter() {\n    println!(\"{key}: {value}\");\n}\n\nlet (first_key, first_value) = map.iter().next().unwrap();\nassert_eq!((*first_key, *first_value), (1, \"a\"));"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::iter_mut",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter_mut",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Gets a mutable iterator over the entries of the map, sorted by key.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "use std::collections::BTreeMap;\n\nlet mut map = BTreeMap::from([\n   (\"a\", 1),\n   (\"b\", 2),\n   (\"c\", 3),\n]);\n\n// add 10 to the value if the key isn't \"a\"\nfor (key, value) in map.iter_mut() {\n    if key != &\"a\" {\n        *value += 10;\n    }\n}"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::keys",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.keys",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Gets an iterator over the keys of the map, in sorted order.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\na.insert(2, \"b\");\na.insert(1, \"a\");\n\nlet keys: Vec<_> = a.keys().cloned().collect();\nassert_eq!(keys, [1, 2]);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::values",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Gets an iterator over the values of the map, in order by key.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\na.insert(1, \"hello\");\na.insert(2, \"goodbye\");\n\nlet values: Vec<&str> = a.values().cloned().collect();\nassert_eq!(values, [\"hello\", \"goodbye\"]);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::values_mut",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values_mut",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Gets a mutable iterator over the values of the map, in order by key.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\na.insert(1, String::from(\"hello\"));\na.insert(2, String::from(\"goodbye\"));\n\nfor value in a.values_mut() {\n    value.push_str(\"!\");\n}\n\nlet values: Vec<String> = a.values().cloned().collect();\nassert_eq!(values, [String::from(\"hello!\"),\n                    String::from(\"goodbye!\")]);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::len",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.len",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns the number of elements in the map.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\nassert_eq!(a.len(), 0);\na.insert(1, \"a\");\nassert_eq!(a.len(), 1);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::is_empty",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.is_empty",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "true",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " if the map contains no elements.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\nassert!(a.is_empty());\na.insert(1, \"a\");\nassert!(!a.is_empty());"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::lower_bound",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Cursor",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html"
+                  },
+                  {
+                    "text": " pointing at the gap before the smallest key",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "greater than the given bound.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Included(x)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap before the smallest key greater than or equal to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "x",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Excluded(x)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap before the smallest key greater than ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "x",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Unbounded",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap before the smallest key in the map.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "#![feature(btree_cursors)]\n\nuse std::collections::BTreeMap;\nuse std::ops::Bound;\n\nlet map = BTreeMap::from([\n    (1, \"a\"),\n    (2, \"b\"),\n    (3, \"c\"),\n    (4, \"d\"),\n]);\n\nlet cursor = map.lower_bound(Bound::Included(&2));\nassert_eq!(cursor.peek_prev(), Some((&1, &\"a\")));\nassert_eq!(cursor.peek_next(), Some((&2, &\"b\")));\n\nlet cursor = map.lower_bound(Bound::Excluded(&2));\nassert_eq!(cursor.peek_prev(), Some((&2, &\"b\")));\nassert_eq!(cursor.peek_next(), Some((&3, &\"c\")));\n\nlet cursor = map.lower_bound(Bound::Unbounded);\nassert_eq!(cursor.peek_prev(), None);\nassert_eq!(cursor.peek_next(), Some((&1, &\"a\")));"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::lower_bound_mut",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound_mut",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "CursorMut",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html"
+                  },
+                  {
+                    "text": " pointing at the gap before the smallest key",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "greater than the given bound.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Included(x)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap before the smallest key greater than or equal to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "x",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Excluded(x)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap before the smallest key greater than ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "x",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Unbounded",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap before the smallest key in the map.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "#![feature(btree_cursors)]\n\nuse std::collections::BTreeMap;\nuse std::ops::Bound;\n\nlet mut map = BTreeMap::from([\n    (1, \"a\"),\n    (2, \"b\"),\n    (3, \"c\"),\n    (4, \"d\"),\n]);\n\nlet mut cursor = map.lower_bound_mut(Bound::Included(&2));\nassert_eq!(cursor.peek_prev(), Some((&1, &mut \"a\")));\nassert_eq!(cursor.peek_next(), Some((&2, &mut \"b\")));\n\nlet mut cursor = map.lower_bound_mut(Bound::Excluded(&2));\nassert_eq!(cursor.peek_prev(), Some((&2, &mut \"b\")));\nassert_eq!(cursor.peek_next(), Some((&3, &mut \"c\")));\n\nlet mut cursor = map.lower_bound_mut(Bound::Unbounded);\nassert_eq!(cursor.peek_prev(), None);\nassert_eq!(cursor.peek_next(), Some((&1, &mut \"a\")));"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::upper_bound",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Cursor",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html"
+                  },
+                  {
+                    "text": " pointing at the gap after the greatest key",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "smaller than the given bound.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Included(x)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap after the greatest key smaller than or equal to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "x",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Excluded(x)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap after the greatest key smaller than ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "x",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Unbounded",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap after the greatest key in the map.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "#![feature(btree_cursors)]\n\nuse std::collections::BTreeMap;\nuse std::ops::Bound;\n\nlet map = BTreeMap::from([\n    (1, \"a\"),\n    (2, \"b\"),\n    (3, \"c\"),\n    (4, \"d\"),\n]);\n\nlet cursor = map.upper_bound(Bound::Included(&3));\nassert_eq!(cursor.peek_prev(), Some((&3, &\"c\")));\nassert_eq!(cursor.peek_next(), Some((&4, &\"d\")));\n\nlet cursor = map.upper_bound(Bound::Excluded(&3));\nassert_eq!(cursor.peek_prev(), Some((&2, &\"b\")));\nassert_eq!(cursor.peek_next(), Some((&3, &\"c\")));\n\nlet cursor = map.upper_bound(Bound::Unbounded);\nassert_eq!(cursor.peek_prev(), Some((&4, &\"d\")));\nassert_eq!(cursor.peek_next(), None);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::upper_bound_mut",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound_mut",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "CursorMut",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html"
+                  },
+                  {
+                    "text": " pointing at the gap after the greatest key",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "smaller than the given bound.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Included(x)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap after the greatest key smaller than or equal to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "x",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Excluded(x)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap after the greatest key smaller than ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "x",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Passing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Bound::Unbounded",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " will return a cursor pointing to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "gap after the greatest key in the map.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "#![feature(btree_cursors)]\n\nuse std::collections::BTreeMap;\nuse std::ops::Bound;\n\nlet mut map = BTreeMap::from([\n    (1, \"a\"),\n    (2, \"b\"),\n    (3, \"c\"),\n    (4, \"d\"),\n]);\n\nlet mut cursor = map.upper_bound_mut(Bound::Included(&3));\nassert_eq!(cursor.peek_prev(), Some((&3, &mut \"c\")));\nassert_eq!(cursor.peek_next(), Some((&4, &mut \"d\")));\n\nlet mut cursor = map.upper_bound_mut(Bound::Excluded(&3));\nassert_eq!(cursor.peek_prev(), Some((&2, &mut \"b\")));\nassert_eq!(cursor.peek_next(), Some((&3, &mut \"c\")));\n\nlet mut cursor = map.upper_bound_mut(Bound::Unbounded);\nassert_eq!(cursor.peek_prev(), Some((&4, &mut \"d\")));\nassert_eq!(cursor.peek_next(), None);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "link_resolution_tests::Tree::get",
         "kind": "function",
         "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get",
@@ -10554,853 +11401,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "codeBlock",
                 "lang": "rust",
                 "code": "\nuse std::collections::BTreeMap;\nuse std::alloc::Global;\n\nlet map: BTreeMap<i32, i32> = BTreeMap::new_in(Global);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::iter",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Gets an iterator over the entries of the map, sorted by key.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "use std::collections::BTreeMap;\n\nlet mut map = BTreeMap::new();\nmap.insert(3, \"c\");\nmap.insert(2, \"b\");\nmap.insert(1, \"a\");\n\nfor (key, value) in map.iter() {\n    println!(\"{key}: {value}\");\n}\n\nlet (first_key, first_value) = map.iter().next().unwrap();\nassert_eq!((*first_key, *first_value), (1, \"a\"));"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::iter_mut",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter_mut",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Gets a mutable iterator over the entries of the map, sorted by key.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "use std::collections::BTreeMap;\n\nlet mut map = BTreeMap::from([\n   (\"a\", 1),\n   (\"b\", 2),\n   (\"c\", 3),\n]);\n\n// add 10 to the value if the key isn't \"a\"\nfor (key, value) in map.iter_mut() {\n    if key != &\"a\" {\n        *value += 10;\n    }\n}"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::keys",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.keys",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Gets an iterator over the keys of the map, in sorted order.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\na.insert(2, \"b\");\na.insert(1, \"a\");\n\nlet keys: Vec<_> = a.keys().cloned().collect();\nassert_eq!(keys, [1, 2]);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::values",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Gets an iterator over the values of the map, in order by key.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\na.insert(1, \"hello\");\na.insert(2, \"goodbye\");\n\nlet values: Vec<&str> = a.values().cloned().collect();\nassert_eq!(values, [\"hello\", \"goodbye\"]);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::values_mut",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values_mut",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Gets a mutable iterator over the values of the map, in order by key.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\na.insert(1, String::from(\"hello\"));\na.insert(2, String::from(\"goodbye\"));\n\nfor value in a.values_mut() {\n    value.push_str(\"!\");\n}\n\nlet values: Vec<String> = a.values().cloned().collect();\nassert_eq!(values, [String::from(\"hello!\"),\n                    String::from(\"goodbye!\")]);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::len",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.len",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns the number of elements in the map.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\nassert_eq!(a.len(), 0);\na.insert(1, \"a\");\nassert_eq!(a.len(), 1);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::is_empty",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.is_empty",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "true",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " if the map contains no elements.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "use std::collections::BTreeMap;\n\nlet mut a = BTreeMap::new();\nassert!(a.is_empty());\na.insert(1, \"a\");\nassert!(!a.is_empty());"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::lower_bound",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Cursor",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html"
-                  },
-                  {
-                    "text": " pointing at the gap before the smallest key",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "greater than the given bound.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Included(x)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap before the smallest key greater than or equal to ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "x",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Excluded(x)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap before the smallest key greater than ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "x",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Unbounded",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap before the smallest key in the map.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "#![feature(btree_cursors)]\n\nuse std::collections::BTreeMap;\nuse std::ops::Bound;\n\nlet map = BTreeMap::from([\n    (1, \"a\"),\n    (2, \"b\"),\n    (3, \"c\"),\n    (4, \"d\"),\n]);\n\nlet cursor = map.lower_bound(Bound::Included(&2));\nassert_eq!(cursor.peek_prev(), Some((&1, &\"a\")));\nassert_eq!(cursor.peek_next(), Some((&2, &\"b\")));\n\nlet cursor = map.lower_bound(Bound::Excluded(&2));\nassert_eq!(cursor.peek_prev(), Some((&2, &\"b\")));\nassert_eq!(cursor.peek_next(), Some((&3, &\"c\")));\n\nlet cursor = map.lower_bound(Bound::Unbounded);\nassert_eq!(cursor.peek_prev(), None);\nassert_eq!(cursor.peek_next(), Some((&1, &\"a\")));"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::lower_bound_mut",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound_mut",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "CursorMut",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html"
-                  },
-                  {
-                    "text": " pointing at the gap before the smallest key",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "greater than the given bound.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Included(x)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap before the smallest key greater than or equal to ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "x",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Excluded(x)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap before the smallest key greater than ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "x",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Unbounded",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap before the smallest key in the map.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "#![feature(btree_cursors)]\n\nuse std::collections::BTreeMap;\nuse std::ops::Bound;\n\nlet mut map = BTreeMap::from([\n    (1, \"a\"),\n    (2, \"b\"),\n    (3, \"c\"),\n    (4, \"d\"),\n]);\n\nlet mut cursor = map.lower_bound_mut(Bound::Included(&2));\nassert_eq!(cursor.peek_prev(), Some((&1, &mut \"a\")));\nassert_eq!(cursor.peek_next(), Some((&2, &mut \"b\")));\n\nlet mut cursor = map.lower_bound_mut(Bound::Excluded(&2));\nassert_eq!(cursor.peek_prev(), Some((&2, &mut \"b\")));\nassert_eq!(cursor.peek_next(), Some((&3, &mut \"c\")));\n\nlet mut cursor = map.lower_bound_mut(Bound::Unbounded);\nassert_eq!(cursor.peek_prev(), None);\nassert_eq!(cursor.peek_next(), Some((&1, &mut \"a\")));"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::upper_bound",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Cursor",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html"
-                  },
-                  {
-                    "text": " pointing at the gap after the greatest key",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "smaller than the given bound.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Included(x)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap after the greatest key smaller than or equal to ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "x",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Excluded(x)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap after the greatest key smaller than ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "x",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Unbounded",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap after the greatest key in the map.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "#![feature(btree_cursors)]\n\nuse std::collections::BTreeMap;\nuse std::ops::Bound;\n\nlet map = BTreeMap::from([\n    (1, \"a\"),\n    (2, \"b\"),\n    (3, \"c\"),\n    (4, \"d\"),\n]);\n\nlet cursor = map.upper_bound(Bound::Included(&3));\nassert_eq!(cursor.peek_prev(), Some((&3, &\"c\")));\nassert_eq!(cursor.peek_next(), Some((&4, &\"d\")));\n\nlet cursor = map.upper_bound(Bound::Excluded(&3));\nassert_eq!(cursor.peek_prev(), Some((&2, &\"b\")));\nassert_eq!(cursor.peek_next(), Some((&3, &\"c\")));\n\nlet cursor = map.upper_bound(Bound::Unbounded);\nassert_eq!(cursor.peek_prev(), Some((&4, &\"d\")));\nassert_eq!(cursor.peek_next(), None);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "link_resolution_tests::Tree::upper_bound_mut",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound_mut",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Returns a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "CursorMut",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html"
-                  },
-                  {
-                    "text": " pointing at the gap after the greatest key",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "smaller than the given bound.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Included(x)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap after the greatest key smaller than or equal to ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "x",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Excluded(x)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap after the greatest key smaller than ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "x",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Passing ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Bound::Unbounded",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " will return a cursor pointing to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "gap after the greatest key in the map.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "#![feature(btree_cursors)]\n\nuse std::collections::BTreeMap;\nuse std::ops::Bound;\n\nlet mut map = BTreeMap::from([\n    (1, \"a\"),\n    (2, \"b\"),\n    (3, \"c\"),\n    (4, \"d\"),\n]);\n\nlet mut cursor = map.upper_bound_mut(Bound::Included(&3));\nassert_eq!(cursor.peek_prev(), Some((&3, &mut \"c\")));\nassert_eq!(cursor.peek_next(), Some((&4, &mut \"d\")));\n\nlet mut cursor = map.upper_bound_mut(Bound::Excluded(&3));\nassert_eq!(cursor.peek_prev(), Some((&2, &mut \"b\")));\nassert_eq!(cursor.peek_next(), Some((&3, &mut \"c\")));\n\nlet mut cursor = map.upper_bound_mut(Bound::Unbounded);\nassert_eq!(cursor.peek_prev(), Some((&4, &mut \"d\")));\nassert_eq!(cursor.peek_next(), None);"
               }
             ],
             "level": "SingleLine"
@@ -21821,600 +21821,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
-        "path": "Vec::resize",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Resizes the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " in-place so that ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "len",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is equal to ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "new_len",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "If ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "new_len",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is greater than ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "len",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is extended by the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "difference, with each additional slot filled with ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "value",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "If ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "new_len",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is less than ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "len",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is simply truncated.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "This method requires ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "T",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " to implement ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Clone",
-                    "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/clone/index.html?search=core%3A%3Aclone%3A%3AClone"
-                  },
-                  {
-                    "text": ",",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "in order to be able to clone the passed value.",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "If you need more flexibility (or want to rely on ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Default",
-                    "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/default/index.html?search=core%3A%3Adefault%3A%3ADefault"
-                  },
-                  {
-                    "text": " instead of",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Clone",
-                    "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/clone/index.html?search=core%3A%3Aclone%3A%3AClone"
-                  },
-                  {
-                    "text": "), use ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec::resize_with",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize_with"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "If you only need to resize to a smaller size, use ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec::truncate",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.truncate"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if the new capacity exceeds ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "isize::MAX",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "bytes",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut vec = vec![\"hello\"];\nvec.resize(3, \"world\");\nassert_eq!(vec, [\"hello\", \"world\", \"world\"]);\n\nlet mut vec = vec!['a', 'b', 'c', 'd'];\nvec.resize(2, '_');\nassert_eq!(vec, ['a', 'b']);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::extend_from_slice",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_slice",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Clones and appends all elements in a slice to the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Iterates over the slice ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "other",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", clones each element, and then appends",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "it to this ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ". The ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "other",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " slice is traversed in-order.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Note that this function is the same as ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "extend",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend"
-                  },
-                  {
-                    "text": ",",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "except that it also works with slice elements that are Clone but not Copy.",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "If Rust gets specialization this function may be deprecated.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if the new capacity exceeds ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "isize::MAX",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "bytes",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut vec = vec![1];\nvec.extend_from_slice(&[2, 3, 4]);\nassert_eq!(vec, [1, 2, 3, 4]);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::extend_from_within",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_within",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Given a range ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "src",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", clones a slice of elements in that range and appends it to the end.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "src",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " must be a range that can form a valid subslice of the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if starting index is greater than the end index, if the index is",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "greater than the length of the vector, or if the new capacity exceeds",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "isize::MAX",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "bytes",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut characters = vec!['a', 'b', 'c', 'd', 'e'];\ncharacters.extend_from_within(2..);\nassert_eq!(characters, ['a', 'b', 'c', 'd', 'e', 'c', 'd', 'e']);\n\nlet mut numbers = vec![0, 1, 2, 3, 4];\nnumbers.extend_from_within(..2);\nassert_eq!(numbers, [0, 1, 2, 3, 4, 0, 1]);\n\nlet mut strings = vec![String::from(\"hello\"), String::from(\"world\"), String::from(\"!\")];\nstrings.extend_from_within(1..=2);\nassert_eq!(strings, [\"hello\", \"world\", \"!\", \"world\", \"!\"]);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::dedup",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Removes consecutive repeated elements in the vector according to the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "PartialEq",
-                    "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3APartialEq"
-                  },
-                  {
-                    "text": " trait implementation.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "If the vector is sorted, this removes all duplicates.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut vec = vec![1, 2, 2, 3, 2];\n\nvec.dedup();\n\nassert_eq!(vec, [1, 2, 3, 2]);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
         "path": "Vec::new",
         "kind": "function",
         "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new",
@@ -24767,6 +24173,1851 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "Plain"
                   }
                 ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::with_capacity_in",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity_in",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Constructs a new, empty ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<T, A>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " with at least the specified capacity",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "with the provided allocator.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The vector will be able to hold at least ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " elements without",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "reallocating. This method is allowed to allocate for more elements than",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ". If ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is zero, the vector will not allocate.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "It is important to note that although the returned vector has the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "minimum ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": " specified, the vector will have a zero ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "length",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": ". For",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "an explanation of the difference between length and capacity, see",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Capacity and reallocation",
+                    "style": "Emphasis",
+                    "url": "#capacity-and-reallocation"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If it is important to know the exact allocated capacity of a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ",",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "always use the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.capacity"
+                  },
+                  {
+                    "text": " method after construction.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "For ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<T, A>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " where ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "T",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is a zero-sized type, there will be no allocation",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "and the capacity will always be ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "usize::MAX",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if the new capacity exceeds ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "isize::MAX",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bytes",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "#![feature(allocator_api)]\n\nuse std::alloc::System;\n\nlet mut vec = Vec::with_capacity_in(10, System);\n\n// The vector contains no items, even though it has capacity for more\nassert_eq!(vec.len(), 0);\nassert!(vec.capacity() >= 10);\n\n// These are all done without reallocating...\nfor i in 0..10 {\n    vec.push(i);\n}\nassert_eq!(vec.len(), 10);\nassert!(vec.capacity() >= 10);\n\n// ...but this may make the vector reallocate\nvec.push(11);\nassert_eq!(vec.len(), 11);\nassert!(vec.capacity() >= 11);\n\n// A vector of a zero-sized type will always over-allocate, since no\n// allocation is necessary\nlet vec_units = Vec::<(), System>::with_capacity_in(10, System);\nassert_eq!(vec_units.capacity(), usize::MAX);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::push",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Appends an element to the back of a collection.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if the new capacity exceeds ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "isize::MAX",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bytes",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut vec = vec![1, 2];\nvec.push(3);\nassert_eq!(vec, [1, 2, 3]);"
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Time complexity",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Takes amortized ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "O",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": "(1) time. If the vector's length would exceed its",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity after the push, ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "O",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": ") time is taken to copy the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "vector's elements to a larger allocation. This expensive operation is",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "offset by the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "O",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": "(1) insertions it allows.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::push_mut",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_mut",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Appends an element to the back of a collection, returning a reference to it.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if the new capacity exceeds ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "isize::MAX",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bytes",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut vec = vec![1, 2];\nlet last = vec.push_mut(3);\nassert_eq!(*last, 3);\nassert_eq!(vec, [1, 2, 3]);\n\nlet last = vec.push_mut(3);\n*last += 1;\nassert_eq!(vec, [1, 2, 3, 4]);"
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Time complexity",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Takes amortized ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "O",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": "(1) time. If the vector's length would exceed its",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity after the push, ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "O",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": ") time is taken to copy the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "vector's elements to a larger allocation. This expensive operation is",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "offset by the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "O",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": "(1) insertions it allows.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::into_flattened",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Takes a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<[T; N]>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " and flattens it into a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<T>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if the length of the resulting vector would overflow a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "usize",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "This is only possible when flattening a vector of arrays of zero-sized",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "types, and thus tends to be irrelevant in practice. If",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "size_of::<T>() > 0",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", this will never panic.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut vec = vec![[1, 2, 3], [4, 5, 6], [7, 8, 9]];\nassert_eq!(vec.pop(), Some([7, 8, 9]));\n\nlet mut flattened = vec.into_flattened();\nassert_eq!(flattened.pop(), Some(6));"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::splice",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Creates a splicing iterator that replaces the specified range in the vector",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "with the given ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "replace_with",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " iterator and yields the removed items.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "replace_with",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " does not need to be the same length as ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "range",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "range",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is removed even if the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Splice",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " iterator is not consumed before it is dropped.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "It is unspecified how many elements are removed from the vector",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "if the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Splice",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " value is leaked.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The input iterator ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "replace_with",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is only consumed when the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Splice",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " value is dropped.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "This is optimal if:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "list",
+                "items": [
+                  {
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "The tail (elements in the vector after ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "range",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": ") is empty,",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "or ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "replace_with",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " yields fewer or equal elements than ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "range",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": "'s length",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "spans": [
+                          {
+                            "text": "or the lower bound of its ",
+                            "style": "Plain"
+                          },
+                          {
+                            "text": "size_hint()",
+                            "style": "InlineCode"
+                          },
+                          {
+                            "text": " is exact.",
+                            "style": "Plain"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Otherwise, a temporary vector is allocated and the tail is moved twice.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if the range has ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "start_bound > end_bound",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", or, if the range is",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bounded on either end and past the length of the vector.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut v = vec![1, 2, 3, 4];\nlet new = [7, 8, 9];\nlet u: Vec<_> = v.splice(1..3, new).collect();\nassert_eq!(v, [1, 7, 8, 9, 4]);\nassert_eq!(u, [2, 3]);"
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Using ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "splice",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " to insert new items into a vector efficiently at a specific position",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "indicated by an empty range:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut v = vec![1, 5];\nlet new = [2, 3, 4];\nv.splice(1..1, new);\nassert_eq!(v, [1, 2, 3, 4, 5]);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::extract_if",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Creates an iterator which uses a closure to determine if an element in the range should be removed.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If the closure returns ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "true",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", the element is removed from the vector",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "and yielded. If the closure returns ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "false",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", or panics, the element",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "remains in the vector and will not be yielded.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Only elements that fall in the provided range are considered for extraction, but any elements",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "after the range will still have to be moved if any element has been extracted.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If the returned ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "ExtractIf",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is not exhausted, e.g. because it is dropped without iterating",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "or the iteration short-circuits, then the remaining elements will be retained.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Use ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "extract_if().for_each(drop)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " if you do not need the returned iterator,",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "or ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "retain_mut",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain_mut"
+                  },
+                  {
+                    "text": " with a negated predicate if you also do not need to restrict the range.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Using this method is equivalent to the following code:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut i = range.start;\nlet end_items = vec.len() - range.end;\n\nwhile i < vec.len() - end_items {\n    if some_predicate(&mut vec[i]) {\n        let val = vec.remove(i);\n        // your code here\n    } else {\n        i += 1;\n    }\n}\n"
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "But ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "extract_if",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is easier to use. ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "extract_if",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is also more efficient,",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "because it can backshift the elements of the array in bulk.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The iterator also lets you mutate the value of each element in the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "closure, regardless of whether you choose to keep or remove it.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "range",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is out of bounds.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Splitting a vector into even and odd values, reusing the original vector:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut numbers = vec![1, 2, 3, 4, 5, 6, 8, 9, 11, 13, 14, 15];\n\nlet evens = numbers.extract_if(.., |x| *x % 2 == 0).collect::<Vec<_>>();\nlet odds = numbers;\n\nassert_eq!(evens, vec![2, 4, 6, 8, 14]);\nassert_eq!(odds, vec![1, 3, 5, 9, 11, 13, 15]);"
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Using the range argument to only process a part of the vector:",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut items = vec![0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 2];\nlet ones = items.extract_if(7.., |x| *x == 1).collect::<Vec<_>>();\nassert_eq!(items, vec![0, 0, 0, 0, 0, 0, 0, 2, 2, 2]);\nassert_eq!(ones.len(), 3);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::resize",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Resizes the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " in-place so that ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "len",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is equal to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "new_len",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "new_len",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is greater than ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "len",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is extended by the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "difference, with each additional slot filled with ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "value",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "If ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "new_len",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is less than ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "len",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is simply truncated.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "This method requires ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "T",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " to implement ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Clone",
+                    "style": "InlineCode",
+                    "url": "https://doc.rust-lang.org/nightly/core/clone/index.html?search=core%3A%3Aclone%3A%3AClone"
+                  },
+                  {
+                    "text": ",",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "in order to be able to clone the passed value.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "If you need more flexibility (or want to rely on ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Default",
+                    "style": "InlineCode",
+                    "url": "https://doc.rust-lang.org/nightly/core/default/index.html?search=core%3A%3Adefault%3A%3ADefault"
+                  },
+                  {
+                    "text": " instead of",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Clone",
+                    "style": "InlineCode",
+                    "url": "https://doc.rust-lang.org/nightly/core/clone/index.html?search=core%3A%3Aclone%3A%3AClone"
+                  },
+                  {
+                    "text": "), use ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec::resize_with",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize_with"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "If you only need to resize to a smaller size, use ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec::truncate",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.truncate"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if the new capacity exceeds ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "isize::MAX",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bytes",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut vec = vec![\"hello\"];\nvec.resize(3, \"world\");\nassert_eq!(vec, [\"hello\", \"world\", \"world\"]);\n\nlet mut vec = vec!['a', 'b', 'c', 'd'];\nvec.resize(2, '_');\nassert_eq!(vec, ['a', 'b']);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::extend_from_slice",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_slice",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Clones and appends all elements in a slice to the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Iterates over the slice ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "other",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", clones each element, and then appends",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "it to this ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ". The ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "other",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " slice is traversed in-order.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Note that this function is the same as ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "extend",
+                    "style": "InlineCode",
+                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend"
+                  },
+                  {
+                    "text": ",",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "except that it also works with slice elements that are Clone but not Copy.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "If Rust gets specialization this function may be deprecated.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if the new capacity exceeds ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "isize::MAX",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bytes",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut vec = vec![1];\nvec.extend_from_slice(&[2, 3, 4]);\nassert_eq!(vec, [1, 2, 3, 4]);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::extend_from_within",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_within",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Given a range ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "src",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", clones a slice of elements in that range and appends it to the end.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "src",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " must be a range that can form a valid subslice of the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Panics",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Panics if starting index is greater than the end index, if the index is",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "greater than the length of the vector, or if the new capacity exceeds",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "isize::MAX",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bytes",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut characters = vec!['a', 'b', 'c', 'd', 'e'];\ncharacters.extend_from_within(2..);\nassert_eq!(characters, ['a', 'b', 'c', 'd', 'e', 'c', 'd', 'e']);\n\nlet mut numbers = vec![0, 1, 2, 3, 4];\nnumbers.extend_from_within(..2);\nassert_eq!(numbers, [0, 1, 2, 3, 4, 0, 1]);\n\nlet mut strings = vec![String::from(\"hello\"), String::from(\"world\"), String::from(\"!\")];\nstrings.extend_from_within(1..=2);\nassert_eq!(strings, [\"hello\", \"world\", \"!\", \"world\", \"!\"]);"
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::dedup",
+        "kind": "function",
+        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Removes consecutive repeated elements in the vector according to the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "PartialEq",
+                    "style": "InlineCode",
+                    "url": "https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3APartialEq"
+                  },
+                  {
+                    "text": " trait implementation.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If the vector is sorted, this removes all duplicates.",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "level": "Title",
+                "spans": [
+                  {
+                    "text": "Examples",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut vec = vec![1, 2, 2, 3, 2];\n\nvec.dedup();\n\nassert_eq!(vec, [1, 2, 3, 2]);"
               }
             ],
             "level": "SingleLine"
@@ -29994,7 +31245,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "paragraph",
                 "spans": [
                   {
-                    "text": "Removes all but the first of consecutive elements in the vector satisfying a given equality",
+                    "text": "Removes all but the first of consecutive elements in the vector that are",
                     "style": "Plain"
                   },
                   {
@@ -30002,7 +31253,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "Plain"
                   },
                   {
-                    "text": "relation.",
+                    "text": "\"equal\" according to the given predicate function.",
                     "style": "Plain"
                   }
                 ]
@@ -30011,15 +31262,15 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "paragraph",
                 "spans": [
                   {
-                    "text": "The ",
+                    "text": "The predicate ",
                     "style": "Plain"
                   },
                   {
-                    "text": "same_bucket",
+                    "text": "same_bucket(x, p)",
                     "style": "InlineCode"
                   },
                   {
-                    "text": " function is passed references to two elements from the vector and",
+                    "text": " is passed references to two elements.",
                     "style": "Plain"
                   },
                   {
@@ -30027,23 +31278,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "Plain"
                   },
                   {
-                    "text": "must determine if the elements compare equal. The elements are passed in opposite order",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "from their order in the slice, so if ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "same_bucket(a, b)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " returns ",
+                    "text": "If it returns ",
                     "style": "Plain"
                   },
                   {
@@ -30051,15 +31286,15 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "InlineCode"
                   },
                   {
-                    "text": ", ",
+                    "text": ", the element ",
                     "style": "Plain"
                   },
                   {
-                    "text": "a",
+                    "text": "x",
                     "style": "InlineCode"
                   },
                   {
-                    "text": " is removed.",
+                    "text": " is removed from the vector.",
                     "style": "Plain"
                   }
                 ]
@@ -30068,7 +31303,81 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "paragraph",
                 "spans": [
                   {
-                    "text": "If the vector is sorted, this removes all duplicates.",
+                    "text": "The element ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "p",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " occurs ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "before",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "x",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " in the vector (",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "[.., p, .., x, ..]",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": "),",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "so ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "same_bucket(x, p)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is receiving them in reversed order (unlike ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "windows",
+                    "style": "InlineCode",
+                    "url": "https://docs.rs/slice/latest/slice/index.html?search=slice%3A%3Awindows"
+                  },
+                  {
+                    "text": ").",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "If the vector is sorted, this removes all duplicates. For more complicated predicates",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "however, the order (ascending vs. descending) can matter.",
                     "style": "Plain"
                   }
                 ]
@@ -30086,7 +31395,53 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
               {
                 "type": "codeBlock",
                 "lang": "rust",
-                "code": "let mut vec = vec![\"foo\", \"bar\", \"Bar\", \"baz\", \"bar\"];\n\nvec.dedup_by(|a, b| a.eq_ignore_ascii_case(b));\n\nassert_eq!(vec, [\"foo\", \"bar\", \"baz\", \"bar\"]);"
+                "code": "let mut vec = vec![\"foo\", \"bar\", \"Bar\", \"baz\", \"bar\"];\nvec.dedup_by(|x, p| x.eq_ignore_ascii_case(p));\nassert_eq!(vec, [\"foo\", \"bar\", \"baz\", \"bar\"]);"
+              },
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Both references passed to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "same_bucket",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " are mutable.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "This allows merging elements by mutating ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "p",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " and returning ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "true",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ":",
+                    "style": "Plain"
+                  }
+                ]
+              },
+              {
+                "type": "codeBlock",
+                "lang": "rust",
+                "code": "let mut ranges = vec![1..2, 2..4, 2..5, 8..9];\n\n// Sort ranges by start, and if equal, by end (lexicographically)\n// Sorting in reverse instead (`x.start.cmp(&p.start)...`) would later fail\nranges.sort_unstable_by(|p, x| p.start.cmp(&x.start).then(p.end.cmp(&x.end)));\n\n// Merge touching (`1..2` and `2..4`) and then overlapping (`1..4` and `2..5`) ranges\nranges.dedup_by(|x, p| {\n    if p.end >= x.start {\n        p.end = p.end.max(x.end);\n        true\n    } else {\n        false\n    }\n});\n\nassert_eq!(ranges, [1..5, 8..9]);"
               }
             ],
             "level": "SingleLine"
@@ -32077,1257 +33432,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "codeBlock",
                 "lang": "rust",
                 "code": "#![feature(vec_recycle, transmutability)]\nlet mut storage: Vec<&[&str]> = Vec::new();\n\nfor input in inputs {\n    let mut buffer: Vec<&str> = storage.recycle();\n    buffer.extend(input.split(\" \"));\n    process(&buffer);\n    storage = buffer.recycle();\n}"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::with_capacity_in",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity_in",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Constructs a new, empty ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec<T, A>",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " with at least the specified capacity",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "with the provided allocator.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "The vector will be able to hold at least ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " elements without",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "reallocating. This method is allowed to allocate for more elements than",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ". If ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is zero, the vector will not allocate.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "It is important to note that although the returned vector has the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "minimum ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": " specified, the vector will have a zero ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "length",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": ". For",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "an explanation of the difference between length and capacity, see",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Capacity and reallocation",
-                    "style": "Emphasis",
-                    "url": "#capacity-and-reallocation"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "If it is important to know the exact allocated capacity of a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ",",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "always use the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.capacity"
-                  },
-                  {
-                    "text": " method after construction.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "For ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec<T, A>",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " where ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "T",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is a zero-sized type, there will be no allocation",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "and the capacity will always be ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "usize::MAX",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if the new capacity exceeds ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "isize::MAX",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "bytes",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "#![feature(allocator_api)]\n\nuse std::alloc::System;\n\nlet mut vec = Vec::with_capacity_in(10, System);\n\n// The vector contains no items, even though it has capacity for more\nassert_eq!(vec.len(), 0);\nassert!(vec.capacity() >= 10);\n\n// These are all done without reallocating...\nfor i in 0..10 {\n    vec.push(i);\n}\nassert_eq!(vec.len(), 10);\nassert!(vec.capacity() >= 10);\n\n// ...but this may make the vector reallocate\nvec.push(11);\nassert_eq!(vec.len(), 11);\nassert!(vec.capacity() >= 11);\n\n// A vector of a zero-sized type will always over-allocate, since no\n// allocation is necessary\nlet vec_units = Vec::<(), System>::with_capacity_in(10, System);\nassert_eq!(vec_units.capacity(), usize::MAX);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::push",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Appends an element to the back of a collection.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if the new capacity exceeds ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "isize::MAX",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "bytes",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut vec = vec![1, 2];\nvec.push(3);\nassert_eq!(vec, [1, 2, 3]);"
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Time complexity",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Takes amortized ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "O",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": "(1) time. If the vector's length would exceed its",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity after the push, ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "O",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": "(",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": ") time is taken to copy the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "vector's elements to a larger allocation. This expensive operation is",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "offset by the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "O",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": "(1) insertions it allows.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::push_mut",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_mut",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Appends an element to the back of a collection, returning a reference to it.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if the new capacity exceeds ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "isize::MAX",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "bytes",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut vec = vec![1, 2];\nlet last = vec.push_mut(3);\nassert_eq!(*last, 3);\nassert_eq!(vec, [1, 2, 3]);\n\nlet last = vec.push_mut(3);\n*last += 1;\nassert_eq!(vec, [1, 2, 3, 4]);"
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Time complexity",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Takes amortized ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "O",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": "(1) time. If the vector's length would exceed its",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity after the push, ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "O",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": "(",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": ") time is taken to copy the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "vector's elements to a larger allocation. This expensive operation is",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "offset by the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "capacity",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "O",
-                    "style": "Emphasis"
-                  },
-                  {
-                    "text": "(1) insertions it allows.",
-                    "style": "Plain"
-                  }
-                ]
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::into_flattened",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Takes a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec<[T; N]>",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " and flattens it into a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Vec<T>",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if the length of the resulting vector would overflow a ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "usize",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "This is only possible when flattening a vector of arrays of zero-sized",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "types, and thus tends to be irrelevant in practice. If",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "size_of::<T>() > 0",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", this will never panic.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut vec = vec![[1, 2, 3], [4, 5, 6], [7, 8, 9]];\nassert_eq!(vec.pop(), Some([7, 8, 9]));\n\nlet mut flattened = vec.into_flattened();\nassert_eq!(flattened.pop(), Some(6));"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::splice",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Creates a splicing iterator that replaces the specified range in the vector",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "with the given ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "replace_with",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " iterator and yields the removed items.",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "replace_with",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " does not need to be the same length as ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "range",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ".",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "range",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is removed even if the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Splice",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " iterator is not consumed before it is dropped.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "It is unspecified how many elements are removed from the vector",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "if the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Splice",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " value is leaked.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "The input iterator ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "replace_with",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is only consumed when the ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Splice",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " value is dropped.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "This is optimal if:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "list",
-                "items": [
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "The tail (elements in the vector after ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "range",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": ") is empty,",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "or ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "replace_with",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": " yields fewer or equal elements than ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "range",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": "'s length",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "spans": [
-                          {
-                            "text": "or the lower bound of its ",
-                            "style": "Plain"
-                          },
-                          {
-                            "text": "size_hint()",
-                            "style": "InlineCode"
-                          },
-                          {
-                            "text": " is exact.",
-                            "style": "Plain"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Otherwise, a temporary vector is allocated and the tail is moved twice.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Panics if the range has ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "start_bound > end_bound",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", or, if the range is",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "bounded on either end and past the length of the vector.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut v = vec![1, 2, 3, 4];\nlet new = [7, 8, 9];\nlet u: Vec<_> = v.splice(1..3, new).collect();\nassert_eq!(v, [1, 7, 8, 9, 4]);\nassert_eq!(u, [2, 3]);"
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Using ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "splice",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " to insert new items into a vector efficiently at a specific position",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "indicated by an empty range:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut v = vec![1, 5];\nlet new = [2, 3, 4];\nv.splice(1..1, new);\nassert_eq!(v, [1, 2, 3, 4, 5]);"
-              }
-            ],
-            "level": "SingleLine"
-          }
-        ]
-      },
-      {
-        "path": "Vec::extract_if",
-        "kind": "function",
-        "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if",
-        "docs": [
-          {
-            "type": "truncatedBlock",
-            "nodes": [
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Creates an iterator which uses a closure to determine if an element in the range should be removed.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "If the closure returns ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "true",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", the element is removed from the vector",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "and yielded. If the closure returns ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "false",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": ", or panics, the element",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "remains in the vector and will not be yielded.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Only elements that fall in the provided range are considered for extraction, but any elements",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "after the range will still have to be moved if any element has been extracted.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "If the returned ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "ExtractIf",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is not exhausted, e.g. because it is dropped without iterating",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "or the iteration short-circuits, then the remaining elements will be retained.",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Use ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "extract_if().for_each(drop)",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " if you do not need the returned iterator,",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "or ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "retain_mut",
-                    "style": "InlineCode",
-                    "url": "http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain_mut"
-                  },
-                  {
-                    "text": " with a negated predicate if you also do not need to restrict the range.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Using this method is equivalent to the following code:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut i = range.start;\nlet end_items = vec.len() - range.end;\n\nwhile i < vec.len() - end_items {\n    if some_predicate(&mut vec[i]) {\n        let val = vec.remove(i);\n        // your code here\n    } else {\n        i += 1;\n    }\n}\n"
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "But ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "extract_if",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is easier to use. ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "extract_if",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is also more efficient,",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "because it can backshift the elements of the array in bulk.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "The iterator also lets you mutate the value of each element in the",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": " ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "closure, regardless of whether you choose to keep or remove it.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Panics",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "If ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "range",
-                    "style": "InlineCode"
-                  },
-                  {
-                    "text": " is out of bounds.",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "heading",
-                "level": "Title",
-                "spans": [
-                  {
-                    "text": "Examples",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Splitting a vector into even and odd values, reusing the original vector:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut numbers = vec![1, 2, 3, 4, 5, 6, 8, 9, 11, 13, 14, 15];\n\nlet evens = numbers.extract_if(.., |x| *x % 2 == 0).collect::<Vec<_>>();\nlet odds = numbers;\n\nassert_eq!(evens, vec![2, 4, 6, 8, 14]);\nassert_eq!(odds, vec![1, 3, 5, 9, 11, 13, 15]);"
-              },
-              {
-                "type": "paragraph",
-                "spans": [
-                  {
-                    "text": "Using the range argument to only process a part of the vector:",
-                    "style": "Plain"
-                  }
-                ]
-              },
-              {
-                "type": "codeBlock",
-                "lang": "rust",
-                "code": "let mut items = vec![0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 2];\nlet ones = items.extract_if(7.., |x| *x == 1).collect::<Vec<_>>();\nassert_eq!(items, vec![0, 0, 0, 0, 0, 0, 0, 2, 2, 2]);\nassert_eq!(ones.len(), 3);"
               }
             ],
             "level": "SingleLine"

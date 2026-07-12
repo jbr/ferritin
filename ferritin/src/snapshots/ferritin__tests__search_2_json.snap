@@ -3565,7 +3565,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "std::clone::Clone",
       "kind": "trait",
       "url": "http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html",
-      "score": 63.0,
+      "score": 63.1,
       "docs": [
         {
           "type": "truncatedBlock",

@@ -51,7 +51,7 @@ A simple struct for testing basic functionality.</p>
 This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>
 </item>
   <item><p>
-std::clone::Clone  (Trait) - score: 63.0</p>
+std::clone::Clone  (Trait) - score: 63.1</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4423"/></truncated>

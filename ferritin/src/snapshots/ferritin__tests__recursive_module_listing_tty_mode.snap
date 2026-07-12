@@ -234,8 +234,8 @@ Functions
     trait implementation. [...]
 
   ◦ [Vec::dedup_by](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by) 
-    Removes all but the first of consecutive elements in the vector satisfying a
-    given equality relation. [...]
+    Removes all but the first of consecutive elements in the vector that are "equal"
+    according to the given predicate function. [...]
 
   ◦ [Vec::dedup_by_key](http://docs.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by_key) 
     Removes all but the first of consecutive elements in the vector that resolve to

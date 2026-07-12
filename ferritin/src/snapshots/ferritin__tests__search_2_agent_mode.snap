@@ -12,5 +12,5 @@ expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), Outpu
 - std::borrow::Borrow  (Trait) - score: 64.3 — A trait for borrowing data. [+19 lines]
 - core::borrow::Borrow  (Trait) - score: 64.0 — A trait for borrowing data. [+19 lines]
 - fixture-crate::TestStruct  (Struct) - score: 63.3 — A simple struct for testing basic functionality. [+2 lines]
-- std::clone::Clone  (Trait) - score: 63.0 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
+- std::clone::Clone  (Trait) - score: 63.1 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
 - std::ops::Deref  (Trait) - score: 62.2 — Used for immutable dereferencing operations, like *v. [+23 lines]

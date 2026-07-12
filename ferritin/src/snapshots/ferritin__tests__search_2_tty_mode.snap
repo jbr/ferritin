@@ -31,7 +31,7 @@ Search results for 'generic struct'
   ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture-crate/struct.TestStruct.html)  (Struct) - score: 63.3
     A simple struct for testing basic functionality. [...]
 
-  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 63.0
+  ◦ [std::clone::Clone](http://docs.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 63.1
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ [std::ops::Deref](http://docs.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 62.2

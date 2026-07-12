@@ -91,7 +91,7 @@ A minimal test crate for rustdoc JSON testing
 - Vec::clear — Clears the vector, removing all values. [+3 lines]
 - Vec::const_make_global — Interns the Vec<T>, making the underlying memory read-only. This method should be called during compile time. (This is a no-op if called during runtime) [+1 lines]
 - Vec::dedup — Removes consecutive repeated elements in the vector according to the PartialEq trait implementation. [+3 lines]
-- Vec::dedup_by — Removes all but the first of consecutive elements in the vector satisfying a given equality relation. [+4 lines]
+- Vec::dedup_by — Removes all but the first of consecutive elements in the vector that are "equal" according to the given predicate function. [+7 lines]
 - Vec::dedup_by_key — Removes all but the first of consecutive elements in the vector that resolve to the same key. [+3 lines]
 - Vec::drain — Removes the subslice indicated by the given range from the vector, returning a double-ended iterator over the removed subslice. [+8 lines]
 - Vec::extend_from_slice — Clones and appends all elements in a slice to the Vec. [+6 lines]
