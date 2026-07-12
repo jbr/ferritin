@@ -143,11 +143,6 @@
   align-items: start;
 }
 
-.docs-cols[data-hide-left-nav="true"] {
-  grid-template-columns: minmax(0, 1fr) 14rem;
-  padding-left: 3rem;
-}
-
 /* On large screens, give the center column more room */
 @media (min-width: 1400px) {
   .docs-cols {

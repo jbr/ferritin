@@ -2,3 +2,10 @@
 @import "./styles/prose.css";
 @import "./styles/layout.css";
 @import "./styles/item.css";
+
+/* Anchor navigation: offset jump targets so they clear the sticky top bar.
+   Every anchor target in the reading view lives under `.item` (the item
+   header's `#item-top`, derived heading ids, and structural section ids). */
+.item [id] {
+  scroll-margin-top: 5rem;
+}

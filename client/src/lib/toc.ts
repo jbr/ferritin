@@ -3,10 +3,42 @@
  * helpers are used by the body components so anchors and TOC links stay in sync
  * — there is no separate registration step.
  */
-import type { Item, Method } from "../api/types";
+import type { Item, Method, Node, Span } from "../api/types";
 import { slug } from "./paths";
 
 export type TocEntry = { id: string; label: string; depth: 0 | 1 };
+
+/** Plain text of a span sequence (its concatenated leaf text). */
+export function spansText(spans: Span[] | undefined): string {
+  return (spans ?? []).map((s) => s.text).join("");
+}
+
+/**
+ * Slugify heading text into a DOM id, matching rustdoc's own scheme so anchor
+ * links authors wrote in doc comments (`[…](#read-and-write)`) resolve here too.
+ *
+ * rustdoc's rule (librustdoc `slugify`): ASCII alphanumerics are lowercased,
+ * `-`/`_` kept, non-ASCII alphanumerics kept as-is, whitespace maps to a single
+ * `-`, everything else is dropped — runs are *not* collapsed. Validated against
+ * ~/.cargo/rustdoc-json: "Why Send + Sync + 'static" → "why-send--sync--static",
+ * and "…the `_with` method suffix" keeps the `_` and drops the backticks.
+ */
+export function slugifyHeading(text: string): string {
+  let out = "";
+  for (const ch of text) {
+    if (/[0-9A-Za-z]/.test(ch)) out += ch.toLowerCase();
+    else if (ch === "-" || ch === "_") out += ch;
+    else if (/\s/.test(ch)) out += "-";
+    else if (/[\p{L}\p{N}]/u.test(ch)) out += ch; // non-ASCII alphanumerics kept
+    // else: dropped
+  }
+  return out;
+}
+
+/** DOM id for a rendered doc-prose heading, from its span sequence. */
+export function headingId(spans: Span[] | undefined): string {
+  return slugifyHeading(spansText(spans));
+}
 
 export const SectionId = {
   top: "item-top",
@@ -23,9 +55,9 @@ export function methodId(name: string): string {
   return `method-${slug(name)}`;
 }
 
-/** Anchor id for a module-listing group heading (grouped by kind). */
-export function groupId(kind: string): string {
-  return `group-${slug(kind)}`;
+/** Anchor id for a module-listing group heading. */
+export function groupId(key: string): string {
+  return `group-${key}`;
 }
 
 /** Human label for the top entry, e.g. "Struct Conn". */
@@ -35,10 +67,47 @@ function topLabel(item: Item): string {
   return `${titled} ${item.meta.name}`;
 }
 
+/**
+ * Collect the headings from an item's own doc prose, recursing through the
+ * container nodes that can hold them. Interactive-only content is skipped —
+ * `Nodes` doesn't render it on the web, so it must not appear in the minimap.
+ */
+function collectDocHeadings(nodes: Node[] | undefined, out: TocEntry[]): void {
+  for (const node of nodes ?? []) {
+    switch (node.type) {
+      case "heading":
+        out.push({
+          id: headingId(node.spans),
+          label: spansText(node.spans),
+          depth: node.level === "Title" ? 0 : 1,
+        });
+        break;
+      case "section":
+        collectDocHeadings(node.nodes, out);
+        break;
+      case "blockQuote":
+        collectDocHeadings(node.nodes, out);
+        break;
+      case "truncatedBlock":
+        collectDocHeadings(node.nodes, out);
+        break;
+      case "conditional":
+        if (node.show_when !== "Interactive")
+          collectDocHeadings(node.nodes, out);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 export function buildToc(item: Item): TocEntry[] {
   const entries: TocEntry[] = [
     { id: SectionId.top, label: topLabel(item), depth: 0 },
   ];
+  // Prose headings appear right after the top entry — matching the reading
+  // order, where the item's own docs render above the structural sections.
+  collectDocHeadings(item.docs, entries);
   const body = item.body;
 
   const push = (id: string, label: string, depth: 0 | 1 = 0) =>
@@ -67,8 +136,8 @@ export function buildToc(item: Item): TocEntry[] {
       break;
 
     case "module":
-      for (const kind of moduleKinds(body.items)) {
-        push(groupId(kind), moduleGroupLabel(kind));
+      for (const group of moduleGroups(body.items)) {
+        push(groupId(group.key), group.label);
       }
       break;
 
@@ -90,18 +159,66 @@ function pushMethods(
   }
 }
 
-/** Distinct kinds present in a module listing, in first-seen order. */
-export function moduleKinds(items: { kind: string }[] | undefined): string[] {
-  const seen: string[] = [];
-  for (const item of items ?? []) {
-    if (!seen.includes(item.kind)) seen.push(item.kind);
-  }
-  return seen;
-}
+/**
+ * Module-child grouping, mirroring the terminal's `GROUP_ORDER`
+ * (ferritin/src/format/module.rs): a fixed display order, and several
+ * macro-flavored kinds (`macro`, `procattribute`, `procderive`) coalesced under
+ * one "Macros" group so a raw rustdoc kind never surfaces as its own heading
+ * (no stray "Procattributes"). The JSON ships the raw `kind` precisely so
+ * clients can group however they like; this is our grouping.
+ */
+const GROUP_ORDER: readonly {
+  key: string;
+  label: string;
+  kinds: readonly string[];
+}[] = [
+  { key: "modules", label: "Modules", kinds: ["module"] },
+  { key: "structs", label: "Structs", kinds: ["struct"] },
+  { key: "enums", label: "Enums", kinds: ["enum"] },
+  { key: "traits", label: "Traits", kinds: ["trait"] },
+  { key: "unions", label: "Unions", kinds: ["union"] },
+  { key: "type-aliases", label: "Type Aliases", kinds: ["typealias"] },
+  { key: "functions", label: "Functions", kinds: ["function"] },
+  { key: "constants", label: "Constants", kinds: ["constant"] },
+  { key: "statics", label: "Statics", kinds: ["static"] },
+  {
+    key: "macros",
+    label: "Macros",
+    kinds: ["macro", "procattribute", "procderive"],
+  },
+  { key: "primitives", label: "Primitives", kinds: ["primitive"] },
+  { key: "variants", label: "Variants", kinds: ["variant"] },
+];
 
-/** Pluralized, title-cased group label for a module kind ("struct" → "Structs"). */
-export function moduleGroupLabel(kind: string): string {
-  const titled = kind.charAt(0).toUpperCase() + kind.slice(1);
-  if (kind === "macro") return "Macros";
-  return `${titled}s`;
+export type ModuleGroup<T> = { key: string; label: string; items: T[] };
+
+/**
+ * Group a module's children into the terminal's fixed group order. Any kind the
+ * table doesn't know about still gets its own trailing group rather than
+ * silently vanishing from the nav.
+ */
+export function moduleGroups<T extends { kind: string }>(
+  items: T[] | undefined,
+): ModuleGroup<T>[] {
+  if (!items?.length) return [];
+  const groups: ModuleGroup<T>[] = [];
+  const claimed = new Set<string>();
+  for (const { key, label, kinds } of GROUP_ORDER) {
+    const members = items.filter((it) => kinds.includes(it.kind));
+    if (members.length) {
+      groups.push({ key, label, items: members });
+      for (const k of kinds) claimed.add(k);
+    }
+  }
+  for (const item of items) {
+    if (claimed.has(item.kind)) continue;
+    claimed.add(item.kind);
+    const label = item.kind.charAt(0).toUpperCase() + item.kind.slice(1) + "s";
+    groups.push({
+      key: item.kind,
+      label,
+      items: items.filter((it) => it.kind === item.kind),
+    });
+  }
+  return groups;
 }

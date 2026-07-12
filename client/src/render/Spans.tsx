@@ -31,6 +31,16 @@ function SpanLeaf({ span }: { span: Span }) {
   }
 
   if (span.url) {
+    // A bare fragment (`#read-and-write`) is a same-page anchor: scroll in place
+    // rather than opening a new tab. Heading ids are derived to match rustdoc's
+    // slug scheme (see `slugifyHeading`), so these resolve.
+    if (span.url.startsWith("#")) {
+      return (
+        <a href={span.url} className={className}>
+          {span.text}
+        </a>
+      );
+    }
     return (
       <a href={span.url} className={className} target="_blank" rel="noreferrer">
         {span.text}
