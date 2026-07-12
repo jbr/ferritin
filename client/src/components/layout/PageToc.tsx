@@ -4,17 +4,20 @@ import { useActiveTocEntry } from "../../lib/useActiveTocEntry";
 
 /** Right sidebar: "on this page" anchors into the current item's sections. */
 export function PageToc({ entries }: { entries: TocEntry[] }) {
-  const activeId = useActiveTocEntry(entries);
+  const { activeId, pin } = useActiveTocEntry(entries);
   const activeRef = useRef<HTMLAnchorElement>(null);
 
-  // Auto-scroll the TOC to keep the active entry visible
+  // Keep the active entry visible *within the TOC sidebar* by nudging the
+  // sidebar's own scroll — never `scrollIntoView`, which also scrolls the
+  // window and would cancel the content scroll a TOC click just started.
   useEffect(() => {
-    if (activeRef.current) {
-      activeRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
+    const anchor = activeRef.current;
+    const rail = anchor?.closest<HTMLElement>(".page-toc");
+    if (!anchor || !rail) return;
+    const a = anchor.getBoundingClientRect();
+    const r = rail.getBoundingClientRect();
+    if (a.top < r.top) rail.scrollTop -= r.top - a.top + 8;
+    else if (a.bottom > r.bottom) rail.scrollTop += a.bottom - r.bottom + 8;
   }, [activeId]);
 
   const handleTocClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -25,7 +28,11 @@ export function PageToc({ entries }: { entries: TocEntry[] }) {
     const targetId = href.slice(1); // Remove the #
     const target = document.getElementById(targetId);
     if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
+      // Pin so the highlight lands on the clicked entry, then jump. Native
+      // smooth scrolling misbehaves in this shell (it no-ops mid-flight), so we
+      // scroll instantly — reliable, and the pin keeps the highlight correct.
+      pin(targetId);
+      target.scrollIntoView({ block: "start" });
     }
   };
 

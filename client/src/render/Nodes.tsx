@@ -1,4 +1,5 @@
 import type { CodeSpan, Node } from "../api/types";
+import { headingId } from "../lib/toc";
 import { Spans } from "./Spans";
 
 /**
@@ -28,11 +29,11 @@ function NodeBlock({ node }: { node: Node }) {
 
     case "heading":
       return node.level === "Title" ? (
-        <h2>
+        <h2 id={headingId(node.spans)}>
           <Spans spans={node.spans} />
         </h2>
       ) : (
-        <h3>
+        <h3 id={headingId(node.spans)}>
           <Spans spans={node.spans} />
         </h3>
       );
@@ -41,7 +42,7 @@ function NodeBlock({ node }: { node: Node }) {
       return (
         <section className="doc-section">
           {node.title ? (
-            <h3>
+            <h3 id={headingId(node.title)}>
               <Spans spans={node.title} />
             </h3>
           ) : null}

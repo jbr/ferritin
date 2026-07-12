@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "rhoto-router";
 import { useSearch } from "../../api/queries";
 import { itemHref } from "../../lib/paths";
@@ -85,7 +86,10 @@ function PaletteModal({
     }
   };
 
-  return (
+  // Portal to <body>: the topbar has `backdrop-filter`, which makes it the
+  // containing block for fixed-position descendants — rendering the overlay
+  // inline would clip its `inset: 0` (and its blur) to the topbar's box.
+  return createPortal(
     <div className="palette-overlay" onMouseDown={onClose}>
       <div
         className="palette"
@@ -133,6 +137,7 @@ function PaletteModal({
           </span>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

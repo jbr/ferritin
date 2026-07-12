@@ -1,61 +1,100 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { TocEntry } from "./toc";
 
+// Distance below the viewport top (px) that counts as "you're reading here" —
+// roughly the sticky top bar's height plus a little breathing room, matching the
+// `scroll-margin-top` anchors are offset by.
+const ACTIVE_LINE = 96;
+
 /**
- * Track which TOC entry is currently visible in the viewport and return its ID.
- * Uses IntersectionObserver to detect when sections enter/exit the viewport.
+ * Track which TOC entry is "current" and expose a `pin` for TOC clicks.
+ *
+ * Two inputs decide the active entry, in priority order:
+ *  1. **Pin** — the most recently clicked entry stays active as long as its
+ *     element remains in view. Clicking scrolls it near the top; the pin holds
+ *     the highlight there (including through the smooth-scroll animation, which
+ *     would otherwise flicker across every section it passes) until the reader
+ *     scrolls it out of view, at which point the pin releases.
+ *  2. **Scrollspy** — otherwise, the active entry is the last one whose heading
+ *     has scrolled above the `ACTIVE_LINE`, i.e. the section you're reading.
+ *     Entries arrive in document order (see `buildToc`), so a single top-down
+ *     pass finds it.
  */
-export function useActiveTocEntry(entries: TocEntry[]): string | null {
+export function useActiveTocEntry(entries: TocEntry[]): {
+  activeId: string | null;
+  pin: (id: string) => void;
+} {
   const [activeId, setActiveId] = useState<string | null>(null);
+  // The pinned entry, and whether its element has been seen in view yet. While
+  // still `seeking` (the click's smooth-scroll is en route), the pin holds
+  // unconditionally so the highlight doesn't flicker through passed sections;
+  // once it has `arrived`, the pin releases as soon as it scrolls back out.
+  const pinRef = useRef<{ id: string; seeking: boolean } | null>(null);
 
   useEffect(() => {
-    if (entries.length === 0) return;
-
-    // Create a ref to track which element is closest to the top of the viewport
-    let closestEntry: { id: string; distance: number } | null = null;
-
-    const observer = new IntersectionObserver(
-      (sections) => {
-        // For each entry, find its position relative to the viewport top
-        for (const section of sections) {
-          const rect = section.boundingClientRect;
-          // Distance from top of viewport (negative = above, positive = below)
-          const distance = Math.abs(rect.top);
-
-          // Only consider sections that are in view or recently passed
-          if (rect.top >= -100 && rect.top < window.innerHeight) {
-            if (!closestEntry || distance < closestEntry.distance) {
-              closestEntry = {
-                id: section.target.id,
-                distance,
-              };
-            }
-          }
-        }
-
-        // If we found a close entry, highlight it
-        if (closestEntry) {
-          setActiveId(closestEntry.id);
-        }
-      },
-      {
-        // Trigger callback when any entry is partially or fully visible
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      }
-    );
-
-    // Observe all sections corresponding to TOC entries
-    for (const entry of entries) {
-      const element = document.getElementById(entry.id);
-      if (element) {
-        observer.observe(element);
-      }
+    if (entries.length === 0) {
+      setActiveId(null);
+      return;
     }
+    // A fresh entry set means a new page — drop any stale pin.
+    pinRef.current = null;
 
+    let raf = 0;
+    const compute = () => {
+      raf = 0;
+
+      // 1. Honor a live pin.
+      const pinned = pinRef.current;
+      if (pinned) {
+        const el = document.getElementById(pinned.id);
+        const r = el?.getBoundingClientRect();
+        const inView = r ? r.bottom > 0 && r.top < window.innerHeight : false;
+        if (inView) pinned.seeking = false; // reached it
+        if (pinned.seeking || inView) {
+          setActiveId(pinned.id);
+          return;
+        }
+        pinRef.current = null; // arrived earlier, now scrolled away — release
+      }
+
+      // 2. Scrollspy: the lowest heading still above the active line. At the
+      //    very bottom of the page the last section may never cross the line, so
+      //    snap to it once we've hit the end of the scroll range.
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+      if (atBottom) {
+        setActiveId(entries[entries.length - 1].id);
+        return;
+      }
+
+      let current = entries[0].id;
+      for (const entry of entries) {
+        const el = document.getElementById(entry.id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= ACTIVE_LINE) current = entry.id;
+      }
+      setActiveId(current);
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(compute);
+    };
+
+    compute();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     return () => {
-      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
     };
   }, [entries]);
 
-  return activeId;
+  const pin = useCallback((id: string) => {
+    pinRef.current = { id, seeking: true };
+    setActiveId(id);
+  }, []);
+
+  return { activeId, pin };
 }

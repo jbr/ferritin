@@ -2,7 +2,7 @@ import { Link } from "rhoto-router";
 import type { Item, ModuleItem } from "../../api/types";
 import { Nodes } from "../../render/Nodes";
 import { itemHref } from "../../lib/paths";
-import { groupId, moduleGroupLabel, moduleKinds } from "../../lib/toc";
+import { groupId, moduleGroups } from "../../lib/toc";
 import { SectionHeading } from "./Signature";
 import {
   FieldList,
@@ -81,29 +81,25 @@ function ModuleBody({
   if (!items?.length) return null;
   return (
     <>
-      {moduleKinds(items).map((kind) => (
-        <section className="item-section" key={kind}>
-          <SectionHeading id={groupId(kind)}>
-            {moduleGroupLabel(kind)}
-          </SectionHeading>
+      {moduleGroups(items).map((group) => (
+        <section className="item-section" key={group.key}>
+          <SectionHeading id={groupId(group.key)}>{group.label}</SectionHeading>
           <ul className="module-list">
-            {items
-              .filter((it) => it.kind === kind)
-              .map((it, i) => (
-                <li key={i} className="module-row">
-                  <Link
-                    href={itemHref(`${base}::${it.path}`)}
-                    className="module-item"
-                  >
-                    {it.path}
-                  </Link>
-                  {it.docs?.length ? (
-                    <div className="module-item-docs">
-                      <Nodes nodes={it.docs} />
-                    </div>
-                  ) : null}
-                </li>
-              ))}
+            {group.items.map((it, i) => (
+              <li key={i} className="module-row">
+                <Link
+                  href={itemHref(`${base}::${it.path}`)}
+                  className="module-item"
+                >
+                  {it.path}
+                </Link>
+                {it.docs?.length ? (
+                  <div className="module-item-docs">
+                    <Nodes nodes={it.docs} />
+                  </div>
+                ) : null}
+              </li>
+            ))}
           </ul>
         </section>
       ))}

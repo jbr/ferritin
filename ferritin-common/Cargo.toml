@@ -21,7 +21,7 @@ rustc-hash.workspace = true
 rustdoc-types.workspace = true
 serde.workspace = true
 strsim.workspace = true
-trillium-client = "0.9.9"
+trillium-client = "0.9.11"
 walkdir.workspace = true
 zstd = "0.13"
 home = "0.5.12"
@@ -29,7 +29,7 @@ async-fs = "2.2.0"
 semver = { version = "1.0.28", features = ["serde"] }
 sonic-rs = "0.5.8"
 rayon = "1.12.0"
-memchr = "2.8.2"
+memchr = "2.8.3"
 trillium-redirect = { version = "0.3.0", features = ["client"] }
 trillium-logger = { version = "0.5.4", features = ["client"] }
 trillium-compression = { version = "0.3.3", features = ["client"] }
