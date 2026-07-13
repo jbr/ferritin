@@ -7,6 +7,7 @@ use semver::{Version, VersionReq};
 use std::collections::HashMap;
 use std::fmt::{self, Debug, Formatter};
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, OnceLock};
 use std::thread::JoinHandle;
 
@@ -52,6 +53,12 @@ pub struct RustdocData {
     resident: Option<Arc<Crate>>,
     #[field = false]
     write_handle: Option<JoinHandle<()>>,
+    /// Cold path only: set by the background write thread once the sidecar has
+    /// landed on disk. From that moment this fat form is superseded — a warm
+    /// (mmap-lazy) reload is strictly better — and the Store drops its cache
+    /// entry. Stays `false` forever on the warm path and when the write fails.
+    #[field = false]
+    sidecar_written: Arc<AtomicBool>,
     #[field = false]
     archive: Option<Archive>,
     #[field = false]
@@ -145,10 +152,16 @@ impl RustdocData {
         version: Option<Version>,
     ) -> Self {
         let resident = Arc::new(crate_data);
-        let write_handle = archive::write_archive_async(Arc::clone(&resident), fs_path.clone());
+        let sidecar_written = Arc::new(AtomicBool::new(false));
+        let write_handle = archive::write_archive_async(
+            Arc::clone(&resident),
+            fs_path.clone(),
+            Arc::clone(&sidecar_written),
+        );
         Self {
             resident: Some(resident),
             write_handle,
+            sidecar_written,
             archive: None,
             item_cache: FrozenMap::new(),
             derived_indexes: OnceLock::new(),
@@ -186,6 +199,7 @@ impl RustdocData {
         Some(Self {
             resident: None,
             write_handle: None,
+            sidecar_written: Arc::new(AtomicBool::new(false)),
             archive: Some(archive),
             item_cache: FrozenMap::new(),
             derived_indexes: OnceLock::new(),
@@ -200,6 +214,21 @@ impl RustdocData {
             version,
             path_to_id: HashMap::new(),
         })
+    }
+
+    /// Whether this is the fully-materialized cold form (freshly-parsed `Crate`
+    /// kept resident, ~4–5× the JSON size on the heap) rather than the
+    /// mmap-lazy warm form. The Store weighs cold forms accordingly.
+    pub(crate) fn is_cold_form(&self) -> bool {
+        self.resident.is_some()
+    }
+
+    /// Whether this cold form has been superseded: its sidecar has landed on
+    /// disk, so the next load takes the warm path and this fat form is
+    /// strictly worse. The Store drops superseded cache entries; in-flight
+    /// queries' pins keep the data alive until they end.
+    pub(crate) fn sidecar_written(&self) -> bool {
+        self.sidecar_written.load(Ordering::Acquire)
     }
 
     // ---- Accessors ----
