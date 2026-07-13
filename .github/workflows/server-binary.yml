@@ -1,0 +1,67 @@
+# Builds the aarch64 serve+acme binary that the ferritin.rs server runs.
+#
+# On push to main so a deployable artifact is always ready, plus
+# workflow_dispatch to build any ref (e.g. a feature branch destined for the
+# live server). Deliberately not tag-triggered: tags belong to cargo-dist's
+# Release workflow, and dist binaries exclude the server features — this
+# artifact is a rolling deploy of main, not a release.
+#
+# Deployment is pull-based from ferritin-ops (deploy.sh fetches the newest
+# successful run's artifact and ships it over tailscale), so this workflow
+# needs no secrets and no access to the server.
+name: Server Binary
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: aarch64 serve+acme
+    runs-on: ubuntu-24.04-arm
+    # Build inside AL2023 so the binary links against the glibc it will run
+    # on: the instance runs AL2023 (glibc 2.34), older than the runner's
+    # ubuntu-24.04 (2.39). Native arm64 runner, so no cross-compilation.
+    container: amazonlinux:2023
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      # gcc/cmake for aws-lc-sys (pulled by rustls via the acme feature);
+      # binutils for strip; the rest are checkout/toolchain plumbing.
+      - name: Install system dependencies
+        run: dnf install -y git tar gzip xz gcc gcc-c++ cmake perl-core binutils
+
+      # `trillium_frontend::frontend!` shells out to the client's pnpm build at
+      # macro-expansion time, so the rust build needs a node toolchain. The
+      # official tarball rather than dnf: AL2023's packaged node lags vite's
+      # minimum (>= 22.12).
+      - name: Install node + pnpm
+        run: |
+          curl -fsSL https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-arm64.tar.xz \
+            | tar -xJ -C /usr/local --strip-components=1
+          npm install -g pnpm@10
+
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Install rust
+        run: |
+          curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+
+      - uses: Swatinem/rust-cache@v2.9.1
+
+      - name: Build
+        run: cargo build --locked --profile dist -p ferritin --features serve,acme
+
+      - name: Strip
+        run: strip target/dist/ferritin
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ferritin-server-aarch64
+          path: target/dist/ferritin
+          if-no-files-found: error
