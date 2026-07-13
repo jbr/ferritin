@@ -296,7 +296,11 @@ fn synth_crate(
 /// doesn't derive `Default`, so every additive format bump adds a required
 /// field here; keeping all synthetic items funneled through this helper means a
 /// bump touches exactly one literal instead of every call site.
-fn synth_item(id: u32, name: Option<&str>, inner: rustdoc_types::ItemEnum) -> rustdoc_types::Item {
+pub(crate) fn synth_item(
+    id: u32,
+    name: Option<&str>,
+    inner: rustdoc_types::ItemEnum,
+) -> rustdoc_types::Item {
     use rustdoc_types::{Id, Item, Visibility};
     Item {
         id: Id(id),

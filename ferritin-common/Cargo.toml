@@ -27,6 +27,12 @@ zstd = "0.13"
 home = "0.5.12"
 async-fs = "2.2.0"
 semver = { version = "1.0.28", features = ["serde"] }
+# The unbounded-depth pair: rustdoc JSON deserialization (conversions) —
+# type nesting is unbounded in the wild (typenum), so the one deep JSON
+# surface uses serde_json + stacker; sonic-rs (hard 255-layer cap) handles
+# the shallow surfaces (response serialization, metadata).
+serde_json = { version = "1.0", features = ["unbounded_depth"] }
+serde_stacker = "0.1"
 sonic-rs = "0.5.8"
 rayon = "1.12.0"
 memchr = "2.8.3"

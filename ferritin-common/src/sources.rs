@@ -7,7 +7,7 @@
 use crate::{CrateName, RustdocData, store::CrateInfo};
 use anyhow::Result;
 use semver::{Version, VersionReq};
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 
 mod docsrs;
 mod local;
@@ -56,21 +56,6 @@ impl FeatureSelection {
         }
         args
     }
-}
-
-#[derive(Deserialize, Debug)]
-struct RustdocVersion {
-    format_version: u32,
-    #[serde(deserialize_with = "option_semver_lenient")]
-    crate_version: Option<Version>,
-}
-
-fn option_semver_lenient<'de, D>(deserializer: D) -> Result<Option<Version>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let opt = Option::<Cow<'de, str>>::deserialize(deserializer)?;
-    Ok(opt.and_then(|s| Version::parse(&s).ok()))
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
