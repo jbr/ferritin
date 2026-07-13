@@ -138,6 +138,8 @@ fn render_json_for_tests_rooted(command: Commands, project_root: &std::path::Pat
                 crate::commands::search::model(&mut request, &query, limit, crate_.as_deref());
             crate::json::search_to_pretty_string(&model)
         }
+        // Only `Serve`/`Schema` remain, and only when their features are on.
+        #[cfg(feature = "serve")]
         other => panic!("{other:?} has no JSON test rendering"),
     };
 

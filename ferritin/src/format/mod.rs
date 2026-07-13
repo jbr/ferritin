@@ -43,9 +43,9 @@ pub(crate) use r#trait::{ImplementorDoc, TraitDoc, TraitMember};
 pub(crate) use trait_impls::{ImplAssocType, TraitImplDoc};
 pub(crate) use union::UnionDoc;
 
-/// Semantic model of a documented item: a kind-agnostic header (metadata block
-/// + the item's own doc prose) and trailing source code, wrapped around a
-/// kind-specific [`ItemBody`]. Built by [`Request::model_item`]; the terminal
+/// Semantic model of a documented item: a kind-agnostic header (the metadata
+/// block plus the item's own doc prose) and trailing source code, wrapped around
+/// a kind-specific [`ItemBody`]. Built by [`Request::model_item`]; the terminal
 /// renderers go through [`ItemDoc::lower`], while the JSON output serializes it
 /// structurally.
 pub(crate) struct ItemDoc<'a> {

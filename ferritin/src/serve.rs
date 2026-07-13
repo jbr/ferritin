@@ -109,15 +109,26 @@ pub fn handler() -> impl trillium::Handler {
     )
 }
 
-/// The frontend handler, single-origin with the API. The default build embeds the
-/// client assets built at compile time (`../client`); `--features dev-proxy` instead
-/// spawns and proxies the Vite dev server (with HMR).
+/// The frontend handler, single-origin with the API.
+///
+/// `client` is a symlink to the workspace-root client directory, and the path is
+/// deliberately *inside* the package rather than `../client`: cargo cannot
+/// package files above the package root, so an escaping path would leave the
+/// published crate unable to build this feature at all.
+///
+/// Which mode `frontend!` expands to is decided by what it finds there, and both
+/// callers get what they want for free. A repo build sees the client's
+/// `package.json` through the symlink and rebuilds the assets at compile time
+/// (`--features dev-proxy` instead spawns and proxies the Vite dev server, with
+/// HMR). A build from the published tarball sees only the `dist` directory —
+/// `include` ships nothing else — and embeds those prebuilt assets, so `serve`
+/// compiles from crates.io with no node toolchain present.
 fn frontend() -> impl trillium::Handler {
     use trillium_client::Client;
     use trillium_compression::client::Compression;
     use trillium_logger::client::{ClientLogger, client_log_format};
     use trillium_smol::ClientConfig;
-    trillium_frontend::frontend!("../client")
+    trillium_frontend::frontend!("client")
         .with_client(Client::new(ClientConfig::default()).with_handler((
             ClientLogger::new().with_formatter(client_log_format!(
                 "-> {version} {method} {url} {response_time} {status} {body_len_human}"

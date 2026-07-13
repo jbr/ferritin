@@ -56,6 +56,9 @@ pub(crate) enum Commands {
 
     /// List available crates
     List,
+
+    /// Serve the documentation browser: the JSON API plus the web client.
+    #[cfg(feature = "serve")]
     Serve,
 
     /// Write the OpenAPI schema for the JSON API to a file (development tool).
@@ -242,9 +245,10 @@ impl Commands {
                 (doc, is_error, history_entry)
             }
 
+            #[cfg(feature = "serve")]
             Commands::Serve => {
                 crate::serve::serve();
-                return (Document::new(), false, None);
+                (Document::new(), false, None)
             }
 
             // Intercepted in `main` before this point; arm keeps the match

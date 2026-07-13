@@ -191,8 +191,8 @@ impl<K: Eq + std::hash::Hash + Clone + Debug, T> Cache<K, T> {
     fn slot(&self, key: &K) -> Slot<T> {
         let (slot, swept) = {
             let mut entries = self.entries.lock().unwrap();
-            let swept = (entries.map.len() >= entries.sweep_at)
-                .then(|| entries.sweep(self.positive_ttl));
+            let swept =
+                (entries.map.len() >= entries.sweep_at).then(|| entries.sweep(self.positive_ttl));
             let entry = entries.map.entry(key.clone()).or_insert_with(Entry::new);
             if entry.is_expired(self.positive_ttl) {
                 *entry = Entry::new();
@@ -643,7 +643,6 @@ impl Store {
             }
         }
     }
-
 }
 
 // Compile-time assertion that Store can be shared across threads (serve.rs

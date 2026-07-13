@@ -34,11 +34,13 @@ mod renderer;
 mod request;
 #[cfg(feature = "schema")]
 mod schema;
+#[cfg(feature = "serve")]
 mod serve;
 mod styled_string;
 #[cfg(test)]
 mod tests;
 mod traits;
+#[cfg(feature = "serve")]
 mod typeahead;
 mod verbosity;
 
@@ -347,7 +349,13 @@ fn run_json(request: &mut Request<'_>, command: Option<Commands>) -> ExitCode {
             let model = commands::search::model(request, &query, limit, crate_.as_deref());
             (json::search_to_string(&model), model.is_error())
         }
-        _ => return ExitCode::FAILURE,
+
+        // `serve` speaks JSON over HTTP, not stdout; `schema` is intercepted in
+        // `main` before this point. Neither has a `--format json` rendering.
+        #[cfg(feature = "serve")]
+        Commands::Serve => return ExitCode::FAILURE,
+        #[cfg(feature = "schema")]
+        Commands::Schema { .. } => return ExitCode::FAILURE,
     };
 
     match json {

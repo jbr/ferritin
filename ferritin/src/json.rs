@@ -70,6 +70,7 @@ pub(crate) fn search_to_string(doc: &SearchDoc<'_>) -> sonic_rs::Result<String> 
 }
 
 /// Serialize crate-name typeahead results to JSON.
+#[cfg(feature = "serve")]
 pub(crate) fn typeahead_to_string(
     query: &str,
     results: crate::typeahead::TypeaheadResults,
@@ -98,6 +99,7 @@ pub(crate) fn not_found_to_pretty_string(not_found: &NotFoundDoc<'_>) -> String 
 
 /// Crate-name typeahead results: the highest-ranked crates whose names start
 /// with the query prefix, in rank order.
+#[cfg(feature = "serve")]
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -109,6 +111,7 @@ pub(crate) struct JsonTypeahead {
     results: Vec<JsonTypeaheadEntry>,
 }
 
+#[cfg(feature = "serve")]
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -119,6 +122,7 @@ struct JsonTypeaheadEntry {
     version: String,
 }
 
+#[cfg(feature = "serve")]
 impl JsonTypeahead {
     pub(crate) fn new(query: &str, results: crate::typeahead::TypeaheadResults) -> Self {
         Self {

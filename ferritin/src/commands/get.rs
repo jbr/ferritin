@@ -10,7 +10,10 @@ use crate::styled_string::{Document, DocumentNode, ListItem, Span};
 /// "did you mean" suggestions.
 pub(crate) enum JsonOutcome<'a> {
     Found {
-        model: ItemDoc<'a>,
+        /// Boxed to keep the enum small: an `ItemDoc` is several hundred bytes,
+        /// an order of magnitude more than the not-found payload it would
+        /// otherwise pad out.
+        model: Box<ItemDoc<'a>>,
         canonical_url: String,
     },
     NotFound(NotFoundDoc<'a>),
@@ -69,7 +72,7 @@ pub(crate) fn model<'a>(
     match request.resolve_path(path, &mut suggestions) {
         Some(item) => JsonOutcome::Found {
             canonical_url: crate::docsrs_url::generate_docsrs_url(item),
-            model: request.model_item(item),
+            model: Box::new(request.model_item(item)),
         },
         None => JsonOutcome::NotFound(NotFoundDoc::new(path, &suggestions)),
     }

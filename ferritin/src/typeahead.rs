@@ -115,11 +115,7 @@ impl TypeaheadService {
     /// `prefix`, plus the total match count. `None` means no data is
     /// available (cold start fetch failed or hasn't succeeded yet) — the
     /// endpoint maps it to a 503.
-    pub(crate) async fn typeahead(
-        &self,
-        prefix: &str,
-        limit: usize,
-    ) -> Option<TypeaheadResults> {
+    pub(crate) async fn typeahead(&self, prefix: &str, limit: usize) -> Option<TypeaheadResults> {
         self.ensure_fresh().await;
         let state = self.state.read().unwrap();
         let loaded = state.loaded.as_ref()?;
