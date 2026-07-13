@@ -29,11 +29,3 @@ walkdir = "2.5.0"
 inherits = "release"
 lto = true
 codegen-units = 1
-
-# TEMPORARY: test the half-close fix in full-duplex-async-copy (used by
-# trillium-proxy for WebSocket upgrade tunnels) against a local checkout. The
-# published 0.1.0 tears down both directions when one read half hits EOF, which
-# collapses proxied Vite HMR sockets into a reload loop. Drop once a fixed
-# version is published.
-[patch.crates-io]
-trillium-frontend = { path = "../trillium-frontend" }

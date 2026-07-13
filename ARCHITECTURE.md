@@ -12,6 +12,25 @@ The workspace contains three crates:
 
 This document focuses primarily on ferritin-common and ferritin, as rustdoc-mcp is intended to eventually become a thin layer on top of ferritin.
 
+### Cargo Features
+
+The `ferritin` crate ships the CLI and TUI by default; everything web is opt-in.
+
+- **`serve`** (off by default) gates `ferritin serve` in its entirety: the `serve` and `typeahead` modules, the `Serve` subcommand, the typeahead JSON DTOs, and the trillium *server* stack (router, caching headers, static-compiled assets), plus rayon, querystrong, and the `crate-names` reader. It is not a default because most users want a documentation CLI, not an HTTP server. Distributed binaries (`dist`) are built with default features and therefore have no server in them.
+
+  Note that the trillium *client* stack and rustls are **not** serve-only — `ferritin-common` needs them to fetch rustdoc JSON from docs.rs — so they are in every build regardless. The feature's dependency delta is the ~20 crates of the server side.
+
+  **Web client packaging.** `ferritin/client` is a *symlink* to the workspace-root `client/`, and `frontend!("client")` deliberately points through it rather than at `../client`: cargo cannot package files above the package root, so an escaping path would leave the published crate unable to build this feature at all. `frontend!` chooses its mode by whether the target directory contains a `package.json`, and the `include` list ships only `client/dist/**/*` — never the source. Those two facts combine to give each consumer what it needs from one macro invocation:
+
+  - *Repo build*: the client source is visible through the symlink, so the macro shells out to the client's pnpm build at macro-expansion time. Expanding the macro **is** building the web client, which is why a `serve` build from a checkout needs a node toolchain (and why CI's serve job installs one). `--features dev-proxy` instead spawns and proxies the Vite dev server, with HMR.
+  - *Published tarball*: only the built `dist` is present, so the macro takes its prebuilt path and embeds those assets — `serve` compiles from crates.io with no node toolchain at all.
+
+  The corollary is that **`client/dist` must exist on disk before `cargo publish`**, and nothing in a default build creates it: `serve` is off, so the macro that would build the client never expands, and an `include` glob matching nothing is not an error — the failure mode is a silently published crate whose `serve` feature cannot compile. `release-plz.yml` therefore builds the client explicitly before packaging. (`dist` is gitignored; an explicit `include` entry overrides that, so the tarball carries whatever was last built on disk.)
+
+- **`schema`** (off by default, implies `serve`) adds the `schema` subcommand, which emits the OpenAPI document for the JSON API to `assets/openapi.json`. It implies `serve` because it describes that server's endpoints and their models. The generated schema is committed, so regenerating it is a dev task rather than part of any normal build.
+
+- **`dev-proxy`** (off by default, implies `serve`) makes the frontend handler spawn and proxy the Vite dev server (with HMR) instead of embedding assets built at compile time.
+
 ## Core Design Principles
 
 ### Zero-Copy Architecture
@@ -442,7 +461,7 @@ The `public` preference (CLI `--public`) filters non-`pub` items at format time 
 
 **Struct fields stop at the parent** rather than appending their name, because `resolve_path` cannot reach a field; the struct is the page the field's URL names anyway, so only the `#structfield.x` anchor is lost. `DocsRsLink::parse` makes the identical choice from the other direction, declining to fold `#structfield.x` into the path (see `FRAGMENT_KINDS`) — the two must agree, or a docs.rs link to a field would resolve differently from an intra-doc one. Between them, every span pointing at a documented item now carries a `path`; only genuinely external links (blog posts, repositories) and same-page anchors fall back to `url`. Blanket-impl members are the residual gap: they have no attributable parent, so they get neither a precise URL nor a path. The item itself carries a `canonicalUrl`. The other commands also serialize structural models: a **not-found** result (when a `get` path doesn't resolve, shared with search's no-crates case) is `{ error: "notFound", query, suggestions: [{ path, kind?, url? }] }` (top-5 score-ranked candidates); **search** is `{ query, results: [{ path, kind, url, score, docs? }] }` (an empty query or no matches → `results: []`; no crates loaded → `{ error: "noCratesLoaded", suggestions }`); **list** is `{ crates: [{ name, version?, isDefault, isWorkspace, usedBy, description? }] }`. Search follows the same **model+lower** seam as item kinds — `search::model` → `SearchDoc`, `lower_search` reproduces the terminal `Document` (so the TUI is unaffected), and `execute = lower_search(model())`. `list` is a deliberately minimal **JSON-only** projection (`list::json_model`), since the command is slated for rework; its terminal `execute` is untouched. So the generic `document_to_string` (`{ nodes: [...] }`) is no longer reached by any first-class command — it remains only as a fallback.
 
-Serialization lives in the `json` module: `#[derive(Serialize)]` DTOs (`JsonItem`/`JsonNode`/`JsonSpan`/…) that borrow (`Cow`) from the model, serialized with `sonic-rs`. The JSON path is CLI-only today, but `model_item` is the reusable seam a future web server would call directly, rendering to owned bytes without the model crossing an `.await`.
+Serialization lives in the `json` module: `#[derive(Serialize)]` DTOs (`JsonItem`/`JsonNode`/`JsonSpan`/…) that borrow (`Cow`) from the model, serialized with `sonic-rs`. `model_item` is the seam both frontends share: `--format json` calls it on the main thread, and (under the `serve` feature) each HTTP handler calls it on a rayon worker, rendering to owned bytes so the model never crosses an `.await`.
 
 ## Intra-doc Link Resolution
 

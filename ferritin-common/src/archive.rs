@@ -94,8 +94,7 @@ pub(crate) fn write_archive(krate: &Crate, json_path: &Path) -> io::Result<()> {
         return Ok(());
     }
     let indexes = DerivedIndexes::build(krate);
-    let bytes = rkyv::to_bytes::<Error>(&Sidecar { krate, indexes })
-        .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+    let bytes = rkyv::to_bytes::<Error>(&Sidecar { krate, indexes }).map_err(io::Error::other)?;
     let sidecar = sidecar_path(json_path);
 
     // Unique per write: the pid keeps it distinct across processes, and an atomic

@@ -37,6 +37,35 @@ jobs:
         command: test
         args: --all --no-fail-fast
 
+  serve:
+    name: Serve Feature
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      with:
+        submodules: recursive
+    - uses: dtolnay/rust-toolchain@nightly
+      with:
+        components: clippy
+
+    # `serve` is off by default, so no other job compiles the server, the
+    # typeahead service, or their JSON DTOs. Node is required because
+    # `trillium_frontend::frontend!` shells out to the client's pnpm build at
+    # macro-expansion time — expanding the macro *is* building the web client.
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 10
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: pnpm
+        cache-dependency-path: client/pnpm-lock.yaml
+
+    - uses: Swatinem/rust-cache@v2.9.1
+
+    - name: Clippy (--features serve)
+      run: cargo clippy -p ferritin --features serve --all-targets
+
   check_fmt_and_docs:
     name: Lints and Docs
     runs-on: ubuntu-latest

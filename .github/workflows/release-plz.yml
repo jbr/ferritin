@@ -34,6 +34,27 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
+
+      # ferritin's `include` ships `client/dist`, so the published crate can build
+      # `--features serve` without a node toolchain. But `serve` is off by default,
+      # so the `frontend!` macro that would build the client never expands during
+      # packaging — nothing here would otherwise create `dist`, and an `include`
+      # glob matching nothing is not an error. Without this step we would publish a
+      # crate whose `serve` feature fails to compile, silently.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: client/pnpm-lock.yaml
+      - name: Build web client
+        working-directory: client
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
       - uses: rust-lang/crates-io-auth-action@v1
         id: auth
       - name: Run release-plz

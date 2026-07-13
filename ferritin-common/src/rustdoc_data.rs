@@ -288,10 +288,8 @@ impl RustdocData {
             .get_or_init(|| {
                 let mut map = FxHashMap::default();
                 for external in self.external_crates_iter() {
-                    let Some((real_name, version)) = external
-                        .html_root_url
-                        .as_deref()
-                        .and_then(parse_docsrs_url)
+                    let Some((real_name, version)) =
+                        external.html_root_url.as_deref().and_then(parse_docsrs_url)
                     else {
                         continue;
                     };

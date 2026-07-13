@@ -6,12 +6,24 @@ description = "Human-friendly CLI for browsing Rust documentation"
 readme = "../README.md"
 repository.workspace = true
 license.workspace = true
+# `client` is a symlink to the workspace-root client; cargo follows it when
+# packaging. Only the *built* `dist` ships (it is gitignored, but an explicit
+# `include` overrides that), never the source or `node_modules`. That asymmetry
+# is load-bearing: `trillium_frontend::frontend!` picks prebuilt-vs-build mode by
+# whether the target has a `package.json`, so a repo build sees the source and
+# rebuilds the client, while a build from the published tarball sees only `dist`
+# and embeds it without needing a node toolchain.
+#
+# These are gitignore-style globs: an unanchored `CHANGELOG.md` would match a
+# file of that name at *any* depth, so the leading `/` matters — without it,
+# the client's `node_modules` drags ~200 stray CHANGELOG.md files into the
+# package.
 include = [
     "src/**/*",
     "build.rs",
     "assets/**/*.tmTheme",
-    "CHANGELOG.md",
-    "client/dist/",
+    "/CHANGELOG.md",
+    "client/dist/**/*",
 ]
 
 # dist tags releases per-package as `{crate}-v{version}` (workspace with multiple
@@ -29,7 +41,6 @@ pkg-fmt = "zip"
 [dependencies]
 ferritin-common = { path = "../ferritin-common", version = "0.14.0" }
 
-anyhow.workspace = true
 clap = { version = "4.6.1", features = ["derive", "cargo", "env"] }
 crossbeam-channel = "0.5"
 crossterm = "0.29"
@@ -50,26 +61,25 @@ webbrowser = "1.2.1"
 semver = "1.0.28"
 percent-encoding = "2.3"
 mimalloc = "0.1.52"
-trillium = "1.3.0"
-trillium-frontend = "0.4.0"
-trillium-html-rewriter = "0.6.0"
-trillium-api = { version = "0.3.0", features = ["sonic-rs", "url"] }
-trillium-logger = { version = "0.5.4", features = ["client"] }
-trillium-rustls = "0.11.3"
-trillium-smol = "0.7.0"
-trillium-router = "0.5.2"
-querystrong = "0.4.0"
-trillium-client = "0.9.11"
 schemars = { version = "1.2.1", optional = true }
-rayon = "1.12.0"
-async-channel = "2.5.0"
-trillium-caching-headers = "0.4.1"
-trillium-compression = {version = "0.3.3", features = ["client"]}
-trillium-redirect = { version = "0.3.0", features = ["client"] }
-crate-names = "0.1.1"
-async-lock = "3"
 
-
+# `serve`-only. The HTTP server and its crate-name typeahead; see [features].
+anyhow = { workspace = true, optional = true }
+async-channel = { version = "2.5.0", optional = true }
+async-lock = { version = "3", optional = true }
+crate-names = { version = "0.1.1", optional = true }
+querystrong = { version = "0.4.0", optional = true }
+rayon = { version = "1.12.0", optional = true }
+trillium = { version = "1.3.0", optional = true }
+trillium-caching-headers = { version = "0.4.1", optional = true }
+trillium-client = { version = "0.9.11", optional = true }
+trillium-compression = { version = "0.3.3", features = ["client"], optional = true }
+trillium-frontend = { version = "0.4.0", optional = true }
+trillium-logger = { version = "0.5.4", features = ["client"], optional = true }
+trillium-redirect = { version = "0.3.0", features = ["client"], optional = true }
+trillium-router = { version = "0.5.2", optional = true }
+trillium-rustls = { version = "0.11.3", optional = true }
+trillium-smol = { version = "0.7.0", optional = true }
 
 [build-dependencies]
 syntect = { version = "5.3", default-features = false, features = ["parsing", "plist-load", "dump-load", "dump-create", "regex-onig"] }
@@ -84,8 +94,35 @@ name = "ferritin"
 path = "src/main.rs"
 
 [features]
+# The HTTP server (`ferritin serve`): the JSON API plus the embedded web client.
+# Off by default — it pulls in the trillium stack, rustls, rayon, and the
+# crate-name typeahead reader, none of which the CLI or TUI needs. Distributed
+# binaries are built without it.
+serve = [
+    "dep:anyhow",
+    "dep:async-channel",
+    "dep:async-lock",
+    "dep:crate-names",
+    "dep:querystrong",
+    "dep:rayon",
+    "dep:trillium",
+    "dep:trillium-caching-headers",
+    "dep:trillium-client",
+    "dep:trillium-compression",
+    "dep:trillium-frontend",
+    "dep:trillium-logger",
+    "dep:trillium-redirect",
+    "dep:trillium-router",
+    "dep:trillium-rustls",
+    "dep:trillium-smol",
+]
+
 # Development-only: emit the OpenAPI schema for the JSON API (`ferritin schema`).
 # Off by default so normal builds don't pull in schemars; the generated schema is
-# committed under assets/ and regenerated as a dev task.
-schema = ["dep:schemars"]
-dev-proxy = ["trillium-frontend/dev-proxy"]
+# committed under assets/ and regenerated as a dev task. Implies `serve`: the
+# schema describes that server's endpoints and their models.
+schema = ["dep:schemars", "serve"]
+
+# Development-only: serve the client from a spawned Vite dev server (with HMR)
+# instead of the assets embedded at compile time.
+dev-proxy = ["serve", "trillium-frontend/dev-proxy"]
