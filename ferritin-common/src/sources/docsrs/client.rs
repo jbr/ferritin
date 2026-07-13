@@ -8,7 +8,7 @@ use std::{
     path::PathBuf,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
-use trillium_client::{Client, HeaderValue, KnownHeaderName, Status, Version as HttpVersion};
+use trillium_client::{Client, HeaderValue, KnownHeaderName, Status};
 use trillium_client_retry::RetryHandler;
 use trillium_compression::client::Compression;
 use trillium_logger::{Target, client::ClientLogger};
@@ -107,20 +107,6 @@ impl DocsRsClient {
             s.into()
         });
         USER_AGENT.clone()
-    }
-
-    /// GET a URL, pinned to HTTP/1.1.
-    ///
-    /// The pin is a workaround, not a preference: trillium-client's h2 path
-    /// has a timing-sensitive stall (a request on a reused connection
-    /// intermittently errors at ~90ms and its retry never completes) first
-    /// observed 2026-07-13 from the public server against the us-east-2
-    /// CloudFront POP — and never reproduced under trace logging or from
-    /// other vantage points. Remove once the trillium-client race is fixed.
-    fn get(&self, url: String) -> trillium_client::Conn {
-        self.http_client
-            .get(url)
-            .with_http_version(HttpVersion::Http1_1)
     }
 
     /// Create a new docs.rs client with the specified cache directory
@@ -346,7 +332,7 @@ impl DocsRsClient {
 
         log::debug!("Fetching crate metadata from crates.io: {url}");
 
-        let conn = self.get(url).await?;
+        let conn = self.http_client.get(url).await?;
 
         // Check if we got a 404 (crate not found)
         if let Some(Status::NotFound) = conn.status() {
@@ -491,7 +477,7 @@ impl DocsRsClient {
     /// Returns Ok(None) if the URL is a 404 (crate/version/format not found),
     /// Err for other failures.
     async fn fetch_bytes(&self, url: String) -> Result<Option<Vec<u8>>> {
-        let conn = self.get(url).await?;
+        let conn = self.http_client.get(url).await?;
 
         // Check if we got a 404 (crate/version/format not found)
         if let Some(Status::NotFound) = conn.status() {

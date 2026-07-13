@@ -17,7 +17,10 @@
 //! per-query pinning is what lets the Store evict under memory pressure without
 //! invalidating any in-flight request.
 
-use std::sync::Arc;
+mod crawlers;
+mod spa_route;
+
+use std::{net::IpAddr, sync::Arc};
 
 use ferritin_common::{
     Navigator, Store,
@@ -26,10 +29,11 @@ use ferritin_common::{
 use percent_encoding::percent_decode_str;
 use querystrong::QueryStrong;
 use rayon::{ThreadPool, ThreadPoolBuilder};
-use trillium::{Conn, KnownHeaderName, Status};
+use trillium::{Conn, KnownHeaderName, Method, Status};
 use trillium_caching_headers::CachingHeaders;
 use trillium_compression::Compression;
 use trillium_logger::{Logger, log_format};
+use trillium_ratelimit::{Quota, RateLimiter};
 use trillium_router::{Router, RouterConnExt};
 
 use crate::{
@@ -61,6 +65,31 @@ fn cache_bytes() -> u64 {
         .ok()
         .and_then(|value| value.parse().ok())
         .unwrap_or(DEFAULT_CACHE_BYTES)
+}
+
+/// The share of a quota a partition may spend at once. A browser's API traffic
+/// is bursty — the client debounces search and typeahead at 130ms, so a
+/// hunt-and-peck typist fires one request per keystroke — while its sustained
+/// rate stays low. A burst allowance well above the sustained rate is what lets
+/// the limiter tell those apart.
+const RATELIMIT_BURST_DIVISOR: u64 = 4;
+
+/// The API rate limit in requests per minute per client network:
+/// `FERRITIN_RATELIMIT`. No default — unset means no limiter, so a localhost
+/// server is never throttled (an agent hammering its own instance is the point,
+/// not an abuse). It exists for the public deployment, where `/api` has no
+/// legitimate non-browser caller: the CLI and MCP tools read rustdoc JSON from
+/// docs.rs directly and never touch this server.
+///
+/// 240/minute — 4/second sustained, bursting to 60 — sits far above any browser
+/// (a heavy minute of reading is ~65 requests, bursting under 10) and far below
+/// a scraper. It is not the memory guard: the Store's weight cap and RSS
+/// high-water are. This only sheds traffic no human generates.
+fn ratelimit_per_minute() -> Option<u64> {
+    std::env::var("FERRITIN_RATELIMIT")
+        .ok()
+        .and_then(|value| value.parse().ok())
+        .filter(|&per_minute| per_minute > 0)
 }
 
 /// The RSS guard's anonymous-RSS trip point in bytes:
@@ -288,21 +317,68 @@ mod acme {
     }
 }
 
+/// Reject any method the server has no endpoint for.
+///
+/// Every route here is a `GET`, and the frontend only ever serves files, so a
+/// `POST` has nothing legitimate to reach. Without this it still gets a `200`:
+/// it misses the router, falls through to the static handler, and is answered
+/// with `index.html` — the SPA index predicate can't stop it, because `/`
+/// resolves through the *assets* handler's directory-index and halts before the
+/// fallback is consulted. That is how `POST /?%ADd+allow_url_include%3d1` (a PHP
+/// RCE probe) currently gets a success in the log.
+async fn reject_other_methods(conn: Conn) -> Conn {
+    if matches!(conn.method(), Method::Get | Method::Head) {
+        conn
+    } else {
+        conn.with_status(Status::MethodNotAllowed).halt()
+    }
+}
+
 pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl trillium::Handler {
     (
+        // `{ip}` is what lets fail2ban attribute a request to a host; the line
+        // carries no timestamp because journald stamps every line it ingests.
         Logger::new().with_formatter(log_format!(
-            "<- {version} {method} {url} {response_time} {status} {body_len_human} {content_encoding}",
+            "<- {ip} {version} {method} {url} {response_time} {status} {body_len_human} {content_encoding}",
             content_encoding =
                 trillium_logger::formatters::response_header(KnownHeaderName::ContentEncoding)
         )),
+        reject_other_methods,
         Compression::new(),
         CachingHeaders::new(),
         trillium::state(Arc::new(TypeaheadService::new(std_crates))),
         Router::new()
-            .get("/api/crates/:crate_name", get_crate)
-            .get("/api/search/:crate_name", search_crate)
-            .get("/api/typeahead", typeahead),
+            .get("/api/*", (api_limiter(), api_router()))
+            .get("/robots.txt", crawlers::robots)
+            .get("/sitemap.xml", crawlers::sitemap),
         frontend(),
+    )
+}
+
+/// The documentation API. Mounted under `/api/*`, which the router strips, so
+/// these paths are relative to that prefix.
+fn api_router() -> Router {
+    Router::new()
+        .get("/crates/:crate_name", get_crate)
+        .get("/search/:crate_name", search_crate)
+        .get("/typeahead", typeahead)
+}
+
+/// The API rate limiter, or `None` when `FERRITIN_RATELIMIT` is unset.
+///
+/// One limiter for the whole `/api` tree rather than one per endpoint, so all
+/// three share a single bucket per client — which is also the only way to share
+/// one, since [`RateLimiter`] is not `Clone`. Keyed on the client's network
+/// (IPv4 address, IPv6 /64), which is available because the server terminates
+/// TLS itself and so sees the real peer.
+fn api_limiter() -> Option<RateLimiter<IpAddr>> {
+    let per_minute = ratelimit_per_minute()?;
+    Some(
+        RateLimiter::by_network(
+            Quota::per_minute(per_minute)
+                .allow_burst((per_minute / RATELIMIT_BURST_DIVISOR).max(1)),
+        )
+        .with_policy_name("api"),
     )
 }
 
@@ -320,6 +396,10 @@ pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl trillium::Handler
 /// HMR). A build from the published tarball sees only the `dist` directory —
 /// `include` ships nothing else — and embeds those prebuilt assets, so `serve`
 /// compiles from crates.io with no node toolchain present.
+///
+/// The index predicate confines the SPA fallback to paths the client actually
+/// routes; see [`spa_route`]. Without it every unmatched path — every scanner
+/// probe — is answered `200` with the index.
 fn frontend() -> impl trillium::Handler {
     use trillium_client::Client;
     use trillium_compression::client::Compression;
@@ -333,6 +413,7 @@ fn frontend() -> impl trillium::Handler {
             Compression::new(),
         )))
         .with_index_file("index.html")
+        .with_index_predicate(|conn| spa_route::is_app_route(conn.path()))
 }
 
 /// Run a synchronous, stack-hungry job on a big-stack pool worker and await the
