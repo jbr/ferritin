@@ -24,12 +24,15 @@ importers:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       rhoto-router:
-        specifier: ^0.3.0
-        version: 0.3.0(react@19.2.7)
+        specifier: ^0.3.1
+        version: 0.3.1(react@19.2.7)
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.6.0)
+      '@testing-library/dom':
+        specifier: ^10.4.1
+        version: 10.4.1
       '@testing-library/jest-dom':
         specifier: ^6.9.1
         version: 6.9.1
@@ -486,9 +489,6 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-
-  '@types/qs@6.15.1':
-    resolution: {integrity: sha512-GZHUBZR9hckSUhrxmp1nG6NwdpM9fCunJwyThLW1X3AyHgd9IlHb6VANpQQqDr2o/qQp6McZ3y/IA2rVzKzSbw==}
 
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
@@ -1237,10 +1237,10 @@ packages:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
 
-  rhoto-router@0.3.0:
-    resolution: {integrity: sha512-M2cLDB0zcm6MjM3nMtqodNiILGAI6ZyL1ejSTCpNK0FF1w+4KenNJQwU/t8AJqxpZG+iFImzssQfXwXMPM4sjA==}
+  rhoto-router@0.3.1:
+    resolution: {integrity: sha512-Z2zHJEP0kBeaAexpHJG4FlllWriDh3FaTbR2oCUlLkawaGNzB2aHonVbMHUGd+nnX8A7PPssOqycUgAWbps3lg==}
     peerDependencies:
-      react: ^16.8 || ^17 || ^18
+      react: ^16.8 || ^17 || ^18 || ^19
 
   rolldown@1.1.3:
     resolution: {integrity: sha512-1F1eEtUBtFvcGm1HQ9TiUIUHPQG7mSAODrhIzjxoUEFuo8OcbrGLiVLkevNgj84TE4lnHvnumwFjhJO5Eu135g==}
@@ -1924,8 +1924,6 @@ snapshots:
   '@types/estree@1.0.9': {}
 
   '@types/json-schema@7.0.15': {}
-
-  '@types/qs@6.15.1': {}
 
   '@types/react-dom@19.2.3(@types/react@19.2.17)':
     dependencies:
@@ -2646,11 +2644,8 @@ snapshots:
 
   require-from-string@2.0.2: {}
 
-  rhoto-router@0.3.0(react@19.2.7):
+  rhoto-router@0.3.1(react@19.2.7):
     dependencies:
-      '@types/qs': 6.15.1
-      '@types/react': 19.2.17
-      '@types/react-dom': 19.2.3(@types/react@19.2.17)
       path-to-regexp: 8.4.2
       qs: 6.15.3
       react: 19.2.7

@@ -641,7 +641,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"fixture-crate::markdow
             {
               "text": "Setext",
               "style": "Plain",
-              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3ASetext",
               "path": "fixture-crate::Setext"
             },
             {
@@ -651,7 +650,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"fixture-crate::markdow
             {
               "text": "1",
               "style": "Plain",
-              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3A1",
               "path": "fixture-crate::1"
             },
             {
@@ -661,7 +659,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"fixture-crate::markdow
             {
               "text": "atx",
               "style": "Plain",
-              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3Aatx",
               "path": "fixture-crate::atx"
             },
             {
@@ -671,7 +668,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"fixture-crate::markdow
             {
               "text": "2",
               "style": "Plain",
-              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3A2",
               "path": "fixture-crate::2"
             },
             {
@@ -2279,7 +2275,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"fixture-crate::markdow
             {
               "text": "square brackets",
               "style": "Plain",
-              "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3Asquare%20brackets",
               "path": "fixture-crate::square brackets"
             },
             {

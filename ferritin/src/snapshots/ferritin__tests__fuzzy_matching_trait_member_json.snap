@@ -9,22 +9,22 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestTrait::test
     {
       "path": "crate::TestTrait::ASSOCIATED_CONSTANT",
       "kind": "assocconst",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#associatedconstant.ASSOCIATED_CONSTANT"
     },
     {
       "path": "crate::TestTrait::T",
       "kind": "assoctype",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#associatedtype.T"
     },
     {
       "path": "crate::TestTrait::test_method",
       "kind": "function",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#method.test_method"
     },
     {
       "path": "crate::TestTrait::process",
       "kind": "function",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#method.process"
     },
     {
       "path": "crate::submodule",

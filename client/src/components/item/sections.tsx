@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type {
   Field,
   Implementor,
@@ -11,8 +12,18 @@ import { Nodes } from "../../render/Nodes";
 import { SectionHeading, SigCard } from "./Signature";
 import { SectionId, methodId } from "../../lib/toc";
 
-/** Inherent associated items ("Implementations"). */
-export function MethodList({ methods }: { methods: Method[] | undefined }) {
+/**
+ * Inherent associated items ("Implementations"). `parentPath` is the path of the
+ * type they hang off, which makes each one addressable (`{parent}::{name}`) — that
+ * is what lets a card fetch its own full docs when the summary was truncated.
+ */
+export function MethodList({
+  methods,
+  parentPath,
+}: {
+  methods: Method[] | undefined;
+  parentPath?: string;
+}) {
   if (!methods?.length) return null;
   return (
     <section className="item-section">
@@ -26,6 +37,7 @@ export function MethodList({ methods }: { methods: Method[] | undefined }) {
             id={methodId(method.name)}
             spans={method.signature}
             docs={method.docs}
+            expandPath={parentPath ? `${parentPath}::${method.name}` : undefined}
           />
         ))}
       </div>
@@ -137,8 +149,10 @@ function VariantShape({ variant }: { variant: Variant }) {
 /** Trait members (required + provided), rendered as signature cards. */
 export function MembersList({
   members,
+  parentPath,
 }: {
   members: TraitMember[] | undefined;
+  parentPath?: string;
 }) {
   if (!members?.length) return null;
   return (
@@ -146,7 +160,12 @@ export function MembersList({
       <SectionHeading id={SectionId.members}>Members</SectionHeading>
       <div className="card-list">
         {members.map((member, i) => (
-          <SigCard key={i} spans={member.signature} docs={member.docs} />
+          <SigCard
+            key={i}
+            spans={member.signature}
+            docs={member.docs}
+            expandPath={parentPath ? `${parentPath}::${member.name}` : undefined}
+          />
         ))}
       </div>
     </section>
@@ -210,20 +229,32 @@ function TraitImplChip({ impl }: { impl: TraitImpl }) {
   );
 }
 
-/** Types implementing a trait ("Implementors"). */
+/**
+ * Types implementing a trait ("Implementors"). The server now sends the whole
+ * list (the 20-item cap is a terminal concern), so the overflow is revealed in
+ * place rather than being lost — no request needed.
+ */
+const IMPLEMENTOR_PREVIEW = 20;
+
 export function ImplementorList({
   implementors,
-  overflow,
 }: {
   implementors: Implementor[] | undefined;
-  overflow: number | undefined;
 }) {
+  const [showAll, setShowAll] = useState(false);
   if (!implementors?.length) return null;
+
+  const hidden = implementors.length - IMPLEMENTOR_PREVIEW;
+  const shown =
+    showAll || hidden <= 0
+      ? implementors
+      : implementors.slice(0, IMPLEMENTOR_PREVIEW);
+
   return (
     <section className="item-section">
       <SectionHeading id={SectionId.implementors}>Implementors</SectionHeading>
       <div className="chip-list">
-        {implementors.map((impl, i) => (
+        {shown.map((impl, i) => (
           <details key={i} className="impl-chip">
             <summary className="impl-chip-summary">
               <code className="sig">
@@ -254,8 +285,14 @@ export function ImplementorList({
           </details>
         ))}
       </div>
-      {overflow ? (
-        <p className="muted">{`… and ${overflow} more implementor${overflow > 1 ? "s" : ""}`}</p>
+      {hidden > 0 && !showAll ? (
+        <button
+          type="button"
+          className="expand-docs"
+          onClick={() => setShowAll(true)}
+        >
+          {`Show ${hidden} more implementor${hidden > 1 ? "s" : ""}`}
+        </button>
       ) : null}
     </section>
   );

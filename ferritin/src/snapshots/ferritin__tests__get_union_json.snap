@@ -51,7 +51,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
             {
               "text": "TestStruct",
               "style": "InlineCode",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
               "path": "fixture_crate::TestStruct"
             },
             {
@@ -87,7 +86,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
       {
         "text": "Copy",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html",
         "path": "core::marker::Copy"
       },
       {
@@ -209,7 +207,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
           {
             "text": "from_int",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html#method.from_int",
             "path": "fixture_crate::TestUnion::from_int"
           },
           {
@@ -440,7 +437,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
               {
                 "text": "Infallible",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html",
                 "path": "core::convert::Infallible"
               }
             ]
@@ -498,7 +494,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
               {
                 "text": "TryFrom",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
                 "path": "core::convert::TryFrom"
               },
               {

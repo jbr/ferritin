@@ -35,7 +35,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule::Test
             {
               "text": "crate::GenericEnum",
               "style": "InlineCode",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
               "path": "fixture_crate::GenericEnum"
             },
             {
@@ -69,7 +68,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule::Test
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
                     "path": "fixture_crate::GenericEnum"
                   },
                   {
@@ -91,7 +89,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule::Test
             {
               "text": "String",
               "style": "TypeName",
-              "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
               "path": "alloc::string::String"
             }
           ]
@@ -124,7 +121,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule::Test
               {
                 "text": "String",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
                 "path": "alloc::string::String"
               }
             ]
@@ -334,7 +330,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule::Test
               {
                 "text": "Infallible",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html",
                 "path": "core::convert::Infallible"
               }
             ]
@@ -392,7 +387,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule::Test
               {
                 "text": "TryFrom",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
                 "path": "core::convert::TryFrom"
               },
               {

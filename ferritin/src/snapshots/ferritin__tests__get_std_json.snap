@@ -63,7 +63,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Vec<T>",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec",
               "path": "alloc::vec::Vec"
             },
             {
@@ -77,7 +76,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Option<T>",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/option/index.html?search=core%3A%3Aoption%3A%3AOption",
               "path": "core::option::Option"
             },
             {
@@ -115,7 +113,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "I/O",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/io/index.html",
               "path": "std::io"
             },
             {
@@ -129,7 +126,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "multithreading",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/thread/index.html",
               "path": "std::thread"
             },
             {
@@ -190,7 +186,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "use std::env",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/env/index.html",
               "path": "std::env"
             },
             {
@@ -309,7 +304,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                     {
                       "text": "The Rust Prelude",
                       "style": "Plain",
-                      "url": "https://doc.rust-lang.org/nightly/std/prelude/index.html",
                       "path": "std::prelude"
                     }
                   ]
@@ -502,7 +496,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "std::slice",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aslice",
               "path": "alloc::slice"
             },
             {
@@ -512,7 +505,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "std::cmp",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Acmp",
               "path": "core::cmp"
             },
             {
@@ -663,19 +655,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "page for the primitive type",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/primitive.char.html",
               "path": "std::char"
             },
             {
               "text": " ",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/primitive.char.html",
               "path": "std::char"
             },
             {
               "text": "char",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/primitive.char.html",
               "path": "std::char"
             },
             {
@@ -693,19 +682,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "page for the module",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar",
               "path": "core::char"
             },
             {
               "text": " ",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar",
               "path": "core::char"
             },
             {
               "text": "std::char",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar",
               "path": "core::char"
             },
             {
@@ -732,7 +718,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "str",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/primitive.str.html",
               "path": "std::str"
             },
             {
@@ -742,7 +727,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "[T]",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/primitive.slice.html",
               "path": "std::slice"
             },
             {
@@ -760,7 +744,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "String",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/string/index.html?search=alloc%3A%3Astring%3A%3AString",
               "path": "alloc::string::String"
             },
             {
@@ -770,7 +753,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Vec<T>",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec",
               "path": "alloc::vec::Vec"
             },
             {
@@ -788,7 +770,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "str",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/primitive.str.html",
               "path": "std::str"
             },
             {
@@ -798,7 +779,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "[T]",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/primitive.slice.html",
               "path": "std::slice"
             },
             {
@@ -836,7 +816,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "The Rust Prelude",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/prelude/index.html",
               "path": "std::prelude"
             },
             {
@@ -1057,7 +1036,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "option",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Aoption",
               "path": "core::option"
             },
             {
@@ -1067,7 +1045,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "result",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Aresult",
               "path": "core::result"
             },
             {
@@ -1085,7 +1062,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Option<T>",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/option/index.html?search=core%3A%3Aoption%3A%3AOption",
               "path": "core::option::Option"
             },
             {
@@ -1095,7 +1071,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Result<T, E>",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/result/index.html?search=core%3A%3Aresult%3A%3AResult",
               "path": "core::result::Result"
             },
             {
@@ -1105,7 +1080,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "iter",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Aiter",
               "path": "core::iter"
             },
             {
@@ -1123,7 +1097,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Iterator",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/iter/traits/iterator/index.html?search=core%3A%3Aiter%3A%3Atraits%3A%3Aiterator%3A%3AIterator",
               "path": "core::iter::traits::iterator::Iterator"
             },
             {
@@ -1177,7 +1150,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                     {
                       "text": "Vec<T>",
                       "style": "InlineCode",
-                      "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec",
                       "path": "alloc::vec::Vec"
                     },
                     {
@@ -1204,7 +1176,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                     {
                       "text": "[T; N]",
                       "style": "InlineCode",
-                      "url": "https://doc.rust-lang.org/nightly/std/primitive.array.html",
                       "path": "std::array"
                     },
                     {
@@ -1231,7 +1202,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                     {
                       "text": "[T]",
                       "style": "InlineCode",
-                      "url": "https://doc.rust-lang.org/nightly/std/primitive.slice.html",
                       "path": "std::slice"
                     },
                     {
@@ -1338,7 +1308,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                     {
                       "text": "Box<[T]>",
                       "style": "InlineCode",
-                      "url": "https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aboxed",
                       "path": "alloc::boxed"
                     },
                     {
@@ -1361,7 +1330,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "str",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/primitive.str.html",
               "path": "std::str"
             },
             {
@@ -1379,7 +1347,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "str",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/primitive.str.html",
               "path": "std::str"
             },
             {
@@ -1405,7 +1372,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "String",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/string/index.html?search=alloc%3A%3Astring%3A%3AString",
               "path": "alloc::string::String"
             },
             {
@@ -1432,7 +1398,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "format!",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aformat",
               "path": "alloc::format"
             },
             {
@@ -1450,7 +1415,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "FromStr",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/str/traits/index.html?search=core%3A%3Astr%3A%3Atraits%3A%3AFromStr",
               "path": "core::str::traits::FromStr"
             },
             {
@@ -1469,7 +1433,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Rc",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/rc/index.html?search=alloc%3A%3Arc%3A%3ARc",
               "path": "alloc::rc::Rc"
             },
             {
@@ -1483,7 +1446,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Cell",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/cell/index.html?search=core%3A%3Acell%3A%3ACell",
               "path": "core::cell::Cell"
             },
             {
@@ -1493,7 +1455,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "RefCell",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/cell/index.html?search=core%3A%3Acell%3A%3ARefCell",
               "path": "core::cell::RefCell"
             },
             {
@@ -1519,7 +1480,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Arc",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/sync/index.html?search=alloc%3A%3Async%3A%3AArc",
               "path": "alloc::sync::Arc"
             },
             {
@@ -1529,7 +1489,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "Mutex",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/sync/poison/mutex/struct.Mutex.html",
               "path": "std::sync::poison::mutex::Mutex"
             },
             {
@@ -1556,7 +1515,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "collections",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/collections/index.html",
               "path": "std::collections"
             },
             {
@@ -1574,7 +1532,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "HashMap<K, V>",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html",
               "path": "std::collections::hash::map::HashMap"
             },
             {
@@ -1628,7 +1585,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "files",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/fs/struct.File.html",
               "path": "std::fs::File"
             },
             {
@@ -1638,7 +1594,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "TCP",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/net/tcp/struct.TcpStream.html",
               "path": "std::net::tcp::TcpStream"
             },
             {
@@ -1648,7 +1603,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "UDP",
               "style": "Plain",
-              "url": "https://doc.rust-lang.org/nightly/std/net/udp/struct.UdpSocket.html",
               "path": "std::net::udp::UdpSocket"
             },
             {
@@ -1666,7 +1620,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "io",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/io/index.html",
               "path": "std::io"
             },
             {
@@ -1676,7 +1629,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "fs",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/fs/index.html",
               "path": "std::fs"
             },
             {
@@ -1686,7 +1638,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "net",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/net/index.html",
               "path": "std::net"
             },
             {
@@ -1705,7 +1656,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "thread",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/thread/index.html",
               "path": "std::thread"
             },
             {
@@ -1715,7 +1665,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "sync",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/sync/index.html",
               "path": "std::sync"
             },
             {
@@ -1729,7 +1678,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "atomic",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/core/sync/index.html?search=core%3A%3Async%3A%3Aatomic",
               "path": "core::sync::atomic"
             },
             {
@@ -1739,7 +1687,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "mpmc",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/sync/mpmc/index.html",
               "path": "std::sync::mpmc"
             },
             {
@@ -1753,7 +1700,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "mpsc",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/sync/mpsc/index.html",
               "path": "std::sync::mpsc"
             },
             {
@@ -1933,7 +1879,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                             {
                               "text": "thread::current()",
                               "style": "InlineCode",
-                              "url": "https://doc.rust-lang.org/nightly/std/thread/current/fn.current.html",
                               "path": "std::thread::current::current"
                             }
                           ]
@@ -3159,13 +3104,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i8",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i8.html",
                     "path": "core::i8"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i8.html",
                     "path": "core::i8"
                   },
                   {
@@ -3198,13 +3141,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i16",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i16.html",
                     "path": "core::i16"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i16.html",
                     "path": "core::i16"
                   },
                   {
@@ -3237,13 +3178,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i32",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i32.html",
                     "path": "core::i32"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i32.html",
                     "path": "core::i32"
                   },
                   {
@@ -3276,13 +3215,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i64",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i64.html",
                     "path": "core::i64"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i64.html",
                     "path": "core::i64"
                   },
                   {
@@ -3315,13 +3252,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "i128",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i128.html",
                     "path": "core::i128"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.i128.html",
                     "path": "core::i128"
                   },
                   {
@@ -3377,13 +3312,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "isize",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.isize.html",
                     "path": "core::isize"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.isize.html",
                     "path": "core::isize"
                   },
                   {
@@ -3632,13 +3565,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u8",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u8.html",
                     "path": "core::u8"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u8.html",
                     "path": "core::u8"
                   },
                   {
@@ -3671,13 +3602,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u16",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u16.html",
                     "path": "core::u16"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u16.html",
                     "path": "core::u16"
                   },
                   {
@@ -3710,13 +3639,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u32",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u32.html",
                     "path": "core::u32"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u32.html",
                     "path": "core::u32"
                   },
                   {
@@ -3749,13 +3676,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u64",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u64.html",
                     "path": "core::u64"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u64.html",
                     "path": "core::u64"
                   },
                   {
@@ -3788,13 +3713,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "u128",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u128.html",
                     "path": "core::u128"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.u128.html",
                     "path": "core::u128"
                   },
                   {
@@ -3849,13 +3772,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "usize",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.usize.html",
                     "path": "core::usize"
                   },
                   {
                     "text": " primitive type",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/primitive.usize.html",
                     "path": "core::usize"
                   },
                   {
@@ -4146,7 +4067,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "Vec",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html",
                     "path": "alloc::vec::Vec"
                   },
                   {
@@ -4456,7 +4376,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "format_args",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/macro.format_args.html",
                     "path": "core::format_args"
                   },
                   {
@@ -4763,7 +4682,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "PartialEq",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html",
                     "path": "core::cmp::PartialEq"
                   },
                   {
@@ -4796,7 +4714,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "PartialEq",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html",
                     "path": "core::cmp::PartialEq"
                   },
                   {
@@ -5213,7 +5130,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "HashMap",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html",
                     "path": "std::collections::hash::map::HashMap"
                   },
                   {
@@ -5246,7 +5162,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                   {
                     "text": "std::thread::LocalKey",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/std/thread/local/struct.LocalKey.html",
                     "path": "std::thread::local::LocalKey"
                   },
                   {

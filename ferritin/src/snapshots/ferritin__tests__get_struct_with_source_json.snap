@@ -52,7 +52,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
             {
               "text": "Vector",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec",
               "path": "alloc::vec::Vec"
             },
             {
@@ -70,7 +69,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
             {
               "text": "HashMap",
               "style": "InlineCode",
-              "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/index.html?search=std%3A%3Acollections%3A%3Ahash%3A%3Amap%3A%3AHashMap",
               "path": "std::collections::hash::map::HashMap"
             },
             {
@@ -95,7 +93,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
           {
             "text": "String",
             "style": "TypeName",
-            "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
             "path": "alloc::string::String"
           }
         ],
@@ -247,7 +244,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
           {
             "text": "new",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.new",
             "path": "fixture_crate::TestStruct::new"
           },
           {
@@ -269,7 +265,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
           {
             "text": "String",
             "style": "TypeName",
-            "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
             "path": "alloc::string::String"
           },
           {
@@ -369,7 +364,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
           {
             "text": "get_field",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.get_field",
             "path": "fixture_crate::TestStruct::get_field"
           },
           {
@@ -451,7 +445,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
           {
             "text": "increment_count",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.increment_count",
             "path": "fixture_crate::TestStruct::increment_count"
           },
           {
@@ -563,71 +556,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
       {
         "traitName": "Clone",
         "traitUrl": "https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html",
-        "methods": [
-          {
-            "name": "clone",
-            "kind": "method",
-            "visibility": "default",
-            "returns": [
-              {
-                "text": "TestStruct",
-                "style": "TypeName",
-                "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
-                "path": "fixture_crate::TestStruct"
-              }
-            ],
-            "signature": [
-              {
-                "text": "fn",
-                "style": "Keyword"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "clone",
-                "style": "Plain",
-                "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.clone",
-                "path": "fixture_crate::TestStruct::clone"
-              },
-              {
-                "text": "(",
-                "style": "Punctuation"
-              },
-              {
-                "text": "&",
-                "style": "Punctuation"
-              },
-              {
-                "text": "self",
-                "style": "Plain"
-              },
-              {
-                "text": ")",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "->",
-                "style": "Operator"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "TestStruct",
-                "style": "TypeName",
-                "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
-                "path": "fixture_crate::TestStruct"
-              }
-            ]
-          }
-        ],
         "providedMethods": [
           "clone_from"
         ],
@@ -647,121 +575,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
       {
         "traitName": "Debug",
         "traitUrl": "https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html",
-        "methods": [
-          {
-            "name": "fmt",
-            "kind": "method",
-            "visibility": "default",
-            "returns": [
-              {
-                "text": "Result",
-                "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/fmt/type.Result.html",
-                "path": "core::fmt::Result"
-              }
-            ],
-            "signature": [
-              {
-                "text": "fn",
-                "style": "Keyword"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "fmt",
-                "style": "Plain",
-                "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.fmt",
-                "path": "fixture_crate::TestStruct::fmt"
-              },
-              {
-                "text": "(",
-                "style": "Punctuation"
-              },
-              {
-                "text": "&",
-                "style": "Punctuation"
-              },
-              {
-                "text": "self",
-                "style": "Plain"
-              },
-              {
-                "text": ",",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "f",
-                "style": "Plain"
-              },
-              {
-                "text": ":",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "&",
-                "style": "Operator"
-              },
-              {
-                "text": "mut",
-                "style": "Keyword"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "Formatter",
-                "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html",
-                "path": "core::fmt::Formatter"
-              },
-              {
-                "text": "<",
-                "style": "Punctuation"
-              },
-              {
-                "text": "'_",
-                "style": "Lifetime"
-              },
-              {
-                "text": ">",
-                "style": "Punctuation"
-              },
-              {
-                "text": ")",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "->",
-                "style": "Operator"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "Result",
-                "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/fmt/type.Result.html",
-                "path": "core::fmt::Result"
-              }
-            ]
-          }
-        ],
         "isStd": true
       },
       {
@@ -848,251 +661,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
               {
                 "text": "String",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
                 "path": "alloc::string::String"
-              }
-            ]
-          }
-        ],
-        "methods": [
-          {
-            "name": "ASSOCIATED_CONSTANT",
-            "kind": "const",
-            "visibility": "default",
-            "signature": [
-              {
-                "text": "const",
-                "style": "Keyword"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "ASSOCIATED_CONSTANT",
-                "style": "Plain"
-              }
-            ]
-          },
-          {
-            "name": "test_method",
-            "kind": "method",
-            "visibility": "default",
-            "returns": [
-              {
-                "text": "String",
-                "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
-                "path": "alloc::string::String"
-              }
-            ],
-            "signature": [
-              {
-                "text": "fn",
-                "style": "Keyword"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "test_method",
-                "style": "Plain",
-                "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.test_method",
-                "path": "fixture_crate::TestStruct::test_method"
-              },
-              {
-                "text": "(",
-                "style": "Punctuation"
-              },
-              {
-                "text": "&",
-                "style": "Punctuation"
-              },
-              {
-                "text": "self",
-                "style": "Plain"
-              },
-              {
-                "text": ")",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "->",
-                "style": "Operator"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "String",
-                "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
-                "path": "alloc::string::String"
-              }
-            ]
-          },
-          {
-            "name": "process",
-            "kind": "method",
-            "visibility": "default",
-            "returns": [
-              {
-                "text": "Result",
-                "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/result/enum.Result.html",
-                "path": "core::result::Result"
-              },
-              {
-                "text": "<",
-                "style": "Punctuation"
-              },
-              {
-                "text": "(",
-                "style": "Punctuation"
-              },
-              {
-                "text": ")",
-                "style": "Punctuation"
-              },
-              {
-                "text": ",",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "String",
-                "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
-                "path": "alloc::string::String"
-              },
-              {
-                "text": ">",
-                "style": "Punctuation"
-              }
-            ],
-            "signature": [
-              {
-                "text": "fn",
-                "style": "Keyword"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "process",
-                "style": "Plain",
-                "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.process",
-                "path": "fixture_crate::TestStruct::process"
-              },
-              {
-                "text": "(",
-                "style": "Punctuation"
-              },
-              {
-                "text": "&",
-                "style": "Punctuation"
-              },
-              {
-                "text": "mut",
-                "style": "Keyword"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "self",
-                "style": "Plain"
-              },
-              {
-                "text": ",",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "data",
-                "style": "Plain"
-              },
-              {
-                "text": ":",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "&",
-                "style": "Operator"
-              },
-              {
-                "text": "str",
-                "style": "TypeName"
-              },
-              {
-                "text": ")",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "->",
-                "style": "Operator"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "Result",
-                "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/result/enum.Result.html",
-                "path": "core::result::Result"
-              },
-              {
-                "text": "<",
-                "style": "Punctuation"
-              },
-              {
-                "text": "(",
-                "style": "Punctuation"
-              },
-              {
-                "text": ")",
-                "style": "Punctuation"
-              },
-              {
-                "text": ",",
-                "style": "Punctuation"
-              },
-              {
-                "text": " ",
-                "style": "Plain"
-              },
-              {
-                "text": "String",
-                "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
-                "path": "alloc::string::String"
-              },
-              {
-                "text": ">",
-                "style": "Punctuation"
               }
             ]
           }
@@ -1147,7 +716,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
               {
                 "text": "Infallible",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html",
                 "path": "core::convert::Infallible"
               }
             ]
@@ -1205,7 +773,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct\").w
               {
                 "text": "TryFrom",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
                 "path": "core::convert::TryFrom"
               },
               {

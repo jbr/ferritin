@@ -65,6 +65,9 @@ rayon = "1.12.0"
 async-channel = "2.5.0"
 trillium-caching-headers = "0.4.1"
 trillium-compression = {version = "0.3.3", features = ["client"]}
+trillium-redirect = { version = "0.3.0", features = ["client"] }
+crate-names = "0.1.1"
+async-lock = "3"
 
 
 

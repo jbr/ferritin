@@ -3,6 +3,7 @@ import { ApiError } from "../api/client";
 import { useItem } from "../api/queries";
 import { crateOf, itemHref } from "../lib/paths";
 import { buildToc } from "../lib/toc";
+import { useDocumentTitle } from "../lib/useDocumentTitle";
 import { DocsLayout } from "./layout/DocsLayout";
 import { ItemHeader } from "./item/ItemHeader";
 import { ItemBody } from "./item/ItemBody";
@@ -17,6 +18,10 @@ export function ItemView({ path }: { path: string }) {
   const isCrateRoot = path === crate;
   const { data, error, isLoading } = useItem(path);
   const toc = data ? buildToc(data) : [];
+
+  // Keyed on the route path, not the loaded item, so the title (and the history
+  // entry it names) is right the moment you navigate — before the fetch resolves.
+  useDocumentTitle(error ? `Not found: ${path}` : path);
 
   return (
     <DocsLayout crate={crate} toc={toc} isCrateRoot={isCrateRoot}>

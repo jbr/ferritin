@@ -27,7 +27,7 @@ export function ItemBody({ item, path }: { item: Item; path: string }) {
       return (
         <>
           <FieldList fields={body.fields} hidden={body.hiddenFieldCount} />
-          <MethodList methods={body.methods} />
+          <MethodList methods={body.methods} parentPath={path} />
           <TraitImplList impls={body.traitImpls} />
         </>
       );
@@ -36,7 +36,7 @@ export function ItemBody({ item, path }: { item: Item; path: string }) {
       return (
         <>
           <VariantList variants={body.variants} />
-          <MethodList methods={body.methods} />
+          <MethodList methods={body.methods} parentPath={path} />
           <TraitImplList impls={body.traitImpls} />
         </>
       );
@@ -44,11 +44,8 @@ export function ItemBody({ item, path }: { item: Item; path: string }) {
     case "trait":
       return (
         <>
-          <MembersList members={body.members} />
-          <ImplementorList
-            implementors={body.implementors}
-            overflow={body.implementorOverflow}
-          />
+          <MembersList members={body.members} parentPath={path} />
+          <ImplementorList implementors={body.implementors} />
         </>
       );
 

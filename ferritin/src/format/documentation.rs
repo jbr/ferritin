@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 
 use super::*;
-use crate::markdown::MarkdownRenderer;
 use crate::docsrs_url::{DocsRsLink, crate_base_url, generate_docsrs_url, resolve_relative};
+use crate::markdown::MarkdownRenderer;
 use crate::styled_string::{DocumentNode, LinkTarget, TruncationLevel};
 
 /// Information about documentation text with truncation details
@@ -171,7 +171,10 @@ impl<'a> Request<'a> {
             .strip_prefix(&crate_base_url(docs))
             .and_then(|rest| rest.strip_prefix('/'))
             .is_some_and(|rest| {
-                rest == lib_name || rest.strip_prefix(lib_name).is_some_and(|r| r.starts_with('/'))
+                rest == lib_name
+                    || rest
+                        .strip_prefix(lib_name)
+                        .is_some_and(|r| r.starts_with('/'))
             });
         if !within_crate {
             log::trace!("  → relative link '{relative}' escapes {lib_name}, keeping as-is");

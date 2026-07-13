@@ -7,6 +7,8 @@ export type Item = components["schemas"]["JsonItem"];
 export type SearchResponse = components["schemas"]["JsonSearch"];
 /** A failed lookup, carrying "did you mean" suggestions. */
 export type NotFound = components["schemas"]["JsonNotFound"];
+/** Crate-name typeahead: top matches by download rank, plus the total. */
+export type TypeaheadResponse = components["schemas"]["JsonTypeahead"];
 
 /**
  * Low-level typed transport, generated from the OpenAPI document. The app and the
@@ -48,18 +50,30 @@ export class ApiError extends Error {
  * Fetch the documentation model for an item path (e.g. `serde::Deserialize`).
  */
 export async function fetchItem(path: string): Promise<Item> {
-  const { data, error, response } = await http.GET("/crates/{crate_name}", {
+  const result = await http.GET("/crates/{crate_name}", {
     params: { path: { crate_name: path } },
   });
-  if (error) {
-    const notFound = isNotFound(error) ? error : undefined;
+  // Read the status before narrowing: openapi-fetch types the result as a union of
+  // "has data" | "has error", so inside the malformed branch below it considers
+  // `response` unreachable (`never`) — the very case we are guarding against.
+  const status = result.response.status;
+
+  if (result.error) {
+    const notFound = isNotFound(result.error) ? result.error : undefined;
     throw new ApiError(
       notFound ? `Not found: ${path}` : `Failed to load ${path}`,
-      response.status,
+      status,
       notFound,
     );
   }
-  return data;
+  // A response openapi-fetch can parse as neither success nor error (a non-JSON
+  // body — an HTML error page from a proxy, say) leaves *both* `data` and `error`
+  // undefined. Returning that would hand back `undefined` while promising an
+  // `Item`, and the caller renders a blank page instead of an error. Fail loudly.
+  if (!result.data) {
+    throw new ApiError(`Malformed response for ${path}`, status);
+  }
+  return result.data;
 }
 
 /**
@@ -76,6 +90,21 @@ export async function search(
   });
   if (!data) {
     throw new ApiError(`Search failed in ${crate}`, response.status);
+  }
+  return data;
+}
+
+/**
+ * Crate-name typeahead. Like search, only a 2xx is declared; a 503 (the server
+ * hasn't loaded the crate-names artifact yet) surfaces as a thrown ApiError,
+ * which the UI treats the same as "no suggestions".
+ */
+export async function typeahead(q: string): Promise<TypeaheadResponse> {
+  const { data, response } = await http.GET("/typeahead", {
+    params: { query: { q } },
+  });
+  if (!data) {
+    throw new ApiError("Typeahead failed", response.status);
   }
   return data;
 }

@@ -15,11 +15,10 @@ pub(crate) struct TraitDoc<'a> {
     pub(crate) supertraits: Vec<Span<'a>>,
     pub(crate) where_clause: Vec<Span<'a>>,
     pub(crate) members: Vec<TraitMember<'a>>,
-    /// Types implementing this trait in the current crate, structurally modeled
-    /// (capped — see [`Request::model_implementors`]).
+    /// Every type implementing this trait in the current crate, structurally
+    /// modeled and sorted by name. Uncapped: the cap is a *terminal* concern
+    /// applied in [`lower_implementors`], so the API can offer the whole list.
     pub(crate) implementors: Vec<ImplementorDoc<'a>>,
-    /// Implementors beyond the render cap (the "… and N more").
-    pub(crate) implementor_overflow: usize,
 }
 
 /// A single implementor of a trait: the implementing type (the impl's `for_`)
@@ -137,7 +136,7 @@ impl<'a> Request<'a> {
             });
         }
 
-        let (implementors, implementor_overflow) = self.model_implementors(item);
+        let implementors = self.model_implementors(item);
 
         TraitDoc {
             name,
@@ -146,23 +145,18 @@ impl<'a> Request<'a> {
             where_clause,
             members,
             implementors,
-            implementor_overflow,
         }
     }
 
-    /// Resolve the types implementing this trait in the current crate into
-    /// structured [`ImplementorDoc`]s, plus the count beyond the render cap.
+    /// Resolve every type implementing this trait in the current crate into
+    /// structured [`ImplementorDoc`]s.
     ///
-    /// Sorted by the implementing type's name *before* the cap, because
+    /// Sorted by the implementing type's name, because
     /// [`implementors()`](DocRef::implementors) yields `FxHashMap` iteration
-    /// order — so without sorting, *which* implementors survive the cap (and
-    /// their order) would be nondeterministic w.r.t. the crate's item set.
-    fn model_implementors(
-        &mut self,
-        trait_item: DocRef<'a, Item>,
-    ) -> (Vec<ImplementorDoc<'a>>, usize) {
-        const MAX_IMPLEMENTORS: usize = 20;
-
+    /// order — so without sorting, the order (and, once the terminal caps the
+    /// list, *which* implementors survive) would be nondeterministic w.r.t. the
+    /// crate's item set.
+    fn model_implementors(&mut self, trait_item: DocRef<'a, Item>) -> Vec<ImplementorDoc<'a>> {
         let mut blocks: Vec<(DocRef<'a, Item>, &'a Impl)> = vec![];
         for impl_block in trait_item.implementors() {
             if let ItemEnum::Impl(impl_item) = impl_block.inner() {
@@ -172,15 +166,10 @@ impl<'a> Request<'a> {
 
         blocks.sort_by(|a, b| implementor_sort_key(a.1).cmp(implementor_sort_key(b.1)));
 
-        let overflow = blocks.len().saturating_sub(MAX_IMPLEMENTORS);
-
-        let implementors = blocks
+        blocks
             .into_iter()
-            .take(MAX_IMPLEMENTORS)
             .map(|(impl_block, impl_item)| self.model_implementor(impl_block, impl_item))
-            .collect();
-
-        (implementors, overflow)
+            .collect()
     }
 
     fn model_implementor(
@@ -498,7 +487,6 @@ pub(super) fn lower_trait(model: TraitDoc<'_>) -> Vec<DocumentNode<'_>> {
         where_clause,
         members,
         implementors,
-        implementor_overflow,
     } = model;
 
     let mut signature_spans = vec![
@@ -536,7 +524,7 @@ pub(super) fn lower_trait(model: TraitDoc<'_>) -> Vec<DocumentNode<'_>> {
         nodes.push(DocumentNode::list(member_items));
     }
 
-    nodes.extend(lower_implementors(implementors, implementor_overflow));
+    nodes.extend(lower_implementors(implementors));
     nodes
 }
 
@@ -553,17 +541,21 @@ fn implementor_sort_key(impl_item: &Impl) -> &str {
 /// Lower the modeled implementors back to the "Implementors (this crate)"
 /// section: compact ones in a comma-separated list, the rest as list items with
 /// their assoc-type lines, then the overflow note. Empty when there are none.
-fn lower_implementors(
-    implementors: Vec<ImplementorDoc<'_>>,
-    overflow: usize,
-) -> Vec<DocumentNode<'_>> {
+///
+/// The cap lives here, not in the model: a terminal page has finite room, but an
+/// API client can page through the whole list.
+fn lower_implementors(implementors: Vec<ImplementorDoc<'_>>) -> Vec<DocumentNode<'_>> {
+    const MAX_IMPLEMENTORS: usize = 20;
+
     if implementors.is_empty() {
         return vec![];
     }
 
+    let overflow = implementors.len().saturating_sub(MAX_IMPLEMENTORS);
+
     let mut compact: Vec<Vec<Span>> = vec![];
     let mut expanded: Vec<(Vec<Span>, Vec<ImplAssocType>)> = vec![];
-    for imp in implementors {
+    for imp in implementors.into_iter().take(MAX_IMPLEMENTORS) {
         if imp.is_compact {
             compact.push(imp.for_type);
         } else {

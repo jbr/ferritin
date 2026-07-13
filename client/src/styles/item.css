@@ -118,6 +118,32 @@
   font-size: 0.92rem;
 }
 
+/* The cue that the server truncated this item's prose, and the control that
+   fetches the rest (one small, cacheable request for just this item). */
+.expand-docs {
+  margin-top: 0.35rem;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--link);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.expand-docs::before {
+  content: "▸";
+  font-size: 0.65rem;
+}
+.expand-docs[aria-expanded="true"]::before {
+  content: "▾";
+}
+.expand-docs:hover {
+  text-decoration: underline;
+}
+
 /* --- fields & variants --- */
 .field-list,
 .variant-list {

@@ -36,7 +36,7 @@ pub(crate) const DEFAULT_OUTPUT_PATH: &str =
 use serde::Serialize;
 use std::collections::BTreeMap;
 
-use crate::json::{JsonItem, JsonList, JsonNotFound, JsonSearch};
+use crate::json::{JsonItem, JsonList, JsonNotFound, JsonSearch, JsonTypeahead};
 
 /// Build the OpenAPI document and serialize it to pretty JSON.
 pub(crate) fn openapi_document() -> String {
@@ -49,6 +49,7 @@ pub(crate) fn openapi_document() -> String {
     let item = generator.subschema_for::<JsonItem<'static>>();
     let search = generator.subschema_for::<JsonSearch<'static>>();
     let not_found = generator.subschema_for::<JsonNotFound>();
+    let typeahead = generator.subschema_for::<JsonTypeahead>();
     let _ = generator.subschema_for::<JsonList>();
 
     let schemas: Schema = generator.take_definitions(true).into();
@@ -104,6 +105,26 @@ pub(crate) fn openapi_document() -> String {
                         responses: BTreeMap::from([(
                             "200",
                             Response::json("Search results.", search),
+                        )]),
+                    },
+                },
+            ),
+            (
+                "/typeahead",
+                PathItem {
+                    get: Operation {
+                        summary: "Crate-name typeahead: the top crates (by download \
+                                  rank) whose names start with the query prefix.",
+                        parameters: vec![
+                            Param::query("q", "Crate name prefix."),
+                            Param::optional_int_query(
+                                "limit",
+                                "Maximum results (default 10, capped at 100).",
+                            ),
+                        ],
+                        responses: BTreeMap::from([(
+                            "200",
+                            Response::json("Typeahead results, in rank order.", typeahead),
                         )]),
                     },
                 },
@@ -178,6 +199,16 @@ impl Param {
             required: true,
             description,
             schema: json_schema!({ "type": "string" }),
+        }
+    }
+
+    fn optional_int_query(name: &'static str, description: &'static str) -> Self {
+        Self {
+            name,
+            location: "query",
+            required: false,
+            description,
+            schema: json_schema!({ "type": "integer" }),
         }
     }
 }

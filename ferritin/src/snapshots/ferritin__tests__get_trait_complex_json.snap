@@ -50,7 +50,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
       {
         "text": "PartialEq",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html",
         "path": "core::cmp::PartialEq"
       },
       {
@@ -60,7 +59,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
       {
         "text": "std::fmt::Debug",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html",
         "path": "core::fmt::Debug"
       }
     ],
@@ -92,7 +90,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
       {
         "text": "Clone",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html",
         "path": "core::clone::Clone"
       },
       {
@@ -102,7 +99,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
       {
         "text": "Send",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/core/marker/trait.Send.html",
         "path": "core::marker::Send"
       }
     ],
@@ -134,7 +130,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
           {
             "text": "std::fmt::Display",
             "style": "TypeName",
-            "url": "https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html",
             "path": "core::fmt::Display"
           },
           {
@@ -242,7 +237,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
           {
             "text": "process",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html#method.process",
             "path": "fixture_crate::ComplexTrait::process"
           },
           {
@@ -348,7 +342,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
           {
             "text": "is_ready",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html#method.is_ready",
             "path": "fixture_crate::ComplexTrait::is_ready"
           },
           {
@@ -433,7 +426,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
           {
             "text": "transform",
             "style": "Plain",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html#method.transform",
             "path": "fixture_crate::ComplexTrait::transform"
           },
           {
@@ -503,7 +495,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
           {
             "text": "Result",
             "style": "TypeName",
-            "url": "https://doc.rust-lang.org/nightly/core/result/enum.Result.html",
             "path": "core::result::Result"
           },
           {
@@ -525,7 +516,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
           {
             "text": "String",
             "style": "TypeName",
-            "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
             "path": "alloc::string::String"
           },
           {
@@ -559,7 +549,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::ComplexTrait\")
           {
             "text": "Into",
             "style": "TypeName",
-            "url": "https://doc.rust-lang.org/nightly/core/convert/trait.Into.html",
             "path": "core::convert::Into"
           },
           {

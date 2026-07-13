@@ -68,11 +68,15 @@ impl DerivedIndexes {
                     } else if let Some(target) = target {
                         indexes.inherent_impls.entry(target).or_default().push(*id);
                     }
-                    if let Some(target) = target
+                    // Parenting peels references, but the impl *indexes* above do
+                    // not: `impl Read for &File` documents its methods on `File`'s
+                    // page (so `File` is their parent), yet the impl itself is not
+                    // an impl *of* `File` and must not appear in its impl lists.
+                    if let Some(parent) = impl_target_parent(&impl_.for_)
                         && impl_.blanket_impl.is_none()
                     {
                         parent_triples
-                            .extend(impl_.items.iter().map(|child| (*child, target, *id)));
+                            .extend(impl_.items.iter().map(|child| (*child, parent, *id)));
                     }
                 }
                 ItemEnum::Enum(enum_) => {
@@ -82,6 +86,17 @@ impl DerivedIndexes {
                     if let StructKind::Plain { fields, .. } = &struct_.kind {
                         parent_triples.extend(fields.iter().map(|child| (*child, *id, *id)));
                     }
+                }
+                // A trait's own members are declared in the trait body, not inside
+                // an impl, so the `Impl` arm above never sees them. Without this,
+                // `Read::read` has no parent — which costs it both its in-app path
+                // and its `#method.read` URL fragment, leaving intra-doc links to a
+                // trait's own methods pointing at the bare crate root.
+                ItemEnum::Trait(trait_) => {
+                    parent_triples.extend(trait_.items.iter().map(|child| (*child, *id, *id)));
+                }
+                ItemEnum::Union(union_) => {
+                    parent_triples.extend(union_.fields.iter().map(|child| (*child, *id, *id)));
                 }
                 _ => {}
             }
@@ -100,5 +115,26 @@ impl DerivedIndexes {
             }
         }
         indexes
+    }
+}
+
+/// The type whose *page* documents an impl's members — the parent to attribute
+/// them to.
+///
+/// This is not the same question as "what type is this an impl of". rustdoc renders
+/// `impl Read for &File` on `File`'s page, hanging `#method.read` off it, so the
+/// members' parent is `File` even though the impl targets `&File`. Peeling
+/// references is what lets those members have a path and a precise URL at all;
+/// without it they fall back to the bare crate root.
+///
+/// Targets that resolve to no named type (slices, tuples, primitives, `dyn Trait`)
+/// have no page to hang members on, and correctly get no parent.
+fn impl_target_parent(for_: &Type) -> Option<Id> {
+    match for_ {
+        Type::ResolvedPath(path) => Some(path.id),
+        Type::BorrowedRef { type_, .. } | Type::RawPointer { type_, .. } => {
+            impl_target_parent(type_)
+        }
+        _ => None,
     }
 }

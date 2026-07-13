@@ -59,55 +59,271 @@
   color: var(--ty);
   font-weight: 500;
 }
+/* No `margin-left: auto` here — `.search-slot` absorbs the free space, so the
+   search box (and the theme toggle after it) sit hard against the right edge. */
 .topbar-right {
-  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 1rem;
   flex-shrink: 0;
 }
 
-/* --- search trigger --- */
-.search-trigger {
-  flex: 1;
-  max-width: 34rem;
+/* --- search: one element, two states ("anchored morph") ---
+   The box is absolutely positioned in BOTH states, over an in-flow spacer holding
+   its resting footprint. Its top and right edges stay pinned while width and
+   height animate, so it grows leftward and downward — expanding in place rather
+   than teleporting. The results are mounted from the start and simply clipped by
+   `overflow: hidden` at the resting size. */
+.search-slot {
+  position: relative;
+  margin-left: auto;
+  width: var(--search-w);
+  height: var(--search-h);
+  --search-w: 196px;
+  --search-h: 32px;
+  --search-w-open: 432px;
+  --search-h-open: 320px;
+  --search-ease: cubic-bezier(0.3, 0, 0.15, 1);
+}
+.search-box {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 60;
+  width: var(--search-w);
+  height: var(--search-h);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--ink) 8%, transparent);
+  transition:
+    width 300ms var(--search-ease),
+    height 300ms var(--search-ease),
+    background-color 300ms var(--search-ease),
+    box-shadow 300ms var(--search-ease),
+    border-color 300ms var(--search-ease);
+}
+.search-box:hover {
+  border-color: color-mix(in oklch, var(--accent) 40%, var(--border));
+}
+.search-box[data-expanded] {
+  width: var(--search-w-open);
+  height: var(--search-h-open);
+  background: var(--bg);
+  border-color: color-mix(in oklch, var(--accent) 55%, var(--border));
+  box-shadow: 0 24px 70px -12px color-mix(in oklch, var(--ink) 35%, transparent);
+}
+/* The panel's contents cross-fade in rather than sliding, so the box's growth is
+   the only motion the eye tracks. */
+.search-panel {
+  opacity: 0;
+  transition: opacity 200ms var(--search-ease);
+}
+.search-box[data-expanded] .search-panel {
+  opacity: 1;
+  transition-delay: 80ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-box,
+  .search-panel {
+    transition: none;
+  }
+}
+
+.search-row {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.55rem 0.85rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--faint);
+  padding: 0 0.6rem;
+  height: var(--search-h);
+  flex-shrink: 0;
+  width: 100%;
+}
+.search-trigger {
+  background: none;
+  border: none;
   font: inherit;
-  font-size: 0.9rem;
+  color: var(--faint);
   cursor: pointer;
   text-align: left;
 }
-.search-trigger:hover:not(:disabled) {
-  border-color: color-mix(in oklch, var(--accent) 40%, var(--border));
-}
-.search-trigger:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-.search-trigger-icon {
-  color: var(--faint);
-}
-.search-trigger-label {
+.search-label {
   flex: 1;
+  font-size: 0.85rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.search-trigger-kbd,
-.palette-esc {
+/* Pushes the ⌘K chip to the right edge when the scope chip (which does not grow)
+   takes the label's place. */
+.search-label-spacer {
+  flex: 1;
+}
+
+/* --- scope chip ---
+   Makes the search's scope visible instead of leaving it in a placeholder that
+   disappears the moment you type. Removing it is crate mode. */
+.scope-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  padding: 0.1rem 0.35rem 0.1rem 0.45rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--accent) 45%, transparent);
+  border-radius: 6px;
+  white-space: nowrap;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+/* The armed state of the two-step removal: the next Backspace deletes it, so it
+   has to look unmistakably like a selection. */
+.scope-chip.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.scope-chip-x {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.65;
+  cursor: pointer;
+}
+.scope-chip-x:hover {
+  opacity: 1;
+}
+
+.search-group {
+  margin: 0;
+  padding: 0.6rem 0.75rem 0.2rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+.search-icon {
+  color: var(--faint);
+}
+.search-input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+.search-input::placeholder {
+  color: var(--faint);
+}
+.search-kbd {
   font-family: var(--mono);
   font-size: 0.7rem;
   padding: 0.15rem 0.4rem;
   border: 1px solid var(--border);
   border-radius: 5px;
   color: var(--faint);
+  flex-shrink: 0;
+}
+
+/* Dims everything *below* the header row — the header itself stays lit, so the
+   expanding box never appears to sink behind its own backdrop.
+   Stacking: page content < backdrop < the search box (which is why the topbar is
+   lifted above the backdrop while open, below). */
+.search-backdrop {
+  position: fixed;
+  inset: var(--topbar-h, 3.25rem) 0 0 0;
+  z-index: 50;
+  background: color-mix(in oklch, var(--ink) 28%, transparent);
+  backdrop-filter: blur(2px);
+}
+.topbar:has(.search-box[data-expanded]) {
+  z-index: 60;
+}
+
+.search-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  border-top: 1px dashed var(--border);
+}
+.search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+.search-result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.6rem;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.search-result.selected {
+  background: var(--surface);
+}
+.search-kind {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+.search-path {
+  color: var(--ink);
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.search-version {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+.search-empty {
+  margin: 0;
+  padding: 1rem;
+  color: var(--faint);
+  font-size: 0.88rem;
+  flex: 1;
+}
+.search-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.45rem 0.75rem;
+  border-top: 1px solid var(--border);
+  color: var(--faint);
+  font-size: 0.72rem;
+  flex-shrink: 0;
 }
 
 /* --- theme toggle --- */
@@ -264,93 +480,6 @@
   font-family: var(--mono);
   font-size: 0.8rem;
   color: var(--faint);
-}
-
-/* --- command palette --- */
-.palette-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  background: color-mix(in oklch, var(--sunken) 55%, transparent);
-  backdrop-filter: blur(2px);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 12vh;
-}
-.palette {
-  width: min(38rem, 92vw);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-}
-.palette-input-row {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.9rem 1.1rem;
-  border-bottom: 1px solid var(--border);
-}
-.palette-icon {
-  color: var(--faint);
-}
-.palette-input {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  color: var(--ink);
-  font: inherit;
-  font-size: 1.05rem;
-}
-.palette-results {
-  list-style: none;
-  margin: 0;
-  padding: 0.4rem;
-  max-height: 22rem;
-  overflow-y: auto;
-}
-.palette-result {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0.7rem;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.palette-result.selected {
-  background: color-mix(in oklch, var(--accent) 16%, transparent);
-}
-.palette-kind {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  color: var(--faint);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 0.1rem 0.4rem;
-}
-.palette-path {
-  flex: 1;
-  color: var(--ink);
-  font-size: 0.9rem;
-}
-.palette-crate {
-  color: var(--faint);
-  font-size: 0.8rem;
-}
-.palette-footer {
-  display: flex;
-  gap: 1.2rem;
-  padding: 0.6rem 1.1rem;
-  border-top: 1px solid var(--border);
-  color: var(--faint);
-  font-size: 0.78rem;
-}
-.palette-count {
-  margin-left: auto;
 }
 
 /* --- home landing --- */

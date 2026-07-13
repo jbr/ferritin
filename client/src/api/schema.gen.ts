@@ -94,6 +94,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/typeahead": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Crate-name typeahead: the top crates (by download rank) whose names start with the query prefix. */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Crate name prefix. */
+                    q: string;
+                    /** @description Maximum results (default 10, capped at 100). */
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Typeahead results, in rank order. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["JsonTypeahead"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -423,15 +464,16 @@ export interface components {
             /**
              * @description In-app navigation target: a `::`-joined item path (e.g. `trillium::Conn`)
              *     the client routes to. Present whenever the target resolves to an item with
-             *     its own page; absent for associated items, variants, and bare external
-             *     URLs (fall back to `url`).
+             *     its own page; absent for associated items, variants, and bare external URLs.
              */
             path?: string | null;
             style: components["schemas"]["SpanStyle"];
             text: string;
             /**
-             * @description External navigation target (the item's docs.rs / std-docs page), when the
-             *     span points at another item — the pointer for opening upstream docs.
+             * @description A link we cannot express as an item path: an external hyperlink written in
+             *     the docs (a blog post, an RFC) or a link that resolved to no item. Mutually
+             *     exclusive with `path` — where a path exists it *is* the navigation target,
+             *     so no upstream URL is emitted beside it (see [`json_span`]).
              */
             url?: string | null;
         };
@@ -467,10 +509,10 @@ export interface components {
         JsonTrait: {
             generics?: components["schemas"]["JsonSpan"][];
             /**
-             * Format: uint
-             * @description Implementors beyond the render cap.
+             * @description Every implementor in the crate, sorted by type name — not the terminal's
+             *     capped preview, so a client can show the whole list. Each carries impl
+             *     detail only where the impl block or its methods have their own docs.
              */
-            implementorOverflow?: number;
             implementors?: components["schemas"]["JsonImplementor"][];
             members?: components["schemas"]["JsonTraitMember"][];
             name: string;
@@ -514,6 +556,28 @@ export interface components {
         JsonTypeAlias: {
             aliased: components["schemas"]["JsonSpan"][];
             name: string;
+        };
+        /**
+         * @description Crate-name typeahead results: the highest-ranked crates whose names start
+         *     with the query prefix, in rank order.
+         */
+        JsonTypeahead: {
+            query: string;
+            results: components["schemas"]["JsonTypeaheadEntry"][];
+            /**
+             * Format: uint
+             * @description Exact number of crates matching the prefix; `results.len() < total`
+             *     means the list was truncated to the requested limit.
+             */
+            total: number;
+        };
+        JsonTypeaheadEntry: {
+            name: string;
+            /**
+             * @description The crate's crates.io default version (typically the latest stable
+             *     non-yanked release), up to ~a day stale.
+             */
+            version: string;
         };
         /**
          * @description A union body. Mirrors [`JsonStruct`] minus the `shape` (a union is always

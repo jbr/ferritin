@@ -37,6 +37,7 @@ use crate::{
     format_context::FormatContext,
     json,
     request::Request,
+    typeahead::TypeaheadService,
 };
 
 /// Worker-thread stack size. The CLI runs the same lookups on the main thread's
@@ -45,6 +46,10 @@ const WORKER_STACK_SIZE: usize = 16 * 1024 * 1024;
 
 /// Default number of results for the crate-scoped search endpoint.
 const SEARCH_LIMIT: usize = 10;
+
+/// Default and maximum result counts for the crate-name typeahead endpoint.
+const TYPEAHEAD_LIMIT: usize = 10;
+const TYPEAHEAD_MAX_LIMIT: usize = 100;
 
 /// Default byte cap for the in-memory crate cache, overridable via
 /// `FERRITIN_CACHE_BYTES` (weight proxy: JSON file size at load).
@@ -95,9 +100,11 @@ pub fn handler() -> impl trillium::Handler {
         )),
         Compression::new(),
         CachingHeaders::new(),
+        trillium::state(Arc::new(TypeaheadService::new())),
         Router::new()
             .get("/api/crates/:crate_name", get_crate)
-            .get("/api/search/:crate_name", search_crate),
+            .get("/api/search/:crate_name", search_crate)
+            .get("/api/typeahead", typeahead),
         frontend(),
     )
 }
@@ -191,6 +198,35 @@ async fn get_crate(conn: Conn) -> Conn {
     .await;
 
     respond_json(conn, outcome)
+}
+
+/// Crate-name typeahead: the top crates (by download rank) whose names start
+/// with `q`. Unlike the documentation endpoints this never touches the Store
+/// or the worker pool — the query is a pair of binary searches over the
+/// in-memory artifact, so it runs inline on the async thread.
+async fn typeahead(conn: Conn) -> Conn {
+    let Some(service) = conn.state::<Arc<TypeaheadService>>().cloned() else {
+        return conn.with_status(Status::InternalServerError).halt();
+    };
+
+    let query = QueryStrong::parse(conn.querystring());
+    let Some(q) = query.get_str("q").map(str::to_string) else {
+        return conn.with_status(Status::BadRequest).halt();
+    };
+    let limit = query
+        .get_str("limit")
+        .and_then(|limit| limit.parse().ok())
+        .unwrap_or(TYPEAHEAD_LIMIT)
+        .min(TYPEAHEAD_MAX_LIMIT);
+
+    let Some(results) = service.typeahead(&q, limit).await else {
+        return conn.with_status(Status::ServiceUnavailable).halt();
+    };
+
+    respond_json(
+        conn,
+        Some(json::typeahead_to_string(&q, results).map(|body| (Status::Ok, body))),
+    )
 }
 
 async fn search_crate(conn: Conn) -> Conn {
