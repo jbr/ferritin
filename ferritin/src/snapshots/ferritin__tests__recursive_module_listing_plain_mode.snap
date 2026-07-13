@@ -226,7 +226,7 @@ Functions
     Removes consecutive repeated elements in the vector according to the PartialEq trait implementation. [...]
 
   ◦ Vec::dedup_by 
-    Removes all but the first of consecutive elements in the vector satisfying a given equality relation. [...]
+    Removes all but the first of consecutive elements in the vector that are "equal" according to the given predicate function. [...]
 
   ◦ Vec::dedup_by_key 
     Removes all but the first of consecutive elements in the vector that resolve to the same key. [...]

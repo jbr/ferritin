@@ -8846,7 +8846,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "paragraph",
                 "spans": [
                   {
-                    "text": "Removes all but the first of consecutive elements in the vector satisfying a given equality",
+                    "text": "Removes all but the first of consecutive elements in the vector that are",
                     "style": "Plain"
                   },
                   {
@@ -8854,7 +8854,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "Plain"
                   },
                   {
-                    "text": "relation.",
+                    "text": "\"equal\" according to the given predicate function.",
                     "style": "Plain"
                   }
                 ]
