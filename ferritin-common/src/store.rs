@@ -23,6 +23,20 @@
 //! smarter policy will need. Because eviction only runs on insert, a
 //! pin-heavy burst can leave the cache over its cap until the next load
 //! triggers a sweep; nothing grows in the meantime.
+//!
+//! Cold-form crate entries **transit memory rather than accumulate**
+//! (supersede-on-sidecar-write): a cold load keeps the fully parsed `Crate`
+//! resident at ~4–5× the JSON size, which the weight proxy (JSON file size)
+//! badly underestimates. Caching the fat form is still load-bearing while the
+//! background sidecar write is in flight — singleflight covers a burst on a
+//! cold crate — but the moment the sidecar lands, a thin mmap-lazy reload is
+//! strictly better. The write thread flags the data
+//! ([`RustdocData::sidecar_written`]) and the cache drops flagged entries
+//! opportunistically: on access to the key, on every completed load, and in
+//! the sweep. Pins keep the fat data alive for queries still using it. As a
+//! backstop (a failed write leaves the fat entry cached, as before), cold
+//! forms are charged [`COLD_FORM_WEIGHT`]× their JSON size so eviction
+//! pressure finds them first.
 
 use crate::CrateName;
 use crate::RustdocData;
@@ -51,6 +65,23 @@ const TRANSIENT_TTL: Duration = Duration::from_secs(30);
 /// Exact reqs never enter the resolution cache — they skip resolution
 /// entirely (see [`exact_version`]).
 const RESOLUTION_TTL: Duration = Duration::from_secs(15 * 60);
+
+/// Weight multiplier for cold-form crate entries, whose freshly-parsed `Crate`
+/// stays resident at 4–5× the JSON size (measured ~4.7× over the top 100
+/// crates). Supersede-on-sidecar-write should drop these before eviction ever
+/// sees them; the multiplier is the backstop that makes eviction pressure find
+/// them first if a sidecar write fails and one lingers.
+const COLD_FORM_WEIGHT: u64 = 4;
+
+/// How often the RSS guard reads `/proc/self/status`, at most. The read costs
+/// tens of microseconds against a 200 ms+ cold load, so this is generous.
+const RSS_POLL_INTERVAL: Duration = Duration::from_secs(1);
+
+/// How long the RSS guard stays quiet after shedding. RSS is a sticky signal —
+/// the allocator may not return freed pages to the OS promptly — so a guard
+/// that re-checks immediately after shedding would see unchanged RSS and
+/// spiral until the cache is empty. Shed, wait, and only then look again.
+const RSS_SHED_COOLDOWN: Duration = Duration::from_secs(30);
 
 /// Why a load failed, determining how long the failure is cached.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -120,6 +151,17 @@ impl<T> Entry<T> {
     fn is_pinned(&self) -> bool {
         matches!(self.slot.get(), Some(Ok(data)) if Arc::strong_count(data) > 1)
     }
+
+    /// Whether this entry's cached value reports itself superseded per the
+    /// cache's [`Cache::superseded`] hook — a strictly better replacement now
+    /// exists (a cold-form crate whose sidecar has landed on disk), so the
+    /// entry should be dropped and the next access should reload. Unlike
+    /// eviction, dropping a *pinned* superseded entry is correct: the pin
+    /// keeps the fat data alive for its query, and the drop is what lets the
+    /// next query load the thin form.
+    fn is_superseded(&self, superseded: fn(&T) -> bool) -> bool {
+        matches!(self.slot.get(), Some(Ok(data)) if superseded(data))
+    }
 }
 
 /// The map half of a [`Cache`], bundled with its sweep trigger so both live
@@ -146,12 +188,19 @@ impl<K, T> Default for Entries<K, T> {
 }
 
 impl<K: Eq + std::hash::Hash, T> Entries<K, T> {
-    /// Drop every expired entry and reset the sweep trigger. Returns the
-    /// dropped entries so the caller can release them outside the map lock.
-    fn sweep(&mut self, positive_ttl: Option<Duration>) -> Vec<Entry<T>> {
+    /// Drop every expired or superseded entry and reset the sweep trigger.
+    /// Returns the dropped entries so the caller can release them outside the
+    /// map lock.
+    fn sweep(
+        &mut self,
+        positive_ttl: Option<Duration>,
+        superseded: fn(&T) -> bool,
+    ) -> Vec<Entry<T>> {
         let swept = self
             .map
-            .extract_if(|_, entry| entry.is_expired(positive_ttl))
+            .extract_if(|_, entry| {
+                entry.is_expired(positive_ttl) || entry.is_superseded(superseded)
+            })
             .map(|(_, entry)| entry)
             .collect();
         self.sweep_at = (self.map.len() * 2).max(INITIAL_SWEEP_THRESHOLD);
@@ -172,6 +221,12 @@ struct Cache<K, T> {
     /// `Some` (resolution of floating version reqs) means success goes stale:
     /// what `*` or `^1` resolves to moves when a new version publishes.
     positive_ttl: Option<Duration>,
+    /// Whether a cached value has been superseded by a strictly better
+    /// replacement — for crate data, a cold form whose sidecar has landed on
+    /// disk (see [`RustdocData::sidecar_written`]). Superseded entries are
+    /// dropped on access, by every completed load, and by the sweep; the next
+    /// access reloads the replacement. Pins keep the old data alive.
+    superseded: fn(&T) -> bool,
 }
 
 impl<K, T> Default for Cache<K, T> {
@@ -180,21 +235,22 @@ impl<K, T> Default for Cache<K, T> {
             entries: Mutex::default(),
             cap: u64::MAX,
             positive_ttl: None,
+            superseded: |_| false,
         }
     }
 }
 
 impl<K: Eq + std::hash::Hash + Clone + Debug, T> Cache<K, T> {
-    /// The slot for `key`: touches access metadata, replaces an expired
-    /// entry, creates the entry if absent, and runs the expired-entry sweep
-    /// when the map has grown past its trigger.
+    /// The slot for `key`: touches access metadata, replaces an expired or
+    /// superseded entry, creates the entry if absent, and runs the
+    /// expired-entry sweep when the map has grown past its trigger.
     fn slot(&self, key: &K) -> Slot<T> {
         let (slot, swept) = {
             let mut entries = self.entries.lock().unwrap();
-            let swept =
-                (entries.map.len() >= entries.sweep_at).then(|| entries.sweep(self.positive_ttl));
+            let swept = (entries.map.len() >= entries.sweep_at)
+                .then(|| entries.sweep(self.positive_ttl, self.superseded));
             let entry = entries.map.entry(key.clone()).or_insert_with(Entry::new);
-            if entry.is_expired(self.positive_ttl) {
+            if entry.is_expired(self.positive_ttl) || entry.is_superseded(self.superseded) {
                 *entry = Entry::new();
             }
             entry.access_count += 1;
@@ -234,9 +290,9 @@ impl<K: Eq + std::hash::Hash + Clone + Debug, T> Cache<K, T> {
         result
     }
 
-    /// Record a completed load on `key`'s entry and evict while over the byte
-    /// cap. Returns the evicted entries so the caller can drop them after the
-    /// map lock is released.
+    /// Record a completed load on `key`'s entry, drop entries superseded since
+    /// the last load, and evict while over the byte cap. Returns the dropped
+    /// entries so the caller can drop them after the map lock is released.
     fn record_load(&self, key: &K, slot: &Slot<T>, weight: Option<u64>) -> Vec<Entry<T>> {
         let mut entries = self.entries.lock().unwrap();
         if let Some(entry) = entries.map.get_mut(key)
@@ -246,44 +302,114 @@ impl<K: Eq + std::hash::Hash + Clone + Debug, T> Cache<K, T> {
             entry.weight = weight.unwrap_or(0);
         }
 
+        // Every completed load purges superseded entries, so fat cold forms
+        // transit memory instead of accumulating: the workload that creates
+        // them (a stream of cold loads) is exactly the one that purges them.
+        // A quiet cache can hold at most the trailing cold loads' fat forms
+        // until their keys are next accessed.
+        let mut evicted: Vec<Entry<T>> = entries
+            .map
+            .extract_if(|k, entry| {
+                let superseded = entry.is_superseded(self.superseded);
+                if superseded {
+                    log::info!("dropping superseded {k:?} (weight {})", entry.weight);
+                }
+                superseded
+            })
+            .map(|(_, entry)| entry)
+            .collect();
+        evicted.extend(Self::evict_to(&mut entries, self.cap, Some(key)));
+        evicted
+    }
+
+    /// Evict entries, least-recently-accessed first, until the summed weight
+    /// is at most `target`. In-flight loads are skipped (their result would
+    /// never land anywhere), pinned entries are skipped (evicting them frees
+    /// no memory, see [`Entry::is_pinned`]), and so is `keep` — the entry
+    /// whose load triggered this pass (evicting it immediately would just
+    /// thrash). Returns the evicted entries so the caller can drop them
+    /// outside the map lock.
+    fn evict_to(entries: &mut Entries<K, T>, target: u64, keep: Option<&K>) -> Vec<Entry<T>> {
         let mut evicted = Vec::new();
         loop {
             let total: u64 = entries.map.values().map(|entry| entry.weight).sum();
-            if total <= self.cap {
+            if total <= target {
                 break;
             }
-            // Victim: the least-recently-accessed completed, unpinned entry.
-            // In-flight loads are skipped (their result would never land
-            // anywhere), pinned entries are skipped (evicting them frees no
-            // memory, see `is_pinned`), and so is the entry that triggered
-            // this pass (evicting it immediately would just thrash).
             let Some(victim) = entries
                 .map
                 .iter()
-                .filter(|(k, entry)| entry.slot.get().is_some() && !entry.is_pinned() && *k != key)
+                .filter(|(k, entry)| {
+                    entry.slot.get().is_some() && !entry.is_pinned() && keep != Some(*k)
+                })
                 .min_by_key(|(_, entry)| entry.last_access)
                 .map(|(k, _)| k.clone())
             else {
                 log::info!(
-                    "cache over cap ({total} > {}) but everything is pinned or in flight; \
-                     eviction resumes as queries release their pins",
-                    self.cap
+                    "cache over target ({total} > {target}) but everything is pinned or in \
+                     flight; eviction resumes as queries release their pins"
                 );
                 break;
             };
             if let Some(entry) = entries.map.remove(&victim) {
                 log::info!(
-                    "evicting {victim:?} (weight {}, {} accesses, resident {:?}; total {total} > cap {})",
+                    "evicting {victim:?} (weight {}, {} accesses, resident {:?}; total {total} > target {target})",
                     entry.weight,
                     entry.access_count,
                     entry.loaded_at.elapsed(),
-                    self.cap
                 );
                 evicted.push(entry);
             }
         }
         evicted
     }
+
+    /// Shed roughly a quarter of the cache's summed weight, least-recently-
+    /// accessed first — the RSS guard's bounded response to the process
+    /// running hot (see [`Store::check_rss`]). Weight-based rather than
+    /// count-based, so it can't be satisfied by evicting a handful of small
+    /// entries. Returns the evicted entries for dropping outside the map lock.
+    fn shed(&self) -> Vec<Entry<T>> {
+        let mut entries = self.entries.lock().unwrap();
+        let total: u64 = entries.map.values().map(|entry| entry.weight).sum();
+        Self::evict_to(&mut entries, total.saturating_sub(total / 4), None)
+    }
+}
+
+/// OOM backstop: when the process's anonymous RSS exceeds a configured high
+/// water, shed cache weight (see [`Store::check_rss`]). This is the reactive
+/// layer between the proactive weight cap (whose byte-weights are proxies
+/// that can drift from real memory use) and the fatal outer layer (the
+/// kernel's OOM killer / systemd `MemoryMax`): prefer evicting crates to
+/// crashing.
+struct RssGuard {
+    /// Anonymous-RSS trip point in bytes.
+    high_water: u64,
+    /// Earliest next check — advanced by [`RSS_POLL_INTERVAL`] per read and by
+    /// [`RSS_SHED_COOLDOWN`] after a shed, debouncing both the `/proc` read
+    /// and the response.
+    next_check: Mutex<Instant>,
+}
+
+/// The process's anonymous resident set in bytes — the memory the kernel
+/// cannot reclaim on a swapless host, i.e. what actually predicts an OOM
+/// kill. Deliberately *not* total RSS: that counts resident file-backed
+/// pages, and a healthy warm server shows high total RSS precisely because
+/// the mmap'd sidecars are paged in — those pages are clean and the kernel
+/// drops them under pressure.
+///
+/// Linux-only (`RssAnon` in `/proc/self/status`); returns `None` elsewhere,
+/// leaving the guard inert.
+fn anon_rss() -> Option<u64> {
+    #[cfg(target_os = "linux")]
+    {
+        let status = std::fs::read_to_string("/proc/self/status").ok()?;
+        let line = status.lines().find(|line| line.starts_with("RssAnon:"))?;
+        let kib: u64 = line.split_whitespace().nth(1)?.parse().ok()?;
+        Some(kib * 1024)
+    }
+    #[cfg(not(target_os = "linux"))]
+    None
 }
 
 /// A docs.rs URL parsed into crate name and version
@@ -392,6 +518,10 @@ pub struct Store {
 
     /// Evictable search-index cache, same keys and mechanism as `crates`.
     search_indexes: Cache<(CrateName<'static>, Version), SearchIndex>,
+
+    /// OOM backstop, off unless configured (serve mode sets it from
+    /// `FERRITIN_RSS_HIGH_WATER_BYTES`); see [`Store::check_rss`].
+    rss_guard: Option<RssGuard>,
 }
 
 impl Default for Store {
@@ -404,8 +534,12 @@ impl Default for Store {
                 positive_ttl: Some(RESOLUTION_TTL),
                 ..Cache::default()
             },
-            crates: Cache::default(),
+            crates: Cache {
+                superseded: RustdocData::sidecar_written,
+                ..Cache::default()
+            },
             search_indexes: Cache::default(),
+            rss_guard: None,
         }
     }
 }
@@ -433,6 +567,57 @@ impl Store {
     pub fn with_search_weight_cap(mut self, cap: u64) -> Self {
         self.search_indexes.cap = cap;
         self
+    }
+
+    /// Arm the RSS guard: when the process's anonymous RSS exceeds
+    /// `high_water` bytes, shed cache weight. Off by default; inert on
+    /// non-Linux platforms (see [`anon_rss`]).
+    pub fn with_rss_high_water(mut self, high_water: u64) -> Self {
+        self.rss_guard = Some(RssGuard {
+            high_water,
+            next_check: Mutex::new(Instant::now()),
+        });
+        self
+    }
+
+    /// The OOM backstop, run on the load path (loads are what grow memory):
+    /// if anonymous RSS is over the guard's high water, shed ~a quarter of
+    /// both data caches' summed weight, least-recently-accessed first.
+    ///
+    /// RSS is the trigger but weight is the response variable — the guard
+    /// never loops "until RSS recovers", because freed pages may not return
+    /// to the OS promptly and chasing RSS would empty the cache for nothing.
+    /// One shed, then [`RSS_SHED_COOLDOWN`] of quiet; if RSS is still high on
+    /// the next check, that's another bounded shed and a loud log, and the
+    /// eventual floor is an empty cache — at which point high RSS means pins
+    /// or a leak, which eviction cannot fix and systemd's `MemoryMax` still
+    /// backstops.
+    fn check_rss(&self) {
+        let Some(guard) = &self.rss_guard else {
+            return;
+        };
+        {
+            let mut next_check = guard.next_check.lock().unwrap();
+            let now = Instant::now();
+            if now < *next_check {
+                return;
+            }
+            *next_check = now + RSS_POLL_INTERVAL;
+        }
+        let Some(rss) = anon_rss() else { return };
+        if rss <= guard.high_water {
+            return;
+        }
+        log::warn!(
+            "anon RSS {rss} over high water {}; shedding a quarter of cache weight",
+            guard.high_water
+        );
+        let shed_crates = self.crates.shed();
+        let shed_indexes = self.search_indexes.shed();
+        *guard.next_check.lock().unwrap() = Instant::now() + RSS_SHED_COOLDOWN;
+        // Dropped here, outside both map locks (dropping crate data can join
+        // a sidecar write thread).
+        drop((shed_crates, shed_indexes));
     }
 
     /// The configured sources in lookup priority order.
@@ -507,6 +692,7 @@ impl Store {
         requested_name: &str,
         version_req: &VersionReq,
     ) -> Result<(Version, Arc<RustdocData>), LoadFailure> {
+        self.check_rss();
         let (name, version, provenance_hint) = if let Some(version) = exact_version(version_req) {
             (crate_name.clone(), version, None)
         } else {
@@ -520,7 +706,14 @@ impl Store {
 
         let data = self.crates.get_or_load(
             &(name.clone(), version.clone()),
-            |data| data.fs_path().metadata().map_or(0, |m| m.len()),
+            |data| {
+                let json_size = data.fs_path().metadata().map_or(0, |m| m.len());
+                if data.is_cold_form() {
+                    json_size * COLD_FORM_WEIGHT
+                } else {
+                    json_size
+                }
+            },
             || self.load_data(&name, &version, provenance_hint),
         )?;
         Ok((version, data))
@@ -534,6 +727,7 @@ impl Store {
         key: &(CrateName<'static>, Version),
         build: impl FnOnce() -> Result<Arc<SearchIndex>, LoadFailure>,
     ) -> Result<Arc<SearchIndex>, LoadFailure> {
+        self.check_rss();
         self.search_indexes
             .get_or_load(key, |index| index.disk_weight(), build)
     }
@@ -736,6 +930,78 @@ mod cache_tests {
         assert!(!entries.map.contains_key(&a));
         assert!(entries.map.contains_key(&c));
         assert!(entries.map.contains_key(&d));
+    }
+
+    /// A cache whose values report themselves superseded when their flag is
+    /// set — the test stand-in for a cold-form crate whose sidecar write
+    /// completed ([`crate::RustdocData::sidecar_written`]).
+    fn supersedable_cache() -> Cache<CrateName<'static>, std::sync::atomic::AtomicBool> {
+        Cache {
+            superseded: |flag| flag.load(std::sync::atomic::Ordering::Relaxed),
+            ..Cache::default()
+        }
+    }
+
+    fn load_flag(superseded: bool) -> Result<Arc<std::sync::atomic::AtomicBool>, LoadFailure> {
+        Ok(Arc::new(std::sync::atomic::AtomicBool::new(superseded)))
+    }
+
+    #[test]
+    fn superseded_entries_are_dropped_by_the_next_completed_load() {
+        let cache = supersedable_cache();
+        let a = CrateName::from("a".to_string());
+        let b = CrateName::from("b".to_string());
+
+        let value_a = cache.get_or_load(&a, |_| 1, || load_flag(false)).unwrap();
+        value_a.store(true, std::sync::atomic::Ordering::Relaxed);
+
+        // Any completed load purges superseded entries, even far under cap.
+        cache.get_or_load(&b, |_| 1, || load_flag(false)).unwrap();
+        let entries = cache.entries.lock().unwrap();
+        assert!(!entries.map.contains_key(&a));
+        assert!(entries.map.contains_key(&b));
+        // The purge dropped only the cache's Arc; the pin still works.
+        assert!(value_a.load(std::sync::atomic::Ordering::Relaxed));
+    }
+
+    #[test]
+    fn superseded_entry_is_replaced_on_access() {
+        let cache = supersedable_cache();
+        let a = CrateName::from("a".to_string());
+
+        let first = cache.get_or_load(&a, |_| 1, || load_flag(false)).unwrap();
+        first.store(true, std::sync::atomic::Ordering::Relaxed);
+
+        // Re-accessing the superseded key reloads instead of serving the fat form.
+        let second = cache.get_or_load(&a, |_| 1, || load_flag(false)).unwrap();
+        assert!(!Arc::ptr_eq(&first, &second));
+        assert!(!second.load(std::sync::atomic::Ordering::Relaxed));
+    }
+
+    #[test]
+    fn shed_evicts_a_quarter_of_weight_lra_first_skipping_pins() {
+        let cache = Cache::<CrateName<'static>, String>::default();
+        let a = CrateName::from("a".to_string());
+        let b = CrateName::from("b".to_string());
+        let c = CrateName::from("c".to_string());
+        let d = CrateName::from("d".to_string());
+
+        let pin_a = cache.get_or_load(&a, |_| 10, || load_ok("a")).unwrap();
+        cache.get_or_load(&b, |_| 10, || load_ok("b")).unwrap();
+        cache.get_or_load(&c, |_| 10, || load_ok("c")).unwrap();
+        cache.get_or_load(&d, |_| 10, || load_ok("d")).unwrap();
+
+        // Total 40 → target 30: one entry must go. `a` is least recently
+        // accessed but pinned, so `b` is shed instead.
+        let dropped = cache.shed();
+        assert_eq!(dropped.len(), 1);
+        let entries = cache.entries.lock().unwrap();
+        assert!(entries.map.contains_key(&a));
+        assert!(!entries.map.contains_key(&b));
+        assert!(entries.map.contains_key(&c));
+        assert!(entries.map.contains_key(&d));
+        drop(entries);
+        drop(pin_a);
     }
 
     #[test]

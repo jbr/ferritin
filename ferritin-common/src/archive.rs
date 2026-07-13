@@ -17,7 +17,7 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::thread::JoinHandle;
 
 use memmap2::Mmap;
@@ -171,13 +171,23 @@ fn remove_stale_siblings(json_path: &Path, current: &Path) {
 /// joins it on drop, so a short-lived CLI process still finishes the write before
 /// exiting (the result has already been rendered by then). Returns `None` when
 /// there is nothing to write (no backing path, e.g. synthetic test crates).
-pub(crate) fn write_archive_async(krate: Arc<Crate>, json_path: PathBuf) -> Option<JoinHandle<()>> {
+///
+/// `written` is set once the sidecar has landed on disk (write + atomic
+/// rename): from that moment a warm reload is strictly better than the fat
+/// resident form, and the Store drops the cold cache entry (supersede-on-
+/// sidecar-write). A failed write leaves the flag unset and the entry cached.
+pub(crate) fn write_archive_async(
+    krate: Arc<Crate>,
+    json_path: PathBuf,
+    written: Arc<AtomicBool>,
+) -> Option<JoinHandle<()>> {
     if json_path.as_os_str().is_empty() {
         return None;
     }
     Some(std::thread::spawn(move || {
-        if let Err(e) = write_archive(&krate, &json_path) {
-            log::debug!("could not write rkyv sidecar: {e}");
+        match write_archive(&krate, &json_path) {
+            Ok(()) => written.store(true, Ordering::Release),
+            Err(e) => log::debug!("could not write rkyv sidecar: {e}"),
         }
     }))
 }

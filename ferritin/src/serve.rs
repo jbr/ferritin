@@ -63,17 +63,31 @@ fn cache_bytes() -> u64 {
         .unwrap_or(DEFAULT_CACHE_BYTES)
 }
 
+/// The RSS guard's anonymous-RSS trip point in bytes:
+/// `FERRITIN_RSS_HIGH_WATER_BYTES`. No default — unset means no guard, so
+/// localhost servers keep the weight cap as their only (and portable)
+/// memory bound. The guard reads Linux-only `/proc` state and exists for the
+/// public deployment, where the cache's byte-weight proxies drifting from
+/// real memory use must mean shed crates, not an OOM kill.
+fn rss_high_water_bytes() -> Option<u64> {
+    std::env::var("FERRITIN_RSS_HIGH_WATER_BYTES")
+        .ok()
+        .and_then(|value| value.parse().ok())
+}
+
 pub fn serve() {
     let cache_bytes = cache_bytes();
-    let store = Arc::new(
-        Store::default()
-            .with_std_source(StdSource::from_rustup())
-            .with_docsrs_source(DocsRsSource::from_default_cache())
-            .with_weight_cap(cache_bytes)
-            // Search indexes are far smaller than crate JSON; give them a
-            // proportional slice.
-            .with_search_weight_cap(cache_bytes / 8),
-    );
+    let mut store = Store::default()
+        .with_std_source(StdSource::from_rustup())
+        .with_docsrs_source(DocsRsSource::from_default_cache())
+        .with_weight_cap(cache_bytes)
+        // Search indexes are far smaller than crate JSON; give them a
+        // proportional slice.
+        .with_search_weight_cap(cache_bytes / 8);
+    if let Some(high_water) = rss_high_water_bytes() {
+        store = store.with_rss_high_water(high_water);
+    }
+    let store = Arc::new(store);
 
     let pool = Arc::new(
         ThreadPoolBuilder::new()
