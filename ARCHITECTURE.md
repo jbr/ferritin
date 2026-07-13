@@ -245,13 +245,17 @@ $CARGO_HOME/rustdoc-json/{format-version}/{crate}/{version}.json
 
 **Multi-version support:**
 - Supports rustdoc JSON format versions 55-60 natively, plus newer additive formats (see below)
-- Fetches zstd-compressed JSON from docs.rs
+- Fetches zstd-compressed JSON from docs.rs via the suffix-less URL
+  (`.../json`), which serves whatever format the release was built with; the
+  actual `format_version` is read from the JSON itself. Formats older than the
+  supported floor are treated as definitive absence ("no rustdoc JSON we can
+  read exists for this release"). This replaced a historical probe of
+  exact-format URLs in descending order — one request instead of up to seven.
 - Stores raw JSON indexed by source format version (not normalized)
 - On read, normalizes to current format version (v60) via conversions module
-- Tries exact format-version URLs in descending order when fetching (prefers newer)
-- If none exist (e.g. a freshly-published crate that docs.rs only built in a
-  newer format), falls back to the latest-format URL (`.../json` with no format
-  suffix) and parses whatever format docs.rs reports
+- docs.rs/crates.io requests are currently pinned to HTTP/1.1 as a workaround
+  for a timing-sensitive stall in trillium-client's h2 path (see the comment on
+  `DocsRsClient::get`); remove the pin when that race is fixed upstream
 
 **Version resolution:**
 - Queries crates.io API for crate metadata and available versions

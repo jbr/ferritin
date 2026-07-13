@@ -2,14 +2,13 @@ use crate::sources::CrateProvenance;
 use crate::{RustdocData, sources::RustdocVersion};
 use anyhow::{Context, Result, anyhow};
 use fieldwork::Fieldwork;
-use rustdoc_types::FORMAT_VERSION;
 use semver::{Version, VersionReq};
 use serde::{Deserialize, Serialize};
 use std::{
     path::PathBuf,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
-use trillium_client::{Client, HeaderValue, KnownHeaderName, Status};
+use trillium_client::{Client, HeaderValue, KnownHeaderName, Status, Version as HttpVersion};
 use trillium_client_retry::RetryHandler;
 use trillium_compression::client::Compression;
 use trillium_logger::{Target, client::ClientLogger};
@@ -90,7 +89,6 @@ pub struct DocsRsClient {
     http_client: Client,
     #[field(get)]
     cache_dir: PathBuf,
-    format_version: u32,
 }
 
 #[derive(Debug)]
@@ -109,6 +107,20 @@ impl DocsRsClient {
             s.into()
         });
         USER_AGENT.clone()
+    }
+
+    /// GET a URL, pinned to HTTP/1.1.
+    ///
+    /// The pin is a workaround, not a preference: trillium-client's h2 path
+    /// has a timing-sensitive stall (a request on a reused connection
+    /// intermittently errors at ~90ms and its retry never completes) first
+    /// observed 2026-07-13 from the public server against the us-east-2
+    /// CloudFront POP — and never reproduced under trace logging or from
+    /// other vantage points. Remove once the trillium-client race is fixed.
+    fn get(&self, url: String) -> trillium_client::Conn {
+        self.http_client
+            .get(url)
+            .with_http_version(HttpVersion::Http1_1)
     }
 
     /// Create a new docs.rs client with the specified cache directory
@@ -131,7 +143,6 @@ impl DocsRsClient {
         Ok(Self {
             http_client,
             cache_dir,
-            format_version: FORMAT_VERSION,
         })
     }
 
@@ -191,41 +202,15 @@ impl DocsRsClient {
             return Ok(Some(cached));
         }
 
-        // Fetch from docs.rs
-        // Try format versions in descending order (newest we support first).
-        // These exact-format URLs guarantee a format we can parse directly.
-        let mut bytes = None;
-        for format_ver in (MIN_FORMAT_VERSION..=self.format_version).rev() {
-            log::debug!(
-                "Trying to fetch {} version {} with format {}",
-                crate_name,
-                version,
-                format_ver
-            );
-
-            let url = format!("https://docs.rs/crate/{crate_name}/{version}/json/{format_ver}");
-            if let Some(fetched) = self.fetch_bytes(url).await? {
-                bytes = Some(fetched);
-                break;
-            }
-        }
-
-        // Fallback: a freshly-published crate only has docs.rs's newest format,
-        // which may be newer than the one we were built against (so none of the
-        // exact-format URLs above exist yet). The suffix-less URL serves docs.rs's
-        // latest format; we read its actual `format_version` from the JSON below
-        // and let `load_and_normalize` parse it (additive formats are forward
-        // compatible with the current rustdoc-types).
-        let bytes = match bytes {
-            Some(bytes) => bytes,
-            None => {
-                let url = format!("https://docs.rs/crate/{crate_name}/{version}/json");
-                log::debug!("Exact-format URLs missed; trying latest format: {url}");
-                match self.fetch_bytes(url).await? {
-                    Some(bytes) => bytes,
-                    None => return Ok(None),
-                }
-            }
+        // Fetch from docs.rs. The suffix-less URL serves whatever format the
+        // release was built with; we read the actual `format_version` from the
+        // JSON below and let `load_and_normalize` parse it (formats newer than
+        // the rustdoc-types we build against are additive, so they deserialize
+        // directly). This replaces a historical probe of exact-format URLs in
+        // descending order — one request instead of up to seven.
+        let url = format!("https://docs.rs/crate/{crate_name}/{version}/json");
+        let Some(bytes) = self.fetch_bytes(url).await? else {
+            return Ok(None);
         };
 
         // Decompress
@@ -236,6 +221,17 @@ impl DocsRsClient {
             format_version,
             crate_version,
         } = sonic_rs::serde::from_slice(&json).context("Failed to parse JSON metadata")?;
+
+        // A build older than the conversions floor is a definitive absence
+        // ("no rustdoc JSON we can read exists for this release"), not a parse
+        // error — the same outcome the old exact-format probe produced by
+        // finding none of its URLs.
+        if format_version < MIN_FORMAT_VERSION {
+            log::info!(
+                "{crate_name}@{version} only has format {format_version} (< {MIN_FORMAT_VERSION}); treating as unavailable"
+            );
+            return Ok(None);
+        }
 
         let Some(crate_version) = crate_version else {
             return Ok(None);
@@ -349,7 +345,7 @@ impl DocsRsClient {
 
         log::debug!("Fetching crate metadata from crates.io: {url}");
 
-        let conn = self.http_client.get(url).await?;
+        let conn = self.get(url).await?;
 
         // Check if we got a 404 (crate not found)
         if let Some(Status::NotFound) = conn.status() {
@@ -494,7 +490,7 @@ impl DocsRsClient {
     /// Returns Ok(None) if the URL is a 404 (crate/version/format not found),
     /// Err for other failures.
     async fn fetch_bytes(&self, url: String) -> Result<Option<Vec<u8>>> {
-        let conn = self.http_client.get(url).await?;
+        let conn = self.get(url).await?;
 
         // Check if we got a 404 (crate/version/format not found)
         if let Some(Status::NotFound) = conn.status() {
