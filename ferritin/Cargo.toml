@@ -71,12 +71,16 @@ crate-names = { version = "0.1.1", optional = true }
 querystrong = { version = "0.4.0", optional = true }
 rayon = { version = "1.12.0", optional = true }
 trillium = { version = "1.3.0", optional = true }
+# `webpki-roots` is required for `AcmeConfig::new` (the ACME client needs roots
+# to trust Let's Encrypt's directory endpoint).
+trillium-acme = { version = "0.9.0", features = ["webpki-roots"], optional = true }
 trillium-caching-headers = { version = "0.4.1", optional = true }
 trillium-client = { version = "0.9.11", optional = true }
 trillium-compression = { version = "0.3.3", features = ["client"], optional = true }
 trillium-frontend = { version = "0.4.0", optional = true }
 trillium-logger = { version = "0.5.4", features = ["client"], optional = true }
 trillium-redirect = { version = "0.3.0", features = ["client"], optional = true }
+trillium-quinn = { version = "0.1.6", optional = true }
 trillium-router = { version = "0.5.2", optional = true }
 trillium-rustls = { version = "0.11.3", optional = true }
 trillium-smol = { version = "0.7.0", optional = true }
@@ -116,6 +120,12 @@ serve = [
     "dep:trillium-rustls",
     "dep:trillium-smol",
 ]
+
+# Deployment-only: automatic HTTPS via Let's Encrypt (tls-alpn-01) plus HTTP/3,
+# activated at runtime by `FERRITIN_ACME_DOMAIN` (absent it, `serve` runs
+# cleartext exactly as without this feature). Off by default — users running a
+# local `serve` don't need trillium-acme, rustls-acme, or quinn.
+acme = ["serve", "dep:trillium-acme", "dep:trillium-quinn"]
 
 # Development-only: emit the OpenAPI schema for the JSON API (`ferritin schema`).
 # Off by default so normal builds don't pull in schemars; the generated schema is
