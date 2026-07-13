@@ -192,7 +192,21 @@ impl<'a> Request<'a> {
                         type_spans: self.format_type(impl_block, ty),
                     }),
                     ItemEnum::AssocType { type_: None, .. } => {}
-                    _ if model_methods => methods.push(self.model_method(assoc_item)),
+                    // An impl is an *edge* between a type and a trait, and only
+                    // what is specific to that edge belongs on it. A method's
+                    // signature is dictated by the trait — the node — so copying
+                    // it onto every edge is denormalization, not documentation.
+                    // Custom prose on an impl method is edge-specific (it is the
+                    // one thing that exists nowhere else), so documented methods
+                    // are kept and the rest dropped. Assoc-type bindings above
+                    // are kept for the same reason: `type Item = u8` is a fact
+                    // about this edge alone.
+                    _ if model_methods => {
+                        let method = self.model_method(assoc_item);
+                        if method.docs.is_some() {
+                            methods.push(method);
+                        }
+                    }
                     _ => {}
                 }
             }

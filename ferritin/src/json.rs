@@ -8,9 +8,11 @@
 //! into HTML": grouping, filtering, and collapsing are pure client concerns
 //! because the server shipped structure, not presentation.
 //!
-//! Leaf references survive as `JsonSpan { text, style, url }` — the `url` is the
-//! resolved navigation target (an intra-doc link), which is the hypermedia
-//! pointer a client follows. Kinds not yet modeled fall back to a generic
+//! Leaf references survive as `JsonSpan { text, style, path }` — the `path` is the
+//! resolved item path (`trillium::Conn`), which is the pointer a client follows,
+//! back into this same API. A span carries a `url` *instead* only when it names no
+//! item (an external hyperlink in the prose); the viewed item's own upstream page
+//! is served once, as `canonicalUrl`. Kinds not yet modeled fall back to a generic
 //! serialization of their lowered presentation nodes.
 
 use crate::commands::get::NotFoundDoc;
@@ -67,6 +69,14 @@ pub(crate) fn search_to_string(doc: &SearchDoc<'_>) -> sonic_rs::Result<String> 
     sonic_rs::to_string(&JsonSearch::new(doc))
 }
 
+/// Serialize crate-name typeahead results to JSON.
+pub(crate) fn typeahead_to_string(
+    query: &str,
+    results: crate::typeahead::TypeaheadResults,
+) -> sonic_rs::Result<String> {
+    sonic_rs::to_string(&JsonTypeahead::new(query, results))
+}
+
 /// Pretty-printed variant of [`search_to_string`], for snapshot tests.
 #[cfg(test)]
 pub(crate) fn search_to_pretty_string(doc: &SearchDoc<'_>) -> String {
@@ -84,6 +94,46 @@ pub(crate) fn to_pretty_string(item: &ItemDoc<'_>, canonical_url: Option<String>
 #[cfg(test)]
 pub(crate) fn not_found_to_pretty_string(not_found: &NotFoundDoc<'_>) -> String {
     sonic_rs::to_string_pretty(&JsonNotFound::new(not_found)).unwrap()
+}
+
+/// Crate-name typeahead results: the highest-ranked crates whose names start
+/// with the query prefix, in rank order.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct JsonTypeahead {
+    query: String,
+    /// Exact number of crates matching the prefix; `results.len() < total`
+    /// means the list was truncated to the requested limit.
+    total: usize,
+    results: Vec<JsonTypeaheadEntry>,
+}
+
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonTypeaheadEntry {
+    name: String,
+    /// The crate's crates.io default version (typically the latest stable
+    /// non-yanked release), up to ~a day stale.
+    version: String,
+}
+
+impl JsonTypeahead {
+    pub(crate) fn new(query: &str, results: crate::typeahead::TypeaheadResults) -> Self {
+        Self {
+            query: query.to_owned(),
+            total: results.total,
+            results: results
+                .entries
+                .into_iter()
+                .map(|entry| JsonTypeaheadEntry {
+                    name: entry.name,
+                    version: entry.version,
+                })
+                .collect(),
+        }
+    }
 }
 
 /// A search outcome. `error` is set only for the no-crates-loaded case; an empty
@@ -582,11 +632,11 @@ struct JsonTrait<'a> {
     where_clause: Vec<JsonSpan<'a>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     members: Vec<JsonTraitMember<'a>>,
+    /// Every implementor in the crate, sorted by type name — not the terminal's
+    /// capped preview, so a client can show the whole list. Each carries impl
+    /// detail only where the impl block or its methods have their own docs.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     implementors: Vec<JsonImplementor<'a>>,
-    /// Implementors beyond the render cap.
-    #[serde(skip_serializing_if = "is_zero")]
-    implementor_overflow: usize,
 }
 
 impl<'a> JsonTrait<'a> {
@@ -602,7 +652,6 @@ impl<'a> JsonTrait<'a> {
                 .iter()
                 .map(JsonImplementor::new)
                 .collect(),
-            implementor_overflow: model.implementor_overflow,
         }
     }
 }
@@ -1128,14 +1177,15 @@ struct JsonCodeSpan<'a> {
 struct JsonSpan<'a> {
     text: Cow<'a, str>,
     style: SpanStyle,
-    /// External navigation target (the item's docs.rs / std-docs page), when the
-    /// span points at another item — the pointer for opening upstream docs.
+    /// A link we cannot express as an item path: an external hyperlink written in
+    /// the docs (a blog post, an RFC) or a link that resolved to no item. Mutually
+    /// exclusive with `path` — where a path exists it *is* the navigation target,
+    /// so no upstream URL is emitted beside it (see [`json_span`]).
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<Cow<'a, str>>,
     /// In-app navigation target: a `::`-joined item path (e.g. `trillium::Conn`)
     /// the client routes to. Present whenever the target resolves to an item with
-    /// its own page; absent for associated items, variants, and bare external
-    /// URLs (fall back to `url`).
+    /// its own page; absent for associated items, variants, and bare external URLs.
     #[serde(skip_serializing_if = "Option::is_none")]
     path: Option<Cow<'a, str>>,
 }
@@ -1165,11 +1215,19 @@ fn json_spans<'a>(spans: &[Span<'a>]) -> Vec<JsonSpan<'a>> {
 }
 
 fn json_span<'a>(span: &Span<'a>) -> JsonSpan<'a> {
+    let path = span.nav_path();
     JsonSpan {
         text: span.text.clone(),
         style: span.style,
-        url: span.url(),
-        path: span.nav_path(),
+        // A `path` already names the item, and the client routes on it — so an
+        // upstream `url` beside it is redundant, and an expensive redundancy: the
+        // two were ~36% of a large item's payload, nearly all of it absolute
+        // docs.rs URLs the client never followed. Keep the `url` only where there
+        // is no path to derive one from — genuine external hyperlinks in prose
+        // (a blog post, an RFC) and links we could not resolve to an item. The
+        // item's own upstream page is still served once, as `canonicalUrl`.
+        url: if path.is_some() { None } else { span.url() },
+        path,
     }
 }
 

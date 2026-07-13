@@ -36,7 +36,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
                     {
                       "text": "self::DeepMarker",
                       "style": "InlineCode",
-                      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/deep/struct.DeepMarker.html",
                       "path": "fixture_crate::prefix_tests::deep::DeepMarker"
                     },
                     {
@@ -55,7 +54,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
                     {
                       "text": "super::PrefixMarker",
                       "style": "InlineCode",
-                      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/struct.PrefixMarker.html",
                       "path": "fixture_crate::prefix_tests::PrefixMarker"
                     },
                     {
@@ -74,7 +72,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
                     {
                       "text": "super::super::TestStruct",
                       "style": "InlineCode",
-                      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
                       "path": "fixture_crate::TestStruct"
                     },
                     {
@@ -93,7 +90,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
                     {
                       "text": "crate::TestStruct",
                       "style": "InlineCode",
-                      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
                       "path": "fixture_crate::TestStruct"
                     },
                     {
@@ -274,7 +270,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
               {
                 "text": "Infallible",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html",
                 "path": "core::convert::Infallible"
               }
             ]
@@ -332,7 +327,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
               {
                 "text": "TryFrom",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
                 "path": "core::convert::TryFrom"
               },
               {

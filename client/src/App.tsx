@@ -1,6 +1,7 @@
 import { Link, Route } from "rhoto-router";
 import { ItemView } from "./components/ItemView";
 import { DocsLayout } from "./components/layout/DocsLayout";
+import { useDocumentTitle } from "./lib/useDocumentTitle";
 
 export function App() {
   return (
@@ -18,6 +19,9 @@ export function App() {
 }
 
 function Home() {
+  // Bare site name — otherwise navigating back to the landing page keeps whatever
+  // item title was set last.
+  useDocumentTitle(undefined);
   return (
     <DocsLayout toc={[]}>
       <div className="home">

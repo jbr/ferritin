@@ -6,12 +6,12 @@ Could not find 'crate::TestTrait::test_methid'
 
 Did you mean:
 
-  ◦ [crate::TestTrait::ASSOCIATED_CONSTANT](https://docs.rs/fixture-crate/0.1.0/fixture_crate/)
+  ◦ [crate::TestTrait::ASSOCIATED_CONSTANT](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#associatedconstant.ASSOCIATED_CONSTANT)
 
-  ◦ [crate::TestTrait::T](https://docs.rs/fixture-crate/0.1.0/fixture_crate/)
+  ◦ [crate::TestTrait::T](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#associatedtype.T)
 
-  ◦ [crate::TestTrait::test_method](https://docs.rs/fixture-crate/0.1.0/fixture_crate/)
+  ◦ [crate::TestTrait::test_method](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#method.test_method)
 
-  ◦ [crate::TestTrait::process](https://docs.rs/fixture-crate/0.1.0/fixture_crate/)
+  ◦ [crate::TestTrait::process](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html#method.process)
 
   ◦ [crate::submodule](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html)

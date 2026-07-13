@@ -86,6 +86,43 @@
           }
         }
       }
+    },
+    "/typeahead": {
+      "get": {
+        "summary": "Crate-name typeahead: the top crates (by download rank) whose names start with the query prefix.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Crate name prefix.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum results (default 10, capped at 100).",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Typeahead results, in rank order.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonTypeahead"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1225,7 +1262,7 @@
         "type": "object",
         "properties": {
           "path": {
-            "description": "In-app navigation target: a `::`-joined item path (e.g. `trillium::Conn`)\nthe client routes to. Present whenever the target resolves to an item with\nits own page; absent for associated items, variants, and bare external\nURLs (fall back to `url`).",
+            "description": "In-app navigation target: a `::`-joined item path (e.g. `trillium::Conn`)\nthe client routes to. Present whenever the target resolves to an item with\nits own page; absent for associated items, variants, and bare external URLs.",
             "type": "string",
             "nullable": true
           },
@@ -1236,7 +1273,7 @@
             "type": "string"
           },
           "url": {
-            "description": "External navigation target (the item's docs.rs / std-docs page), when the\nspan points at another item — the pointer for opening upstream docs.",
+            "description": "A link we cannot express as an item path: an external hyperlink written in\nthe docs (a blog post, an RFC) or a link that resolved to no item. Mutually\nexclusive with `path` — where a path exists it *is* the navigation target,\nso no upstream URL is emitted beside it (see [`json_span`]).",
             "type": "string",
             "nullable": true
           }
@@ -1365,13 +1402,8 @@
               "$ref": "#/components/schemas/JsonSpan"
             }
           },
-          "implementorOverflow": {
-            "description": "Implementors beyond the render cap.",
-            "type": "integer",
-            "format": "uint",
-            "minimum": 0
-          },
           "implementors": {
+            "description": "Every implementor in the crate, sorted by type name — not the terminal's\ncapped preview, so a client can show the whole list. Each carries impl\ndetail only where the impl block or its methods have their own docs.",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/JsonImplementor"
@@ -1521,6 +1553,48 @@
         "required": [
           "name",
           "aliased"
+        ]
+      },
+      "JsonTypeahead": {
+        "description": "Crate-name typeahead results: the highest-ranked crates whose names start\nwith the query prefix, in rank order.",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonTypeaheadEntry"
+            }
+          },
+          "total": {
+            "description": "Exact number of crates matching the prefix; `results.len() < total`\nmeans the list was truncated to the requested limit.",
+            "type": "integer",
+            "format": "uint",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "query",
+          "total",
+          "results"
+        ]
+      },
+      "JsonTypeaheadEntry": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "description": "The crate's crates.io default version (typically the latest stable\nnon-yanked release), up to ~a day stale.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "version"
         ]
       },
       "JsonUnion": {

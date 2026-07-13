@@ -17,6 +17,21 @@ function mockFetch(body: unknown, status = 200) {
   );
 }
 
+/** Stub global fetch with a non-JSON body — what a proxy or gateway returns when
+ * it swallows the real response (an HTML error page). */
+function mockHtmlFetch(status: number) {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      async () =>
+        new Response("<!doctype html><title>starting up…</title>", {
+          status,
+          headers: { "content-type": "text/html; charset=utf-8" },
+        }),
+    ),
+  );
+}
+
 afterEach(() => vi.unstubAllGlobals());
 
 describe("fetchItem", () => {
@@ -35,5 +50,15 @@ describe("fetchItem", () => {
     expect((error as ApiError).notFound?.suggestions?.length).toBeGreaterThan(
       0,
     );
+  });
+
+  // A failure openapi-fetch cannot parse as JSON must still *reject*. If it
+  // resolves with `undefined`, callers get a value that lies about its type and
+  // render a blank page with no error state — silent, and very hard to diagnose.
+  it("throws rather than resolving undefined when the body is not JSON", async () => {
+    mockHtmlFetch(503);
+    const error = await fetchItem("std::io::NoSuchThing").catch((e) => e);
+    expect(error).toBeInstanceOf(ApiError);
+    expect((error as ApiError).status).toBe(503);
   });
 });

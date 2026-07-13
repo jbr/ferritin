@@ -33,8 +33,14 @@ use crate::indexes::DerivedIndexes;
 /// not already captured by [`FORMAT_VERSION`], [`RKYV_VERSION`], or the target
 /// tag — i.e. a change to which fields we archive.
 ///
+/// It must also be bumped when the archived *contents* change meaning while the
+/// layout stays the same: a stale sidecar is found by name and trusted, so a
+/// [`DerivedIndexes`] built by older logic would be read back and silently used.
+///
 /// 2: archive root became [`Sidecar`] (`Crate` + [`DerivedIndexes`])
-const ARCHIVE_SCHEMA: u32 = 2;
+/// 3: `DerivedIndexes::parents` gained trait members and union fields
+/// 4: `DerivedIndexes::parents` peels references (`impl T for &File` → `File`)
+const ARCHIVE_SCHEMA: u32 = 4;
 
 /// The exact rkyv version this build serializes with, pinned into the schema
 /// tag: the warm path reads archives via `access_unchecked` (no validation),

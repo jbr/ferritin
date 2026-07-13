@@ -310,7 +310,11 @@ mod tests {
 
     #[track_caller]
     fn assert_unparsed(url: &str) {
-        assert_eq!(DocsRsLink::parse(url), None, "expected {url} to be unparsed");
+        assert_eq!(
+            DocsRsLink::parse(url),
+            None,
+            "expected {url} to be unparsed"
+        );
     }
 
     #[test]
@@ -350,8 +354,16 @@ mod tests {
     #[test]
     fn docs_rs_modules_and_roots() {
         assert_link("https://docs.rs/tokio", "tokio", ItemKind::Module);
-        assert_link("https://docs.rs/tokio/1.40.0", "tokio@1.40.0", ItemKind::Module);
-        assert_link("https://docs.rs/tokio/latest/tokio/", "tokio", ItemKind::Module);
+        assert_link(
+            "https://docs.rs/tokio/1.40.0",
+            "tokio@1.40.0",
+            ItemKind::Module,
+        );
+        assert_link(
+            "https://docs.rs/tokio/latest/tokio/",
+            "tokio",
+            ItemKind::Module,
+        );
         assert_link(
             "https://docs.rs/tokio/latest/tokio/index.html",
             "tokio",
@@ -432,7 +444,11 @@ mod tests {
         );
         assert_link("https://docs.rs/async-net", "async-net", ItemKind::Module);
         assert_link("https://docs.rs/cfg-if/", "cfg-if", ItemKind::Module);
-        assert_link("https://docs.rs/adler2/2.0.0/", "adler2@2.0.0", ItemKind::Module);
+        assert_link(
+            "https://docs.rs/adler2/2.0.0/",
+            "adler2@2.0.0",
+            ItemKind::Module,
+        );
     }
 
     #[test]
@@ -538,7 +554,8 @@ mod tests {
     #[test]
     fn relative_links_resolve_against_the_page_directory() {
         let module = "https://docs.rs/tokio/1.52.3/tokio/runtime/index.html";
-        let method = "https://docs.rs/tokio/1.52.3/tokio/runtime/struct.Runtime.html#method.block_on";
+        let method =
+            "https://docs.rs/tokio/1.52.3/tokio/runtime/struct.Runtime.html#method.block_on";
         let root = "https://docs.rs/tokio/1.52.3/tokio/index.html";
 
         // Both a module and a method inside it sit in `.../tokio/runtime/`.

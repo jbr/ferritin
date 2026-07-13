@@ -56,7 +56,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestTrait::T\")
       {
         "text": "Clone",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html",
         "path": "core::clone::Clone"
       },
       {

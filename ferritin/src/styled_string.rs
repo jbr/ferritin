@@ -36,9 +36,7 @@ impl<'a> TuiAction<'a> {
             TuiAction::Navigate { doc_ref, url } => {
                 url.clone().or_else(|| {
                     // Generate URL from DocRef
-                    Some(Cow::Owned(crate::docsrs_url::generate_docsrs_url(
-                        *doc_ref,
-                    )))
+                    Some(Cow::Owned(crate::docsrs_url::generate_docsrs_url(*doc_ref)))
                 })
             }
             TuiAction::NavigateToPath { path, url } => {

@@ -20,9 +20,9 @@ use crate::{
 
 mod color_scheme;
 mod commands;
+mod docsrs_url;
 mod format;
 mod format_context;
-mod docsrs_url;
 mod highlight;
 mod indent;
 mod json;
@@ -39,6 +39,7 @@ mod styled_string;
 #[cfg(test)]
 mod tests;
 mod traits;
+mod typeahead;
 mod verbosity;
 
 #[global_allocator]

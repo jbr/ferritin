@@ -205,7 +205,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
                     "path": "fixture_crate::GenericEnum"
                   },
                   {
@@ -297,7 +296,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
                     "path": "fixture_crate::GenericEnum"
                   },
                   {
@@ -670,7 +668,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Vec<u8>",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html",
                     "path": "alloc::vec::Vec"
                   },
                   {
@@ -743,7 +740,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Err",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr",
                     "path": "alloc::Err"
                   },
                   {
@@ -808,19 +804,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "the replacement character (",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER",
                     "path": "core::char::REPLACEMENT_CHARACTER"
                   },
                   {
                     "text": "U+FFFD",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER",
                     "path": "core::char::REPLACEMENT_CHARACTER"
                   },
                   {
                     "text": ")",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER",
                     "path": "core::char::REPLACEMENT_CHARACTER"
                   },
                   {
@@ -877,7 +870,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Err",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr",
                     "path": "alloc::Err"
                   },
                   {
@@ -942,19 +934,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "the replacement character (",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER",
                     "path": "core::char::REPLACEMENT_CHARACTER"
                   },
                   {
                     "text": "U+FFFD",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER",
                     "path": "core::char::REPLACEMENT_CHARACTER"
                   },
                   {
                     "text": ")",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER",
                     "path": "core::char::REPLACEMENT_CHARACTER"
                   },
                   {
@@ -1011,7 +1000,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Err",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr",
                     "path": "alloc::Err"
                   },
                   {
@@ -1076,19 +1064,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "the replacement character (",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER",
                     "path": "core::char::REPLACEMENT_CHARACTER"
                   },
                   {
                     "text": "U+FFFD",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER",
                     "path": "core::char::REPLACEMENT_CHARACTER"
                   },
                   {
                     "text": ")",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER",
                     "path": "core::char::REPLACEMENT_CHARACTER"
                   },
                   {
@@ -1511,7 +1496,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "reserve",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve",
                     "path": "alloc::string::String::reserve"
                   },
                   {
@@ -1695,7 +1679,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "try_reserve",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve",
                     "path": "alloc::string::String::try_reserve"
                   },
                   {
@@ -1846,7 +1829,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "char",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar",
                     "path": "core::char"
                   },
                   {
@@ -1972,7 +1954,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "char",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar",
                     "path": "core::char"
                   },
                   {
@@ -2200,7 +2181,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "char",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar",
                     "path": "core::char"
                   },
                   {
@@ -2389,7 +2369,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "char",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar",
                     "path": "core::char"
                   },
                   {
@@ -2515,7 +2494,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Box",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html",
                     "path": "alloc::boxed::Box"
                   },
                   {
@@ -2525,7 +2503,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "str",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Astr",
                     "path": "core::str"
                   },
                   {
@@ -3964,7 +3941,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Cursor",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html",
                     "path": "alloc::collections::btree::map::Cursor"
                   },
                   {
@@ -4005,7 +3981,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "CursorMut",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html",
                     "path": "alloc::collections::btree::map::CursorMut"
                   },
                   {
@@ -4046,7 +4021,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Cursor",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html",
                     "path": "alloc::collections::btree::map::Cursor"
                   },
                   {
@@ -4087,7 +4061,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "CursorMut",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html",
                     "path": "alloc::collections::btree::map::CursorMut"
                   },
                   {
@@ -4128,7 +4101,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "hash set",
                     "style": "Plain",
-                    "url": "https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3Acollections",
                     "path": "std::collections"
                   },
                   {
@@ -4673,7 +4645,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "BuildHasher",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/hash/index.html?search=core%3A%3Ahash%3A%3ABuildHasher",
                     "path": "core::hash::BuildHasher"
                   },
                   {
@@ -5736,7 +5707,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
                     "path": "fixture_crate::GenericEnum"
                   },
                   {
@@ -5875,7 +5845,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "both()",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/fn.both.html",
                     "path": "fixture_crate::namespace_collisions::both"
                   },
                   {
@@ -5929,7 +5898,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "both",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3Aboth",
                     "path": "fixture-crate::both"
                   },
                   {
@@ -6697,7 +6665,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Marker",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html",
                     "path": "fixture_crate::Marker"
                   },
                   {
@@ -6729,7 +6696,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Marker",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html",
                     "path": "fixture_crate::Marker"
                   },
                   {
@@ -7898,7 +7864,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "reserve",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve",
                     "path": "alloc::vec::Vec::reserve"
                   },
                   {
@@ -8094,7 +8059,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "try_reserve",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve",
                     "path": "alloc::vec::Vec::try_reserve"
                   },
                   {
@@ -8275,7 +8239,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Box<[T]>",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html",
                     "path": "alloc::boxed::Box"
                   },
                   {
@@ -8316,7 +8279,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Vec::shrink_to_fit",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to_fit",
                     "path": "alloc::vec::Vec::shrink_to_fit"
                   },
                   {
@@ -8334,7 +8296,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "as_array",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/stable/std/primitive.slice.html#method.as_array",
                     "path": "std::slice::as_array"
                   },
                   {
@@ -8774,7 +8735,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "None",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone",
                     "path": "alloc::None"
                   },
                   {
@@ -8954,7 +8914,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "None",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone",
                     "path": "alloc::None"
                   },
                   {
@@ -9011,7 +8970,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "None",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone",
                     "path": "alloc::None"
                   },
                   {
@@ -9731,7 +9689,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "PartialEq",
                     "style": "InlineCode",
-                    "url": "https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3APartialEq",
                     "path": "core::cmp::PartialEq"
                   },
                   {
@@ -9935,7 +9892,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
                     "path": "fixture_crate::GenericEnum"
                   },
                   {

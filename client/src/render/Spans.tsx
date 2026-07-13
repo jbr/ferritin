@@ -5,8 +5,10 @@ import { itemHref } from "../lib/paths";
 /**
  * Render a span sequence — the shared "leaf" vocabulary the server emits for
  * every signature, type reference, field type, and bound. Each span carries a
- * semantic `style` (mapped to a syntax color) and optionally a navigation target:
- * `path` for in-app routing (preferred), or `url` for an external docs.rs page.
+ * semantic `style` (mapped to a syntax color) and at most one navigation target.
+ * The two are mutually exclusive: a `path` routes in-app (it names an item this API
+ * can serve), while a `url` appears only when the target is *not* an item — an
+ * external hyperlink in the prose, or a same-page anchor.
  */
 export function Spans({ spans }: { spans: Span[] | undefined }) {
   if (!spans?.length) return null;

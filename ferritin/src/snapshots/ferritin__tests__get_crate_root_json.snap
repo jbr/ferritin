@@ -337,7 +337,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
                   {
                     "text": "Marker",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html",
                     "path": "fixture_crate::Marker"
                   },
                   {
@@ -369,7 +368,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
                   {
                     "text": "Marker",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html",
                     "path": "fixture_crate::Marker"
                   },
                   {
@@ -765,7 +763,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
                   {
                     "text": "crate::GenericEnum",
                     "style": "InlineCode",
-                    "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
                     "path": "fixture_crate::GenericEnum"
                   },
                   {

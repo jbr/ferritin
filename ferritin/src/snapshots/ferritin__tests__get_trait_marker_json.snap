@@ -48,7 +48,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::Marker\"), &\ng
           {
             "text": "MarkerOne",
             "style": "TypeName",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerOne.html",
             "path": "fixture_crate::MarkerOne"
           }
         ]
@@ -60,7 +59,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::Marker\"), &\ng
           {
             "text": "MarkerTwo",
             "style": "TypeName",
-            "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerTwo.html",
             "path": "fixture_crate::MarkerTwo"
           }
         ]

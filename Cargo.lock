@@ -663,6 +663,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "crate-names"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "abcb2acb8f3237b39c17b647d22c372fc16edb4b5f0a87b1acb3af61bed0054e"
+dependencies = [
+ "zstd",
+]
+
+[[package]]
 name = "crc32fast"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1130,7 +1139,9 @@ version = "0.13.0"
 dependencies = [
  "anyhow",
  "async-channel",
+ "async-lock",
  "clap",
+ "crate-names",
  "crossbeam-channel",
  "crossterm",
  "env_logger",
@@ -1163,6 +1174,7 @@ dependencies = [
  "trillium-frontend",
  "trillium-html-rewriter",
  "trillium-logger",
+ "trillium-redirect",
  "trillium-router",
  "trillium-rustls",
  "trillium-smol",

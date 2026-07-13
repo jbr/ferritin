@@ -35,7 +35,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
             {
               "text": "crate::TestEnum",
               "style": "InlineCode",
-              "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html",
               "path": "fixture_crate::submodule::TestEnum"
             }
           ]
@@ -83,7 +82,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
       {
         "text": "String",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html",
         "path": "alloc::string::String"
       },
       {
@@ -119,7 +117,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
       {
         "text": "Clone",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html",
         "path": "core::clone::Clone"
       },
       {
@@ -129,7 +126,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
       {
         "text": "Send",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/core/marker/trait.Send.html",
         "path": "core::marker::Send"
       },
       {
@@ -155,7 +151,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
       {
         "text": "std::fmt::Display",
         "style": "TypeName",
-        "url": "https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html",
         "path": "core::fmt::Display"
       }
     ],
@@ -412,7 +407,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
               {
                 "text": "Infallible",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html",
                 "path": "core::convert::Infallible"
               }
             ]
@@ -470,7 +464,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
               {
                 "text": "TryFrom",
                 "style": "TypeName",
-                "url": "https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html",
                 "path": "core::convert::TryFrom"
               },
               {
