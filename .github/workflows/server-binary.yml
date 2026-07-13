@@ -27,6 +27,11 @@ jobs:
     container: amazonlinux:2023
     env:
       CARGO_TERM_COLOR: always
+      # Override the repo .cargo/config.toml, which sets target-cpu=native:
+      # the runner is a newer core (SVE) than the Graviton2 (Neoverse-N1)
+      # this binary deploys to — native-built binaries SIGILL there.
+      # neoverse-n1 is the floor; every newer Graviton is a superset.
+      RUSTFLAGS: -C target-cpu=neoverse-n1
     steps:
       # gcc/cmake for aws-lc-sys (pulled by rustls via the acme feature);
       # binutils for strip; the rest are checkout/toolchain plumbing.
