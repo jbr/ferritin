@@ -41,7 +41,7 @@ jobs:
       # packaging — nothing here would otherwise create `dist`, and an `include`
       # glob matching nothing is not an error. Without this step we would publish a
       # crate whose `serve` feature fails to compile, silently.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10
       - uses: actions/setup-node@v6

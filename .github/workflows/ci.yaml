@@ -52,7 +52,7 @@ jobs:
     # typeahead service, or their JSON DTOs. Node is required because
     # `trillium_frontend::frontend!` shells out to the client's pnpm build at
     # macro-expansion time — expanding the macro *is* building the web client.
-    - uses: pnpm/action-setup@v4
+    - uses: pnpm/action-setup@v6
       with:
         version: 10
     - uses: actions/setup-node@v6
