@@ -808,9 +808,9 @@ dependencies = [
 
 [[package]]
 name = "crate-names"
-version = "0.1.1"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "abcb2acb8f3237b39c17b647d22c372fc16edb4b5f0a87b1acb3af61bed0054e"
+checksum = "0b2be174221de69416964367d2558c46225588b709729f26810304825bd29610"
 dependencies = [
  "zstd",
 ]
@@ -4035,7 +4035,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.4.3",
+ "getrandom 0.3.4",
  "once_cell",
  "rustix",
  "windows-sys 0.61.2",

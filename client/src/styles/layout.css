@@ -326,6 +326,77 @@
   flex-shrink: 0;
 }
 
+/* --- search on a phone ---
+   The anchored morph needs empty space to its left to grow into, and a phone has
+   none: the resting box's right edge already sits a theme toggle's width in from
+   the screen edge, so a 432px open width runs straight off the left. Below this
+   breakpoint the box stops pretending and becomes a fixed sheet spanning the
+   viewport. Position can't be transitioned, so the growth animation degrades to
+   an appearance — which is what a sheet should do anyway. */
+@media (max-width: 40rem) {
+  .topbar {
+    gap: 0.75rem;
+    padding: 0.75rem 0.9rem;
+  }
+  /* The crate appears twice in a bar too narrow for it once — as the breadcrumb
+     and as the scope chip. The chip is the one that earns its place: it says what
+     the search will search, and tapping its × is how you leave that scope. */
+  .brand-sep,
+  .brand-crate {
+    display: none;
+  }
+  /* `backdrop-filter` makes an element the containing block for its fixed-position
+     descendants: with the blur on, the sheet below is positioned against the top
+     bar in WebKit but against the viewport in Blink. A phone doesn't need the
+     blur, and dropping it makes the viewport the containing block in both. */
+  .topbar {
+    backdrop-filter: none;
+    background: var(--surface);
+  }
+  /* Retarget the open size through the variables the existing rule already reads,
+     rather than re-declaring `width`/`height` in a competing rule: iOS honoured
+     the insets from such a rule but not its `width`, leaving the box at its
+     432px desktop width and hanging off the screen. There is no cascade to lose
+     here — the same declaration applies, it just resolves differently.
+     The height is capped rather than proportional because the software keyboard
+     covers the bottom of the screen without shrinking the viewport, so a taller
+     sheet would put its own results under the keys. */
+  .search-slot {
+    --search-w-open: calc(100vw - 1rem);
+    --search-h-open: min(60svh, 22rem);
+  }
+  .search-box[data-expanded] {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    right: auto;
+  }
+  /* 16px is a threshold, not a taste: iOS Safari zooms the visual viewport in on
+     any input it focuses with a smaller font, which leaves the sheet — correctly
+     sized at 100vw in layout pixels — hanging off the side of the zoomed view. */
+  .search-input {
+    font-size: 16px;
+  }
+  /* The sheet covers the top bar, so the backdrop has to as well — otherwise the
+     strip above it stays lit and looks detached. */
+  .search-backdrop {
+    inset: 0;
+  }
+}
+
+/* Coarse pointers have no ⌘K, no Tab and no arrow keys. Drop the hints that name
+   them — but only in the search row and footer; ⏎ still exists on a software
+   keyboard, so the "press ⏎ to try it anyway" hint stays. */
+@media (hover: none) {
+  .search-row .search-kbd,
+  .search-hints {
+    display: none;
+  }
+  .search-footer {
+    justify-content: flex-end;
+  }
+}
+
 /* --- theme toggle --- */
 .theme-toggle {
   width: 42px;
