@@ -120,7 +120,12 @@ impl DocsRsClient {
                 FollowRedirects::new(),
                 RetryHandler::new(),
             ))
-            .with_timeout(Duration::from_secs(2))
+            // A ceiling against hung connections, not an expected duration —
+            // it spans the whole conn including the response body, and a JSON
+            // download (redirect to static.docs.rs + a multi-MB body) needs
+            // far more than a metadata lookup. 2s proved too tight for real
+            // downloads on the public server's first cold fetches.
+            .with_timeout(Duration::from_secs(30))
             .with_default_header(KnownHeaderName::UserAgent, Self::user_agent());
 
         Ok(Self {
