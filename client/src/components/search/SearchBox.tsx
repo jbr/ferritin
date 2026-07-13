@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "rhoto-router";
 import { useSearch, useTypeahead } from "../../api/queries";
 import { itemHref } from "../../lib/paths";
+import { searchShortcut, searchShortcutAria } from "../../lib/platform";
 
 /** Typeahead debounce: long enough to skip intermediate keystrokes, short
  * enough that the list feels attached to the keyboard. */
@@ -284,6 +285,10 @@ export function SearchBox({ crate }: { crate?: string }) {
               onKeyDown={onKeyDown}
               placeholder={placeholder}
               autoComplete="off"
+              // Crate and item names are not prose: a phone keyboard would
+              // otherwise capitalize the first letter and autocorrect the rest.
+              autoCapitalize="none"
+              autoCorrect="off"
               spellCheck={false}
             />
 
@@ -296,7 +301,7 @@ export function SearchBox({ crate }: { crate?: string }) {
             className="search-row search-trigger"
             aria-expanded={false}
             aria-haspopup="listbox"
-            aria-keyshortcuts="Meta+K"
+            aria-keyshortcuts={searchShortcutAria}
             onClick={open}
           >
             <span className="search-icon" aria-hidden>
@@ -308,7 +313,7 @@ export function SearchBox({ crate }: { crate?: string }) {
               <span className="search-label">{restingLabel}</span>
             )}
             <span className="search-label-spacer" />
-            <kbd className="search-kbd">⌘K</kbd>
+            <kbd className="search-kbd">{searchShortcut}</kbd>
           </button>
         )}
 
@@ -418,7 +423,8 @@ export function SearchBox({ crate }: { crate?: string }) {
           )}
 
           <div className="search-footer">
-            <span>
+            {/* Named keys only: hidden on touch, where none of them exist. */}
+            <span className="search-hints">
               {crateMode
                 ? crateResults.length
                   ? "↑↓ navigate · ⏎ open"

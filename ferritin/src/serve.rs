@@ -37,7 +37,7 @@ use crate::{
     format_context::FormatContext,
     json,
     request::Request,
-    typeahead::TypeaheadService,
+    typeahead::{TypeaheadEntry, TypeaheadService},
 };
 
 /// Worker-thread stack size. The CLI runs the same lookups on the main thread's
@@ -75,10 +75,36 @@ fn rss_high_water_bytes() -> Option<u64> {
         .and_then(|value| value.parse().ok())
 }
 
+/// The standard library crates this server can serve, as typeahead entries at
+/// the toolchain's version.
+///
+/// Skips any crate the source claims but has no JSON for (`std_detect`): the
+/// typeahead must only offer crates that will actually load. Without a rustup
+/// toolchain there is no std to offer, and the list is empty.
+fn std_typeahead_entries(std_source: Option<&StdSource>) -> Vec<TypeaheadEntry> {
+    let Some(source) = std_source else {
+        return Vec::new();
+    };
+    let mut entries: Vec<TypeaheadEntry> = source
+        .crates()
+        .values()
+        .filter(|info| info.json_path().is_some())
+        .map(|info| TypeaheadEntry {
+            name: info.name().to_string(),
+            version: info.version().to_string(),
+        })
+        .collect();
+    // The source stores them in a hash map; give the list a stable order.
+    entries.sort_by(|a, b| a.name.cmp(&b.name));
+    entries
+}
+
 pub fn serve() {
     let cache_bytes = cache_bytes();
+    let std_source = StdSource::from_rustup();
+    let std_crates = std_typeahead_entries(std_source.as_ref());
     let mut store = Store::default()
-        .with_std_source(StdSource::from_rustup())
+        .with_std_source(std_source)
         .with_docsrs_source(DocsRsSource::from_default_cache())
         .with_weight_cap(cache_bytes)
         // Search indexes are far smaller than crate JSON; give them a
@@ -99,13 +125,13 @@ pub fn serve() {
 
     #[cfg(feature = "acme")]
     if let Some(env) = acme::AcmeEnv::from_env() {
-        return acme::serve_tls(store, pool, env);
+        return acme::serve_tls(store, pool, env, std_crates);
     }
 
     let server_handle = trillium_smol::config()
         .with_shared_state(store)
         .with_shared_state(pool)
-        .spawn(handler());
+        .spawn(handler(std_crates));
 
     server_handle.block();
 }
@@ -194,7 +220,12 @@ mod acme {
 
     /// Serve h1/h2 over TLS on tcp/443, h3 over QUIC on udp/443 (sharing the
     /// ACME-managed certificate resolver), and an https redirect on tcp/80.
-    pub(super) fn serve_tls(store: Arc<Store>, pool: Arc<ThreadPool>, env: AcmeEnv) {
+    pub(super) fn serve_tls(
+        store: Arc<Store>,
+        pool: Arc<ThreadPool>,
+        env: AcmeEnv,
+        std_crates: Vec<crate::typeahead::TypeaheadEntry>,
+    ) {
         let AcmeEnv {
             domains,
             contact,
@@ -225,7 +256,7 @@ mod acme {
             .expect("failed to bind the TLS listener on tcp/443")
             .bind_quic((&*host, 443), quic)
             .expect("failed to bind the QUIC listener on udp/443")
-            .spawn((redirect_insecure(authority), super::handler()));
+            .spawn((redirect_insecure(authority), super::handler(std_crates)));
 
         let acme_future = handle.swansong().interrupt(acme_future);
         handle.runtime().spawn(acme_future);
@@ -257,7 +288,7 @@ mod acme {
     }
 }
 
-pub fn handler() -> impl trillium::Handler {
+pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl trillium::Handler {
     (
         Logger::new().with_formatter(log_format!(
             "<- {version} {method} {url} {response_time} {status} {body_len_human} {content_encoding}",
@@ -266,7 +297,7 @@ pub fn handler() -> impl trillium::Handler {
         )),
         Compression::new(),
         CachingHeaders::new(),
-        trillium::state(Arc::new(TypeaheadService::new())),
+        trillium::state(Arc::new(TypeaheadService::new(std_crates))),
         Router::new()
             .get("/api/crates/:crate_name", get_crate)
             .get("/api/search/:crate_name", search_crate)

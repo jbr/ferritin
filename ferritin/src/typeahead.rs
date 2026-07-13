@@ -38,7 +38,7 @@ const FAILURE_COOLDOWN: Duration = Duration::from_secs(60);
 
 /// An owned typeahead result, decoupled from the artifact buffer's lifetime
 /// so it can cross the lock boundary.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct TypeaheadEntry {
     pub(crate) name: String,
     pub(crate) version: String,
@@ -72,6 +72,10 @@ struct State {
 pub(crate) struct TypeaheadService {
     client: Client,
     url: String,
+    /// The standard library crates, resolved once at startup. They are not on
+    /// crates.io, so the artifact cannot know about them, but ferritin serves
+    /// their documentation — see [`Self::std_matches`].
+    std_crates: Vec<TypeaheadEntry>,
     /// Serializes fetches: cold-start requests queue behind one download,
     /// and `try_lock` gives stale-while-revalidate a single revalidator.
     fetch_lock: async_lock::Mutex<()>,
@@ -87,7 +91,10 @@ impl std::fmt::Debug for TypeaheadService {
 }
 
 impl TypeaheadService {
-    pub(crate) fn new() -> Self {
+    /// `std_crates` are the standard library crates this server can actually
+    /// serve, with the toolchain's version — resolved at startup so that
+    /// answering a query never has to reach for the [`Store`](ferritin_common::Store).
+    pub(crate) fn new(std_crates: Vec<TypeaheadEntry>) -> Self {
         let client = Client::new(RustlsConfig::<ClientConfig>::default())
             .with_handler((
                 ClientLogger::new().with_target(Target::Logger(log::Level::Info)),
@@ -105,10 +112,26 @@ impl TypeaheadService {
             // The canonical artifact deployment; overridable (e.g. to point
             // at a local file server or a mirror).
             url: std::env::var("FERRITIN_CRATE_NAMES_URL")
-                .unwrap_or_else(|_| crate_names::NAMES_URL_V1.into()),
+                .unwrap_or_else(|_| crate_names::NAMES_URL_V2.into()),
+            std_crates,
             fetch_lock: async_lock::Mutex::new(()),
             state: RwLock::new(State::default()),
         }
+    }
+
+    /// The standard library crates whose names start with `prefix`, folded the
+    /// same way the artifact folds names, so `Std` and `proc-macro` match too.
+    ///
+    /// These are prepended to the crates.io results rather than ranked among
+    /// them: `std` has no download count to rank by, and someone typing `std`
+    /// on a Rust documentation site does not mean `stdweb`.
+    fn std_matches(&self, prefix: &str) -> Vec<TypeaheadEntry> {
+        let key = crate_names::normalize(prefix);
+        self.std_crates
+            .iter()
+            .filter(|entry| crate_names::normalize(&entry.name).starts_with(&key))
+            .cloned()
+            .collect()
     }
 
     /// The top `limit` crates by download rank whose names start with
@@ -119,7 +142,7 @@ impl TypeaheadService {
         self.ensure_fresh().await;
         let state = self.state.read().unwrap();
         let loaded = state.loaded.as_ref()?;
-        let total = loaded.names.count(prefix);
+        let mut total = loaded.names.count(prefix);
         let mut entries: Vec<TypeaheadEntry> = loaded
             .names
             .typeahead(prefix, limit)
@@ -142,6 +165,16 @@ impl TypeaheadService {
                     version: exact.version.into(),
                 },
             );
+            entries.truncate(limit);
+        }
+
+        // The std crates are absent from the artifact but present on this
+        // server, so they are added here rather than being matched by the
+        // binary search. They count toward `total` for the same reason.
+        let std_matches = self.std_matches(prefix);
+        if !std_matches.is_empty() {
+            total += std_matches.len();
+            entries.splice(0..0, std_matches);
             entries.truncate(limit);
         }
         Some(TypeaheadResults { entries, total })
