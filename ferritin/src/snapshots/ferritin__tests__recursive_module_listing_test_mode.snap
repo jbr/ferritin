@@ -429,7 +429,7 @@ Note that this method has no effect on of the vector. <elided chars="105"/></tru
 </item>
   <item><p>
 <type-name>Vec::dedup_by</type-name> </p>
-<truncated level="single-line">Removes all but the first of consecutive elements in the vector satisfying a relation. <elided chars="485"/></truncated>
+<truncated level="single-line">Removes all but the first of consecutive elements in the vector that are "equal" according to the given predicate function. <elided chars="1252"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::dedup_by_key</type-name> </p>
@@ -1246,7 +1246,7 @@ Strings are<inline-code>u8</inline-code>), and a (<inline-code>&[u8]</inline-cod
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::from_utf8_lossy_owned</type-name> </p>
-<truncated level="single-line">Converts a <inline-code>Vec<u8></inline-code> to a <inline-code>String</inline-code>, substituting invalid UTF-8 sequences with replacement characters. <elided chars="624"/></truncated>
+<truncated level="single-line">Converts a <inline-code>Vec<u8></inline-code> to a <inline-code>String</inline-code>, substituting invalid UTF-8 sequences with replacement characters. <elided chars="540"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::from_utf8_unchecked</type-name> </p>

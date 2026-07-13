@@ -2578,6 +2578,36 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
+        "path": "view",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/view/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Helper module for exporting the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "view_types",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " macro.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "simd",
         "kind": "module",
         "url": "https://doc.rust-lang.org/nightly/std/simd/index.html",
