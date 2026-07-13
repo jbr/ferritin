@@ -3,7 +3,6 @@ use super::FeatureSelection;
 use super::workspace_metadata::WorkspaceMetadata;
 use crate::RustdocData;
 use crate::crate_name::CrateName;
-use crate::sources::RustdocVersion;
 use crate::sources::Source;
 use crate::store::CrateInfo;
 use anyhow::{Result, anyhow};
@@ -312,9 +311,7 @@ impl LocalSource {
                 break Some(data);
             } else if !feature_rebuild
                 && let Ok(content) = std::fs::read(json_path)
-                && let Ok(RustdocVersion { crate_version, .. }) =
-                    sonic_rs::serde::from_slice(&content)
-                && crate_version.as_ref() == Some(version)
+                && crate::conversions::peek_crate_version(&content).as_ref() == Some(version)
                 && let Ok(crate_data) = crate::conversions::load_and_normalize(&content, None)
             {
                 let version = crate_data

@@ -1,5 +1,5 @@
+use crate::RustdocData;
 use crate::sources::CrateProvenance;
-use crate::{RustdocData, sources::RustdocVersion};
 use anyhow::{Context, Result, anyhow};
 use fieldwork::Fieldwork;
 use semver::{Version, VersionReq};
@@ -216,11 +216,12 @@ impl DocsRsClient {
         // Decompress
         let json = self.decompress_zstd(&bytes)?;
 
-        // Extract metadata from JSON before normalizing
-        let RustdocVersion {
-            format_version,
-            crate_version,
-        } = sonic_rs::serde::from_slice(&json).context("Failed to parse JSON metadata")?;
+        // Extract metadata from JSON before normalizing — via targeted byte
+        // scans, not a serde parse of the whole document (skipping the deep
+        // `index` recurses per nesting layer; typenum overflows the stack).
+        let format_version = crate::conversions::peek_format_version(&json)
+            .context("Failed to read format_version from rustdoc JSON")?;
+        let crate_version = crate::conversions::peek_crate_version(&json);
 
         // A build older than the conversions floor is a definitive absence
         // ("no rustdoc JSON we can read exists for this release"), not a parse
