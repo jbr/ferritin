@@ -83,12 +83,164 @@ pub fn serve() {
             .expect("failed to build documentation thread pool"),
     );
 
+    #[cfg(feature = "acme")]
+    if let Some(env) = acme::AcmeEnv::from_env() {
+        return acme::serve_tls(store, pool, env);
+    }
+
     let server_handle = trillium_smol::config()
         .with_shared_state(store)
         .with_shared_state(pool)
         .spawn(handler());
 
     server_handle.block();
+}
+
+/// Automatic HTTPS (Let's Encrypt via tls-alpn-01) plus HTTP/3, behind the
+/// `acme` cargo feature and activated at runtime by environment variables:
+///
+/// - `FERRITIN_ACME_DOMAIN` (required to activate; comma-separated for multiple
+///   domains — the first is the canonical authority insecure requests redirect to)
+/// - `FERRITIN_ACME_CACHE_DIR` (required when active): directory persisting the
+///   ACME account key and certificates across restarts. Without a cache every
+///   restart would re-issue, and Let's Encrypt rate limits re-issuance.
+/// - `FERRITIN_ACME_CONTACT` (optional): a contact email; a bare address is
+///   prefixed with `mailto:`.
+/// - `FERRITIN_ACME_PRODUCTION` (optional, `1`/`true`): use the production
+///   Let's Encrypt directory. Defaults to the staging environment, whose
+///   certificates are untrusted but generously rate-limited — right for
+///   verifying a deployment before flipping to production.
+///
+/// When active, the server binds TLS on tcp/443 and QUIC on udp/443 (the
+/// listener builder auto-advertises `alt-svc` for the matching pair, which is
+/// how clients discover h3), plus a cleartext tcp/80 listener that redirects
+/// to the canonical https authority. `HOST` overrides the bind address
+/// (default `0.0.0.0`). When `FERRITIN_ACME_DOMAIN` is absent, `serve` runs
+/// cleartext exactly as it does without this feature.
+#[cfg(feature = "acme")]
+mod acme {
+    use std::path::PathBuf;
+    use std::sync::Arc;
+
+    use ferritin_common::Store;
+    use rayon::ThreadPool;
+    use trillium::{Conn, KnownHeaderName, Status};
+    use trillium_acme::{AcmeConfig, rustls_acme::caches::DirCache};
+    use trillium_quinn::QuicConfig;
+
+    /// The ACME deployment configuration, parsed from environment variables.
+    pub(super) struct AcmeEnv {
+        domains: Vec<String>,
+        contact: Option<String>,
+        cache_dir: PathBuf,
+        production: bool,
+    }
+
+    impl AcmeEnv {
+        /// Returns `None` when `FERRITIN_ACME_DOMAIN` is unset or empty (the
+        /// cleartext fallback); panics on a partial configuration, since
+        /// silently serving cleartext on a host that meant to serve TLS is
+        /// worse than failing to start.
+        pub(super) fn from_env() -> Option<Self> {
+            let domains: Vec<String> = std::env::var("FERRITIN_ACME_DOMAIN")
+                .ok()?
+                .split(',')
+                .map(|domain| domain.trim().to_string())
+                .filter(|domain| !domain.is_empty())
+                .collect();
+            if domains.is_empty() {
+                return None;
+            }
+
+            let cache_dir = PathBuf::from(std::env::var("FERRITIN_ACME_CACHE_DIR").expect(
+                "FERRITIN_ACME_CACHE_DIR is required when FERRITIN_ACME_DOMAIN is set: \
+                 it persists the ACME account key and certificates across restarts, \
+                 and Let's Encrypt rate-limits re-issuance",
+            ));
+
+            let contact = std::env::var("FERRITIN_ACME_CONTACT").ok().map(|contact| {
+                if contact.contains(':') {
+                    contact
+                } else {
+                    format!("mailto:{contact}")
+                }
+            });
+
+            let production = std::env::var("FERRITIN_ACME_PRODUCTION")
+                .is_ok_and(|value| value == "1" || value.eq_ignore_ascii_case("true"));
+
+            Some(Self {
+                domains,
+                contact,
+                cache_dir,
+                production,
+            })
+        }
+    }
+
+    /// Serve h1/h2 over TLS on tcp/443, h3 over QUIC on udp/443 (sharing the
+    /// ACME-managed certificate resolver), and an https redirect on tcp/80.
+    pub(super) fn serve_tls(store: Arc<Store>, pool: Arc<ThreadPool>, env: AcmeEnv) {
+        let AcmeEnv {
+            domains,
+            contact,
+            cache_dir,
+            production,
+        } = env;
+        let authority = domains[0].clone();
+
+        let mut acme_config = AcmeConfig::new(&domains)
+            .cache(DirCache::new(cache_dir))
+            .directory_lets_encrypt(production);
+        if let Some(contact) = &contact {
+            acme_config = acme_config.contact_push(contact);
+        }
+
+        let (acceptor, acme_future) = trillium_acme::new(acme_config);
+        let quic = QuicConfig::from_cert_resolver(acceptor.resolver());
+        let host = std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".into());
+
+        let handle = trillium_smol::config()
+            .with_shared_state(store)
+            .with_shared_state(pool)
+            .with_nodelay()
+            .listeners()
+            .bind_tcp((&*host, 80))
+            .expect("failed to bind the https-redirect listener on tcp/80")
+            .bind_tls((&*host, 443), acceptor)
+            .expect("failed to bind the TLS listener on tcp/443")
+            .bind_quic((&*host, 443), quic)
+            .expect("failed to bind the QUIC listener on udp/443")
+            .spawn((redirect_insecure(authority), super::handler()));
+
+        let acme_future = handle.swansong().interrupt(acme_future);
+        handle.runtime().spawn(acme_future);
+        handle.block();
+    }
+
+    /// Redirect any request arriving over a non-TLS transport (the tcp/80
+    /// listener) to the canonical https authority, preserving path and query.
+    fn redirect_insecure(authority: String) -> impl trillium::Handler {
+        let authority: Arc<str> = authority.into();
+        move |conn: Conn| {
+            let authority = authority.clone();
+            async move {
+                if conn.is_secure() {
+                    return conn;
+                }
+                let path = conn.path();
+                let querystring = conn.querystring();
+                let location = if querystring.is_empty() {
+                    format!("https://{authority}{path}")
+                } else {
+                    format!("https://{authority}{path}?{querystring}")
+                };
+                conn.with_status(Status::MovedPermanently)
+                    .with_response_header(KnownHeaderName::Location, location)
+                    .halt()
+            }
+        }
+    }
 }
 
 pub fn handler() -> impl trillium::Handler {
