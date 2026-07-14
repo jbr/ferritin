@@ -52,9 +52,13 @@ jobs:
     # typeahead service, or their JSON DTOs. Node is required because
     # `trillium_frontend::frontend!` shells out to the client's pnpm build at
     # macro-expansion time — expanding the macro *is* building the web client.
+    # Exact, and not 11.12+: pnpm's self-update path crashes when action-setup
+    # bootstraps it (pnpm/action-setup#276, pnpm/pnpm#12959), so the action dies
+    # before it can install anything. Unpin once that lands; the pin must match
+    # `packageManager` in client/package.json or pnpm self-switches into the bug.
     - uses: pnpm/action-setup@v6
       with:
-        version: 11
+        version: 11.11.0
     - uses: actions/setup-node@v6
       with:
         node-version: 24
@@ -77,9 +81,13 @@ jobs:
     # the `frontend!` macro (the only thing that couples them) is the serve job's
     # concern, not this one.
     - uses: actions/checkout@v7
+    # Exact, and not 11.12+: pnpm's self-update path crashes when action-setup
+    # bootstraps it (pnpm/action-setup#276, pnpm/pnpm#12959), so the action dies
+    # before it can install anything. Unpin once that lands; the pin must match
+    # `packageManager` in client/package.json or pnpm self-switches into the bug.
     - uses: pnpm/action-setup@v6
       with:
-        version: 11
+        version: 11.11.0
     - uses: actions/setup-node@v6
       with:
         node-version: 24
