@@ -7,5 +7,16 @@
 
   "git-submodules": {
     "enabled": true
-  }
+  },
+
+  "minimumReleaseAge": "3 days",
+  "internalChecksFilter": "strict",
+
+  "packageRules": [
+    {
+      "description": "rhoto-router is ours: no cooldown, mirroring client/pnpm-workspace.yaml",
+      "matchPackageNames": ["rhoto-router"],
+      "minimumReleaseAge": null
+    }
+  ]
 }

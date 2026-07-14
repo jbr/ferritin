@@ -32,10 +32,7 @@ export function useActiveTocEntry(entries: TocEntry[]): {
   const pinRef = useRef<{ id: string; seeking: boolean } | null>(null);
 
   useEffect(() => {
-    if (entries.length === 0) {
-      setActiveId(null);
-      return;
-    }
+    if (entries.length === 0) return;
     // A fresh entry set means a new page — drop any stale pin.
     pinRef.current = null;
 
@@ -96,5 +93,8 @@ export function useActiveTocEntry(entries: TocEntry[]): {
     setActiveId(id);
   }, []);
 
-  return { activeId, pin };
+  // With no entries there is nothing to be active, so derive that rather than
+  // clearing the state from the effect: `activeId` may still hold the previous
+  // page's id until the effect for the new entries runs.
+  return { activeId: entries.length === 0 ? null : activeId, pin };
 }

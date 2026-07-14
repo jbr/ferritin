@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "rhoto-router";
 import { useSearch, useTypeahead } from "../../api/queries";
@@ -65,7 +65,20 @@ export function SearchBox({
   const { navigate } = useRouter();
 
   const listId = useId();
-  const optionId = (i: number) => `${listId}-option-${i}`;
+  const optionId = useCallback(
+    (i: number) => `${listId}-option-${i}`,
+    [listId],
+  );
+
+  // Navigating re-scopes to wherever you landed: the chip follows the page. This
+  // is the prop-change reset done during render rather than in an effect — the
+  // stale scope never reaches the DOM, and there is no second render pass.
+  const [scopedFor, setScopedFor] = useState(crate);
+  if (scopedFor !== crate) {
+    setScopedFor(crate);
+    setScoped(true);
+    setChipSelected(false);
+  }
 
   // The chip exists only when there is a crate to scope *to* and the user has not
   // scoped out of it. Everything else keys off this one derived value.
@@ -91,12 +104,6 @@ export function SearchBox({
     const timer = setTimeout(() => setDebounced(query), DEBOUNCE_MS);
     return () => clearTimeout(timer);
   }, [query]);
-
-  // Navigating re-scopes to wherever you landed: the chip follows the page.
-  useEffect(() => {
-    setScoped(true);
-    setChipSelected(false);
-  }, [crate]);
 
   const open = () => setExpanded(true);
 
