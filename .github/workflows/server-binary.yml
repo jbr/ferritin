@@ -46,7 +46,7 @@ jobs:
         run: |
           curl -fsSL https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-arm64.tar.xz \
             | tar -xJ -C /usr/local --strip-components=1
-          npm install -g pnpm@11
+          npm install -g pnpm@11.11.0
 
       - uses: actions/checkout@v7
         with:
