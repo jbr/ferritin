@@ -158,6 +158,54 @@ impl<'a> Resolver<'a> {
 
 // ---------- top-level path resolution ----------
 
+/// The leading crate segment of a user-supplied documentation path, split from
+/// the item path that follows it.
+///
+/// This is the *only* definition of what the crate segment of a path means, and
+/// it is public because two callers must agree on it: [`Resolver::resolve_path`],
+/// which loads the crate, and `ferritin serve`, which resolves the same crate
+/// to an exact version to derive cache validators *without* loading it. If the
+/// two parsed `tokio@1::runtime::Runtime` differently, a cached response could
+/// be validated against the wrong crate.
+#[derive(Debug, Clone)]
+pub struct CratePath<'a> {
+    /// The crate name, with any `@version` suffix stripped.
+    pub name: &'a str,
+    /// The version requirement from an `@` suffix; [`VersionReq::STAR`] when
+    /// absent or unparseable.
+    pub version_req: VersionReq,
+    /// Byte index into the original path at which the item path begins, or
+    /// `None` when the path names only a crate.
+    pub item_start: Option<usize>,
+}
+
+impl<'a> CratePath<'a> {
+    /// Split `"tokio@1::runtime::Runtime"` into `tokio`, `^1`, and the offset of
+    /// `runtime::Runtime`. A leading `::` is ignored.
+    pub fn parse(path: &'a str) -> Self {
+        let path = path.strip_prefix("::").unwrap_or(path);
+
+        let (specifier, item_start) = match path.find("::") {
+            Some(first_scope) => (&path[..first_scope], Some(first_scope + 2)),
+            None => (path, None),
+        };
+
+        let (name, version_req) = match specifier.find('@') {
+            Some(at) => (
+                &specifier[..at],
+                VersionReq::parse(&specifier[at + 1..]).unwrap_or(VersionReq::STAR),
+            ),
+            None => (specifier, VersionReq::STAR),
+        };
+
+        Self {
+            name,
+            version_req,
+            item_start,
+        }
+    }
+}
+
 impl<'a> Resolver<'a> {
     /// Resolve a path like `"std::vec::Vec"` or `"tokio@1::runtime::Runtime"`.
     ///
@@ -171,20 +219,11 @@ impl<'a> Resolver<'a> {
             path = p;
         }
 
-        let (crate_specifier, path_start_index) = if let Some(first_scope) = path.find("::") {
-            (&path[..first_scope], Some(first_scope + 2))
-        } else {
-            (path, None)
-        };
-
-        let (crate_name, version_req) = if let Some(at) = crate_specifier.find("@") {
-            (
-                &crate_specifier[..at],
-                VersionReq::parse(&crate_specifier[at + 1..]).unwrap_or(VersionReq::STAR),
-            )
-        } else {
-            (crate_specifier, VersionReq::STAR)
-        };
+        let CratePath {
+            name: crate_name,
+            version_req,
+            item_start: path_start_index,
+        } = CratePath::parse(path);
 
         let Some(crate_data) = self.navigator.load_crate(crate_name, &version_req) else {
             suggestions.extend(Suggestion::for_crate_name(self.navigator, crate_name));

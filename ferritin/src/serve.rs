@@ -17,6 +17,7 @@
 //! per-query pinning is what lets the Store evict under memory pressure without
 //! invalidating any in-flight request.
 
+mod caching;
 mod crawlers;
 mod spa_route;
 
@@ -25,6 +26,7 @@ use crate::{
     format_context::FormatContext,
     json,
     request::Request,
+    serve::caching::{CachingPolicy, Validators},
     typeahead::{TypeaheadEntry, TypeaheadService},
 };
 use ferritin_common::{
@@ -41,7 +43,7 @@ use std::{
     sync::Arc,
 };
 use trillium::{Conn, Handler, KnownHeaderName, Method, Status};
-use trillium_caching_headers::CachingHeaders;
+use trillium_caching_headers::{CachingHeaders, CachingHeadersExt};
 use trillium_compression::Compression;
 use trillium_head::Head;
 use trillium_logger::{Logger, formatters, log_format};
@@ -349,6 +351,7 @@ pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl Handler {
         Head::new(),
         Compression::new(),
         CachingHeaders::new(),
+        caching_policy(),
         trillium::state(Arc::new(TypeaheadService::new(std_crates))),
         Router::new()
             .get("/api/*", (api_limiter(), api_router()))
@@ -356,6 +359,14 @@ pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl Handler {
             .get("/sitemap.xml", crawlers::sitemap),
         frontend(),
     )
+}
+
+/// The `Cache-Control` policy for every response — except under `dev-proxy`,
+/// where `/assets/` is Vite's dev server serving *unhashed* modules that must
+/// never be cached, and where telling a browser to hold anything at all is the
+/// opposite of what a dev server is for.
+fn caching_policy() -> Option<CachingPolicy> {
+    (!cfg!(feature = "dev-proxy")).then_some(CachingPolicy)
 }
 
 /// The documentation API. Mounted under `/api/*`, which the router strips, so
@@ -449,18 +460,59 @@ fn context(conn: &Conn) -> Option<(Arc<Store>, Arc<ThreadPool>)> {
     Some((store, pool))
 }
 
-/// Apply a worker outcome to the response: the JSON body on success, a 500 when
-/// the worker panicked or serialization failed.
-fn respond_json(conn: Conn, outcome: Option<sonic_rs::Result<(Status, String)>>) -> Conn {
+/// What a documentation worker hands back to its handler.
+enum Rendered {
+    /// The client's cached copy is still current — determined from the request's
+    /// [`Validators`] alone, without loading a crate or rendering anything. This
+    /// is the case the whole [`caching`] module exists to reach.
+    NotModified(Validators),
+
+    /// A JSON body, and the validators a later conditional request will be
+    /// checked against.
+    ///
+    /// `validators` is `None` for a body we decline to name cheaply. That is what
+    /// keeps [`Rendered::NotModified`] sound: one of *our* etags is only ever
+    /// emitted alongside a body we would serve again, so a client presenting one
+    /// is presenting the identity of a real prior response. Such a response is
+    /// not left unvalidated, though — `CachingHeaders` still falls back to
+    /// hashing the body, which is correct by construction but saves no work.
+    Json {
+        status: Status,
+        body: String,
+        validators: Option<Validators>,
+    },
+}
+
+/// Apply a worker outcome to the response, a 500 when the worker panicked or
+/// serialization failed.
+fn respond_json(conn: Conn, outcome: Option<sonic_rs::Result<Rendered>>) -> Conn {
     // `halt()` so the trailing frontend handler doesn't overwrite the JSON body
     // with the SPA index.
-    if let Some(Ok((status, body))) = outcome {
-        conn.with_status(status)
-            .with_response_header(KnownHeaderName::ContentType, "application/json")
-            .with_body(body)
-            .halt()
-    } else {
-        conn.with_status(Status::InternalServerError).halt()
+    // `Cache-Control` is not set here: `CachingPolicy` applies it to every
+    // response the server sends, so there is one place that decides it.
+    match outcome {
+        Some(Ok(Rendered::NotModified(validators))) => validators
+            .apply(conn)
+            .with_status(Status::NotModified)
+            .halt(),
+
+        Some(Ok(Rendered::Json {
+            status,
+            body,
+            validators,
+        })) => {
+            let conn = match &validators {
+                Some(validators) => validators.apply(conn),
+                None => conn,
+            };
+
+            conn.with_status(status)
+                .with_response_header(KnownHeaderName::ContentType, "application/json")
+                .with_body(body)
+                .halt()
+        }
+
+        _ => conn.with_status(Status::InternalServerError).halt(),
     }
 }
 
@@ -473,17 +525,43 @@ async fn get_crate(conn: Conn) -> Conn {
         return conn.with_status(Status::InternalServerError).halt();
     };
 
+    // Read before the worker: request headers do not cross into it.
+    let if_none_match = conn.if_none_match();
+
     let outcome = run_blocking(&pool, move || {
         let navigator = Navigator::new(store);
+
+        // Name the response before producing it. On a conditional request that
+        // still matches, this — one phase-1 resolution and a hash — is the
+        // entire cost of the 304.
+        let validators = caching::documentation(&navigator, "get", &path, &[]);
+        if let Some(validators) = &validators
+            && validators.matches(if_none_match.as_ref())
+        {
+            return Ok(Rendered::NotModified(validators.clone()));
+        }
+
         let mut request = Request::new(&navigator, FormatContext::new());
         match commands::get::model(&mut request, &path, false, false) {
             JsonOutcome::Found {
                 model,
                 canonical_url,
-            } => json::to_string(&model, Some(canonical_url)).map(|body| (Status::Ok, body)),
+            } => json::to_string(&model, Some(canonical_url)).map(|body| Rendered::Json {
+                status: Status::Ok,
+                body,
+                validators,
+            }),
 
+            // The crate resolved but the item path didn't — or no crate resolved
+            // at all, in which case there was never a cheap identity to derive.
+            // Either way the suggestion list is not worth a fast path, and
+            // `CachingHeaders` still body-hashes it as a backstop.
             JsonOutcome::NotFound(not_found) => {
-                json::not_found_to_string(&not_found).map(|body| (Status::NotFound, body))
+                json::not_found_to_string(&not_found).map(|body| Rendered::Json {
+                    status: Status::NotFound,
+                    body,
+                    validators: None,
+                })
             }
         }
     })
@@ -515,9 +593,22 @@ async fn typeahead(conn: Conn) -> Conn {
         return conn.with_status(Status::ServiceUnavailable).halt();
     };
 
+    // Unlike the documentation endpoints there is no expensive path to skip here
+    // — the query is two binary searches over resident data — so the validators
+    // are derived *after* the answer, purely to keep repeat answers off the wire.
+    // Setting the etag is enough: `CachingHeaders` honors one we set, so it
+    // neither hashes the body nor needs us to compare anything ourselves.
+    let validators = caching::typeahead(service.artifact_etag().as_deref(), &q, limit);
+
     respond_json(
         conn,
-        Some(json::typeahead_to_string(&q, results).map(|body| (Status::Ok, body))),
+        Some(
+            json::typeahead_to_string(&q, results).map(|body| Rendered::Json {
+                status: Status::Ok,
+                body,
+                validators,
+            }),
+        ),
     )
 }
 
@@ -535,11 +626,28 @@ async fn search_crate(conn: Conn) -> Conn {
         return conn.with_status(Status::BadRequest).halt();
     };
 
+    // Read before the worker: request headers do not cross into it.
+    let if_none_match = conn.if_none_match();
+
     let outcome = run_blocking(&pool, move || {
         let navigator = Navigator::new(store);
+
+        // Same short-circuit as `get_crate`, and a bigger win: a search that
+        // misses the cache builds the crate's whole TF-IDF index.
+        let validators = caching::documentation(&navigator, "search", &crate_name, &[&q]);
+        if let Some(validators) = &validators
+            && validators.matches(if_none_match.as_ref())
+        {
+            return Ok(Rendered::NotModified(validators.clone()));
+        }
+
         let mut request = Request::new(&navigator, FormatContext::new());
         let model = commands::search::model(&mut request, &q, SEARCH_LIMIT, Some(&crate_name));
-        json::search_to_string(&model).map(|body| (Status::Ok, body))
+        json::search_to_string(&model).map(|body| Rendered::Json {
+            status: Status::Ok,
+            body,
+            validators,
+        })
     })
     .await;
 
