@@ -54,7 +54,7 @@ jobs:
     # macro-expansion time — expanding the macro *is* building the web client.
     - uses: pnpm/action-setup@v6
       with:
-        version: 10
+        version: 11
     - uses: actions/setup-node@v6
       with:
         node-version: 24
@@ -65,6 +65,34 @@ jobs:
 
     - name: Clippy (--features serve)
       run: cargo clippy -p ferritin --features serve --all-targets
+
+  client:
+    name: Client
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+    # No submodules and no rust toolchain: the client's checks are pure node, and
+    # the `frontend!` macro (the only thing that couples them) is the serve job's
+    # concern, not this one.
+    - uses: actions/checkout@v7
+    - uses: pnpm/action-setup@v6
+      with:
+        version: 11
+    - uses: actions/setup-node@v6
+      with:
+        node-version: 24
+        cache: pnpm
+        cache-dependency-path: client/pnpm-lock.yaml
+
+    - name: Install
+      run: pnpm install --frozen-lockfile
+
+    # typecheck && lint && format:check && test — the same command the client's
+    # own `pnpm check` runs locally.
+    - name: Check
+      run: pnpm run check
 
   check_fmt_and_docs:
     name: Lints and Docs

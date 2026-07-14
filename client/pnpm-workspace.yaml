@@ -1,0 +1,8 @@
+# pnpm 11 refuses to install packages published within the last 24h
+# (`minimumReleaseAge`) — a supply-chain guard against a compromised release being
+# pulled in before anyone has noticed it. Left on.
+#
+# rhoto-router is exempt because we publish it: waiting out a cooldown on our own
+# release buys no safety it doesn't already have.
+minimumReleaseAgeExclude:
+  - rhoto-router
