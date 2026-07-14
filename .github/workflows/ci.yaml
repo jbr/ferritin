@@ -38,7 +38,7 @@ jobs:
         args: --all --no-fail-fast
 
   serve:
-    name: Serve Feature
+    name: Serve and Acme Features
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -67,8 +67,24 @@ jobs:
 
     - uses: Swatinem/rust-cache@v2.9.1
 
+    # `serve` alone first: `acme` implies it, so only this step proves the server
+    # still compiles without the ACME/HTTP-3 stack that deployment adds.
     - name: Clippy (--features serve)
       run: cargo clippy -p ferritin --features serve --all-targets
+
+    # `acme` is only ever enabled by the deployment build, so nothing else in CI
+    # compiles the trillium-acme/quinn listener setup or the code behind its
+    # cfgs.
+    - name: Clippy (--features acme)
+      run: cargo clippy -p ferritin --features acme --all-targets
+
+    # The openapi.json drift guard lives behind `#[cfg(feature = "schema")]`, so
+    # the main `cargo test --all` job (default features) never compiles it, let
+    # alone runs it. Filtered to that one test: the rest of the suite already ran
+    # there, and the ferritin bin's other tests want the rust-docs-json component
+    # this job has no reason to install.
+    - name: Schema drift guard (--features schema)
+      run: cargo test -p ferritin --features schema --bin ferritin committed_schema_is_up_to_date
 
   client:
     name: Client

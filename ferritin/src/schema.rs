@@ -249,8 +249,9 @@ struct Components {
 #[cfg(test)]
 mod tests {
     /// Drift guard: the committed `assets/openapi.json` must match what the DTOs
-    /// currently generate. Runs only under `--features schema` (this module is
-    /// feature-gated), so it doubles as the regeneration check in CI.
+    /// currently generate. This module is feature-gated, so the test only exists
+    /// under `--features schema`; CI runs it by name in the serve job, since the
+    /// default-feature `cargo test --all` job cannot see it.
     #[test]
     fn committed_schema_is_up_to_date() {
         let generated = super::openapi_document();
@@ -258,8 +259,8 @@ mod tests {
         assert_eq!(
             generated.trim(),
             committed.trim(),
-            "assets/openapi.json is stale; regenerate with `cargo run -p ferritin --bin ferritin \
-             --features schema -- schema > ferritin/assets/openapi.json`",
+            "assets/openapi.json is stale; regenerate with `cargo run -p ferritin --features \
+             schema -- schema` (it writes the file itself — do not redirect stdout)",
         );
     }
 }
