@@ -14,15 +14,18 @@ export function DocsLayout({
   toc,
   children,
   isCrateRoot,
+  search = true,
 }: {
   crate?: string;
   toc: TocEntry[];
   children: ReactNode;
   isCrateRoot?: boolean;
+  /** Off on the landing page, which hosts the search field inline instead. */
+  search?: boolean;
 }) {
   return (
     <div className="docs">
-      <TopBar crate={crate} />
+      <TopBar crate={crate} search={search} />
       <div className="docs-cols">
         {isCrateRoot ? (
           // Keep the left column's width so the main content stays put; we may

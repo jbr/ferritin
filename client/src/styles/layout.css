@@ -67,6 +67,11 @@
   gap: 1rem;
   flex-shrink: 0;
 }
+/* …unless there is no search slot to absorb it (the landing page), in which case
+   the toggle has to claim the space itself. */
+.topbar:not(:has(.search-slot)) .topbar-right {
+  margin-left: auto;
+}
 
 /* --- search: one element, two states ("anchored morph") ---
    The box is absolutely positioned in BOTH states, over an in-flow spacer holding
@@ -131,6 +136,99 @@
   .search-panel {
     transition: none;
   }
+}
+
+/* --- inline search (the landing page) ---
+   The same component with the morph removed: no resting trigger, no absolute
+   pinning, no overlay. It sits in the flow under the hero, permanently open, so
+   the crate typeahead over all of crates.io is the first thing you can touch. */
+.search-slot.inline {
+  margin-left: 0;
+  width: 100%;
+  height: auto;
+  --search-h: 52px;
+}
+/* Inline is permanently `data-expanded` — that is what "no resting state" means —
+   so it would otherwise wear the morph's lit border and drop shadow at all times.
+   Walk both back, then re-spend them deliberately: in the top bar the field is a
+   utility and should recede, but here it is the call to action, so it carries an
+   accent ring at rest rather than the neutral one that made it read as decoration. */
+.search-slot.inline .search-box,
+.search-slot.inline .search-box[data-expanded] {
+  position: static;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  background: var(--bg);
+  border-color: color-mix(in oklch, var(--accent) 42%, var(--border));
+  box-shadow:
+    0 0 0 4px color-mix(in oklch, var(--accent) 9%, transparent),
+    0 2px 10px -4px color-mix(in oklch, var(--ink) 18%, transparent);
+  transition:
+    border-color 160ms var(--search-ease),
+    box-shadow 160ms var(--search-ease);
+}
+.search-slot.inline .search-box:hover {
+  border-color: color-mix(in oklch, var(--accent) 62%, var(--border));
+  box-shadow:
+    0 0 0 5px color-mix(in oklch, var(--accent) 13%, transparent),
+    0 4px 16px -6px color-mix(in oklch, var(--ink) 22%, transparent);
+}
+.search-slot.inline .search-box[data-focused] {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 4px color-mix(in oklch, var(--accent) 16%, transparent),
+    0 18px 50px -20px color-mix(in oklch, var(--ink) 32%, transparent);
+}
+/* The icon is the field's one piece of colour at rest — it reads as "act here"
+   where the muted glyph read as "label". */
+.search-slot.inline .search-icon {
+  color: var(--accent);
+  font-size: 1.15rem;
+}
+/* One pass of the ring on arrival: enough to catch the eye as the page settles,
+   then gone. It runs once, not on a loop — a permanently pulsing control is a
+   nag rather than an invitation. */
+@media (prefers-reduced-motion: no-preference) {
+  .search-slot.inline .search-box {
+    animation: search-attention 1.6s var(--search-ease) 0.35s 1 both;
+  }
+}
+@keyframes search-attention {
+  0% {
+    box-shadow:
+      0 0 0 0 color-mix(in oklch, var(--accent) 34%, transparent),
+      0 2px 10px -4px color-mix(in oklch, var(--ink) 18%, transparent);
+  }
+  55% {
+    box-shadow:
+      0 0 0 11px color-mix(in oklch, var(--accent) 0%, transparent),
+      0 2px 10px -4px color-mix(in oklch, var(--ink) 18%, transparent);
+  }
+  100% {
+    box-shadow:
+      0 0 0 4px color-mix(in oklch, var(--accent) 9%, transparent),
+      0 2px 10px -4px color-mix(in oklch, var(--ink) 18%, transparent);
+  }
+}
+/* No clip to fade out of — the panel is simply there when it has something to say.
+   `display: flex` below is an author rule, so it beats the UA's `[hidden]` sheet:
+   without this, `hidden` would set the attribute and change nothing. */
+.search-slot.inline .search-panel {
+  opacity: 1;
+  transition: none;
+}
+.search-panel[hidden] {
+  display: none;
+}
+.search-slot.inline .search-results {
+  max-height: 19rem;
+}
+.search-slot.inline .search-input {
+  font-size: 1.05rem;
+}
+.search-slot.inline .search-row {
+  padding: 0 0.9rem;
 }
 
 .search-row {
@@ -556,7 +654,7 @@
 /* --- home landing --- */
 .home {
   max-width: 42rem;
-  margin: 4rem auto;
+  margin: 4rem auto 6rem;
   padding: 0 1rem;
 }
 .home-badge {
@@ -580,6 +678,105 @@
   font-size: 1.1rem;
   line-height: 1.6;
   color: var(--muted);
+  margin: 0 0 1rem;
+}
+.home-try {
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+
+/* Each pitch section is separated by a rule rather than a heading weight jump,
+   so the page reads as one column of prose rather than a stack of cards. */
+.home-section {
+  margin-top: 3rem;
+  padding-top: 2.2rem;
+  border-top: 1px solid var(--border);
+}
+.home-section h2 {
+  font-size: 1.35rem;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.2rem;
+}
+.home-section p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+.home-section code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  color: var(--ink);
+}
+
+.home-steps {
+  margin: 0;
+  padding-left: 1.4rem;
+  color: var(--muted);
+}
+.home-steps li {
+  margin-bottom: 0.9rem;
+  line-height: 1.65;
+}
+.home-steps strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.home-points {
+  margin: 0;
+}
+.home-points > div + div {
+  margin-top: 1.4rem;
+}
+.home-points dt {
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+.home-points dd {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+/* Snippets inside a mode's description sit tight against its label. */
+.home-points dd .code-block {
+  margin: 0.5rem 0 0.6rem;
+}
+
+/* --- install picker --- */
+.install {
+  margin-bottom: 2.5rem;
+}
+.install-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.install-tab {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.install-tab:hover {
+  color: var(--ink);
+  border-color: color-mix(in oklch, var(--accent) 40%, var(--border));
+}
+.install-tab[aria-selected="true"] {
+  background: color-mix(in oklch, var(--accent) 14%, transparent);
+  border-color: color-mix(in oklch, var(--accent) 40%, transparent);
+  color: var(--ink);
+  font-weight: 500;
+}
+.install-note {
+  font-size: 0.85rem;
+  margin: 0.6rem 0 0;
+}
+.install-note code {
+  font-size: 0.9em;
 }
 
 @media (max-width: 60rem) {

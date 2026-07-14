@@ -14,7 +14,8 @@ if (typeof localStorage?.getItem !== "function") {
     configurable: true,
     value: {
       getItem: (key: string) => store.get(key) ?? null,
-      setItem: (key: string, value: string) => void store.set(key, String(value)),
+      setItem: (key: string, value: string) =>
+        void store.set(key, String(value)),
       removeItem: (key: string) => void store.delete(key),
       clear: () => store.clear(),
       key: (i: number) => [...store.keys()][i] ?? null,

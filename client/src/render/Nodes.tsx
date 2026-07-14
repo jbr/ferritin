@@ -157,13 +157,7 @@ const CODE_NOTES: Record<string, { label: string; kind: "warn" | "fail" }> = {
   },
 };
 
-function CodeBlock({
-  spans,
-  attrs,
-}: {
-  spans: CodeSpan[];
-  attrs?: string[];
-}) {
+function CodeBlock({ spans, attrs }: { spans: CodeSpan[]; attrs?: string[] }) {
   const notes = (attrs ?? [])
     .map((attr) => CODE_NOTES[attr])
     .filter((note): note is (typeof CODE_NOTES)[string] => Boolean(note));
