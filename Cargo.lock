@@ -1265,9 +1265,7 @@ version = "0.13.0"
 dependencies = [
  "anyhow",
  "async-channel",
- "async-lock",
  "clap",
- "crate-names",
  "crossbeam-channel",
  "crossterm",
  "env_logger",
@@ -1316,7 +1314,9 @@ version = "0.14.0"
 dependencies = [
  "anyhow",
  "async-fs",
+ "async-lock",
  "cargo_metadata",
+ "crate-names",
  "elsa",
  "env_logger",
  "fieldwork 0.5.2",
@@ -4605,9 +4605,9 @@ dependencies = [
 
 [[package]]
 name = "trillium-server-common"
-version = "0.7.9"
+version = "0.7.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c214c81fd85848f72e59b57279bbec51e814b36da3cead51e9a0aae2f8bb41de"
+checksum = "f36a02f792b5015cd357aac5299d5eeb154ecf149b8f5f52341e5691d1301154"
 dependencies = [
  "async-channel",
  "async_cell",

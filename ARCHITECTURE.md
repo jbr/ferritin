@@ -49,7 +49,7 @@ A key architectural challenge is handling re-exports and cross-crate references.
 
 **CLI mode** is single-threaded; blocking operations occur on the main thread. **Interactive TUI mode** uses scoped threads for parallelism: a request thread owns `Navigator` and handles documentation operations, while a UI thread handles rendering and input. Channel-based communication maintains the zero-copy borrowing architecture across thread boundaries (`Navigator` and `DocRef` are `Send + Sync`). **Serve mode** shares one `Arc<Store>` across requests and builds a short-lived `Navigator` per request on a big-stack rayon worker, so nothing borrowed crosses an `.await` and Store eviction never invalidates an in-flight request.
 
-One serve-mode endpoint stands apart from the Store/Navigator machinery: `/api/typeahead` (crate-name completion) is answered by `TypeaheadService`, which lazily fetches the daily [crate-names](https://github.com/jbr/crate-names) artifact (~2 MB zstd TSV of every crates.io name/default-version/rank) and queries it in memory via the sans-io `crate-names` reader. Freshness is stale-while-revalidate — hourly conditional GETs, one revalidator at a time, brief failure cooldown — so queries never block on the network once data is loaded, and a cold offline server degrades to fast 503s.
+One serve-mode endpoint stands apart from the Store/Navigator machinery: `/api/typeahead` (crate-name completion) is answered by `TypeaheadService`, which merges the standard library crates (absent from crates.io, present on this server) into prefix queries against the shared [`CrateIndex`](#the-crates-io-namespace-as-an-artifact-crate_names) and hoists an exact match to the front.
 
 #### Cache validation without rendering (`serve::caching`)
 
@@ -272,9 +272,20 @@ $CARGO_HOME/rustdoc-json/{format-version}/{crate}/{version}.json
   `DocsRsClient::get`); remove the pin when that race is fixed upstream
 
 **Version resolution:**
-- Queries crates.io API for crate metadata and available versions
+- Reads the crate's default (latest) version and description from the local [`CrateIndex`](#the-cratesio-namespace-as-an-artifact-crate_names) first, falling back to the crates.io API
 - Matches against semver version requirements
 - Extracts version numbers from `html_root_url` in external_crates for precise dependency versions
+
+### The crates.io namespace as an artifact (`crate_names`)
+
+`CrateIndex` (in `ferritin-common`) holds a local copy of the whole crates.io namespace: the daily [crate-names](https://github.com/jbr/crate-names) artifacts — `names-v2` (~2 MB zstd TSV: name, default version, download rank) and `descriptions-v2` (~5.5 MB) — queried in memory through the sans-io `crate-names` reader. One index serves two callers, so `serve` holds one copy of it rather than two: **version resolution** (`DocsRsClient::resolve`) and the **typeahead** endpoint.
+
+For version resolution it replaces a per-crate crates.io API request with a per-*namespace* download. The artifact knows every crate's default version, and the default — being the latest — answers any request that matches it, so a bare `crate` and most `crate@req`s resolve with no network at all. Two cases still fall through to the crates.io API, and both must, because the artifact cannot answer them:
+
+- A request that **excludes the latest** version needs the full version list, which the artifact does not carry.
+- A **miss**, which means "crates.io did not have this yesterday", not "no such crate" — a crate published since the last build is simply absent. Treating a miss as absence would make new crates unfindable for a day.
+
+**Freshness is bounded by the artifact's daily rebuild**, so resolution can lag crates.io by up to ~24h: a release published this morning may still resolve to yesterday's version. That is the deliberate trade for the request it eliminates. Within that bound the tiers are memory → disk → network: stale-while-revalidate with hourly conditional GETs, one revalidator at a time, and a brief failure cooldown, so queries never block on the network once data is loaded. The disk tier (`$CARGO_HOME/rustdoc-json/crate-names/`) is what makes this viable for the CLI, whose every invocation is a fresh process — it downloads the artifacts once and thereafter pays a ~40 ms decompression instead of a request, and works offline. A cold offline server still degrades to fast 503s on typeahead.
 
 ### Format Version Normalization
 

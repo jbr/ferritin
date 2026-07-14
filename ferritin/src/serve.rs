@@ -150,6 +150,16 @@ pub fn serve() {
     }
     let store = Arc::new(store);
 
+    // The typeahead reads the same crate-names artifact the docs.rs source
+    // resolves versions from, so it shares that index rather than loading a
+    // second copy of it.
+    let typeahead = Arc::new(TypeaheadService::new(
+        store
+            .docsrs_source()
+            .map(|source| Arc::clone(source.client().crate_index())),
+        std_crates,
+    ));
+
     let pool = Arc::new(
         ThreadPoolBuilder::new()
             .thread_name(|i| format!("ferritin-docs-{i}"))
@@ -160,13 +170,13 @@ pub fn serve() {
 
     #[cfg(feature = "acme")]
     if let Some(env) = acme::AcmeEnv::from_env() {
-        return acme::serve_tls(store, pool, env, std_crates);
+        return acme::serve_tls(store, pool, env, typeahead);
     }
 
     let server_handle = trillium_smol::config()
         .with_shared_state(store)
         .with_shared_state(pool)
-        .spawn(handler(std_crates));
+        .spawn(handler(typeahead));
 
     server_handle.block();
 }
@@ -193,7 +203,7 @@ pub fn serve() {
 /// cleartext exactly as it does without this feature.
 #[cfg(feature = "acme")]
 mod acme {
-    use crate::typeahead::TypeaheadEntry;
+    use crate::typeahead::TypeaheadService;
     use ferritin_common::Store;
     use rayon::ThreadPool;
     use std::{env, path::PathBuf, sync::Arc};
@@ -257,7 +267,7 @@ mod acme {
         store: Arc<Store>,
         pool: Arc<ThreadPool>,
         env: AcmeEnv,
-        std_crates: Vec<TypeaheadEntry>,
+        typeahead: Arc<TypeaheadService>,
     ) {
         let AcmeEnv {
             domains,
@@ -289,7 +299,7 @@ mod acme {
             .expect("failed to bind the TLS listener on tcp/443")
             .bind_quic((&*host, 443), quic)
             .expect("failed to bind the QUIC listener on udp/443")
-            .spawn((redirect_insecure(authority), super::handler(std_crates)));
+            .spawn((redirect_insecure(authority), super::handler(typeahead)));
 
         let acme_future = handle.swansong().interrupt(acme_future);
         handle.runtime().spawn(acme_future);
@@ -338,7 +348,7 @@ async fn reject_other_methods(conn: Conn) -> Conn {
     }
 }
 
-pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl Handler {
+pub(crate) fn handler(typeahead: Arc<TypeaheadService>) -> impl Handler {
     (
         // `{ip}` is what lets fail2ban attribute a request to a host; the line
         // carries no timestamp because journald stamps every line it ingests.
@@ -352,7 +362,7 @@ pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl Handler {
         Compression::new(),
         CachingHeaders::new(),
         caching_policy(),
-        trillium::state(Arc::new(TypeaheadService::new(std_crates))),
+        trillium::state(typeahead),
         Router::new()
             .get("/api/*", (api_limiter(), api_router()))
             .get("/robots.txt", crawlers::robots)

@@ -66,8 +66,6 @@ schemars = { version = "1.2.1", optional = true }
 # `serve`-only. The HTTP server and its crate-name typeahead; see [features].
 anyhow = { workspace = true, optional = true }
 async-channel = { version = "2.5.0", optional = true }
-async-lock = { version = "3", optional = true }
-crate-names = { version = "0.2.0", optional = true }
 querystrong = { version = "0.4.0", optional = true }
 rayon = { version = "1.12.0", optional = true }
 trillium = { version = "1.3.0", optional = true }
@@ -101,14 +99,13 @@ path = "src/main.rs"
 
 [features]
 # The HTTP server (`ferritin serve`): the JSON API plus the embedded web client.
-# Off by default — it pulls in the trillium stack, rustls, rayon, and the
-# crate-name typeahead reader, none of which the CLI or TUI needs. Distributed
-# binaries are built without it.
+# Off by default — it pulls in the trillium stack, rustls and rayon, none of
+# which the CLI or TUI needs. Distributed binaries are built without it. (The
+# crate-names artifact reader is *not* here: version resolution reads it too, so
+# it lives unconditionally in ferritin-common.)
 serve = [
     "dep:anyhow",
     "dep:async-channel",
-    "dep:async-lock",
-    "dep:crate-names",
     "dep:querystrong",
     "dep:rayon",
     "dep:trillium",

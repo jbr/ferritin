@@ -1,10 +1,15 @@
-use crate::{RustdocData, sources::CrateProvenance};
+use crate::{
+    FERRITIN_USER_AGENT, RustdocData,
+    crate_names::{CrateEntry, CrateIndex},
+    sources::CrateProvenance,
+};
 use anyhow::{Context, Result, anyhow};
 use fieldwork::Fieldwork;
 use semver::{Version, VersionReq};
 use serde::{Deserialize, Serialize};
 use std::{
     path::PathBuf,
+    sync::Arc,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 use trillium_client::{Client, HeaderValue, KnownHeaderName, Status};
@@ -14,8 +19,6 @@ use trillium_logger::{Target, client::ClientLogger};
 use trillium_redirect::client::FollowRedirects;
 use trillium_rustls::RustlsConfig;
 use trillium_smol::ClientConfig;
-
-pub const FERRITIN_USER_AGENT: &str = concat!("ferritin/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Deserialize)]
 struct CratesIoResponse {
@@ -28,7 +31,7 @@ struct CratesIoResponse {
 struct CrateMetadata {
     pub(super) name: String,
     pub(super) default_version: Version,
-    pub(super) description: String,
+    pub(super) description: Option<String>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -39,22 +42,26 @@ struct CrateVersion {
 /// Minimum supported format version (inclusive)
 const MIN_FORMAT_VERSION: u32 = 55;
 
-/// How long a cached crates.io version lookup stays fresh. crates.io sends no
-/// cache headers on its API, and the fact we extract — a crate's version list —
-/// only changes when a release is published, so a generous TTL is safe and stops
-/// us from re-hitting the API on every CLI invocation.
+/// How long a cached version lookup stays fresh. crates.io sends no cache
+/// headers on its API, and the fact we extract — a crate's version list — only
+/// changes when a release is published, so a generous TTL is safe and stops us
+/// from redoing the lookup on every CLI invocation.
 const VERSION_CACHE_TTL_SECS: u64 = 30 * 60;
 
-/// Cached projection of a crates.io metadata lookup — only what version
-/// resolution needs (the version list, the default/latest, the description), not
-/// the full API body. Persisted per-crate on disk so sequential CLI invocations,
-/// each its own short-lived process, share one lookup instead of each re-hitting
-/// crates.io (which would otherwise be one uncached request per invocation).
+/// What one crate's version resolution needs: the default (latest) version, the
+/// description, and — only once a request has needed it — the full version list.
+///
+/// This is the tier that survives across CLI processes, each of which is its own
+/// short-lived program: an entry written here (by either the artifact or the
+/// crates.io API) means the next invocation resolves the same crate from one
+/// small file read, touching neither. See [`DocsRsClient::resolve`].
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct CachedMetadata {
     name: String,
     default_version: Version,
-    description: String,
+    /// `None` for crates that have no description on crates.io.
+    #[serde(default)]
+    description: Option<String>,
     /// The full version list, populated only once a range lookup has needed it.
     /// `None` means only the default (latest) version is known so far — a bare
     /// `crate` lookup never fetches the whole list.
@@ -68,10 +75,43 @@ impl CachedMetadata {
         now_unix().saturating_sub(self.fetched_at) < VERSION_CACHE_TTL_SECS
     }
 
-    /// Whether this entry can answer a lookup: fresh, and — when the caller needs
-    /// the full version list — actually carrying it.
-    fn satisfies(&self, need_versions: bool) -> bool {
-        self.is_fresh() && (!need_versions || self.versions.is_some())
+    /// Resolve a request against what this tier knows about the crate.
+    ///
+    /// The default version is the latest, so it answers *any* request that
+    /// matches it — including a range request, which is why a `versions: None`
+    /// entry is still worth consulting for `crate@1`. Only a request that
+    /// excludes the latest needs the full list, and `None` there means "this
+    /// tier cannot answer; ask a better-informed one".
+    fn resolve(&self, version_req: &VersionReq) -> Option<ResolvedMetadata> {
+        let version = if version_req.matches(&self.default_version) {
+            self.default_version.clone()
+        } else {
+            self.versions
+                .iter()
+                .flatten()
+                .filter(|version| version_req.matches(version))
+                .max()?
+                .clone()
+        };
+
+        Some(ResolvedMetadata {
+            name: self.name.clone(),
+            version,
+            description: self.description.clone(),
+        })
+    }
+}
+
+impl From<CrateEntry> for CachedMetadata {
+    fn from(entry: CrateEntry) -> Self {
+        Self {
+            name: entry.name,
+            default_version: entry.version,
+            description: entry.description,
+            // The artifact carries only the default version, never the list.
+            versions: None,
+            fetched_at: now_unix(),
+        }
     }
 }
 
@@ -88,13 +128,18 @@ pub struct DocsRsClient {
     http_client: Client,
     #[field(get)]
     cache_dir: PathBuf,
+    /// The crates.io namespace as a local artifact — the first tier of version
+    /// resolution, ahead of the crates.io API. Shared (rather than owned) so
+    /// that `serve`, whose typeahead queries the same artifact, holds one copy
+    /// in memory rather than two.
+    crate_index: Arc<CrateIndex>,
 }
 
 #[derive(Debug)]
 pub(super) struct ResolvedMetadata {
     pub(super) name: String,
     pub(super) version: Version,
-    pub(super) description: String,
+    pub(super) description: Option<String>,
 }
 
 impl DocsRsClient {
@@ -106,6 +151,12 @@ impl DocsRsClient {
             s.into()
         });
         USER_AGENT.clone()
+    }
+
+    /// The crates.io namespace artifact this client resolves versions against,
+    /// shareable with any other consumer that would otherwise load its own copy.
+    pub fn crate_index(&self) -> &Arc<CrateIndex> {
+        &self.crate_index
     }
 
     /// Create a new docs.rs client with the specified cache directory
@@ -127,46 +178,60 @@ impl DocsRsClient {
 
         Ok(Self {
             http_client,
+            crate_index: Arc::new(CrateIndex::new(&cache_dir)),
             cache_dir,
         })
     }
 
+    /// Resolve a crate request to an exact version, through three tiers, each
+    /// only consulted when the one before it cannot answer:
+    ///
+    /// 1. The **per-crate disk cache**, which survives across CLI processes. A hit costs one small
+    ///    file read, so it stays in front even of the artifact — whose decompression, cheap as it
+    ///    is next to a request, is not free.
+    /// 2. The **crate-names artifact** ([`CrateIndex`]): every crate's default version at once,
+    ///    with no request at all. Its answers are written back to tier 1.
+    /// 3. The **crates.io API**, for what the artifact structurally cannot answer: a request that
+    ///    excludes the latest version (it carries no version list), and a crate published since the
+    ///    artifact was built (a miss means "not as of yesterday", never "no such crate").
+    ///
+    /// Returns `Ok(None)` if no version satisfies the request, or the crate does
+    /// not exist.
     pub(super) async fn resolve(
         &self,
         crate_name: &str,
         version_req: &VersionReq,
     ) -> Result<Option<ResolvedMetadata>> {
-        let Some(CachedMetadata {
-            name,
-            default_version,
-            description,
-            versions,
-            ..
-        }) = self
-            .cached_metadata(crate_name, version_req != &VersionReq::STAR)
+        if let Some(cached) = self.disk_lookup(crate_name).await?
+            && cached.is_fresh()
+            && let Some(resolved) = cached.resolve(version_req)
+        {
+            return Ok(Some(resolved));
+        }
+
+        if let Some(entry) = self.crate_index.get(crate_name).await {
+            let cached = CachedMetadata::from(entry);
+            self.disk_store(crate_name, &cached).await?;
+            if let Some(resolved) = cached.resolve(version_req) {
+                log::debug!(
+                    "resolved {crate_name}@{} from the crate-names artifact",
+                    resolved.version
+                );
+                return Ok(Some(resolved));
+            }
+        }
+
+        // Only a request the tiers above could not answer reaches the network,
+        // and it needs the full version list unless it is a bare `crate` whose
+        // crate the artifact had simply never heard of.
+        let Some(cached) = self
+            .fetch_metadata(crate_name, version_req != &VersionReq::STAR)
             .await?
         else {
             return Ok(None);
         };
-
-        // Resolve "latest" to a specific version. The default (latest) satisfies
-        // any request that matches it, so only a request that excludes the latest
-        // needs the full list — which is exactly when `cached_metadata` fetched it.
-        let version = if version_req.matches(&default_version) {
-            Some(default_version)
-        } else {
-            versions
-                .into_iter()
-                .flatten()
-                .filter(|version| version_req.matches(version))
-                .max()
-        };
-
-        Ok(version.map(|version| ResolvedMetadata {
-            name,
-            version,
-            description,
-        }))
+        self.disk_store(crate_name, &cached).await?;
+        Ok(cached.resolve(version_req))
     }
 
     /// Fetch rustdoc JSON for a crate, checking cache first
@@ -245,32 +310,6 @@ impl DocsRsClient {
         );
 
         Ok(Some(data))
-    }
-
-    /// Resolve crates.io metadata through the per-crate on-disk version cache
-    /// (the tier that survives across CLI processes) before touching the
-    /// network. In-process caching lives above this client, in the Store's
-    /// resolution cache. `need_versions` requires the full version list, not
-    /// just the latest — a fresh entry that only knows the latest can't
-    /// answer a range lookup, so it falls through.
-    ///
-    /// Returns `Ok(None)` if crates.io doesn't have the crate.
-    async fn cached_metadata(
-        &self,
-        crate_name: &str,
-        need_versions: bool,
-    ) -> Result<Option<CachedMetadata>> {
-        if let Some(entry) = self.disk_lookup(crate_name).await?
-            && entry.satisfies(need_versions)
-        {
-            return Ok(Some(entry));
-        }
-
-        let Some(entry) = self.fetch_metadata(crate_name, need_versions).await? else {
-            return Ok(None);
-        };
-        self.disk_store(crate_name, &entry).await?;
-        Ok(Some(entry))
     }
 
     /// On-disk location of a crate's cached version metadata.
