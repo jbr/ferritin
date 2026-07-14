@@ -1,7 +1,7 @@
 import { Link } from "rhoto-router";
 import { ApiError } from "../api/client";
 import { useItem } from "../api/queries";
-import { crateOf, itemHref } from "../lib/paths";
+import { itemHref } from "../lib/paths";
 import { buildToc } from "../lib/toc";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import { DocsLayout } from "./layout/DocsLayout";
@@ -10,12 +10,10 @@ import { ItemBody } from "./item/ItemBody";
 
 /**
  * The docs reading view for one item path. Renders inside the three-column
- * shell; the crate (derived from the path) drives the top bar and left nav even
- * while the item itself is still loading.
+ * shell; the path drives the top bar and the left nav's tree — both of which are
+ * useful while the item itself is still loading.
  */
 export function ItemView({ path }: { path: string }) {
-  const crate = crateOf(path);
-  const isCrateRoot = path === crate;
   const { data, error, isLoading } = useItem(path);
   const toc = data ? buildToc(data) : [];
 
@@ -24,7 +22,7 @@ export function ItemView({ path }: { path: string }) {
   useDocumentTitle(error ? `Not found: ${path}` : path);
 
   return (
-    <DocsLayout crate={crate} toc={toc} isCrateRoot={isCrateRoot}>
+    <DocsLayout path={path} toc={toc}>
       {isLoading ? (
         <p className="status">Loading {path}…</p>
       ) : error ? (
