@@ -191,6 +191,7 @@ pub fn serve() {
 /// cleartext exactly as it does without this feature.
 #[cfg(feature = "acme")]
 mod acme {
+    use crate::typeahead::TypeaheadEntry;
     use ferritin_common::Store;
     use rayon::ThreadPool;
     use std::{env, path::PathBuf, sync::Arc};
