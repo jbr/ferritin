@@ -61,7 +61,7 @@ impl Source for DocsRsSource {
         Ok(Some(Cow::Owned(CrateInfo {
             provenance: CrateProvenance::DocsRs,
             version,
-            description: Some(description),
+            description,
             name,
             default_crate: false,
             used_by: vec![],
