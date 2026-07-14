@@ -1,25 +1,22 @@
 #[cfg(test)]
 mod tests;
 
+use crate::{Resolver, Suggestion, crate_name::CrateName, doc_ref::DocRef, navigator::Navigator};
 use fieldwork::Fieldwork;
 use memchr::memmem;
-use rkyv::rancor::Error;
-use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize};
-use rustc_hash::FxHashMap;
-use rustc_hash::FxHasher;
+use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize, rancor::Error};
+use rustc_hash::{FxHashMap, FxHasher};
 use rustdoc_types::{Item, ItemEnum, ItemSummary, StructKind, Trait};
-use std::cmp::Reverse;
-use std::collections::HashMap;
-use std::collections::{BTreeMap, HashSet};
-use std::fs::OpenOptions;
-use std::fs::{self, File};
-use std::hash::{Hash, Hasher};
-use std::io::{Read, Write};
-use std::ops::AddAssign;
-use std::path::Path;
-use std::time::SystemTime;
-
-use crate::{Resolver, Suggestion, crate_name::CrateName, doc_ref::DocRef, navigator::Navigator};
+use std::{
+    cmp::Reverse,
+    collections::{BTreeMap, HashMap, HashSet},
+    fs::{self, File, OpenOptions},
+    hash::{Hash, Hasher},
+    io::{Read, Write},
+    ops::AddAssign,
+    path::Path,
+    time::SystemTime,
+};
 
 /// Represents either a resolved Item or an unresolved ItemSummary for link counting
 #[derive(Clone, Copy, Debug)]

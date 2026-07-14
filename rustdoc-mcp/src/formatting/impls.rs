@@ -1,7 +1,6 @@
+use super::*;
 use rustdoc_types::ItemKind;
 use semver::VersionReq;
-
-use super::*;
 use std::cmp::Ordering;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]

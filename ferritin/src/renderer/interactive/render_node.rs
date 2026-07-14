@@ -1,9 +1,8 @@
-use ratatui::{buffer::Buffer, layout::Rect, style::Modifier};
-
 use super::{state::InteractiveState, utils::find_paragraph_truncation_point};
 use crate::styled_string::{
     DocumentNode, HeadingLevel, ShowWhen, Span, TruncationLevel, TuiAction,
 };
+use ratatui::{buffer::Buffer, layout::Rect, style::Modifier};
 
 // Truncated block borders are outdented (to the left of content) so that content
 // doesn't shift when expanding/collapsing the block. The border is purely decorative.
@@ -274,8 +273,9 @@ impl<'a> InteractiveState<'a> {
 
                 // Determine line limit based on truncation level
                 let line_limit = match level {
-                    TruncationLevel::SingleLine => 3,  // Show ~3 lines for single-line
-                    TruncationLevel::Brief => 8, // Show ~8 lines for brief (actual wrapped lines)
+                    TruncationLevel::SingleLine => 3, // Show ~3 lines for single-line
+                    TruncationLevel::Brief => 8,      // Show ~8 lines for brief (actual
+                    // wrapped lines)
                     TruncationLevel::Full => u16::MAX, // Show everything
                 };
 
@@ -292,7 +292,8 @@ impl<'a> InteractiveState<'a> {
                     .saturating_add_signed(TRUNCATION_BORDER_OUTDENT);
                 let content_col = self.layout.indent; // Content stays at current indent
 
-                // For SingleLine with heading as first node, just show the heading text (no decoration)
+                // For SingleLine with heading as first node, just show the heading text (no
+                // decoration)
                 let render_nodes = if matches!(level, TruncationLevel::SingleLine) {
                     match nodes.first() {
                         Some(DocumentNode::Heading { spans, .. }) => {

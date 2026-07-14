@@ -38,18 +38,21 @@
 //! forms are charged [`COLD_FORM_WEIGHT`]× their JSON size so eviction
 //! pressure finds them first.
 
-use crate::CrateName;
-use crate::RustdocData;
-use crate::search::SearchIndex;
-use crate::sources::{CrateProvenance, DocsRsSource, LocalSource, Source, StdSource};
+use crate::{
+    CrateName, RustdocData,
+    search::SearchIndex,
+    sources::{CrateProvenance, DocsRsSource, LocalSource, Source, StdSource},
+};
 use fieldwork::Fieldwork;
 use semver::{Version, VersionReq};
-use std::borrow::Cow;
-use std::collections::HashMap;
-use std::fmt::{self, Debug};
-use std::path::PathBuf;
-use std::sync::{Arc, Mutex, OnceLock};
-use std::time::{Duration, Instant};
+use std::{
+    borrow::Cow,
+    collections::HashMap,
+    fmt::{self, Debug},
+    path::PathBuf,
+    sync::{Arc, Mutex, OnceLock},
+    time::{Duration, Instant},
+};
 
 /// How long a definitive "not available" result is remembered. docs.rs gaining
 /// JSON for an existing release (or a brand-new crate name appearing on
@@ -353,7 +356,8 @@ impl<K: Eq + std::hash::Hash + Clone + Debug, T> Cache<K, T> {
             };
             if let Some(entry) = entries.map.remove(&victim) {
                 log::info!(
-                    "evicting {victim:?} (weight {}, {} accesses, resident {:?}; total {total} > target {target})",
+                    "evicting {victim:?} (weight {}, {} accesses, resident {:?}; total {total} > \
+                     target {target})",
                     entry.weight,
                     entry.access_count,
                     entry.loaded_at.elapsed(),

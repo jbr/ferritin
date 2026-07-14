@@ -1,8 +1,7 @@
-use crate::format_context::DocLevel;
-use crate::kind::Kind;
-use crate::renderer::HistoryEntry;
-use crate::request::Request;
-use crate::styled_string::Document;
+use crate::{
+    format_context::DocLevel, kind::Kind, renderer::HistoryEntry, request::Request,
+    styled_string::Document,
+};
 use std::fmt::Display;
 
 pub(crate) mod get;
@@ -225,11 +224,13 @@ impl Commands {
                     .set_filter(crate::kind::predicate(&kind));
                 let (crate_, query) = search::parse_target(target);
                 if query.trim().is_empty() {
-                    let doc = Document::from(vec![crate::styled_string::DocumentNode::paragraph(
-                        vec![crate::styled_string::Span::plain(
-                            "search requires a query (e.g. `ferritin search serde Vec` or `ferritin search all Vec`)",
-                        )],
-                    )]);
+                    let doc =
+                        Document::from(vec![crate::styled_string::DocumentNode::paragraph(vec![
+                            crate::styled_string::Span::plain(
+                                "search requires a query (e.g. `ferritin search serde Vec` or \
+                                 `ferritin search all Vec`)",
+                            ),
+                        ])]);
                     return (doc, true, None);
                 }
                 let (doc, is_error) = search::execute(request, &query, limit, crate_.as_deref());

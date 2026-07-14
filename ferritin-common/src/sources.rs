@@ -93,7 +93,8 @@ pub trait Source {
     /// Transform a crate name into an internal representation
     ///
     /// This should be cheap (local) and based on already-available information.
-    /// Returning None indicates that this Source does not have any information with which to transform the provided name.
+    /// Returning None indicates that this Source does not have any information with which to
+    /// transform the provided name.
     fn canonicalize(&self, input_name: &str) -> Option<CrateName<'static>> {
         let _ = input_name;
         None

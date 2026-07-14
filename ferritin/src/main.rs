@@ -6,17 +6,16 @@ use clap::Parser;
 mod themes {
     include!(concat!(env!("OUT_DIR"), "/themes.rs"));
 }
+use crate::{
+    commands::Commands, format_context::FormatContext, render_context::RenderContext,
+    renderer::OutputMode, request::Request,
+};
 use ferritin_common::{
     Navigator, Store,
     sources::{DocsRsSource, FeatureSelection, LocalSource, StdSource},
 };
 use std::{path::PathBuf, process::ExitCode, sync::Arc};
 use terminal_size::{Width, terminal_size};
-
-use crate::{
-    commands::Commands, format_context::FormatContext, render_context::RenderContext,
-    renderer::OutputMode, request::Request,
-};
 
 mod color_scheme;
 mod commands;
@@ -186,8 +185,8 @@ fn main() -> ExitCode {
 
     if requested_features.is_some() && !use_local {
         eprintln!(
-            "--features, --all-features, and --no-default-features require --local: \
-             docs.rs builds are not under ferritin's control."
+            "--features, --all-features, and --no-default-features require --local: docs.rs \
+             builds are not under ferritin's control."
         );
         return ExitCode::FAILURE;
     }

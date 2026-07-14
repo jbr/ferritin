@@ -1,10 +1,9 @@
-use rustdoc_types::ItemKind;
-use std::path::PathBuf;
-
 use crate::{
     Navigator, Resolver, RustdocData,
     sources::{CrateProvenance, LocalSource, StdSource},
 };
+use rustdoc_types::ItemKind;
+use std::path::PathBuf;
 
 fn get_fixture_crate_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../tests/fixture-crate")
@@ -498,7 +497,6 @@ fn cross_crate_prefix_resolves_in_nested_module() {
     );
 }
 
-///
 /// Regression guard: previously, if any one `Use` in a module's `items` list could not
 /// be resolved (neither `use.id` in the local index nor `resolve_path(&use.source)`),
 /// `IdIter` short-circuited via `?` and yielded nothing further. That silently dropped

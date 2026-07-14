@@ -97,13 +97,6 @@ mod write_text;
 #[cfg(test)]
 mod tests;
 
-use events::handle_action;
-use theme::InteractiveTheme;
-
-pub use history::HistoryEntry;
-
-use utils::set_cursor_shape;
-
 use crate::{
     commands::Commands,
     logging::LogReader,
@@ -112,20 +105,23 @@ use crate::{
     request::Request,
     styled_string::{Document, DocumentNode, HeadingLevel, Span},
 };
+use channels::{RequestResponse, UiCommand};
 use crossbeam_channel::select;
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event},
     execute,
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
+use events::handle_action;
+pub use history::HistoryEntry;
 use ratatui::{Terminal, backend::CrosstermBackend};
+use request_thread::request_thread_loop;
 use std::{
     io::{self, stdout},
     thread,
 };
-
-use channels::{RequestResponse, UiCommand};
-use request_thread::request_thread_loop;
+use theme::InteractiveTheme;
+use utils::set_cursor_shape;
 
 /// Create a static loading document to show while sources are being loaded
 fn initial_document() -> Document<'static> {
@@ -189,8 +185,10 @@ fn render_interactive_impl<'scope, 'env: 'scope>(
     log_reader: LogReader,
     features: Option<ferritin_common::sources::FeatureSelection>,
 ) -> io::Result<()> {
-    use ferritin_common::sources::{DocsRsSource, LocalSource, StdSource};
-    use ferritin_common::{Navigator, Store};
+    use ferritin_common::{
+        Navigator, Store,
+        sources::{DocsRsSource, LocalSource, StdSource},
+    };
 
     // Build interactive theme from render context
     let interactive_theme = InteractiveTheme::from_render_context(&render_context);

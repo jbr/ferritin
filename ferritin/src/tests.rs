@@ -406,7 +406,7 @@ fn cross_crate_aliased_reexport_resolves() {
     );
     assert!(
         output.contains("crate_a::CrateAStruct"),
-        "aliased re-export should resolve into crate-a, not load a crate named \
-         `aliased_a`; got:\n{output}"
+        "aliased re-export should resolve into crate-a, not load a crate named `aliased_a`; \
+         got:\n{output}"
     );
 }

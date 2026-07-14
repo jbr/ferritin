@@ -1,5 +1,4 @@
-use crate::RustdocData;
-use crate::sources::CrateProvenance;
+use crate::{RustdocData, sources::CrateProvenance};
 use anyhow::{Context, Result, anyhow};
 use fieldwork::Fieldwork;
 use semver::{Version, VersionReq};
@@ -215,7 +214,8 @@ impl DocsRsClient {
         // finding none of its URLs.
         if format_version < MIN_FORMAT_VERSION {
             log::info!(
-                "{crate_name}@{version} only has format {format_version} (< {MIN_FORMAT_VERSION}); treating as unavailable"
+                "{crate_name}@{version} only has format {format_version} (< \
+                 {MIN_FORMAT_VERSION}); treating as unavailable"
             );
             return Ok(None);
         }

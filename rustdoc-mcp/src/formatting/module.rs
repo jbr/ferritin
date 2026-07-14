@@ -1,6 +1,5 @@
-use rustdoc_types::ItemKind;
-
 use super::*;
+use rustdoc_types::ItemKind;
 
 // Display order for groups. Each group has a label and the set of ItemKinds it
 // collects — so we can merge e.g. the three macro-flavored kinds under a single

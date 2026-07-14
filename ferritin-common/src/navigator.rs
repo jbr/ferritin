@@ -8,16 +8,19 @@
 //! keeps it alive. All path/name/Use resolution lives on [`crate::Resolver`],
 //! which borrows a `Navigator`.
 
-use crate::CrateName;
-use crate::RustdocData;
-use crate::search::SearchIndex;
-use crate::store::{CrateInfo, Store, exact_req, exact_version};
+use crate::{
+    CrateName, RustdocData,
+    search::SearchIndex,
+    store::{CrateInfo, Store, exact_req, exact_version},
+};
 use elsa::sync::FrozenMap;
 use semver::{Version, VersionReq};
-use std::borrow::Cow;
-use std::fmt;
-use std::fmt::Debug;
-use std::sync::{Arc, OnceLock};
+use std::{
+    borrow::Cow,
+    fmt,
+    fmt::Debug,
+    sync::{Arc, OnceLock},
+};
 
 /// A per-query view of a [`Store`]: resolution goes through the Store's
 /// caches, and everything the query touches is pinned here so borrows are
@@ -130,8 +133,8 @@ impl Navigator {
                 && self.pinned_versions.get(&crate_name) != Some(&requested)
             {
                 log::debug!(
-                    "{crate_name}: requested ={requested} but the query already pinned \
-                     {:?}; serving the pin (one version per name per query)",
+                    "{crate_name}: requested ={requested} but the query already pinned {:?}; \
+                     serving the pin (one version per name per query)",
                     self.pinned_versions.get(&crate_name),
                 );
             }

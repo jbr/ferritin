@@ -1,6 +1,5 @@
-use ratatui::{buffer::Buffer, layout::Rect};
-
 use super::state::InteractiveState;
+use ratatui::{buffer::Buffer, layout::Rect};
 
 impl<'a> InteractiveState<'a> {
     /// Render help screen showing all available keybindings

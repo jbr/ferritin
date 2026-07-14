@@ -1,5 +1,4 @@
-use super::channels::UiCommand;
-use super::utils::find_node_at_path_mut;
+use super::{channels::UiCommand, utils::find_node_at_path_mut};
 use crate::styled_string::{Document, DocumentNode, TruncationLevel, TuiAction};
 
 /// Handle a TuiAction, returning a command to send if navigation is needed

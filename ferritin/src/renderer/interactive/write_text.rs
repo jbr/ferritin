@@ -1,6 +1,5 @@
-use ratatui::{buffer::Buffer, layout::Rect, style::Style};
-
 use super::state::InteractiveState;
+use ratatui::{buffer::Buffer, layout::Rect, style::Style};
 
 impl<'a> InteractiveState<'a> {
     /// Write text to buffer at position

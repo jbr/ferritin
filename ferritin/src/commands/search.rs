@@ -1,9 +1,10 @@
+use super::SearchTarget;
+use crate::{
+    request::Request,
+    styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span, TruncationLevel},
+};
 use ferritin_common::DocRef;
 use rustdoc_types::Item;
-
-use super::SearchTarget;
-use crate::request::Request;
-use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span, TruncationLevel};
 
 /// Structural model of a search outcome. The terminal path lowers it back to a
 /// `Document` ([`lower_search`]); the JSON path serializes it directly.

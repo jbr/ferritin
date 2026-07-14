@@ -1,12 +1,13 @@
+use super::state::InteractiveState;
+use crate::{
+    renderer::table_layout::{self, LaidOutCell, span_display_width},
+    styled_string::{Span, TableCell},
+};
 use ratatui::{
     buffer::Buffer,
     layout::Rect,
     style::{Modifier, Style},
 };
-
-use super::state::InteractiveState;
-use crate::renderer::table_layout::{self, LaidOutCell, span_display_width};
-use crate::styled_string::{Span, TableCell};
 
 impl<'a> InteractiveState<'a> {
     /// Render a table with unicode borders. Long cells wrap onto multiple lines

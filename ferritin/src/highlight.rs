@@ -20,10 +20,11 @@
 //! style → representative scope → theme color), so the two stay consistent.
 
 use std::sync::LazyLock;
-
-use syntect::easy::ScopeRegionIterator;
-use syntect::parsing::{ParseState, Scope, ScopeStack, SyntaxSet};
-use syntect::util::LinesWithEndings;
+use syntect::{
+    easy::ScopeRegionIterator,
+    parsing::{ParseState, Scope, ScopeStack, SyntaxSet},
+    util::LinesWithEndings,
+};
 
 /// Loaded once for the process; read-only and `Sync`. The JSON path (the CLI and
 /// the server's rayon workers) shares this rather than reparsing the syntax dump

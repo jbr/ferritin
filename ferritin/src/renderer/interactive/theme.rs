@@ -1,7 +1,6 @@
+use crate::render_context::RenderContext;
 use ratatui::style::{Color as RatatuiColor, Modifier, Style};
 use syntect::highlighting::{Color, ThemeSettings};
-
-use crate::render_context::RenderContext;
 
 /// Pre-computed theme styles for interactive UI elements
 #[derive(Debug)]

@@ -1,13 +1,11 @@
-use std::{borrow::Cow, io::Write};
-
+use super::{InputMode, InteractiveState, UiMode, channels::UiCommand};
+use crate::render_context::RenderContext;
 use crossterm::{
     event::{DisableMouseCapture, EnableMouseCapture, KeyCode, KeyEvent, KeyModifiers},
     execute,
 };
 use ratatui::{Terminal, prelude::Backend};
-
-use super::{InputMode, InteractiveState, UiMode, channels::UiCommand};
-use crate::render_context::RenderContext;
+use std::{borrow::Cow, io::Write};
 
 impl<'a> InteractiveState<'a> {
     pub(crate) fn handle_key_event(
@@ -66,7 +64,8 @@ impl<'a> InteractiveState<'a> {
                     }
                 },
                 KeyCode::Tab => {
-                    // Toggle search scope (only in Search mode and only if there's a crate to scope to)
+                    // Toggle search scope (only in Search mode and only if there's a crate to scope
+                    // to)
                     if let InputMode::Search { all_crates, .. } = input_mode {
                         // Only allow toggling if there's actually a current crate
                         let has_crate = self
@@ -469,7 +468,8 @@ impl<'a> InteractiveState<'a> {
     ///
     /// Mirror of handle_navigate_down, moving upward through the document:
     /// - When no link is focused (VirtualTop): Do nothing (can't go above virtual top)
-    /// - When a link is focused and visible: Move to previous visible link, or scroll to reveal more
+    /// - When a link is focused and visible: Move to previous visible link, or scroll to reveal
+    ///   more
     /// - When scrolling reveals new links above: Automatically focus them (auto-focus behavior)
     /// - When focused link is off-screen below (scrolled past): Re-enter by focusing last visible
     /// - When focused link is off-screen above: Scroll towards it, focusing links as they appear

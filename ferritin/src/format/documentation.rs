@@ -1,9 +1,10 @@
-use std::borrow::Cow;
-
 use super::*;
-use crate::docsrs_url::{DocsRsLink, crate_base_url, generate_docsrs_url, resolve_relative};
-use crate::markdown::MarkdownRenderer;
-use crate::styled_string::{DocumentNode, LinkTarget, TruncationLevel};
+use crate::{
+    docsrs_url::{DocsRsLink, crate_base_url, generate_docsrs_url, resolve_relative},
+    markdown::MarkdownRenderer,
+    styled_string::{DocumentNode, LinkTarget, TruncationLevel},
+};
+use std::borrow::Cow;
 
 /// Information about documentation text with truncation details
 #[derive(Debug, Clone, Default)]

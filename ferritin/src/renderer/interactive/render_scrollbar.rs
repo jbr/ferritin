@@ -1,6 +1,5 @@
-use ratatui::{buffer::Buffer, layout::Rect, style::Color};
-
 use super::InteractiveState;
+use ratatui::{buffer::Buffer, layout::Rect, style::Color};
 
 // Scrollbar appearance configuration
 const SCROLLBAR_TRACK: char = ' ';

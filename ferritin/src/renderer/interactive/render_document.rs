@@ -1,10 +1,9 @@
+use super::state::{DocumentLayoutCache, InteractiveState};
+use crate::styled_string::NodePath;
 use ratatui::{
     buffer::Buffer,
     layout::{Position, Rect},
 };
-
-use super::state::{DocumentLayoutCache, InteractiveState};
-use crate::styled_string::NodePath;
 
 // Baseline left margin for all content - provides breathing room and space for outdented borders
 pub(super) const BASELINE_LEFT_MARGIN: u16 = 3;
@@ -50,7 +49,8 @@ impl<'a> InteractiveState<'a> {
             self.layout.node_path = NodePath::new();
             self.layout.node_path.push(idx);
 
-            // SAFETY: idx is bounded by node_count, and nodes_ptr is valid for the duration of this method
+            // SAFETY: idx is bounded by node_count, and nodes_ptr is valid for the duration of this
+            // method
             let node = unsafe { &*nodes_ptr.add(idx) };
             self.render_node(node, buf);
         }

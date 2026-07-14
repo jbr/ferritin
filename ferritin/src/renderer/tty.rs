@@ -12,18 +12,18 @@
 //! - First list item content is inline with bullet, rest indented
 //! - Maintains indentation for nested content
 
-use std::fmt::{Result, Write};
-
-use crate::render_context::RenderContext;
-use crate::styled_string::{
-    Document, DocumentNode, HeadingLevel, ShowWhen, Span, SpanStyle, TruncationLevel,
+use crate::{
+    render_context::RenderContext,
+    styled_string::{
+        Document, DocumentNode, HeadingLevel, ShowWhen, Span, SpanStyle, TruncationLevel,
+    },
 };
 use ratatui::{
     style::{Color, Modifier, Style},
     text::{Line, Span as RatatuiSpan},
 };
-use syntect::easy::HighlightLines;
-use syntect::util::LinesWithEndings;
+use std::fmt::{Result, Write};
+use syntect::{easy::HighlightLines, util::LinesWithEndings};
 
 /// Render budget for truncation
 #[derive(Clone)]
@@ -411,7 +411,8 @@ fn build_node_lines<'a>(
                                     } else {
                                         // Word doesn't fit, wrap to next line first
                                         current_line_len = indent;
-                                        // Don't modify remaining, continue on next line and try again
+                                        // Don't modify remaining, continue on next line and try
+                                        // again
                                     }
                                 } else {
                                     // No whitespace at all in remaining text
@@ -427,7 +428,8 @@ fn build_node_lines<'a>(
                                         current_line_len += remaining.len();
                                         break;
                                     } else {
-                                        // Doesn't fit even on a new line - need to hard-break mid-word
+                                        // Doesn't fit even on a new line - need to hard-break
+                                        // mid-word
                                         // This is a last resort to avoid infinite loops
                                         if current_line_len == indent {
                                             // Already on a fresh line, must hard-break
@@ -541,7 +543,8 @@ fn build_node_lines<'a>(
                             line.spans
                                 .insert(0, RatatuiSpan::raw(format!("  {} ", bullet)));
                         } else {
-                            // Subsequent lines: add indentation (4 spaces to align with content after bullet)
+                            // Subsequent lines: add indentation (4 spaces to align with content
+                            // after bullet)
                             line.spans.insert(0, RatatuiSpan::raw("    "));
                         }
                     }
@@ -993,9 +996,8 @@ fn span_style_to_ratatui(span_style: SpanStyle, render_context: &RenderContext) 
 
 #[cfg(test)]
 mod tests {
-    use crate::renderer::OutputMode;
-
     use super::*;
+    use crate::renderer::OutputMode;
 
     #[test]
     fn test_render_paragraph() {

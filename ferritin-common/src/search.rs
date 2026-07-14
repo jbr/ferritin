@@ -1,9 +1,8 @@
 pub mod indexer;
 
 use crate::{Navigator, Suggestion};
-use rayon::prelude::*;
-
 pub use indexer::*;
+use rayon::prelude::*;
 
 impl Navigator {
     /// Search across multiple crates with BM25 scoring

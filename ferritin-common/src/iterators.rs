@@ -5,12 +5,12 @@
 //! [`crate::Resolver::children`] / [`crate::Resolver::ids`] instead.
 //!
 //! What lives here:
-//! - [`LazyChildren`] / [`LazyChild`]: classify a module/enum's direct
-//!   children into real items, non-glob `Use`s, and glob `Use`s. Resolution
-//!   of `Use` source paths happens in `Resolver::resolve_lazy_child`.
-//! - [`MethodIter`], [`TraitIter`], [`ImplementorIter`]: walk the impl blocks
-//!   targeting a given item, via the precomputed reverse indexes
-//!   ([`crate::indexes`]) rather than a whole-index scan. No `Use` involvement.
+//! - [`LazyChildren`] / [`LazyChild`]: classify a module/enum's direct children into real items,
+//!   non-glob `Use`s, and glob `Use`s. Resolution of `Use` source paths happens in
+//!   `Resolver::resolve_lazy_child`.
+//! - [`MethodIter`], [`TraitIter`], [`ImplementorIter`]: walk the impl blocks targeting a given
+//!   item, via the precomputed reverse indexes ([`crate::indexes`]) rather than a whole-index scan.
+//!   No `Use` involvement.
 
 use crate::doc_ref::DocRef;
 use rustdoc_types::{Id, Item, ItemEnum, Use};

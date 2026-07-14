@@ -33,10 +33,9 @@ use schemars::{Schema, generate::SchemaSettings, json_schema};
 /// feature is a dev tool, never shipped in release binaries.
 pub(crate) const DEFAULT_OUTPUT_PATH: &str =
     concat!(env!("CARGO_MANIFEST_DIR"), "/assets/openapi.json");
+use crate::json::{JsonItem, JsonList, JsonNotFound, JsonSearch, JsonTypeahead};
 use serde::Serialize;
 use std::collections::BTreeMap;
-
-use crate::json::{JsonItem, JsonList, JsonNotFound, JsonSearch, JsonTypeahead};
 
 /// Build the OpenAPI document and serialize it to pretty JSON.
 pub(crate) fn openapi_document() -> String {
@@ -113,8 +112,8 @@ pub(crate) fn openapi_document() -> String {
                 "/typeahead",
                 PathItem {
                     get: Operation {
-                        summary: "Crate-name typeahead: the top crates (by download \
-                                  rank) whose names start with the query prefix.",
+                        summary: "Crate-name typeahead: the top crates (by download rank) whose \
+                                  names start with the query prefix.",
                         parameters: vec![
                             Param::query("q", "Crate name prefix."),
                             Param::optional_int_query(
@@ -259,8 +258,8 @@ mod tests {
         assert_eq!(
             generated.trim(),
             committed.trim(),
-            "assets/openapi.json is stale; regenerate with \
-             `cargo run -p ferritin --bin ferritin --features schema -- schema > ferritin/assets/openapi.json`",
+            "assets/openapi.json is stale; regenerate with `cargo run -p ferritin --bin ferritin \
+             --features schema -- schema > ferritin/assets/openapi.json`",
         );
     }
 }

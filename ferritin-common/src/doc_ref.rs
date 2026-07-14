@@ -395,9 +395,8 @@ impl<'a> From<&'a ItemSummary> for Path<'a> {
 }
 
 impl<'a> IntoIterator for Path<'a> {
-    type Item = &'a str;
-
     type IntoIter = Box<dyn Iterator<Item = Self::Item> + 'a>;
+    type Item = &'a str;
 
     fn into_iter(self) -> Self::IntoIter {
         Box::new(self.0.iter().map(|x| &**x))

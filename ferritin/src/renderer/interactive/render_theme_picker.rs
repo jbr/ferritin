@@ -1,3 +1,5 @@
+use super::state::InteractiveState;
+use crate::{render_context::RenderContext, styled_string::TuiAction};
 use ratatui::{
     buffer::Buffer,
     layout::{Constraint, Layout, Rect},
@@ -6,10 +8,6 @@ use ratatui::{
     widgets::{Block, Borders, Clear, List, ListItem, ListState, Widget},
 };
 use std::borrow::Cow;
-
-use super::state::InteractiveState;
-use crate::render_context::RenderContext;
-use crate::styled_string::TuiAction;
 
 impl<'a> InteractiveState<'a> {
     /// Render theme picker modal overlay

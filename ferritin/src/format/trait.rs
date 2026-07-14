@@ -1,8 +1,9 @@
-use rustdoc_types::{AssocItemConstraintKind, GenericArg, GenericArgs, GenericParamDefKind, Impl};
-
 use super::*;
-use crate::docsrs_url::generate_docsrs_url;
-use crate::styled_string::{DocumentNode, ListItem, Span};
+use crate::{
+    docsrs_url::generate_docsrs_url,
+    styled_string::{DocumentNode, ListItem, Span},
+};
+use rustdoc_types::{AssocItemConstraintKind, GenericArg, GenericArgs, GenericParamDefKind, Impl};
 
 /// Semantic model of a `trait`: signature pieces, its members (methods, assoc
 /// types/consts), and the implementors section. Members reuse the shared

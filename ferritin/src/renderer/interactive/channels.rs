@@ -1,10 +1,9 @@
 //! Channel types for UI ↔ Request thread communication
 
-use ferritin_common::DocRef;
-use rustdoc_types::Item;
-
 use super::history::HistoryEntry;
 use crate::styled_string::Document;
+use ferritin_common::DocRef;
+use rustdoc_types::Item;
 use std::borrow::Cow;
 
 /// Commands sent from UI thread to Request thread

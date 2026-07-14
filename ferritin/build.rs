@@ -1,6 +1,7 @@
-use std::env;
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+};
 
 fn main() {
     // Tell Cargo to rerun this script if the themes directory changes
@@ -123,7 +124,9 @@ fn generate_themes_module(theme_set: &syntect::highlighting::ThemeSet, out_dir: 
         for name in &theme_names {
             let safe_filename = name.replace(' ', "_").replace("(", "").replace(")", "");
             content.push_str(&format!(
-                "        {:?} => Some(syntect::dumps::from_binary(include_bytes!(concat!(env!(\"OUT_DIR\"), \"/themes/{}.bin\")))),\n",
+                "        {:?} => \
+                 Some(syntect::dumps::from_binary(include_bytes!(concat!(env!(\"OUT_DIR\"), \
+                 \"/themes/{}.bin\")))),\n",
                 name, safe_filename
             ));
         }

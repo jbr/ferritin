@@ -15,13 +15,11 @@
 //! - List items are compact (no blank lines within an item)
 //! - Maintains indentation for nested content
 
-use std::fmt::{Result, Write};
-
+use super::table_layout::{self, DEFAULT_FALLBACK_WIDTH, span_display_width};
 use crate::styled_string::{
     Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, TableCell, TruncationLevel,
 };
-
-use super::table_layout::{self, DEFAULT_FALLBACK_WIDTH, span_display_width};
+use std::fmt::{Result, Write};
 
 /// Plain text renderer state
 struct PlainRenderer<'w, W: Write> {

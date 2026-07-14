@@ -1,7 +1,6 @@
+use crate::format_context::FormatContext;
 use ferritin_common::{Navigator, Resolver};
 use std::ops::{Deref, DerefMut};
-
-use crate::format_context::FormatContext;
 
 /// Per-operation wrapper around a [`Resolver`] plus formatting state.
 ///

@@ -1,5 +1,7 @@
-use crate::request::Request;
-use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span};
+use crate::{
+    request::Request,
+    styled_string::{Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span},
+};
 
 /// Structural model of the crate list, for `--format json`. `list` is a thin
 /// command slated for rework, so this is a deliberately minimal JSON-only
@@ -131,12 +133,10 @@ pub(crate) fn execute<'a>(request: &mut Request<'a>) -> (Document<'a>, bool, Opt
         nodes.push(DocumentNode::Conditional {
             show_when: ShowWhen::Interactive,
             nodes: vec![DocumentNode::paragraph(vec![Span::plain(
-                "To navigate:\n\
-                • Press 'g' and enter a path like \"std::vec::Vec\"\n\
-                • Press 's' to search within a crate\n\
-                • Click on any item above to explore\n\n\
-                To view documentation for a specific crate from docs.rs:\n\
-                • Press 'g' and enter \"crate_name\" or \"crate_name::Item\"",
+                "To navigate:\n• Press 'g' and enter a path like \"std::vec::Vec\"\n• Press 's' \
+                 to search within a crate\n• Click on any item above to explore\n\nTo view \
+                 documentation for a specific crate from docs.rs:\n• Press 'g' and enter \
+                 \"crate_name\" or \"crate_name::Item\"",
             )])],
         });
     }

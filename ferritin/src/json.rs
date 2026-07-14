@@ -15,18 +15,22 @@
 //! is served once, as `canonicalUrl`. Kinds not yet modeled fall back to a generic
 //! serialization of their lowered presentation nodes.
 
-use crate::commands::get::NotFoundDoc;
-use crate::commands::list::ListDoc;
-use crate::commands::search::{SearchDoc, SearchResult};
-use crate::format::{
-    AssocKind, ConstantDoc, EnumDoc, FunctionDoc, ImplAssocType, ImplementorDoc, ItemBody, ItemDoc,
-    ItemMeta, MacroDoc, MetaVisibility, MethodDoc, MethodVisibility, ModuleDoc, ModuleItem,
-    PlainField, StaticDoc, StructDoc, StructShape, TraitDoc, TraitImplDoc, TraitMember, TupleField,
-    TypeAliasDoc, UnionDoc, VariantDoc, VariantShape,
-};
-use crate::styled_string::{
-    Document, DocumentNode, HeadingLevel, ListItem, MetadataField, ShowWhen, Span, SpanStyle,
-    TableCell, TruncationLevel,
+use crate::{
+    commands::{
+        get::NotFoundDoc,
+        list::ListDoc,
+        search::{SearchDoc, SearchResult},
+    },
+    format::{
+        AssocKind, ConstantDoc, EnumDoc, FunctionDoc, ImplAssocType, ImplementorDoc, ItemBody,
+        ItemDoc, ItemMeta, MacroDoc, MetaVisibility, MethodDoc, MethodVisibility, ModuleDoc,
+        ModuleItem, PlainField, StaticDoc, StructDoc, StructShape, TraitDoc, TraitImplDoc,
+        TraitMember, TupleField, TypeAliasDoc, UnionDoc, VariantDoc, VariantShape,
+    },
+    styled_string::{
+        Document, DocumentNode, HeadingLevel, ListItem, MetadataField, ShowWhen, Span, SpanStyle,
+        TableCell, TruncationLevel,
+    },
 };
 use serde::Serialize;
 use std::borrow::Cow;

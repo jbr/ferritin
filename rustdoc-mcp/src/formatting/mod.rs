@@ -1,8 +1,7 @@
-use crate::format_context::FormatContext;
-use crate::indent::Indent;
-use crate::request::Request;
-use crate::traits::WriteFmt;
-use crate::verbosity::Verbosity;
+use crate::{
+    format_context::FormatContext, indent::Indent, request::Request, traits::WriteFmt,
+    verbosity::Verbosity,
+};
 use ferritin_common::doc_ref::DocRef;
 use rustdoc_types::{
     Abi, Constant, Enum, Function, FunctionPointer, GenericArg, GenericArgs, GenericBound,

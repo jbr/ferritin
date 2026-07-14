@@ -1,8 +1,7 @@
+use crate::{filter::Filter, tools::GetItem, verbosity::Verbosity};
 use fieldwork::Fieldwork;
 use rustdoc_types::ItemKind;
 use strum::VariantArray;
-
-use crate::{filter::Filter, tools::GetItem, verbosity::Verbosity};
 
 /// Context for formatting operations
 #[derive(Debug, Clone, Fieldwork)]

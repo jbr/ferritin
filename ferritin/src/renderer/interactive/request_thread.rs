@@ -1,9 +1,14 @@
 //! Request thread - handles Navigator operations and document formatting
 
-use super::channels::{RequestResponse, UiCommand};
-use super::history::HistoryEntry;
-use crate::commands::{list, search};
-use crate::{request::Request, styled_string::Document};
+use super::{
+    channels::{RequestResponse, UiCommand},
+    history::HistoryEntry,
+};
+use crate::{
+    commands::{list, search},
+    request::Request,
+    styled_string::Document,
+};
 use crossbeam_channel::{Receiver, Sender};
 
 /// Request thread loop - processes commands from UI thread
