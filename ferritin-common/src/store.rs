@@ -646,7 +646,7 @@ impl Store {
         name: &str,
         version: &VersionReq,
     ) -> anyhow::Result<Option<Cow<'a, CrateInfo>>> {
-        log::info!("Resolving {name:?}, version {version}");
+        log::trace!("Resolving {name:?}, version {version}");
         let mut deferred_error = None;
         for source in self.sources() {
             match source.lookup(name, version) {
