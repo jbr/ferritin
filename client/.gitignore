@@ -2,3 +2,6 @@ node_modules
 dist
 *.local
 .vite
+
+# this project uses pnpm; a stray npm lockfile makes renovate run npm too
+package-lock.json
