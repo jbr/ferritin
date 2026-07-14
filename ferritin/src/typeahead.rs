@@ -182,6 +182,17 @@ impl TypeaheadService {
         Some(TypeaheadResults { entries, total })
     }
 
+    /// The loaded artifact's upstream ETag, which is also the identity of every
+    /// answer derived from it: the data changes only when the artifact is
+    /// replaced, and the artifact is replaced only when this changes.
+    ///
+    /// `None` before the first successful fetch, or if the artifact server sent
+    /// no ETag. Read *after* a query, once [`Self::ensure_fresh`] has run, so it
+    /// describes the data that query actually saw.
+    pub(crate) fn artifact_etag(&self) -> Option<String> {
+        self.state.read().unwrap().loaded.as_ref()?.etag.clone()
+    }
+
     /// Whether enough time has passed since the last fetch attempt to try
     /// again — [`REFRESH_INTERVAL`] once loaded, [`FAILURE_COOLDOWN`] before.
     fn should_fetch(&self) -> bool {
