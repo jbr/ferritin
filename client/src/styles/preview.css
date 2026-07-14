@@ -1,0 +1,165 @@
+/*
+ * The hover card (`HoverPreview`). Sized and clamped to stay a glance: a fixed
+ * max width, a blurb cut to a few lines, and a fade on the cut edge that says
+ * "there is more here" without a widget saying it.
+ */
+
+.hover-preview {
+  position: fixed;
+  z-index: 60;
+  width: max-content;
+  max-width: min(30rem, calc(100vw - 2rem));
+  padding: 0.7rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow:
+    0 1px 2px color-mix(in oklch, var(--ink) 8%, transparent),
+    0 8px 24px -6px color-mix(in oklch, var(--ink) 18%, transparent);
+  animation: hover-preview-in 110ms ease-out;
+}
+
+/*
+ * The bridge. The card sits `GAP` px off the link, and without this that gap is
+ * dead space the pointer must cross — leave the link, and the card closes before
+ * you reach it. This pseudo-element covers the gap on whichever side the card
+ * landed, so the trip from link to card never leaves the card's own hit area. It
+ * is why no "safe polygon" is needed.
+ */
+.hover-preview::before {
+  content: "";
+  position: absolute;
+}
+.hover-preview[data-side="bottom"]::before,
+.hover-preview[data-side="top"]::before {
+  left: 0;
+  right: 0;
+  height: 8px; /* keep in step with GAP in position.ts */
+}
+.hover-preview[data-side="bottom"]::before {
+  top: -8px;
+}
+.hover-preview[data-side="top"]::before {
+  bottom: -8px;
+}
+
+/* Beside the link (the crate nav): the bridge is a vertical strip spanning the
+   full height, so a card taller than its row can still be reached. */
+.hover-preview[data-side="right"]::before,
+.hover-preview[data-side="left"]::before {
+  top: 0;
+  bottom: 0;
+  width: 8px;
+}
+.hover-preview[data-side="right"]::before {
+  left: -8px;
+}
+.hover-preview[data-side="left"]::before {
+  right: -8px;
+}
+
+/* The card enters from the direction it was thrown — a small motion that says
+   which link it belongs to, in the moment it appears. */
+@keyframes hover-preview-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+}
+.hover-preview[data-side="top"] {
+  animation-name: hover-preview-in-up;
+}
+@keyframes hover-preview-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}
+.hover-preview[data-side="right"] {
+  animation-name: hover-preview-in-right;
+}
+@keyframes hover-preview-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-3px);
+  }
+}
+.hover-preview[data-side="left"] {
+  animation-name: hover-preview-in-left;
+}
+@keyframes hover-preview-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(3px);
+  }
+}
+
+/* A card that slides and fades on every hover is exactly the flashiness we are
+   avoiding; for readers who ask for less motion, it simply appears. */
+@media (prefers-reduced-motion: reduce) {
+  .hover-preview {
+    animation: none;
+  }
+}
+
+.hover-preview-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.hover-preview-path {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hover-preview-blurb {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/*
+ * Four lines is the most a glance affords. The clamp also supplies the ellipsis,
+ * and only when it genuinely cuts the text — which is why the card carries no
+ * "more" flag of its own: a paragraph that fits is shown whole, with nothing to
+ * suggest otherwise.
+ */
+.hover-preview-blurb p {
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hover-preview-empty {
+  margin: 0;
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--faint);
+}
+
+.hover-preview-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.7rem;
+  margin: 0.55rem 0 0;
+  padding: 0.5rem 0 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* Middot separators, drawn between items rather than after them. */
+.hover-preview-facts li + li::before {
+  content: "·";
+  margin-right: 0.7rem;
+  color: var(--faint);
+}

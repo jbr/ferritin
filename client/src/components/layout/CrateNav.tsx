@@ -89,7 +89,14 @@ export function CrateNav({ path }: { path?: string }) {
   };
 
   return (
-    <nav className="crate-nav" aria-label={`${crateOf(path)} contents`}>
+    // Hover cards open to the *right* of a nav row rather than below it: this is a
+    // column of rows, and a card thrown downward would cover the very list the
+    // reader is scanning. See `axisOf` in `useHoverTarget`.
+    <nav
+      className="crate-nav"
+      aria-label={`${crateOf(path)} contents`}
+      data-preview-axis="inline"
+    >
       <ul className="nav-tree">
         <ModuleBranch
           path={spine[0]}
@@ -177,6 +184,7 @@ function ModuleBranch({
           className={onSpine ? "nav-module spine" : "nav-module"}
           currentClassName="active"
           exact
+          data-item-path={path}
         >
           {name}
         </Link>
@@ -385,6 +393,7 @@ function NavLeaf({
         currentClassName="active"
         exact
         style={{ "--depth": depth } as React.CSSProperties}
+        data-item-path={path}
       >
         {name}
       </Link>
