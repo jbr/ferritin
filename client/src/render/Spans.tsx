@@ -25,8 +25,16 @@ function SpanLeaf({ span }: { span: Span }) {
   const className = `tok tok-${span.style}`;
 
   if (span.path) {
+    // `data-item-path` marks this as a hover-preview target. The attribute, not a
+    // handler, is the whole registration: a single delegated listener at the
+    // document finds these (see `useHoverTarget`), so a page can carry hundreds
+    // of them for free.
     return (
-      <Link href={itemHref(span.path)} className={className}>
+      <Link
+        href={itemHref(span.path)}
+        className={className}
+        data-item-path={span.path}
+      >
         {span.text}
       </Link>
     );
