@@ -78,6 +78,45 @@ a.tok:hover {
   font-family: var(--mono);
 }
 
+/* --- copyable snippet (a code block you're meant to run) --- */
+.snippet {
+  position: relative;
+}
+/* Reserve the button's column so a long command scrolls beside it rather than
+   underneath it. */
+.snippet .code-block {
+  padding-right: 4.5rem;
+}
+.snippet-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--faint);
+  cursor: pointer;
+  /* Legible but recessive until the block is hovered — an affordance, not a
+     call to action competing with the command itself. */
+  opacity: 0.65;
+  transition:
+    opacity 0.12s ease,
+    color 0.12s ease;
+}
+.snippet:hover .snippet-copy,
+.snippet-copy:focus-visible {
+  opacity: 1;
+  color: var(--ink);
+}
+.snippet-copy:hover {
+  border-color: color-mix(in oklch, var(--accent) 45%, var(--border));
+  color: var(--accent);
+}
+
 /* Syntect scope classes (lexical highlight of fenced blocks). These reuse the
    same color variables as the semantic `tok-*` classes, so example code and
    generated signatures stay visually consistent across both themes. */

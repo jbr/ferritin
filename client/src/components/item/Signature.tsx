@@ -43,7 +43,9 @@ export function SignatureBlock({ spans }: { spans: Span[] | null }) {
  * ignores it silently hides documentation.
  */
 function isTruncated(docs: Node[] | undefined): boolean {
-  return !!docs?.some((node) => node.type === "truncatedBlock" && node.truncated);
+  return !!docs?.some(
+    (node) => node.type === "truncatedBlock" && node.truncated,
+  );
 }
 
 /**

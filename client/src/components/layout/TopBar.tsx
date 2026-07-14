@@ -3,8 +3,19 @@ import { itemHref } from "../../lib/paths";
 import { ThemeToggle } from "../../theme/ThemeToggle";
 import { SearchBox } from "../search/SearchBox";
 
-/** The top bar: brand, breadcrumb crate, ⌘K search, and the theme toggle. */
-export function TopBar({ crate }: { crate?: string }) {
+/**
+ * The top bar: brand, breadcrumb crate, ⌘K search, and the theme toggle.
+ *
+ * `search` is off on the landing page, which puts the same field inline under its
+ * hero — two search boxes on one screen would be two answers to "where do I type?".
+ */
+export function TopBar({
+  crate,
+  search = true,
+}: {
+  crate?: string;
+  search?: boolean;
+}) {
   return (
     <header className="topbar">
       <div className="topbar-brand">
@@ -21,7 +32,7 @@ export function TopBar({ crate }: { crate?: string }) {
           </>
         ) : null}
       </div>
-      <SearchBox crate={crate} />
+      {search ? <SearchBox crate={crate} /> : null}
       <div className="topbar-right">
         <ThemeToggle />
       </div>

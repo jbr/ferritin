@@ -37,7 +37,9 @@ export function MethodList({
             id={methodId(method.name)}
             spans={method.signature}
             docs={method.docs}
-            expandPath={parentPath ? `${parentPath}::${method.name}` : undefined}
+            expandPath={
+              parentPath ? `${parentPath}::${method.name}` : undefined
+            }
           />
         ))}
       </div>
@@ -164,7 +166,9 @@ export function MembersList({
             key={i}
             spans={member.signature}
             docs={member.docs}
-            expandPath={parentPath ? `${parentPath}::${member.name}` : undefined}
+            expandPath={
+              parentPath ? `${parentPath}::${member.name}` : undefined
+            }
           />
         ))}
       </div>
