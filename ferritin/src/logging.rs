@@ -5,9 +5,11 @@
 
 use crossbeam_channel::{Receiver, Sender, TryRecvError};
 use log::{Level, LevelFilter, Log, Metadata, Record, SetLoggerError};
-use std::collections::VecDeque;
-use std::sync::{Arc, Mutex};
-use std::time::Instant;
+use std::{
+    collections::VecDeque,
+    sync::{Arc, Mutex},
+    time::Instant,
+};
 
 /// A single log entry
 #[derive(Clone, Debug)]

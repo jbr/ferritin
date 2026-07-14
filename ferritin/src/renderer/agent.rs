@@ -11,12 +11,11 @@
 //! 3. Use formats LLMs already parse fluently (markdown).
 //! 4. Disambiguate nesting cleanly — section depth tracked via header level.
 
-use std::fmt::{Result, Write};
-
 use crate::styled_string::{
     Document, DocumentNode, HeadingLevel, ListItem, MetadataField, ShowWhen, Span, TableCell,
     TruncationLevel,
 };
+use std::fmt::{Result, Write};
 
 /// Escape characters that have meaning inside a markdown table cell:
 /// `|` ends the cell, `\` escapes the next char, and embedded newlines
@@ -308,11 +307,10 @@ impl<'w, W: Write> AiRenderer<'w, W> {
     ///
     /// Three shapes are possible:
     /// - Compact one-line: `- name — description` (when every item fits).
-    /// - Two-line: `- signature\n  description` (when any item has a
-    ///   long-enough first node that the em-dash form would get lost in the
-    ///   trailing `<…>` and `+` of a where-clause).
-    /// - Block: full multi-paragraph items separated by blank lines (when
-    ///   any item has more than two content nodes).
+    /// - Two-line: `- signature\n  description` (when any item has a long-enough first node that
+    ///   the em-dash form would get lost in the trailing `<…>` and `+` of a where-clause).
+    /// - Block: full multi-paragraph items separated by blank lines (when any item has more than
+    ///   two content nodes).
     fn render_list(&mut self, items: &[ListItem]) -> Result {
         let block_style = items.iter().any(|item| !self.item_is_single_line(item));
         let force_two_lines =

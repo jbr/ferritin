@@ -1,9 +1,10 @@
-use crate::color_scheme::ColorScheme;
-use crate::renderer::OutputMode;
+use crate::{color_scheme::ColorScheme, renderer::OutputMode};
 use fieldwork::Fieldwork;
 use std::path::Path;
-use syntect::highlighting::{Theme, ThemeSet};
-use syntect::parsing::SyntaxSet;
+use syntect::{
+    highlighting::{Theme, ThemeSet},
+    parsing::SyntaxSet,
+};
 use thiserror::Error;
 
 // Include the generated themes module

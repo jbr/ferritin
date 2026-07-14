@@ -1,15 +1,17 @@
-use ratatui::layout::{Position, Rect};
-use std::borrow::Cow;
-use std::time::Instant;
-
-use super::channels::{RequestResponse, UiCommand};
-use super::history::{History, HistoryEntry};
-use super::theme::InteractiveTheme;
-use super::utils::supports_cursor_shape;
-use crate::logging::LogReader;
-use crate::render_context::{RenderContext, ThemeError};
-use crate::styled_string::{Document, NodePath, TuiAction};
+use super::{
+    channels::{RequestResponse, UiCommand},
+    history::{History, HistoryEntry},
+    theme::InteractiveTheme,
+    utils::supports_cursor_shape,
+};
+use crate::{
+    logging::LogReader,
+    render_context::{RenderContext, ThemeError},
+    styled_string::{Document, NodePath, TuiAction},
+};
 use crossbeam_channel::{Receiver, Sender};
+use ratatui::layout::{Position, Rect};
+use std::{borrow::Cow, time::Instant};
 
 /// UI mode - makes the modal structure of the interface explicit
 #[derive(Debug)]

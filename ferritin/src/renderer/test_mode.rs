@@ -1,8 +1,7 @@
-use std::fmt::{Result, Write};
-
 use crate::styled_string::{
     Document, DocumentNode, HeadingLevel, ListItem, ShowWhen, Span, SpanStyle, TruncationLevel,
 };
+use std::fmt::{Result, Write};
 
 /// Render a document with semantic XML-like tags for testing
 pub fn render(document: &Document, output: &mut impl Write) -> Result {

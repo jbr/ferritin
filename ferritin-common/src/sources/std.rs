@@ -1,16 +1,13 @@
-use crate::CrateName;
-use crate::RustdocData;
-use crate::sources::CrateProvenance;
-use crate::sources::Source;
-use crate::store::CrateInfo;
+use crate::{
+    CrateName, RustdocData,
+    sources::{CrateProvenance, Source},
+    store::CrateInfo,
+};
 use anyhow::Result;
 use fieldwork::Fieldwork;
 use rustc_hash::FxHashMap;
-use semver::Version;
-use semver::VersionReq;
-use std::borrow::Cow;
-use std::path::PathBuf;
-use std::process::Command;
+use semver::{Version, VersionReq};
+use std::{borrow::Cow, path::PathBuf, process::Command};
 
 /// Descriptions for standard library crates
 const STD_DESCRIPTIONS: [(&str, &str); 6] = [

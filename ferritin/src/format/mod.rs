@@ -1,5 +1,7 @@
-use crate::request::Request;
-use crate::styled_string::{DocumentNode, MetadataField, Span as StyledSpan, TruncationLevel};
+use crate::{
+    request::Request,
+    styled_string::{DocumentNode, MetadataField, Span as StyledSpan, TruncationLevel},
+};
 use ferritin_common::doc_ref::DocRef;
 use rustdoc_types::{
     Abi, Constant, Enum, Function, FunctionPointer, GenericArg, GenericArgs, GenericBound,

@@ -1,10 +1,14 @@
-use crate::logging::LogEntry;
-use crate::renderer::interactive::InteractiveState;
-use crate::styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span};
+use crate::{
+    logging::LogEntry,
+    renderer::interactive::InteractiveState,
+    styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span},
+};
 use log::Level;
-use std::fs::File;
-use std::io::Write;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::{
+    fs::File,
+    io::Write,
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 impl<'a> InteractiveState<'a> {
     /// Create a document showing the debug log

@@ -1,10 +1,9 @@
+use super::{InteractiveState, UiMode};
+use crate::styled_string::NodePath;
 use ratatui::{
     Frame,
     layout::{Position, Rect},
 };
-
-use super::{InteractiveState, UiMode};
-use crate::styled_string::NodePath;
 
 impl<'a> InteractiveState<'a> {
     pub(super) fn render_frame(&mut self, frame: &mut Frame) {

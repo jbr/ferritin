@@ -1,10 +1,11 @@
+use super::*;
+use crate::{
+    docsrs_url::generate_docsrs_url,
+    styled_string::{DocumentNode, ListItem, Span},
+};
 use ferritin_common::CrateProvenance;
 use rustdoc_types::{AssocItemConstraintKind, GenericArg, GenericArgs, GenericParamDefKind, Impl};
 use semver::VersionReq;
-
-use super::*;
-use crate::docsrs_url::generate_docsrs_url;
-use crate::styled_string::{DocumentNode, ListItem, Span};
 
 /// Semantic model of a single trait implementation on a type. The IR captures
 /// the full impl — including data the terminal currently drops (the impl's

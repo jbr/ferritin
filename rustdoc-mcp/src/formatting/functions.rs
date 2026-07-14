@@ -1,6 +1,5 @@
-use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModifier};
-
 use super::*;
+use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModifier};
 
 impl<'a> Request<'a> {
     /// Format a function signature

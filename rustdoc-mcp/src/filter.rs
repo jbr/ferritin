@@ -48,7 +48,8 @@ impl Filter {
             ),
             Filter::Type => kind == ItemKind::TypeAlias,
             Filter::Variant => kind == ItemKind::Variant,
-            _ => true, // if we don't have a filter for it, it's always shown instead of always hidden
+            _ => true, /* if we don't have a filter for it, it's always shown instead of always
+                        * hidden */
         }
     }
 }

@@ -1,7 +1,5 @@
+use super::{InteractiveState, channels::RequestResponse};
 use crate::renderer::interactive::UiMode;
-
-use super::InteractiveState;
-use super::channels::RequestResponse;
 
 impl<'a> InteractiveState<'a> {
     /// Handle log updates from the log reader (non-blocking)

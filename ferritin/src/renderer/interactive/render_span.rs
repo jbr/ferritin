@@ -1,7 +1,6 @@
-use ratatui::{buffer::Buffer, layout::Rect, style::Modifier};
-
 use super::state::InteractiveState;
 use crate::styled_string::Span;
+use ratatui::{buffer::Buffer, layout::Rect, style::Modifier};
 
 impl<'a> InteractiveState<'a> {
     /// Render a span with optional action tracking
@@ -39,7 +38,8 @@ impl<'a> InteractiveState<'a> {
                 },
             );
 
-            // Check keyboard focus - this action is about to be pushed, so its index will be actions.len()
+            // Check keyboard focus - this action is about to be pushed, so its index will be
+            // actions.len()
             let keyboard_focus = match self.viewport.keyboard_cursor {
                 super::state::KeyboardCursor::Focused { action_index } => {
                     action_index == self.render_cache.actions.len()

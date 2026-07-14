@@ -185,7 +185,9 @@ fn test_brief_truncation_with_code_block() {
                 DocumentNode::paragraph(vec![Span::plain("Second paragraph with more text.")]),
                 DocumentNode::CodeBlock {
                     lang: Some("rust".into()),
-                    code: "fn example() {\n    println!(\"Hello\");\n    let x = 42;\n    let y = 100;\n    let z = x + y;\n}\n".into(),
+                    code: "fn example() {\n    println!(\"Hello\");\n    let x = 42;\n    let y = \
+                           100;\n    let z = x + y;\n}\n"
+                        .into(),
                     attrs: Vec::new(),
                 },
                 DocumentNode::paragraph(vec![Span::plain("Third paragraph after code.")]),
@@ -324,8 +326,11 @@ fn test_truncated_block_border_on_wrapped_lines() {
     let (_resp_tx, resp_rx) = channel();
 
     // Create a document with a Brief truncated block containing a very long line that will wrap
-    // Brief mode has an 8-line limit, so we need enough content to exceed that and trigger truncation
-    let long_text = "This is a very long line of text that should wrap across multiple lines when rendered in a narrow terminal window and we want to make sure the border appears on all wrapped lines not just the last one.";
+    // Brief mode has an 8-line limit, so we need enough content to exceed that and trigger
+    // truncation
+    let long_text = "This is a very long line of text that should wrap across multiple lines when \
+                     rendered in a narrow terminal window and we want to make sure the border \
+                     appears on all wrapped lines not just the last one.";
 
     let document = Document {
         nodes: vec![DocumentNode::TruncatedBlock {

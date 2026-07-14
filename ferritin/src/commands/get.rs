@@ -1,9 +1,10 @@
+use crate::{
+    format::ItemDoc,
+    request::Request,
+    styled_string::{Document, DocumentNode, ListItem, Span},
+};
 use ferritin_common::{DocRef, Suggestion};
 use rustdoc_types::Item;
-
-use crate::format::ItemDoc;
-use crate::request::Request;
-use crate::styled_string::{Document, DocumentNode, ListItem, Span};
 
 /// Outcome of resolving a path for `--format json`: either the structural item
 /// model (with its canonical URL) or a structural not-found result carrying the

@@ -18,8 +18,10 @@
 
 use anyhow::{Context, Result, anyhow};
 use crate_names::CrateNames;
-use std::sync::RwLock;
-use std::time::{Duration, Instant};
+use std::{
+    sync::RwLock,
+    time::{Duration, Instant},
+};
 use trillium_client::{Client, KnownHeaderName, Status};
 use trillium_compression::client::Compression;
 use trillium_logger::{Target, client::ClientLogger};

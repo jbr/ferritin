@@ -1,7 +1,6 @@
-use rustdoc_types::ItemKind;
-
 use super::*;
 use crate::styled_string::{DocumentNode, ListItem, Span};
+use rustdoc_types::ItemKind;
 
 // Display order for groups. Each group has a label and the set of ItemKinds it
 // collects — so we can merge e.g. the three macro-flavored kinds under a single

@@ -33,10 +33,12 @@
 //! accurate than `DocRef::discriminated_path` for items reached via
 //! re-exports, where the canonical path may go through private modules.
 
-use crate::doc_ref::ParentRef;
-use crate::iterators::{LazyChild, LazyChildren};
-use crate::string_utils::case_aware_jaro_winkler;
-use crate::{DocRef, Navigator, RustdocData};
+use crate::{
+    DocRef, Navigator, RustdocData,
+    doc_ref::ParentRef,
+    iterators::{LazyChild, LazyChildren},
+    string_utils::case_aware_jaro_winkler,
+};
 use fieldwork::Fieldwork;
 use rustdoc_types::{Id, Item, ItemEnum, ItemKind, Use, Visibility};
 use semver::VersionReq;

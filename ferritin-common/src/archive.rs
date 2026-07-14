@@ -13,21 +13,22 @@
 //!
 //! [`RustdocData`]: crate::rustdoc_data::RustdocData
 
-use std::fs;
-use std::io;
-use std::path::{Path, PathBuf};
-use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::thread::JoinHandle;
-
+use crate::indexes::DerivedIndexes;
 use memmap2::Mmap;
 use rkyv::rancor::Error;
 use rustc_hash::FxHashMap;
 use rustdoc_types::{
     ArchivedCrate, ArchivedId, Crate, ExternalCrate, FORMAT_VERSION, Id, ItemSummary,
 };
-
-use crate::indexes::DerivedIndexes;
+use std::{
+    fs, io,
+    path::{Path, PathBuf},
+    sync::{
+        Arc,
+        atomic::{AtomicBool, AtomicU64, Ordering},
+    },
+    thread::JoinHandle,
+};
 
 /// Bumped whenever the on-disk archive layout could change incompatibly in a way
 /// not already captured by [`FORMAT_VERSION`], [`RKYV_VERSION`], or the target

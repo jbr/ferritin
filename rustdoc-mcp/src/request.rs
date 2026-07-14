@@ -1,7 +1,11 @@
-use ferritin_common::sources::{DocsRsSource, LocalSource, StdSource};
-use ferritin_common::{Navigator, Resolver, Store};
-use std::ops::{Deref, DerefMut};
-use std::path::PathBuf;
+use ferritin_common::{
+    Navigator, Resolver, Store,
+    sources::{DocsRsSource, LocalSource, StdSource},
+};
+use std::{
+    ops::{Deref, DerefMut},
+    path::PathBuf,
+};
 
 /// MCP-specific wrapper around a [`Resolver`] that adds formatting capabilities.
 ///

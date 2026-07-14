@@ -1,24 +1,20 @@
-use super::CrateProvenance;
-use super::FeatureSelection;
-use super::workspace_metadata::WorkspaceMetadata;
-use crate::RustdocData;
-use crate::crate_name::CrateName;
-use crate::sources::Source;
-use crate::store::CrateInfo;
+use super::{CrateProvenance, FeatureSelection, workspace_metadata::WorkspaceMetadata};
+use crate::{RustdocData, crate_name::CrateName, sources::Source, store::CrateInfo};
 use anyhow::{Result, anyhow};
 use cargo_metadata::MetadataCommand;
 use fieldwork::Fieldwork;
-use rustc_hash::FxHashMap;
-use rustc_hash::FxHashSet;
-use semver::Version;
-use semver::VersionReq;
-use std::borrow::Cow;
-use std::path::Path;
-use std::path::PathBuf;
-use std::process::Command;
-use std::sync::Mutex;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::time::SystemTime;
+use rustc_hash::{FxHashMap, FxHashSet};
+use semver::{Version, VersionReq};
+use std::{
+    borrow::Cow,
+    path::{Path, PathBuf},
+    process::Command,
+    sync::{
+        Mutex,
+        atomic::{AtomicBool, Ordering},
+    },
+    time::SystemTime,
+};
 use walkdir::WalkDir;
 
 #[derive(Debug, Fieldwork)]
@@ -156,13 +152,13 @@ impl LocalSource {
     /// provenance (`cached`) and inherited by later bare invocations, so you only
     /// type `--features` once and subsequent lookups ride the cache.
     ///
-    /// - **`--rebuild`** → a clean build at the *requested* selection, or plain
-    ///   default if none were given. This is the escape hatch back to default.
-    /// - **explicit features** → build with them; rebuild only if they differ
-    ///   from what the cache was last built with (`cached`).
-    /// - **no features** → inherit `cached` (sticky); never rebuild on this
-    ///   account. This is what survives `--features` across `src` edits: an
-    ///   mtime-triggered rebuild still uses the inherited selection.
+    /// - **`--rebuild`** → a clean build at the *requested* selection, or plain default if none
+    ///   were given. This is the escape hatch back to default.
+    /// - **explicit features** → build with them; rebuild only if they differ from what the cache
+    ///   was last built with (`cached`).
+    /// - **no features** → inherit `cached` (sticky); never rebuild on this account. This is what
+    ///   survives `--features` across `src` edits: an mtime-triggered rebuild still uses the
+    ///   inherited selection.
     fn resolve_features(
         requested: Option<FeatureSelection>,
         cached: Option<&FeatureSelection>,

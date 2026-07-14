@@ -1,14 +1,15 @@
+use super::{channels::UiCommand, render_document::BASELINE_LEFT_MARGIN, theme::InteractiveTheme};
 use ferritin_common::DocRef;
-use ratatui::buffer::Buffer;
-use ratatui::layout::{Position, Rect};
+use ratatui::{
+    buffer::Buffer,
+    layout::{Position, Rect},
+};
 use rustdoc_types::Item;
-
-use super::channels::UiCommand;
-use super::render_document::BASELINE_LEFT_MARGIN;
-use super::theme::InteractiveTheme;
-use std::borrow::Cow;
-use std::fmt::{self, Display, Formatter};
-use std::ops::Range;
+use std::{
+    borrow::Cow,
+    fmt::{self, Display, Formatter},
+    ops::Range,
+};
 
 /// Entry in navigation history
 #[derive(Debug, Clone, PartialEq)]

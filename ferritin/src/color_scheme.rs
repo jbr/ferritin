@@ -1,6 +1,8 @@
 use crate::styled_string::SpanStyle;
-use syntect::highlighting::{Color, Highlighter, Theme};
-use syntect::parsing::{Scope, ScopeStack};
+use syntect::{
+    highlighting::{Color, Highlighter, Theme},
+    parsing::{Scope, ScopeStack},
+};
 
 /// A color scheme mapping semantic span styles to colors
 #[derive(Debug, Clone)]

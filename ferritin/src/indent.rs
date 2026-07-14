@@ -1,5 +1,4 @@
-use std::fmt::Write;
-use std::fmt::{self, Formatter};
+use std::fmt::{self, Formatter, Write};
 
 pub(crate) struct Indent<'a>(&'a str, usize);
 

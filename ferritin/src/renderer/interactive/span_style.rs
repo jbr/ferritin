@@ -1,8 +1,6 @@
-use ratatui::style::{Color, Modifier, Style};
-
-use crate::styled_string::SpanStyle;
-
 use super::state::InteractiveState;
+use crate::styled_string::SpanStyle;
+use ratatui::style::{Color, Modifier, Style};
 
 impl<'a> InteractiveState<'a> {
     /// Convert SpanStyle to ratatui Style

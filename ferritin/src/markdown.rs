@@ -1,9 +1,8 @@
-use std::borrow::Cow;
-
 use crate::styled_string::{
     DocumentNode, HeadingLevel, LinkTarget, ListItem, Span, SpanStyle, TuiAction,
 };
 use pulldown_cmark::{BrokenLink, CodeBlockKind, Event, Options, Parser, Tag, TagEnd};
+use std::borrow::Cow;
 
 /// Rust doctest info-string tokens that are not languages: rustdoc attributes and
 /// the bare `rust` tag. Any other token names the fenced block's language.
@@ -366,7 +365,8 @@ impl MarkdownRenderer {
                     StackItem::Node(node) => list_item.content.push(node),
                     StackItem::Item(_) => {
                         panic!(
-                            "Cannot nest ListItem directly in ListItem - lists should be nested via DocumentNode::List"
+                            "Cannot nest ListItem directly in ListItem - lists should be nested \
+                             via DocumentNode::List"
                         )
                     }
                 }
@@ -377,7 +377,8 @@ impl MarkdownRenderer {
                     StackItem::Item(list_item) => items.push(list_item),
                     StackItem::Node(_) => {
                         panic!(
-                            "Cannot push DocumentNode directly to List - must be wrapped in ListItem"
+                            "Cannot push DocumentNode directly to List - must be wrapped in \
+                             ListItem"
                         )
                     }
                 }
@@ -388,7 +389,8 @@ impl MarkdownRenderer {
                     StackItem::Node(node) => nodes.push(node),
                     StackItem::Item(_) => {
                         panic!(
-                            "Cannot push ListItem directly to BlockQuote - lists should be nested via DocumentNode::List"
+                            "Cannot push ListItem directly to BlockQuote - lists should be nested \
+                             via DocumentNode::List"
                         )
                     }
                 }
@@ -494,7 +496,9 @@ mod tests {
 
     #[test]
     fn test_links_in_list_items() {
-        let input = "- Item with [link](https://example.com) inline\n- Another [link](https://other.com) here";
+        let input =
+            "- Item with [link](https://example.com) inline\n- Another [link](https://other.com) \
+             here";
         let nodes = MarkdownRenderer::render_with_resolver(input, |_| None);
 
         // Should have exactly one list

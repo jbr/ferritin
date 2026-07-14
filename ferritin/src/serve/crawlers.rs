@@ -44,11 +44,7 @@ fn origin(conn: &Conn) -> Option<String> {
 /// matches nothing, and falls back to `Disallow: /` — declining to crawl at all.
 /// Failing closed is the right direction here.
 pub(super) async fn robots(conn: Conn) -> Conn {
-    let mut body = String::from(
-        "User-agent: *\n\
-         Allow: /$\n\
-         Disallow: /\n",
-    );
+    let mut body = String::from("User-agent: *\nAllow: /$\nDisallow: /\n");
 
     if let Some(origin) = origin(&conn) {
         body.push_str(&format!("\nSitemap: {origin}/sitemap.xml\n"));

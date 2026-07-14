@@ -14,7 +14,6 @@ mod parse;
 
 pub(crate) use generate::{crate_base_url, generate_docsrs_url};
 pub(crate) use parse::{DocsRsLink, resolve_relative};
-
 use rustdoc_types::ItemKind;
 
 /// rustdoc names an item's page `{sigil}.{Name}.html`. This is the full set of

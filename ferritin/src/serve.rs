@@ -20,22 +20,6 @@
 mod crawlers;
 mod spa_route;
 
-use std::{net::IpAddr, sync::Arc};
-
-use ferritin_common::{
-    Navigator, Store,
-    sources::{DocsRsSource, StdSource},
-};
-use percent_encoding::percent_decode_str;
-use querystrong::QueryStrong;
-use rayon::{ThreadPool, ThreadPoolBuilder};
-use trillium::{Conn, KnownHeaderName, Method, Status};
-use trillium_caching_headers::CachingHeaders;
-use trillium_compression::Compression;
-use trillium_logger::{Logger, log_format};
-use trillium_ratelimit::{Quota, RateLimiter};
-use trillium_router::{Router, RouterConnExt};
-
 use crate::{
     commands::{self, get::JsonOutcome},
     format_context::FormatContext,
@@ -43,6 +27,20 @@ use crate::{
     request::Request,
     typeahead::{TypeaheadEntry, TypeaheadService},
 };
+use ferritin_common::{
+    Navigator, Store,
+    sources::{DocsRsSource, StdSource},
+};
+use percent_encoding::percent_decode_str;
+use querystrong::QueryStrong;
+use rayon::{ThreadPool, ThreadPoolBuilder};
+use std::{net::IpAddr, sync::Arc};
+use trillium::{Conn, KnownHeaderName, Method, Status};
+use trillium_caching_headers::CachingHeaders;
+use trillium_compression::Compression;
+use trillium_logger::{Logger, log_format};
+use trillium_ratelimit::{Quota, RateLimiter};
+use trillium_router::{Router, RouterConnExt};
 
 /// Worker-thread stack size. The CLI runs the same lookups on the main thread's
 /// 8 MB stack; give the pool workers headroom beyond that.
@@ -168,17 +166,16 @@ pub fn serve() {
 /// Automatic HTTPS (Let's Encrypt via tls-alpn-01) plus HTTP/3, behind the
 /// `acme` cargo feature and activated at runtime by environment variables:
 ///
-/// - `FERRITIN_ACME_DOMAIN` (required to activate; comma-separated for multiple
-///   domains — the first is the canonical authority insecure requests redirect to)
-/// - `FERRITIN_ACME_CACHE_DIR` (required when active): directory persisting the
-///   ACME account key and certificates across restarts. Without a cache every
-///   restart would re-issue, and Let's Encrypt rate limits re-issuance.
-/// - `FERRITIN_ACME_CONTACT` (optional): a contact email; a bare address is
-///   prefixed with `mailto:`.
-/// - `FERRITIN_ACME_PRODUCTION` (optional, `1`/`true`): use the production
-///   Let's Encrypt directory. Defaults to the staging environment, whose
-///   certificates are untrusted but generously rate-limited — right for
-///   verifying a deployment before flipping to production.
+/// - `FERRITIN_ACME_DOMAIN` (required to activate; comma-separated for multiple domains — the first
+///   is the canonical authority insecure requests redirect to)
+/// - `FERRITIN_ACME_CACHE_DIR` (required when active): directory persisting the ACME account key
+///   and certificates across restarts. Without a cache every restart would re-issue, and Let's
+///   Encrypt rate limits re-issuance.
+/// - `FERRITIN_ACME_CONTACT` (optional): a contact email; a bare address is prefixed with
+///   `mailto:`.
+/// - `FERRITIN_ACME_PRODUCTION` (optional, `1`/`true`): use the production Let's Encrypt directory.
+///   Defaults to the staging environment, whose certificates are untrusted but generously
+///   rate-limited — right for verifying a deployment before flipping to production.
 ///
 /// When active, the server binds TLS on tcp/443 and QUIC on udp/443 (the
 /// listener builder auto-advertises `alt-svc` for the matching pair, which is
@@ -188,11 +185,9 @@ pub fn serve() {
 /// cleartext exactly as it does without this feature.
 #[cfg(feature = "acme")]
 mod acme {
-    use std::path::PathBuf;
-    use std::sync::Arc;
-
     use ferritin_common::Store;
     use rayon::ThreadPool;
+    use std::{path::PathBuf, sync::Arc};
     use trillium::{Conn, KnownHeaderName, Status};
     use trillium_acme::{AcmeConfig, rustls_acme::caches::DirCache};
     use trillium_quinn::QuicConfig;
@@ -222,9 +217,9 @@ mod acme {
             }
 
             let cache_dir = PathBuf::from(std::env::var("FERRITIN_ACME_CACHE_DIR").expect(
-                "FERRITIN_ACME_CACHE_DIR is required when FERRITIN_ACME_DOMAIN is set: \
-                 it persists the ACME account key and certificates across restarts, \
-                 and Let's Encrypt rate-limits re-issuance",
+                "FERRITIN_ACME_CACHE_DIR is required when FERRITIN_ACME_DOMAIN is set: it \
+                 persists the ACME account key and certificates across restarts, and Let's \
+                 Encrypt rate-limits re-issuance",
             ));
 
             let contact = std::env::var("FERRITIN_ACME_CONTACT").ok().map(|contact| {
@@ -339,7 +334,8 @@ pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl trillium::Handler
         // `{ip}` is what lets fail2ban attribute a request to a host; the line
         // carries no timestamp because journald stamps every line it ingests.
         Logger::new().with_formatter(log_format!(
-            "<- {ip} {version} {method} {url} {response_time} {status} {body_len_human} {content_encoding}",
+            "<- {ip} {version} {method} {url} {response_time} {status} {body_len_human} \
+             {content_encoding}",
             content_encoding =
                 trillium_logger::formatters::response_header(KnownHeaderName::ContentEncoding)
         )),

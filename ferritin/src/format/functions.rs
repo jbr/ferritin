@@ -1,7 +1,6 @@
-use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModifier};
-
 use super::*;
 use crate::styled_string::{DocumentNode, Span as StyledSpan};
+use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModifier};
 
 /// Semantic model of a free `function` item. A function is the same fn-shape as
 /// an inherent [`MethodDoc`], minus the assoc-item `kind`/`visibility` (a free

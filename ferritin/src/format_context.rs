@@ -1,8 +1,10 @@
 use crate::styled_string::TruncationLevel;
 use ferritin_common::DocRef;
 use rustdoc_types::Item;
-use std::sync::RwLock;
-use std::sync::atomic::{AtomicBool, AtomicU8, Ordering};
+use std::sync::{
+    RwLock,
+    atomic::{AtomicBool, AtomicU8, Ordering},
+};
 
 /// An erased "should this item be displayed?" predicate.
 ///

@@ -1,9 +1,8 @@
-use ratatui::{buffer::Buffer, layout::Rect};
-
 use super::{
     render_document::BASELINE_LEFT_MARGIN,
     state::{InputMode, InteractiveState, UiMode},
 };
+use ratatui::{buffer::Buffer, layout::Rect};
 
 impl<'a> InteractiveState<'a> {
     /// Render status bar at the bottom of the screen

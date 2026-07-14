@@ -1,23 +1,28 @@
+use crate::{
+    CrateProvenance,
+    archive::{self, Archive},
+    crate_name::CrateName,
+    doc_ref::{self, DocRef},
+    indexes::DerivedIndexes,
+    navigator::Navigator,
+    store::parse_docsrs_url,
+};
 use elsa::sync::FrozenMap;
 use fieldwork::Fieldwork;
 use rkyv::rancor::Error;
 use rustc_hash::FxHashMap;
 use rustdoc_types::{ArchivedId, Crate, ExternalCrate, Id, Item, ItemKind, ItemSummary};
 use semver::{Version, VersionReq};
-use std::collections::HashMap;
-use std::fmt::{self, Debug, Formatter};
-use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, OnceLock};
-use std::thread::JoinHandle;
-
-use crate::CrateProvenance;
-use crate::archive::{self, Archive};
-use crate::crate_name::CrateName;
-use crate::doc_ref::{self, DocRef};
-use crate::indexes::DerivedIndexes;
-use crate::navigator::Navigator;
-use crate::store::parse_docsrs_url;
+use std::{
+    collections::HashMap,
+    fmt::{self, Debug, Formatter},
+    path::{Path, PathBuf},
+    sync::{
+        Arc, OnceLock,
+        atomic::{AtomicBool, Ordering},
+    },
+    thread::JoinHandle,
+};
 
 /// A dependency pin extracted from an `external_crates` entry's docs.rs
 /// `html_root_url`: the real crates.io name (which can differ from the
@@ -34,18 +39,15 @@ pub(crate) struct ExternalCrateInfo {
 ///
 /// Storage has two shapes:
 ///
-/// - **Cold path** (a freshly-parsed `Crate`): the whole crate is kept `resident`
-///   behind an `Arc`, and a background thread serializes it to an rkyv sidecar for
-///   next time (`write_handle`, joined on drop). Accessors read straight from the
-///   resident `Crate`.
-/// - **Warm path** (an existing sidecar): the heavy item `index` stays in the
-///   memory-mapped `archive` and individual items are deserialized on demand into
-///   `item_cache`, so a lookup that touches one item out of a large crate does not
-///   pay to parse the whole thing. The small structural maps (`paths`,
-///   `external_crates`, `root`, `crate_version`) are materialized eagerly so
-///   accessors can hand out borrows; impl lookups go through the precomputed
-///   reverse indexes in the archive ([`crate::indexes`]), so nothing ever
-///   materializes the full index.
+/// - **Cold path** (a freshly-parsed `Crate`): the whole crate is kept `resident` behind an `Arc`,
+///   and a background thread serializes it to an rkyv sidecar for next time (`write_handle`, joined
+///   on drop). Accessors read straight from the resident `Crate`.
+/// - **Warm path** (an existing sidecar): the heavy item `index` stays in the memory-mapped
+///   `archive` and individual items are deserialized on demand into `item_cache`, so a lookup that
+///   touches one item out of a large crate does not pay to parse the whole thing. The small
+///   structural maps (`paths`, `external_crates`, `root`, `crate_version`) are materialized eagerly
+///   so accessors can hand out borrows; impl lookups go through the precomputed reverse indexes in
+///   the archive ([`crate::indexes`]), so nothing ever materializes the full index.
 #[derive(Fieldwork)]
 #[fieldwork(get, rename_predicates)]
 pub struct RustdocData {
@@ -95,10 +97,10 @@ pub struct RustdocData {
     /// the path passes through a private module not visible in the public item tree).
     ///
     /// Contains two kinds of entries per item:
-    /// - A kind-qualified key: `"mod1::mod@name"` or `"mod1::fn@name"` — always present,
-    ///   allows users to explicitly request a specific kind when names collide.
-    /// - An unqualified key: `"mod1::name"` — present only when no other item of a different
-    ///   kind shares this path (i.e. unambiguous).
+    /// - A kind-qualified key: `"mod1::mod@name"` or `"mod1::fn@name"` — always present, allows
+    ///   users to explicitly request a specific kind when names collide.
+    /// - An unqualified key: `"mod1::name"` — present only when no other item of a different kind
+    ///   shares this path (i.e. unambiguous).
     #[field = false]
     pub(crate) path_to_id: HashMap<String, Id>,
 }
@@ -457,7 +459,7 @@ impl RustdocData {
         id: u32,
     ) -> Option<&'a RustdocData> {
         if id == 0 {
-            //special case: 0 is not in external crates, and it always means "this crate"
+            // special case: 0 is not in external crates, and it always means "this crate"
             return Some(self);
         }
 

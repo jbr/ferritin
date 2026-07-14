@@ -4,11 +4,9 @@
 //! to decide column widths and break long cells across multiple lines while
 //! preserving span styling and link actions.
 
-use std::borrow::Cow;
-
-use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
-
 use crate::styled_string::{Span, SpanStyle, TableCell, TuiAction};
+use std::borrow::Cow;
+use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 
 /// Default minimum width when shrinking columns to fit. A column may end up
 /// narrower than this if its natural width is already smaller.

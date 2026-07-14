@@ -1,11 +1,9 @@
+use super::state::InteractiveState;
 use ratatui::{
     buffer::Buffer,
     style::{Color, Style},
 };
-use syntect::easy::HighlightLines;
-use syntect::util::LinesWithEndings;
-
-use super::state::InteractiveState;
+use syntect::{easy::HighlightLines, util::LinesWithEndings};
 
 // Code block borders are outdented to the left of content so that the code text
 // aligns with surrounding prose, and the border is purely decorative.
@@ -90,7 +88,8 @@ impl<'a> InteractiveState<'a> {
             );
 
             // Draw dashes from end of label to corner
-            // The label takes label_display_width columns, so next position is label_start + label_display_width
+            // The label takes label_display_width columns, so next position is label_start +
+            // label_display_width
             let label_end_col = label_start + label_display_width as u16;
             for i in label_end_col..border_col + border_width.saturating_sub(1) {
                 self.write_text(

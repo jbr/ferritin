@@ -1,15 +1,12 @@
-use std::io::Write;
-
-use crossterm::event::{MouseEvent, MouseEventKind};
-use ratatui::{Terminal, layout::Position, prelude::Backend};
-
+use super::UiMode;
 use crate::{
     render_context::RenderContext,
     renderer::interactive::{handle_action, set_cursor_shape},
     styled_string::TuiAction,
 };
-
-use super::UiMode;
+use crossterm::event::{MouseEvent, MouseEventKind};
+use ratatui::{Terminal, layout::Position, prelude::Backend};
+use std::io::Write;
 
 impl<'a> super::InteractiveState<'a> {
     pub(super) fn handle_mouse_event(

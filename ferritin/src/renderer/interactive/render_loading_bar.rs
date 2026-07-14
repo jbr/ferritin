@@ -1,7 +1,6 @@
+use super::state::InteractiveState;
 use ratatui::{buffer::Buffer, layout::Rect, style::Color};
 use std::f32::consts::TAU;
-
-use super::state::InteractiveState;
 
 /// Extract RGB values from a Color, returning None for non-RGB colors
 pub(super) fn color_to_rgb(color: Color) -> Option<(u8, u8, u8)> {
