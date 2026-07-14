@@ -34,11 +34,17 @@ use ferritin_common::{
 use percent_encoding::percent_decode_str;
 use querystrong::QueryStrong;
 use rayon::{ThreadPool, ThreadPoolBuilder};
-use std::{net::IpAddr, sync::Arc};
-use trillium::{Conn, KnownHeaderName, Method, Status};
+use std::{
+    env,
+    net::IpAddr,
+    panic::{self, AssertUnwindSafe},
+    sync::Arc,
+};
+use trillium::{Conn, Handler, KnownHeaderName, Method, Status};
 use trillium_caching_headers::CachingHeaders;
 use trillium_compression::Compression;
-use trillium_logger::{Logger, log_format};
+use trillium_head::Head;
+use trillium_logger::{Logger, formatters, log_format};
 use trillium_ratelimit::{Quota, RateLimiter};
 use trillium_router::{Router, RouterConnExt};
 
@@ -59,7 +65,7 @@ const DEFAULT_CACHE_BYTES: u64 = 2 * 1024 * 1024 * 1024;
 
 /// The crate-cache byte cap: `FERRITIN_CACHE_BYTES` or the default.
 fn cache_bytes() -> u64 {
-    std::env::var("FERRITIN_CACHE_BYTES")
+    env::var("FERRITIN_CACHE_BYTES")
         .ok()
         .and_then(|value| value.parse().ok())
         .unwrap_or(DEFAULT_CACHE_BYTES)
@@ -84,7 +90,7 @@ const RATELIMIT_BURST_DIVISOR: u64 = 4;
 /// a scraper. It is not the memory guard: the Store's weight cap and RSS
 /// high-water are. This only sheds traffic no human generates.
 fn ratelimit_per_minute() -> Option<u64> {
-    std::env::var("FERRITIN_RATELIMIT")
+    env::var("FERRITIN_RATELIMIT")
         .ok()
         .and_then(|value| value.parse().ok())
         .filter(|&per_minute| per_minute > 0)
@@ -97,7 +103,7 @@ fn ratelimit_per_minute() -> Option<u64> {
 /// public deployment, where the cache's byte-weight proxies drifting from
 /// real memory use must mean shed crates, not an OOM kill.
 fn rss_high_water_bytes() -> Option<u64> {
-    std::env::var("FERRITIN_RSS_HIGH_WATER_BYTES")
+    env::var("FERRITIN_RSS_HIGH_WATER_BYTES")
         .ok()
         .and_then(|value| value.parse().ok())
 }
@@ -187,8 +193,8 @@ pub fn serve() {
 mod acme {
     use ferritin_common::Store;
     use rayon::ThreadPool;
-    use std::{path::PathBuf, sync::Arc};
-    use trillium::{Conn, KnownHeaderName, Status};
+    use std::{env, path::PathBuf, sync::Arc};
+    use trillium::{Conn, Handler, KnownHeaderName, Status};
     use trillium_acme::{AcmeConfig, rustls_acme::caches::DirCache};
     use trillium_quinn::QuicConfig;
 
@@ -206,7 +212,7 @@ mod acme {
         /// silently serving cleartext on a host that meant to serve TLS is
         /// worse than failing to start.
         pub(super) fn from_env() -> Option<Self> {
-            let domains: Vec<String> = std::env::var("FERRITIN_ACME_DOMAIN")
+            let domains: Vec<String> = env::var("FERRITIN_ACME_DOMAIN")
                 .ok()?
                 .split(',')
                 .map(|domain| domain.trim().to_string())
@@ -216,13 +222,13 @@ mod acme {
                 return None;
             }
 
-            let cache_dir = PathBuf::from(std::env::var("FERRITIN_ACME_CACHE_DIR").expect(
+            let cache_dir = PathBuf::from(env::var("FERRITIN_ACME_CACHE_DIR").expect(
                 "FERRITIN_ACME_CACHE_DIR is required when FERRITIN_ACME_DOMAIN is set: it \
                  persists the ACME account key and certificates across restarts, and Let's \
                  Encrypt rate-limits re-issuance",
             ));
 
-            let contact = std::env::var("FERRITIN_ACME_CONTACT").ok().map(|contact| {
+            let contact = env::var("FERRITIN_ACME_CONTACT").ok().map(|contact| {
                 if contact.contains(':') {
                     contact
                 } else {
@@ -230,7 +236,7 @@ mod acme {
                 }
             });
 
-            let production = std::env::var("FERRITIN_ACME_PRODUCTION")
+            let production = env::var("FERRITIN_ACME_PRODUCTION")
                 .is_ok_and(|value| value == "1" || value.eq_ignore_ascii_case("true"));
 
             Some(Self {
@@ -248,7 +254,7 @@ mod acme {
         store: Arc<Store>,
         pool: Arc<ThreadPool>,
         env: AcmeEnv,
-        std_crates: Vec<crate::typeahead::TypeaheadEntry>,
+        std_crates: Vec<TypeaheadEntry>,
     ) {
         let AcmeEnv {
             domains,
@@ -267,7 +273,7 @@ mod acme {
 
         let (acceptor, acme_future) = trillium_acme::new(acme_config);
         let quic = QuicConfig::from_cert_resolver(acceptor.resolver());
-        let host = std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".into());
+        let host = env::var("HOST").unwrap_or_else(|_| "0.0.0.0".into());
 
         let handle = trillium_smol::config()
             .with_shared_state(store)
@@ -289,7 +295,7 @@ mod acme {
 
     /// Redirect any request arriving over a non-TLS transport (the tcp/80
     /// listener) to the canonical https authority, preserving path and query.
-    fn redirect_insecure(authority: String) -> impl trillium::Handler {
+    fn redirect_insecure(authority: String) -> impl Handler {
         let authority: Arc<str> = authority.into();
         move |conn: Conn| {
             let authority = authority.clone();
@@ -329,17 +335,17 @@ async fn reject_other_methods(conn: Conn) -> Conn {
     }
 }
 
-pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl trillium::Handler {
+pub(crate) fn handler(std_crates: Vec<TypeaheadEntry>) -> impl Handler {
     (
         // `{ip}` is what lets fail2ban attribute a request to a host; the line
         // carries no timestamp because journald stamps every line it ingests.
         Logger::new().with_formatter(log_format!(
             "<- {ip} {version} {method} {url} {response_time} {status} {body_len_human} \
-             {content_encoding}",
-            content_encoding =
-                trillium_logger::formatters::response_header(KnownHeaderName::ContentEncoding)
+             {content_encoding} {user_agent}",
+            content_encoding = formatters::response_header(KnownHeaderName::ContentEncoding)
         )),
         reject_other_methods,
+        Head::new(),
         Compression::new(),
         CachingHeaders::new(),
         trillium::state(Arc::new(TypeaheadService::new(std_crates))),
@@ -396,7 +402,7 @@ fn api_limiter() -> Option<RateLimiter<IpAddr>> {
 /// The index predicate confines the SPA fallback to paths the client actually
 /// routes; see [`spa_route`]. Without it every unmatched path — every scanner
 /// probe — is answered `200` with the index.
-fn frontend() -> impl trillium::Handler {
+fn frontend() -> impl Handler {
     use trillium_client::Client;
     use trillium_compression::client::Compression;
     use trillium_logger::client::{ClientLogger, client_log_format};
@@ -422,7 +428,7 @@ where
 {
     let (tx, rx) = async_channel::bounded(1);
     pool.spawn(move || {
-        let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(job)).ok();
+        let outcome = panic::catch_unwind(AssertUnwindSafe(job)).ok();
         let _ = tx.send_blocking(outcome);
     });
     rx.recv().await.ok().flatten()
@@ -449,7 +455,7 @@ fn respond_json(conn: Conn, outcome: Option<sonic_rs::Result<(Status, String)>>)
     // with the SPA index.
     if let Some(Ok((status, body))) = outcome {
         conn.with_status(status)
-            .with_response_header("content-type", "application/json")
+            .with_response_header(KnownHeaderName::ContentType, "application/json")
             .with_body(body)
             .halt()
     } else {

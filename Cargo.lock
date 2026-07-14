@@ -1298,6 +1298,7 @@ dependencies = [
  "trillium-client",
  "trillium-compression",
  "trillium-frontend",
+ "trillium-head",
  "trillium-logger",
  "trillium-quinn",
  "trillium-ratelimit",
@@ -4065,7 +4066,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.3.4",
+ "getrandom 0.4.3",
  "once_cell",
  "rustix",
  "windows-sys 0.61.2",
@@ -4437,6 +4438,16 @@ checksum = "854031dd86e3cc0a8783668a96cb42668b7189226c7abba7258dfa363bf96197"
 dependencies = [
  "proc-macro2",
  "quote",
+]
+
+[[package]]
+name = "trillium-head"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "30656a1a10c1f377dd61904cfaca6e30dc3c8025dd7c66384a3bcb6e36901599"
+dependencies = [
+ "trillium",
+ "trillium-http",
 ]
 
 [[package]]
