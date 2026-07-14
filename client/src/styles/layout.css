@@ -540,69 +540,152 @@
   padding-top: 0.25rem;
 }
 
-/* --- left crate nav --- */
+/* --- left crate nav: the module tree ---
+   Every row is indented by its own `--depth`, set inline, rather than by nesting
+   padding on the lists. Rows can then run full-bleed to the rail's edges — a hover
+   or active background spans the whole row at any depth, instead of starting at
+   the indent and leaving a ragged left edge that deepens with each level. */
 .crate-nav {
   position: sticky;
   top: 5rem;
   max-height: calc(100vh - 6rem);
   overflow-y: auto;
+  /* The tree's two spatial constants. Every level of nesting spends `--nav-indent`
+     of a rail that is only 15rem wide, and the twisty column is spent again at each
+     one — so both are kept as tight as the glyph will allow, and rows align to
+     `--nav-twisty` rather than to a hardcoded gutter. */
+  --nav-indent: 0.6rem;
+  --nav-twisty: 0.8rem;
 }
-.crate-nav-group {
-  margin-bottom: 1.25rem;
+.nav-tree,
+.nav-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.crate-nav-label {
+
+/* A module row: twisty + name, as one line. */
+.nav-row {
+  display: flex;
+  align-items: center;
+  padding-left: calc(var(--depth) * var(--nav-indent));
+}
+
+/* The disclosure. The spine's is accented — it marks the path you are standing on
+   — but it is a live control like any other: you can shut the module you are in. */
+.nav-twisty {
+  flex-shrink: 0;
+  width: var(--nav-twisty);
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.8rem;
+  line-height: 1;
+  color: var(--faint);
+  cursor: pointer;
+  text-align: left;
+}
+.nav-twisty.spine {
+  color: var(--accent);
+}
+.nav-row:hover .nav-twisty {
+  color: var(--muted);
+}
+.nav-row:hover .nav-twisty.spine {
+  color: color-mix(in oklch, var(--accent) 70%, var(--ink));
+}
+/* The spine is the answer to "where am I": it earns full-strength ink, so the
+   path down to the current module reads out of the siblings around it. */
+.nav-module.spine {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Modules are structure, so they read as identifiers; kind headings (below) are
+   labels. The two sit at the same indent and must not be confusable. */
+.nav-module,
+.nav-item {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  padding: 0.24rem 0.3rem;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Leaves have no twisty, so they pay for its column to line up under the names of
+   the modules they sit beside. */
+.nav-item {
+  padding-left: calc(var(--nav-twisty) + var(--depth) * var(--nav-indent));
+}
+.nav-module:hover,
+.nav-item:hover {
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-module.active,
+.nav-item.active {
+  background: color-mix(in oklch, var(--accent) 14%, transparent);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Kind headings: the terminal's groups, as collapsible labels. */
+.nav-group {
+  margin-top: 0.35rem;
+}
+.nav-group-label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.2rem 0.3rem 0.2rem calc(var(--depth) * var(--nav-indent));
+  background: none;
+  border: none;
+  font: inherit;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--faint);
-  margin-bottom: 0.5rem;
+  cursor: pointer;
+  text-align: left;
+}
+.nav-group-label:hover {
+  color: var(--muted);
+}
+/* The count only appears while the group is shut: open, the rows are the count. */
+.nav-group-count {
+  margin-left: auto;
+  font-weight: 400;
+  letter-spacing: 0;
+  opacity: 0.75;
 }
 
-.crate-nav-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+/* The ancestor expander — the whole of "you can still get anywhere from here". */
+.nav-more {
+  display: block;
   width: 100%;
+  margin-top: 0.15rem;
+  padding: 0.24rem 0.3rem 0.24rem
+    calc(var(--nav-twisty) + var(--depth) * var(--nav-indent));
   background: none;
   border: none;
-  padding: 0;
+  border-radius: 6px;
   font: inherit;
+  font-size: 0.78rem;
   color: var(--faint);
   cursor: pointer;
   text-align: left;
 }
-
-.crate-nav-toggle:hover {
-  color: var(--muted);
-}
-
-.crate-nav-toggle-icon {
-  font-size: 0.6rem;
-  flex-shrink: 0;
-}
-.crate-nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.crate-nav-item {
-  display: block;
-  padding: 0.28rem 0.6rem;
-  border-radius: 6px;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-.crate-nav-item:hover {
+.nav-more:hover {
   background: var(--surface);
   color: var(--ink);
-  text-decoration: none;
-}
-.crate-nav-item.active {
-  background: color-mix(in oklch, var(--accent) 14%, transparent);
-  color: var(--ink);
-  font-weight: 500;
 }
 
 /* --- right page toc --- */
