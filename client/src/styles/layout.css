@@ -913,3 +913,54 @@
     display: none;
   }
 }
+
+/* --- colophon ---
+   A quiet footer on every page (rendered by DocsLayout below the columns). It
+   shares the columns' max-width and gutter so its rule lines up with the reading
+   area above it, and stays muted so it never competes with the docs. */
+.colophon {
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+.colophon-inner {
+  max-width: 84rem;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.82rem;
+  color: var(--faint);
+}
+/* The credits flow as one line and wrap segment-by-segment; each span carries a
+   leading dot except the first, so the separators live with the segments and wrap
+   with them rather than stranding a dot at a line's start. */
+.colophon-credits {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+}
+.colophon-credits > span:not(:first-child)::before {
+  content: "·";
+  margin-right: 0.6rem;
+  color: var(--faint);
+}
+.colophon-credits a,
+.colophon-report {
+  color: var(--muted);
+}
+.colophon-credits a:hover,
+.colophon-report:hover {
+  color: var(--accent);
+}
+.colophon-report {
+  flex-shrink: 0;
+}
+@media (min-width: 1400px) {
+  .colophon-inner {
+    max-width: none;
+  }
+}
