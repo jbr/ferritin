@@ -1,0 +1,13 @@
+{
+  "name": "ferritin",
+  "short_name": "ferritin",
+  "description": "A fast reader for Rust documentation.",
+  "icons": [
+    { "src": "/favicon-48.png", "sizes": "48x48", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "theme_color": "#f6f1e7",
+  "background_color": "#f6f1e7",
+  "display": "standalone"
+}
