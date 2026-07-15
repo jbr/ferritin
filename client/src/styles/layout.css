@@ -28,6 +28,9 @@
   flex-shrink: 0;
 }
 .logo {
+  /* Single source of truth for the mark's size; the wordmark's line box is
+     locked to it below so the two stay co-centered as the mark grows. */
+  --logo-mark-size: 30px;
   display: inline-flex;
   /* Baseline, so the logo contributes its "ferritin" text baseline to the brand
      row rather than a baseline synthesized from the taller mark's box bottom —
@@ -43,23 +46,27 @@
 .logo:hover {
   text-decoration: none;
 }
+/* Fatten the wordmark's line box to the mark's height. Once the mark is taller
+   than the text's natural line box it drives the flex line height, and the
+   baseline-pinned wordmark then rides high in it — the mark reads a couple px
+   low. A line box equal to the mark makes `align-self: center` and the text's
+   midline coincide; the glyph baseline is unchanged, so the brand row holds. */
+.logo-text {
+  line-height: var(--logo-mark-size);
+}
+/* The faceted iron-core mark. Two artworks, one tuned for each surface: the
+   light mark carries darker facets for the cream top bar, the dark mark lighter
+   ones for the lamp-dark bar. The light art is the default; the dark art swaps
+   in under `[data-theme="dark"]` on <html>. */
 .logo-mark {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--ink);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  width: var(--logo-mark-size);
+  height: var(--logo-mark-size);
+  background: url("../assets/ferritin-mark.svg") center / contain no-repeat;
   /* Center against the wordmark's line rather than sitting on its baseline. */
   align-self: center;
 }
-.logo-mark::after {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
+[data-theme="dark"] .logo-mark {
+  background-image: url("../assets/ferritin-mark-dark.svg");
 }
 .brand-sep {
   color: var(--faint);
