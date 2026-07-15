@@ -96,3 +96,14 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+/* Keyboard focus indicator, themed to the brand accent and applied globally.
+   `:focus-visible` only, so pointer interaction never paints a ring. `outline`
+   (not box-shadow) so the ring survives forced-colors / high-contrast mode, and
+   `outline-offset` lifts it off the element for contrast against any background.
+   Individual controls may redirect it — e.g. the search box carries the ring on
+   its rounded shell rather than its overflow-clipped inner button. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

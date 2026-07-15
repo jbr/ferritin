@@ -121,6 +121,19 @@
   border-color: color-mix(in oklch, var(--accent) 55%, var(--border));
   box-shadow: 0 24px 70px -12px color-mix(in oklch, var(--ink) 35%, transparent);
 }
+/* Focus returns to the resting trigger when the panel closes. The trigger fills
+   a box with `overflow: hidden`, which would clip an outline drawn on the button
+   itself — so suppress it there and carry the global accent ring on `.search-box`
+   instead, where it follows the 8px radius unclipped. `:focus-visible` means a
+   keyboard dismissal (Escape, ⌘K) shows the ring — the keyboard user needs to see
+   where focus landed — while a mouse dismissal restores focus without one. */
+.search-trigger:focus-visible {
+  outline: none;
+}
+.search-box:has(.search-trigger:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 /* The panel's contents cross-fade in rather than sliding, so the box's growth is
    the only motion the eye tracks. */
 .search-panel {
@@ -346,7 +359,6 @@
   inset: var(--topbar-h, 3.25rem) 0 0 0;
   z-index: 50;
   background: color-mix(in oklch, var(--ink) 28%, transparent);
-  backdrop-filter: blur(2px);
 }
 .topbar:has(.search-box[data-expanded]) {
   z-index: 60;
