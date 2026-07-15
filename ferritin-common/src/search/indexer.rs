@@ -15,6 +15,7 @@ use std::{
     io::{Read, Write},
     ops::AddAssign,
     path::Path,
+    sync::LazyLock,
     time::SystemTime,
 };
 
@@ -185,8 +186,9 @@ struct Terms<'a> {
     shortest_paths: BTreeMap<(u64, u32), Vec<u32>>,
     document_lengths: BTreeMap<(u64, u32), DocumentLength>,
     crate_hashes: FxHashMap<&'a str, TermHash>,
-    /// Per-document hashes of the leaf item's name tokens
-    name_token_hashes: BTreeMap<(u64, u32), Vec<TermHash>>,
+    /// Per-document leaf-name tokens (lowercased). The single source for both
+    /// the per-document name-token hashes and the sorted name prefix dictionary.
+    name_tokens: BTreeMap<(u64, u32), Vec<String>>,
     // Authority scoring fields
     visited_crates: HashSet<CrateName<'a>>,
     link_counts: HashMap<ItemOrSummary<'a>, usize>,
@@ -252,8 +254,10 @@ impl<'a> Terms<'a> {
         let mut id_set = BTreeMap::new();
         let mut total_document_length = 0;
 
-        // Build document list and mapping
-        let mut name_token_hashes = self.name_token_hashes;
+        // Build document list and mapping, and accumulate the name prefix
+        // dictionary (name token -> documents whose leaf name contains it).
+        let mut name_tokens = self.name_tokens;
+        let mut name_term_docs: BTreeMap<String, Vec<DocumentId>> = BTreeMap::new();
         for (id, id_path) in self.shortest_paths {
             let doc_length = self
                 .document_lengths
@@ -261,13 +265,35 @@ impl<'a> Terms<'a> {
                 .copied()
                 .unwrap_or(DocumentLength(0));
             total_document_length += doc_length.0;
+            let doc_id = DocumentId(documents.len());
             id_set.insert(id, documents.len());
+
+            let tokens = name_tokens.remove(&id).unwrap_or_default();
+            let name_token_hashes = tokens.iter().map(|t| hash_term(t)).collect();
+            for token in tokens {
+                name_term_docs.entry(token).or_default().push(doc_id);
+            }
+
             documents.push(DocumentInfo {
                 path: ItemPath(id_path),
                 length: doc_length,
-                name_token_hashes: name_token_hashes.remove(&id).unwrap_or_default(),
+                name_token_hashes,
             });
         }
+
+        // Freeze the dictionary into a sorted vec (a BTreeMap iterates in key
+        // order), deduping each per-term document list — the doc ids were
+        // pushed in ascending order, so equal neighbours are adjacent.
+        let name_terms: Vec<NameTerm> = name_term_docs
+            .into_iter()
+            .map(|(term, mut docs)| {
+                docs.dedup();
+                NameTerm {
+                    term,
+                    documents: docs,
+                }
+            })
+            .collect();
 
         // Build authority scores vector aligned with documents
         let mut authority_scores = vec![0; documents.len()];
@@ -319,6 +345,7 @@ impl<'a> Terms<'a> {
             total_document_length,
             authority_scores,
             max_authority,
+            name_terms,
         }
     }
 
@@ -328,6 +355,7 @@ impl<'a> Terms<'a> {
         item: DocRef<'a, Item>,
         ids: &[u32],
         add_id: bool,
+        ancestors: &[Vec<String>],
     ) {
         let mut ids = ids.to_owned();
         if add_id {
@@ -360,15 +388,32 @@ impl<'a> Terms<'a> {
         // Store DocRef for later authority score lookup
         self.docref_by_id.insert(id, item);
 
-        // Record the leaf item's name tokens for last-segment-match bonus
-        if let Some(name) = item.name() {
-            let hashes: Vec<TermHash> = tokenize(name).iter().map(|t| hash_term(t)).collect();
-            if !hashes.is_empty() {
-                self.name_token_hashes.insert(id, hashes);
-            }
+        // Record the leaf item's name tokens: they drive both the
+        // last-segment-match bonus and the name prefix dictionary. Leaf-only —
+        // ancestor tokens are for filtering, not navigation.
+        let own_tokens: Vec<String> = item
+            .name()
+            .map(|name| tokenize(name).iter().map(|t| t.to_lowercase()).collect())
+            .unwrap_or_default();
+        if !own_tokens.is_empty() {
+            self.name_tokens.insert(id, own_tokens.clone());
         }
 
+        // Experiment: fold this item's ancestor path segments into its document
+        // at graded weight, so "hashmap inser" can reach `HashMap::insert`.
+        self.add_ancestor_terms(id, ancestors);
+
         self.add_for_item(item, id);
+
+        // The path context children inherit: everything above them plus this
+        // item. The crate root's name is excluded (`add_id` is false only for
+        // the root): it would otherwise appear in every document, making it a
+        // linguistic baseline (df == N) with no discriminating power within a
+        // single crate's corpus.
+        let mut child_ancestors = ancestors.to_vec();
+        if add_id && !own_tokens.is_empty() {
+            child_ancestors.push(own_tokens);
+        }
 
         match item.inner() {
             ItemEnum::Struct(struct_item) => match &struct_item.kind {
@@ -386,14 +431,28 @@ impl<'a> Terms<'a> {
             },
             ItemEnum::Trait(Trait { items, .. }) => {
                 for field in resolver.ids(item, items) {
-                    self.recurse(resolver, field, &ids, false);
+                    self.recurse(resolver, field, &ids, true, &child_ancestors);
                 }
             }
             _ => {}
         };
 
         for child in resolver.children_including_uses(item) {
-            self.recurse(resolver, child, &ids, true)
+            self.recurse(resolver, child, &ids, true, &child_ancestors)
+        }
+    }
+
+    /// Fold each ancestor path segment's name tokens into document `id` at a
+    /// weight that decreases with distance from the leaf (see
+    /// [`ancestor_weight`]). `ancestors` is ordered root-first, so the last
+    /// entry is the immediate parent. Experimental.
+    fn add_ancestor_terms(&mut self, id: (u64, u32), ancestors: &[Vec<String>]) {
+        let depth = ancestors.len();
+        for (index, segment) in ancestors.iter().enumerate() {
+            let weight = ancestor_weight(depth - index);
+            for token in segment {
+                self.add(token, DocumentTermCount(weight), id);
+            }
         }
     }
 
@@ -403,7 +462,7 @@ impl<'a> Terms<'a> {
         // Item name gets very high weight - when someone searches for "vec",
         // they almost certainly want the Vec struct, not its methods
         if let Some(name) = item.name() {
-            doc_length += self.add_terms(name, id, 20);
+            doc_length += self.add_terms(name, id, *NAME_WEIGHT);
         }
 
         if let Some(docs) = &item.docs {
@@ -480,7 +539,87 @@ impl<'a> Terms<'a> {
 /// cross-crate and private-module re-export targets the walk previously
 /// dropped. This changes the `authority_scores` baked into the index, so caches
 /// built by earlier versions must be rebuilt rather than reused on mtime alone.
-const INDEX_FORMAT_VERSION: u32 = 3;
+///
+/// v4: added the `name_terms` prefix dictionary, so older archives lack the
+/// field entirely and can't be deserialized into the current shape. Also the
+/// first version to index trait members as their own documents: the trait arm
+/// previously recursed them without pushing their id, so their document key
+/// collapsed to the already-visited trait's and they were dropped entirely —
+/// no `Iterator::collect`, no `Read::read_to_string`.
+const INDEX_FORMAT_VERSION: u32 = 4;
+
+/// Dev tuning knob: an env-var override for a scoring constant, so parameter
+/// point probes don't need a recompile per point. `index_time` knobs bake into
+/// the built index, so they are honored only in [`reindex_forced`] mode —
+/// a nonstandard weighting can never be written into a cached `.index` file.
+fn knob(name: &str, default: usize, index_time: bool) -> usize {
+    if index_time && !reindex_forced() {
+        return default;
+    }
+    std::env::var(name)
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(default)
+}
+
+/// Weighted term count attributed to a document matched only by a name prefix
+/// (i.e. no exact query term hit it). Mirrors the name weight in
+/// [`Terms::add_for_item`] so a prefix completion ranks like the exact name
+/// match it anticipates. A tuning knob (`FERRITIN_NAME_PREFIX_COUNT`).
+static NAME_PREFIX_COUNT: LazyLock<usize> =
+    LazyLock::new(|| knob("FERRITIN_NAME_PREFIX_COUNT", 20, false));
+
+/// Upper bound on how many distinct name-dictionary terms one prefix expands
+/// to, so a very short prefix can't drag in the whole vocabulary. A tuning
+/// knob (`FERRITIN_PREFIX_EXPANSION_CAP`).
+static PREFIX_EXPANSION_CAP: LazyLock<usize> =
+    LazyLock::new(|| knob("FERRITIN_PREFIX_EXPANSION_CAP", 64, false));
+
+/// Weight of an item's own (leaf) name tokens. When someone searches "vec"
+/// they almost certainly want the `Vec` struct, not its methods. A tuning
+/// knob (`FERRITIN_NAME_WEIGHT`, index-time).
+static NAME_WEIGHT: LazyLock<usize> = LazyLock::new(|| knob("FERRITIN_NAME_WEIGHT", 20, true));
+
+/// Graded weights for ancestor path tokens, nearest-first: position 0 is the
+/// immediate parent, and the last entry extends to all more-distal ancestors.
+/// Always below [`NAME_WEIGHT`], so a bare-name query ranks the item itself
+/// above its descendants. A tuning knob (`FERRITIN_ANCESTOR_WEIGHTS`, a comma
+/// list like `3,2,1`, index-time).
+static ANCESTOR_WEIGHTS: LazyLock<Vec<usize>> = LazyLock::new(|| {
+    let default = vec![3, 2, 1];
+    if !reindex_forced() {
+        return default;
+    }
+    match std::env::var("FERRITIN_ANCESTOR_WEIGHTS") {
+        Ok(csv) => csv
+            .split(',')
+            .map(|part| part.trim().parse())
+            .collect::<Result<Vec<usize>, _>>()
+            .unwrap_or(default),
+        Err(_) => default,
+    }
+});
+
+/// Graded weight for an ancestor path token at `proximity` to the leaf
+/// (1 = immediate parent, larger = more distal), from [`ANCESTOR_WEIGHTS`].
+/// **Experimental** — the whole ancestor-path contribution is gated on this
+/// being non-trivial.
+fn ancestor_weight(proximity: usize) -> usize {
+    let weights = &*ANCESTOR_WEIGHTS;
+    weights
+        .get(proximity - 1)
+        .or(weights.last())
+        .copied()
+        .unwrap_or(0)
+}
+
+/// One entry in the sorted name prefix dictionary: a lowercased item-name token
+/// and the documents whose leaf name contains it. See [`SearchableTerms::name_terms`].
+#[derive(Debug, Clone, Archive, RkyvSerialize, RkyvDeserialize)]
+struct NameTerm {
+    term: String,
+    documents: Vec<DocumentId>,
+}
 
 #[derive(Debug, Clone, Archive, RkyvSerialize, RkyvDeserialize)]
 struct SearchableTerms {
@@ -494,6 +633,10 @@ struct SearchableTerms {
     authority_scores: Vec<usize>,
     /// Maximum authority score in this crate (for normalization)
     max_authority: usize,
+    /// Sorted dictionary of item-name tokens -> the documents whose leaf name
+    /// contains them, for prefix ("type-as-you-go") matching. Sorted by `term`
+    /// so a prefix range is a binary search.
+    name_terms: Vec<NameTerm>,
 }
 
 /// A search index for a single crate
@@ -513,6 +656,29 @@ impl SearchIndex {
 }
 
 impl SearchableTerms {
+    /// The distinct documents whose leaf name contains a token beginning with
+    /// `prefix` (folded to lowercase). The dictionary is sorted, so the prefix
+    /// range starts at a binary-searched `partition_point`; iteration stops at
+    /// the first non-matching term or after `cap` matched terms, whichever
+    /// comes first, bounding a short prefix's fan-out.
+    fn name_docs_with_prefix(&self, prefix: &str, cap: usize) -> Vec<DocumentId> {
+        let key = prefix.to_lowercase();
+        let start = self
+            .name_terms
+            .partition_point(|name_term| name_term.term.as_str() < key.as_str());
+
+        let mut docs = Vec::new();
+        for name_term in self.name_terms[start..].iter().take(cap) {
+            if !name_term.term.starts_with(&key) {
+                break;
+            }
+            docs.extend_from_slice(&name_term.documents);
+        }
+        docs.sort_unstable();
+        docs.dedup();
+        docs
+    }
+
     fn search<'a>(&self, query: &'a str) -> SearchResults<'a> {
         let tokens = tokenize(query);
 
@@ -532,7 +698,7 @@ impl SearchableTerms {
         }
 
         // Build document frequency map (in borrowed strings for public API)
-        let term_doc_freqs: HashMap<&'a str, usize> = term_postings
+        let mut term_doc_freqs: HashMap<&'a str, usize> = term_postings
             .iter()
             .map(|(term_hash, postings)| {
                 let term_str = token_map.get(term_hash).unwrap();
@@ -549,6 +715,27 @@ impl SearchableTerms {
                     .entry(posting.document)
                     .or_default()
                     .insert(term_str, posting.count.0);
+            }
+        }
+
+        // Prefix ("type-as-you-go") expansion of the last query token over the
+        // name dictionary. The last word typed is usually incomplete, so we
+        // also match items whose name *begins* with it. Every expansion is
+        // attributed to the typed token itself, so a prefix reaching few names
+        // scores as a rare (high-IDF) term and one reaching many as common.
+        if let Some(&last) = tokens.last() {
+            let prefix_docs = self.name_docs_with_prefix(last, *PREFIX_EXPANSION_CAP);
+            if !prefix_docs.is_empty() {
+                for doc in &prefix_docs {
+                    let counts = doc_term_counts.entry(*doc).or_default();
+                    // A genuine exact match already present is reinforced, not
+                    // overwritten, by the name-prefix contribution.
+                    let count = counts.entry(last).or_insert(0);
+                    *count = (*count).max(*NAME_PREFIX_COUNT);
+                }
+                // Document frequency of the folded prefix term = docs it reaches.
+                let freq = term_doc_freqs.entry(last).or_insert(0);
+                *freq = (*freq).max(prefix_docs.len());
             }
         }
 
@@ -591,6 +778,17 @@ impl SearchableTerms {
     }
 }
 
+/// Development aid: when `FERRITIN_REINDEX` is set, search indexes are always
+/// rebuilt in memory and never read from or written to disk. This lets the
+/// index format be iterated on without bumping [`INDEX_FORMAT_VERSION`] or
+/// littering the cache with stale `.index` files — the version bump is then
+/// needed only once, to invalidate consumers' caches when a new format ships.
+fn reindex_forced() -> bool {
+    static FORCED: LazyLock<bool> =
+        LazyLock::new(|| std::env::var_os("FERRITIN_REINDEX").is_some());
+    *FORCED
+}
+
 impl SearchIndex {
     pub fn load_or_build<'a>(
         navigator: &'a Navigator,
@@ -615,7 +813,13 @@ impl SearchIndex {
         let mut path = crate_docs.fs_path().to_path_buf();
         path.set_extension("index");
 
-        if let Some(terms) = Self::load(&path, mtime) {
+        // In dev-reindex mode the disk cache is bypassed entirely: never read
+        // a possibly-stale index, never write one back.
+        let cached = (!reindex_forced())
+            .then(|| Self::load(&path, mtime))
+            .flatten();
+
+        if let Some(terms) = cached {
             log::debug!("Loaded cached index from disk for {crate_name}");
             let disk_weight = path.metadata().map_or(0, |m| m.len());
             Ok(Self {
@@ -626,10 +830,12 @@ impl SearchIndex {
         } else {
             log::debug!("Building new index for {crate_name}");
             let mut terms = Terms::default();
-            terms.recurse(&mut resolver, item, &[], false);
+            terms.recurse(&mut resolver, item, &[], false, &[]);
             let terms = terms.finalize();
             log::debug!("Finished building index for {crate_name}");
-            Self::store(&terms, &path);
+            if !reindex_forced() {
+                Self::store(&terms, &path);
+            }
             let disk_weight = path.metadata().map_or(0, |m| m.len());
             Ok(Self {
                 terms,
@@ -805,9 +1011,15 @@ impl<'a> BM25Scorer<'a> {
         let global_idf: HashMap<&str, f32> = global_term_doc_freqs
             .iter()
             .map(|(term, doc_freq)| {
-                // BM25 IDF formula
-                let idf = ((global_total_docs as f32 - *doc_freq as f32 + 0.5)
-                    / (*doc_freq as f32 + 0.5))
+                // Lucene-style BM25 IDF: the +1.0 inside the ln keeps IDF
+                // non-negative for terms appearing in more than half the
+                // corpus. The classic Robertson form goes negative there, and
+                // a negative relevance inverts the multiplicative name and
+                // authority boosts below — burying exactly the best-matching
+                // items for queries containing ubiquitous words.
+                let idf = (1.0
+                    + (global_total_docs as f32 - *doc_freq as f32 + 0.5)
+                        / (*doc_freq as f32 + 0.5))
                     .ln();
                 (*term, idf)
             })

@@ -36,14 +36,18 @@
 //! are downloaded once and thereafter read from `~/.cargo/rustdoc-json`, so a
 //! lookup costs a decompression rather than a request.
 
+#[cfg(test)]
+mod probe;
+
 use anyhow::{Context, Result, anyhow};
 pub use crate_names::normalize;
 use crate_names::{CrateNames, Descriptions};
 use semver::Version;
 use serde::{Deserialize, Serialize};
 use std::{
+    collections::{BTreeMap, HashMap, HashSet},
     path::{Path, PathBuf},
-    sync::RwLock,
+    sync::{OnceLock, RwLock},
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 use trillium_client::{Client, KnownHeaderName, Status};
@@ -124,6 +128,9 @@ struct Loaded {
     names: CrateNames,
     descriptions: Descriptions,
     etags: Etags,
+    /// Inverted index over name tokens, built lazily on the first typeahead
+    /// query (see [`TokenIndex`]).
+    token_index: OnceLock<TokenIndex>,
 }
 
 #[derive(Default)]
@@ -196,10 +203,15 @@ impl CrateIndex {
         entry(loaded, loaded.names.get(name)?)
     }
 
-    /// The top `limit` crates by download rank whose names start with `prefix`,
-    /// plus the exact number of crates matching the prefix (two binary
-    /// searches, so it is free and always exact — `entries.len() < total` means
-    /// truncation).
+    /// The top `limit` crates matching `prefix`, plus the total number that
+    /// match. The query is tokenized, and a crate matches if any query token
+    /// prefixes one of its name tokens — so `postgres` reaches
+    /// `tokio-postgres`. Matching is additive rather than conjunctive: each
+    /// matched query token adds [`TERM_MATCH_SCORE`], so for `trillium router`
+    /// the full match `trillium-router` outscores the one-term `trillium-http`,
+    /// which still appears further down. Download rank breaks ties within a
+    /// match tier, and a large enough popularity gap can cross tiers; see
+    /// [`TypeaheadWeights`].
     ///
     /// `None` means no data is available at all: nothing in memory, nothing on
     /// disk, and the network unreachable.
@@ -207,13 +219,12 @@ impl CrateIndex {
         self.ensure_fresh().await;
         let state = self.state.read().unwrap();
         let loaded = state.loaded.as_ref()?;
-        let entries = loaded
-            .names
-            .typeahead(prefix, limit)
-            .into_iter()
-            .filter_map(|found| entry(loaded, found))
-            .collect();
-        Some((entries, loaded.names.count(prefix)))
+        Some(typeahead_scored(
+            loaded,
+            prefix,
+            limit,
+            &TypeaheadWeights::default(),
+        ))
     }
 
     /// An opaque identity for the currently loaded data, for callers deriving
@@ -503,7 +514,249 @@ fn parse(names: &[u8], descriptions: &[u8], etags: Etags) -> Result<Loaded> {
         descriptions: Descriptions::from_zstd(descriptions)
             .context("parsing crate descriptions artifact")?,
         etags,
+        token_index: OnceLock::new(),
     })
+}
+
+/// Additive typeahead scoring weights. A crate's score is
+/// `term_match · (query tokens matched) + whole_prefix (for a whole-name-prefix
+/// match) + rank · (download rank)`, so matching more of the query dominates,
+/// and within a match tier the log-quantized download rank (0..=255, ~8 units
+/// per download-doubling) orders similar crates. Tuning knobs — the defaults
+/// are the shipped values, and the probe harness in `tests` explores others.
+#[derive(Debug, Clone, Copy)]
+struct TypeaheadWeights {
+    /// Per matched query token. Also the penalty for each *missed* token: a
+    /// crate matching all terms of `trillium tokio` outscores a one-term match
+    /// unless the popularity gap exceeds this many rank units — at 128,
+    /// ~65,000×, a gap the namespace barely contains, so in practice full
+    /// matches sort first and this stays additive only in the extremes.
+    term_match: f32,
+    /// Nudge for a whole-name-prefix match (the name starts with the query,
+    /// whitespace folded to `-`) over an interior-token match of the same
+    /// term count — ~1.5 download-doublings between similarly popular crates.
+    whole_prefix: f32,
+    /// Bonus when a *multi-token* query's every token exactly equals one of
+    /// the crate's name tokens (no prefixing needed), lifting `tokio-util-*`
+    /// over `tokio-utilities` once `util` is fully typed. Single-token queries
+    /// are exempt: one token is usually mid-typing, and probing showed the
+    /// bonus lifting obscure interior-exact matches (`assert-json-diff` for
+    /// `json`) over popular continuations (`jsonwebtoken`). The complete-name
+    /// case (`trillium tokio` ≡ `trillium-tokio`) is stronger still: the
+    /// service layer hoists it to the front outright.
+    all_exact: f32,
+    /// Per-unit contribution of the download rank.
+    rank: f32,
+}
+
+impl Default for TypeaheadWeights {
+    fn default() -> Self {
+        Self {
+            term_match: 128.0,
+            whole_prefix: 12.0,
+            all_exact: 16.0,
+            rank: 1.0,
+        }
+    }
+}
+
+/// The scoring core of [`CrateIndex::typeahead`], parameterized by weights so
+/// the probe harness can explore the space; production callers pass
+/// [`TypeaheadWeights::default`].
+fn typeahead_scored(
+    loaded: &Loaded,
+    prefix: &str,
+    limit: usize,
+    weights: &TypeaheadWeights,
+) -> (Vec<CrateEntry>, usize) {
+    let token_index = loaded
+        .token_index
+        .get_or_init(|| TokenIndex::build(&loaded.names));
+
+    let mut query_tokens: Vec<String> = name_tokens(prefix).collect();
+    query_tokens.sort_unstable();
+    query_tokens.dedup();
+
+    // Name-token matches, with per-term credit: each crate is scored by how
+    // many distinct query tokens prefix one of its name tokens, so a full
+    // match ranks above a subset match but both are candidates.
+    let mut candidates = term_match_counts(&query_tokens, token_index);
+
+    // The crates where every query token matches a name token *exactly* — a
+    // finished-typing signal worth a bonus over prefix-only full matches.
+    let all_exact = all_exact_indices(&query_tokens, token_index);
+
+    // Whole-name prefix, with query whitespace folded to `-` so a
+    // space-separated query still matches a hyphenated name. Such a name
+    // contains the entire query, so it credits every term (a token the
+    // tokenizer dropped, e.g. a 1-char segment, still matched textually) plus
+    // the whole-prefix nudge. Empty only for an all-whitespace query, which
+    // then matches nothing.
+    let whole_key = prefix.split_whitespace().collect::<Vec<_>>().join("-");
+    let whole = if whole_key.is_empty() {
+        0..0
+    } else {
+        loaded.names.prefix_indices(&whole_key)
+    };
+    for crate_index in whole.clone() {
+        let matched = candidates.entry(crate_index as u32).or_insert(0);
+        *matched = (*matched).max(query_tokens.len() as u32);
+    }
+
+    let mut scored: Vec<(f32, u32)> = candidates
+        .iter()
+        .filter_map(|(&crate_index, &matched)| {
+            let found = loaded.names.entry_at(crate_index as usize)?;
+            let whole_bonus = if whole.contains(&(crate_index as usize)) {
+                weights.whole_prefix
+            } else {
+                0.0
+            };
+            let exact_bonus = if all_exact.contains(&crate_index) {
+                weights.all_exact
+            } else {
+                0.0
+            };
+            let score = weights.term_match * matched as f32
+                + whole_bonus
+                + exact_bonus
+                + weights.rank * f32::from(found.rank);
+            Some((score, crate_index))
+        })
+        .collect();
+    let total = scored.len();
+
+    scored.sort_by(|a, b| {
+        b.0.total_cmp(&a.0).then_with(|| {
+            let a_name = loaded.names.entry_at(a.1 as usize).map(|e| e.name);
+            let b_name = loaded.names.entry_at(b.1 as usize).map(|e| e.name);
+            a_name.cmp(&b_name)
+        })
+    });
+    scored.truncate(limit);
+
+    let entries = scored
+        .into_iter()
+        .filter_map(|(_, crate_index)| entry(loaded, loaded.names.entry_at(crate_index as usize)?))
+        .collect();
+    (entries, total)
+}
+
+/// A lazily-built inverted index over crate-name tokens — the `-`/`_` separated
+/// segments of each name — mapping each token to the [`CrateNames`] line indices
+/// whose name contains it. Values are line indices, so a lookup refers back into
+/// the artifact without copying names. Built on the first typeahead query and
+/// dropped with each artifact refresh, so it never goes stale and the CLI —
+/// which only calls [`CrateIndex::get`] — never pays to build it.
+#[derive(Debug, Default)]
+struct TokenIndex {
+    /// Sorted by token, so a prefix range is a binary search.
+    postings: Vec<(String, Vec<u32>)>,
+}
+
+impl TokenIndex {
+    fn build(names: &CrateNames) -> Self {
+        let mut map: BTreeMap<String, Vec<u32>> = BTreeMap::new();
+        for index in 0..names.len() {
+            let Some(found) = names.entry_at(index) else {
+                continue;
+            };
+            for token in name_tokens(found.name) {
+                map.entry(token).or_default().push(index as u32);
+            }
+        }
+        Self {
+            postings: map
+                .into_iter()
+                .map(|(token, mut indices)| {
+                    // Indices were pushed in ascending order, so a token
+                    // repeated within one name leaves adjacent dupes.
+                    indices.dedup();
+                    (token, indices)
+                })
+                .collect(),
+        }
+    }
+
+    /// The crate line-indices having exactly this token (already sorted and
+    /// deduped at build time).
+    fn indices_with_token(&self, token: &str) -> &[u32] {
+        let start = self
+            .postings
+            .partition_point(|(entry, _)| entry.as_str() < token);
+        match self.postings.get(start) {
+            Some((entry, indices)) if entry == token => indices,
+            _ => &[],
+        }
+    }
+
+    /// The distinct crate line-indices having a token that begins with `prefix`,
+    /// sorted and deduped. Iteration stops at the first non-matching token in
+    /// the binary-searched range.
+    fn indices_with_prefix(&self, prefix: &str) -> Vec<u32> {
+        let start = self
+            .postings
+            .partition_point(|(token, _)| token.as_str() < prefix);
+
+        let mut indices = Vec::new();
+        for (token, crate_indices) in &self.postings[start..] {
+            if !token.starts_with(prefix) {
+                break;
+            }
+            indices.extend_from_slice(crate_indices);
+        }
+        indices.sort_unstable();
+        indices.dedup();
+        indices
+    }
+}
+
+/// For each crate with a name token prefixed by at least one query token, how
+/// many distinct query tokens matched (the tokens are pre-deduped, and
+/// `indices_with_prefix` dedupes per token, so counting is exact). An empty
+/// query yields no candidates.
+fn term_match_counts(query_tokens: &[String], index: &TokenIndex) -> HashMap<u32, u32> {
+    let mut counts = HashMap::new();
+    for token in query_tokens {
+        for crate_index in index.indices_with_prefix(token) {
+            *counts.entry(crate_index).or_insert(0) += 1;
+        }
+    }
+    counts
+}
+
+/// The crates where *every* query token exactly equals one of the name's
+/// tokens (the intersection of the exact posting lists, which are sorted).
+/// Empty for queries of fewer than two tokens: the bonus is about *combining*
+/// terms, and a lone token is usually still being typed (see
+/// [`TypeaheadWeights::all_exact`]).
+fn all_exact_indices(query_tokens: &[String], index: &TokenIndex) -> HashSet<u32> {
+    if query_tokens.len() < 2 {
+        return HashSet::new();
+    }
+    let mut postings = query_tokens
+        .iter()
+        .map(|token| index.indices_with_token(token));
+    let Some(first) = postings.next() else {
+        return HashSet::new();
+    };
+    let mut intersection: HashSet<u32> = first.iter().copied().collect();
+    for posting in postings {
+        let set: HashSet<u32> = posting.iter().copied().collect();
+        intersection.retain(|index| set.contains(index));
+    }
+    intersection
+}
+
+/// Split a crate name into its lowercased alphanumeric segments
+/// (`tokio-postgres` -> `tokio`, `postgres`), dropping single characters — a
+/// 2-char query floor can never prefix-match a 1-char token. The whole-name
+/// prefix is handled by the sorted names table, so only interior segments
+/// matter here.
+fn name_tokens(name: &str) -> impl Iterator<Item = String> + '_ {
+    name.split(|c: char| !c.is_ascii_alphanumeric())
+        .filter(|segment| segment.len() >= 2)
+        .map(str::to_ascii_lowercase)
 }
 
 /// Join a names entry to its description and owned form. A version the artifact

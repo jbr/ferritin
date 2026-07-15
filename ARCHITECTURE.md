@@ -49,7 +49,7 @@ A key architectural challenge is handling re-exports and cross-crate references.
 
 **CLI mode** is single-threaded; blocking operations occur on the main thread. **Interactive TUI mode** uses scoped threads for parallelism: a request thread owns `Navigator` and handles documentation operations, while a UI thread handles rendering and input. Channel-based communication maintains the zero-copy borrowing architecture across thread boundaries (`Navigator` and `DocRef` are `Send + Sync`). **Serve mode** shares one `Arc<Store>` across requests and builds a short-lived `Navigator` per request on a big-stack rayon worker, so nothing borrowed crosses an `.await` and Store eviction never invalidates an in-flight request.
 
-One serve-mode endpoint stands apart from the Store/Navigator machinery: `/api/typeahead` (crate-name completion) is answered by `TypeaheadService`, which merges the standard library crates (absent from crates.io, present on this server) into prefix queries against the shared [`CrateIndex`](#the-crates-io-namespace-as-an-artifact-crate_names) and hoists an exact match to the front.
+One serve-mode endpoint stands apart from the Store/Navigator machinery: `/api/typeahead` (crate-name completion) is answered by `TypeaheadService`, which merges the standard library crates (absent from crates.io, present on this server) into queries against the shared [`CrateIndex`](#the-crates-io-namespace-as-an-artifact-crate_names) and hoists an exact match to the front. The matching itself (name-prefix ∪ interior-token, additive multi-word scoring, popularity ranking) lives in `CrateIndex::typeahead` — see [Crate-name typeahead](#crate-name-typeahead).
 
 #### Cache validation without rendering (`serve::caching`)
 
@@ -287,6 +287,17 @@ For version resolution it replaces a per-crate crates.io API request with a per-
 
 **Freshness is bounded by the artifact's daily rebuild**, so resolution can lag crates.io by up to ~24h: a release published this morning may still resolve to yesterday's version. That is the deliberate trade for the request it eliminates. Within that bound the tiers are memory → disk → network: stale-while-revalidate with hourly conditional GETs, one revalidator at a time, and a brief failure cooldown, so queries never block on the network once data is loaded. The disk tier (`$CARGO_HOME/rustdoc-json/crate-names/`) is what makes this viable for the CLI, whose every invocation is a fresh process — it downloads the artifacts once and thereafter pays a ~40 ms decompression instead of a request, and works offline. A cold offline server still degrades to fast 503s on typeahead.
 
+#### Crate-name typeahead
+
+`CrateIndex::typeahead` matches a query against crate names two ways, unioned:
+
+- **Whole-name prefix** — the folded names table is sorted, so this is `prefix_indices`, a pair of binary searches. Query whitespace is folded to `-`, so `trillium router` matches the hyphenated name.
+- **Interior-token prefix** — a lazily-built `TokenIndex` (an inverted index: name token → crate line-indices, where a name's tokens are its `-`/`_`-separated segments) lets `postgres` reach `tokio-postgres`, not just `postgres-*`. It is built from the loaded names on the *first* typeahead query and dropped with each artifact refresh, so it never goes stale — and because the CLI only ever calls `get` (version resolution), it never pays to build it. Only the *server* holds it, and nothing extra ships in the artifact.
+
+A multi-word query is **additive**, not ANDed: each query token that prefix-matches one of a crate's name tokens adds `term_match` to its score, so for `trillium router` the full match `trillium-router` outscores the one-term match `trillium-http` — which still appears, below every full match of comparable popularity. Every token stays a prefix, so matching works as-you-type; queries shorter than 2 characters return nothing (`TYPEAHEAD_MIN_CHARS`).
+
+Results are scored `term_match · (tokens matched) + whole_prefix (for a whole-name-prefix match) + rank` ([`TypeaheadWeights`]), where `rank` is the log-quantized download count (0..=255, ~8 units per download-doubling). Matched terms dominate: at `term_match = 128`, a subset match must be ~65,000× more downloaded to overtake a full match — a gap the namespace barely contains, so in practice every full match sorts ahead of every subset match (`trillium tokio` puts `trillium-tokio`, rank 137, above `tokio` at 236) and the weight is additive only in the extremes. It is deliberately *not* lexicographic, though: probes showed 128 and strict count-first ordering agree on essentially every top-8, but 128 lets genuinely popular one-term matches resurface once the full matches run obscure (`tokio` reappears at #7 for `tokio util` instead of `tokio-util-codec-compose`, rank 93). Within a tier rank orders the results, and two small nudges break near-ties: `whole_prefix` (12 ≈ 1.5 doublings) favors names that *start* with the query over interior-token matches — small enough that `serde_json` still tops `jsonwebtoken` for the query `json` — and `all_exact` (16) favors a crate whose name tokens equal every token of a *multi-token* query exactly over prefix-only full matches (`tokio-util-*` over `tokio-utilities` once `util` is fully typed) — single-token queries are exempt, since a lone token is usually mid-typing and the bonus would lift obscure interior-exact matches (`assert-json-diff` for `json`) over popular continuations (`jsonwebtoken`). The strongest form of exactness — the query *is* a crate name, whitespace folded (`trillium tokio` ≡ `trillium-tokio`) — is not a scoring matter at all: `TypeaheadService`'s exact hoist folds the query before comparing and pins it to the very front. These values came from point probes over the real artifact (`crate_names::probe`, an `#[ignore]`d test battery). `TypeaheadService` then hoists an exact-name match to the very front and prepends the standard-library crates (which the crates.io artifact cannot know about). Description-token matching was prototyped and backed out — exact-token matching is too brittle without stemming (a query for `deserialize` misses serde's "deserializ*ation*"), which is a distinct design arc.
+
 ### Format Version Normalization
 
 The `conversions` module normalizes any supported rustdoc JSON format to the canonical `FORMAT_VERSION` on read. This lets us cache older-format JSON and avoid re-fetches when normalization logic changes.
@@ -308,21 +319,39 @@ The archive (`archive` module) is a purely local, derived cache — docs.rs only
 
 Because the read path uses `access_unchecked` (no validation pass) over a file keyed by the layout tag and written atomically, the archived bytes are trusted as something this exact build produced.
 
-## Search - Lazy TF-IDF Indexing
+## Search - Lazy BM25 Indexing
 
 ### Index Building
 
 Search indices are built lazily on first search and cached as `.index` files (rkyv binary format) alongside the JSON:
 
-1. Walk the item tree using the `ChildItems` iterator
-2. Tokenize item names (2x weight) and documentation (1x weight)
-3. Handle CamelCase, snake_case, kebab-case by splitting into subwords
-4. Store shortest path (as ID sequence) to each indexed item
-5. Check mtime to invalidate stale indices
+1. Walk the item tree using the `ChildItems` iterator, threading each item's ancestor path down the recursion.
+2. Tokenize item names (weight `NAME_WEIGHT`, 20) and documentation (3 for the first paragraph, 1 for the rest), splitting CamelCase/snake_case/kebab-case into subwords *and* keeping the whole word (`TypeSet` → `type`, `set`, `typeset`).
+3. Fold each item's ancestor path segments into its document (see [Ancestor path tokens](#ancestor-path-tokens)).
+4. Record each item's leaf-name tokens in a sorted [name prefix dictionary](#name-prefix-matching).
+5. Store the shortest path (as ID sequence) to each indexed item; check mtime to invalidate stale indices. The format is versioned (`INDEX_FORMAT_VERSION`), so an incompatible cache is discarded and rebuilt.
 
-### Tokenization & Scoring
+### Scoring
 
-Tokenization handles CamelCase, snake_case, and kebab-case splitting. Scoring uses BM25 with global statistics aggregated across all searched crates for consistent ranking.
+Scoring uses BM25 with global statistics aggregated across all searched crates for consistent ranking, plus a leaf-name-match bonus and an authority (incoming-link count) multiplier. Length normalization is disabled (`b = 0`): in documentation, a longer item (e.g. `Vec`) is often *more* relevant than a short one, not less.
+
+IDF uses the Lucene variant (`ln(1 + (N − df + 0.5)/(df + 0.5))`), which floors at ~0 instead of going negative for terms appearing in more than half the corpus. The classic Robertson form turns ubiquitous terms (English stopwords in prose; formerly the crate's own name) into large negative contributions, and because the name and authority bonuses are *multiplicative*, a negative relevance inverts them — the best-matching items sink to the bottom (`Regex` was unfindable within `regex`). Relatedly, the crate root's name is excluded from ancestor-path propagation: it would appear in every document (df = N), a linguistic baseline with no discriminating power inside a single crate's corpus.
+
+Long, keyword-dense prose outranking exact symbol matches is accepted — embraced — as a consequence of `b = 0` and doc-body term frequency: for *documentation* search (unlike code search), the module root or guide-level item that discusses a topic in prose is usually the right landing page, and it links onward to the specific symbols. The named item itself still lands directly below it via the leaf-name weight and bonus (e.g. `sleep` in tokio surfaces `select!`, whose docs discuss sleeping in depth, one row above `time::sleep`).
+
+### Name prefix matching
+
+The term index is hash-keyed, so it matches only complete tokens — a half-typed word hashes to nothing, which is why the old search returned no results until a word was finished. To return results as the user types, `finalize` also builds a **sorted dictionary of item-name tokens** (`name_terms`: token → documents), and at query time the *last* query token is prefix-expanded against it (a binary-searched range, capped at `PREFIX_EXPANSION_CAP`). Because `tokenize` emits both subwords and the whole word, a prefix matches interior words (`set` → `TypeSet`) and crosses token boundaries (`typese` → `TypeSet`). Matched documents are folded into scoring under the typed token's own key with a synthetic name-weight count (`NAME_PREFIX_COUNT`), so a prefix reaching few names scores as a rare (high-IDF) term and one reaching many as common. Only leaf names populate the dictionary — prose is matched on complete tokens only — which keeps it small and keeps prefix matching a navigation aid rather than a prose search.
+
+### Ancestor path tokens
+
+Each document is otherwise indexed only on its own leaf name, so no single document contains both `hashmap` and `insert`, and a container+leaf query (`hashmap insert`) cannot reach `HashMap::insert` through the term conjunction. `add_ancestor_terms` folds each item's ancestor path segment *names* into its document at `ancestor_weight` — graded by distance from the leaf (immediate parent 3, then 2, then 1) and always below the leaf weight of 20. That lets the conjunction lift the specific method while a bare container term still ranks the type itself above its members (the leaf keeps full weight). Only ancestor names are propagated, never their documentation; measured cost is ~+15% index size on `std`/`core` (combined with the name dictionary).
+
+### Development: on-demand reindexing
+
+Setting `FERRITIN_REINDEX` makes `load_or_build` skip both the disk read and write, always rebuilding the index in memory. This lets the index format be iterated on during development without bumping `INDEX_FORMAT_VERSION` on every change or accumulating stale `.index` files — the version is bumped once, when a new format ships.
+
+The scoring constants above are also env-overridable dev knobs for point-probing the parameter space without recompiling (`FERRITIN_NAME_WEIGHT`, `FERRITIN_ANCESTOR_WEIGHTS`, `FERRITIN_NAME_PREFIX_COUNT`, `FERRITIN_PREFIX_EXPANSION_CAP`). The index-time knobs (name weight, ancestor weights) are honored only under `FERRITIN_REINDEX`, so a nonstandard weighting can never be written into a cached `.index` file.
 
 ## Item Traversal - Transparent Re-export Handling
 
