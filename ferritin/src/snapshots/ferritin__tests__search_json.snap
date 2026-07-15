@@ -33,7 +33,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 54.4,
+      "score": 54.3,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -57,7 +57,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 54.3,
+      "score": 54.2,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -81,7 +81,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "proc_macro::Span::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line",
-      "score": 39.3,
+      "score": 39.2,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -105,7 +105,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::panic::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 39.2,
+      "score": 39.1,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -129,7 +129,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::panic::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 39.2,
+      "score": 39.1,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -139,6 +139,39 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
               "spans": [
                 {
                   "text": "Returns the line number from which the panic originated.",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ],
+          "level": "SingleLine",
+          "truncated": true
+        }
+      ]
+    },
+    {
+      "path": "alloc::collections::BTreeMap",
+      "kind": "struct",
+      "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html",
+      "score": 30.9,
+      "docs": [
+        {
+          "type": "truncatedBlock",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "An ordered map based on a ",
+                  "style": "Plain"
+                },
+                {
+                  "text": "B-Tree",
+                  "style": "Plain",
+                  "url": "https://en.wikipedia.org/wiki/B-tree"
+                },
+                {
+                  "text": ".",
                   "style": "Plain"
                 }
               ]
@@ -216,39 +249,6 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
                 {
                   "text": "STRATEGY",
                   "style": "InlineCode"
-                },
-                {
-                  "text": ".",
-                  "style": "Plain"
-                }
-              ]
-            }
-          ],
-          "level": "SingleLine",
-          "truncated": true
-        }
-      ]
-    },
-    {
-      "path": "alloc::collections::BTreeMap",
-      "kind": "struct",
-      "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html",
-      "score": 30.9,
-      "docs": [
-        {
-          "type": "truncatedBlock",
-          "nodes": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "An ordered map based on a ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "B-Tree",
-                  "style": "Plain",
-                  "url": "https://en.wikipedia.org/wiki/B-tree"
                 },
                 {
                   "text": ".",

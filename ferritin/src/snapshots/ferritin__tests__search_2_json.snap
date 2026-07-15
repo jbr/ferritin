@@ -57,7 +57,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "fixture-crate::GenericEnum",
       "kind": "enum",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
-      "score": 67.5,
+      "score": 67.2,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -81,7 +81,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "core::mem::type_info::Generic",
       "kind": "enum",
       "url": "https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html",
-      "score": 64.6,
+      "score": 64.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -104,7 +104,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "std::mem::type_info::Generic",
       "kind": "enum",
       "url": "https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html",
-      "score": 64.6,
+      "score": 64.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -175,7 +175,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "fixture-crate::TestStruct",
       "kind": "struct",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
-      "score": 63.3,
+      "score": 63.7,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -199,7 +199,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "std::clone::Clone",
       "kind": "trait",
       "url": "https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html",
-      "score": 63.1,
+      "score": 63.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -223,7 +223,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "std::ops::Deref",
       "kind": "trait",
       "url": "https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html",
-      "score": 62.2,
+      "score": 62.3,
       "docs": [
         {
           "type": "truncatedBlock",
