@@ -9,6 +9,11 @@
 use ferritin_common::crate_names::{CrateEntry, CrateIndex, normalize};
 use std::sync::Arc;
 
+/// Below this query length the endpoint returns nothing: single-character
+/// results are noise and would fan out over a large fraction of the namespace.
+/// A visible floor also makes the completion feel as-you-type.
+const TYPEAHEAD_MIN_CHARS: usize = 2;
+
 /// An owned typeahead result.
 #[derive(Debug, Clone)]
 pub(crate) struct TypeaheadEntry {
@@ -26,9 +31,8 @@ impl From<CrateEntry> for TypeaheadEntry {
 }
 
 /// The top-ranked matches plus the exact number of crates matching the
-/// prefix. `total` is free to compute (the prefix range is two binary
-/// searches), so it is always exact — `entries.len() < total` means
-/// truncation occurred.
+/// query (any query token, so a multi-word query counts its union of
+/// per-term matches) — `entries.len() < total` means truncation occurred.
 #[derive(Debug)]
 pub(crate) struct TypeaheadResults {
     pub(crate) entries: Vec<TypeaheadEntry>,
@@ -70,11 +74,20 @@ impl TypeaheadService {
             .collect()
     }
 
-    /// The top `limit` crates by download rank whose names start with
-    /// `prefix`, plus the total match count. `None` means no data is
-    /// available (cold start fetch failed or hasn't succeeded yet) — the
-    /// endpoint maps it to a 503.
+    /// The top `limit` crates matching `prefix` (by name prefix or interior
+    /// name token, scored by match tier and download rank — see
+    /// [`CrateIndex::typeahead`](ferritin_common::crate_names::CrateIndex::typeahead)),
+    /// plus the total match count. `None` means no data is available (cold
+    /// start fetch failed or hasn't succeeded yet) — the endpoint maps it to a
+    /// 503. A query shorter than [`TYPEAHEAD_MIN_CHARS`] returns an empty result.
     pub(crate) async fn typeahead(&self, prefix: &str, limit: usize) -> Option<TypeaheadResults> {
+        if prefix.chars().count() < TYPEAHEAD_MIN_CHARS {
+            return Some(TypeaheadResults {
+                entries: Vec::new(),
+                total: 0,
+            });
+        }
+
         let (mut entries, mut total) = match &self.index {
             Some(index) => {
                 let (entries, total) = index.typeahead(prefix, limit).await?;
@@ -88,12 +101,19 @@ impl TypeaheadService {
 
         // An exact match always sorts first, regardless of rank: typing
         // `trillium` must offer `trillium` ahead of the more-downloaded
-        // `trillium-http`. If it did not make the top `limit` by rank, it is
-        // fetched and inserted.
-        if let Some(position) = entries.iter().position(|entry| entry.name == prefix) {
+        // `trillium-http`. The comparison folds whitespace the way the query
+        // tokenizer does (plus `-`/`_` and case via `normalize`), so
+        // `trillium tokio` exact-matches `trillium-tokio`. If it did not make
+        // the top `limit` by rank, it is fetched and inserted.
+        let folded = prefix.split_whitespace().collect::<Vec<_>>().join("-");
+        let key = normalize(&folded);
+        if let Some(position) = entries
+            .iter()
+            .position(|entry| normalize(&entry.name) == key)
+        {
             entries[..=position].rotate_right(1);
         } else if let Some(index) = &self.index
-            && let Some(exact) = index.get(prefix).await
+            && let Some(exact) = index.get(&folded).await
         {
             entries.insert(0, exact.into());
             entries.truncate(limit);
