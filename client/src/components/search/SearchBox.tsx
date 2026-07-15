@@ -31,7 +31,9 @@ type ChipState = "none" | "idle" | "selected";
  * The **scope chip** (`in std ×`) makes the search's scope visible in both states.
  * Removing it drops into *crate mode*: the field addresses crates rather than items.
  * That also gives the crate-less home page a live search box for the first time —
- * no chip simply *is* crate mode.
+ * no chip simply *is* crate mode. The move reverses: Tab on a highlighted crate
+ * suggestion promotes it into the chip and returns to item search — so you can hop
+ * from one crate's items to another's without ever leaving the field.
  *
  * `inline` is the landing page's variant: the same component with the morph taken
  * away. There is no resting button and nothing to expand — it sits in the flow
@@ -51,6 +53,7 @@ export function SearchBox({
   const [debounced, setDebounced] = useState("");
   const [selected, setSelected] = useState(0);
   const [scoped, setScoped] = useState(true);
+  const [scopedCrate, setScopedCrate] = useState<string | undefined>(undefined);
   const [chipSelected, setChipSelected] = useState(false);
   const [focused, setFocused] = useState(false);
 
@@ -77,28 +80,42 @@ export function SearchBox({
   if (scopedFor !== crate) {
     setScopedFor(crate);
     setScoped(true);
+    setScopedCrate(undefined);
     setChipSelected(false);
   }
+
+  // The crate the chip addresses: a crate picked from the typeahead (Tab-scoped)
+  // wins over the page's crate, so scoping *into* a suggestion works even on the
+  // crate-less home page.
+  const effectiveCrate = scopedCrate ?? crate;
 
   // The chip exists only when there is a crate to scope *to* and the user has not
   // scoped out of it. Everything else keys off this one derived value.
   const chip: ChipState =
-    !crate || !scoped ? "none" : chipSelected ? "selected" : "idle";
+    !effectiveCrate || !scoped ? "none" : chipSelected ? "selected" : "idle";
   const crateMode = chip === "none";
 
   const { data, isFetching } = useSearch(
-    crateMode ? "" : (crate ?? ""),
+    crateMode ? "" : (effectiveCrate ?? ""),
     debounced,
   );
-  const results = crateMode ? [] : (data?.results ?? []);
+  // Both queries hold their previous data as a placeholder so the list never
+  // blanks between keystrokes — but an *empty* input is not "between keystrokes",
+  // it is a cleared search, so the results collapse with it rather than lingering.
+  const results = crateMode || !debounced ? [] : (data?.results ?? []);
 
   // Crate mode gets crate-name typeahead (the /api/typeahead endpoint, backed
   // by the daily crate-names artifact) instead of item search.
   const { data: crateData, isFetching: crateFetching } = useTypeahead(
     crateMode ? debounced.trim() : "",
   );
-  const crateResults = crateMode ? (crateData?.results ?? []) : [];
+  const crateResults =
+    crateMode && debounced.trim() ? (crateData?.results ?? []) : [];
   const listLength = crateMode ? crateResults.length : results.length;
+
+  // Tab scopes: onto the page crate from an idle chip, or *into* the highlighted
+  // suggestion in crate mode. When neither is possible, Tab has nothing to offer.
+  const canScope = chip === "idle" || (crateMode && !!crateResults[selected]);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebounced(query), DEBOUNCE_MS);
@@ -113,6 +130,7 @@ export function SearchBox({
     setDebounced("");
     setSelected(0);
     setScoped(true);
+    setScopedCrate(undefined);
     setChipSelected(false);
     if (inline) return;
     setExpanded(false);
@@ -124,8 +142,8 @@ export function SearchBox({
   // it does not exist until React has committed. A `requestAnimationFrame` is not a
   // substitute — it can run before the commit and silently no-op.
   //
-  // Exempt in the inline variant, which is open from first paint: focusing there
-  // would steal the caret on page load and pop a keyboard over the landing copy.
+  // The inline variant is open from first paint and handles its own focus in the
+  // mount effect below, so it sits out this one.
   useEffect(() => {
     if (inline) return;
     if (expanded) {
@@ -135,6 +153,17 @@ export function SearchBox({
       buttonRef.current?.focus();
     }
   }, [expanded, inline]);
+
+  // The inline field is the landing page's call to action, so it takes the caret on
+  // arrival — the focused ring then reads as an honest "you're here" instead of the
+  // resting decoration it used to be. Gate it to a fine pointer: on touch, autofocus
+  // would pop the on-screen keyboard over the hero copy the moment the page loads.
+  useEffect(() => {
+    if (!inline) return;
+    if (window.matchMedia?.("(pointer: fine)")?.matches) {
+      inputRef.current?.focus();
+    }
+  }, [inline]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -170,9 +199,27 @@ export function SearchBox({
   /** Drop the scope: the field now addresses crates, not items. */
   const unscope = () => {
     setScoped(false);
+    setScopedCrate(undefined);
     setChipSelected(false);
     setQuery("");
     setDebounced("");
+    inputRef.current?.focus();
+  };
+
+  /**
+   * Scope *into* a crate from the typeahead — the mirror of {@link unscope}. The
+   * picked crate becomes the chip and the field switches to item search within it,
+   * so a keyboard user never has to leave the panel to change what they search.
+   */
+  const scopeToCrate = (name: string) => {
+    const target = name.trim();
+    if (!target) return;
+    setScopedCrate(target);
+    setScoped(true);
+    setChipSelected(false);
+    setQuery("");
+    setDebounced("");
+    setSelected(0);
     inputRef.current?.focus();
   };
 
@@ -187,6 +234,25 @@ export function SearchBox({
     if (!target) return;
     close();
     navigate(itemHref(target));
+  };
+
+  /**
+   * Typing in the field. In crate mode a `::` is a scope gesture, not text: typing
+   * `tokio::` promotes `tokio` to the chip and carries whatever follows the
+   * separator into the item query — the keyboard shorthand for Tab-scoping.
+   */
+  const onQueryChange = (value: string) => {
+    if (crateMode) {
+      const sep = value.indexOf("::");
+      if (sep > 0) {
+        scopeToCrate(value.slice(0, sep));
+        setQuery(value.slice(sep + 2));
+        return;
+      }
+    }
+    setQuery(value);
+    setSelected(0);
+    setChipSelected(false);
   };
 
   const onKeyDown = (event: React.KeyboardEvent) => {
@@ -218,9 +284,15 @@ export function SearchBox({
         break;
       case "Tab":
         // The panel is the whole interactive surface, so Tab is free to mean
-        // "reach for the chip" rather than "leave".
+        // "reach for the chip" — or, in crate mode, "scope into the highlighted
+        // crate" — rather than "leave".
         event.preventDefault();
-        if (chip === "idle") setChipSelected(true);
+        if (crateMode) {
+          const pick = crateResults[selected];
+          if (pick) scopeToCrate(pick.name);
+        } else if (chip === "idle") {
+          setChipSelected(true);
+        }
         break;
       case "Backspace":
         if (chip === "idle" && !query) {
@@ -301,13 +373,13 @@ export function SearchBox({
                 }
                 // Announced as one unit; the × is the mouse equivalent of the
                 // Backspace-Backspace path.
-                aria-label={`Scoped to ${crate}`}
+                aria-label={`Scoped to ${effectiveCrate}`}
               >
-                in {crate}
+                in {effectiveCrate}
                 <button
                   type="button"
                   className="scope-chip-x"
-                  aria-label={`Search all crates instead of ${crate}`}
+                  aria-label={`Search all crates instead of ${effectiveCrate}`}
                   tabIndex={-1}
                   onMouseDown={(event) => {
                     event.preventDefault();
@@ -330,13 +402,11 @@ export function SearchBox({
                   ? optionId(selected)
                   : undefined
               }
-              aria-label={crateMode ? "Go to crate" : `Search ${crate}`}
+              aria-label={
+                crateMode ? "Go to crate" : `Search ${effectiveCrate}`
+              }
               value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setSelected(0);
-                setChipSelected(false);
-              }}
+              onChange={(event) => onQueryChange(event.target.value)}
               onKeyDown={onKeyDown}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
@@ -352,9 +422,7 @@ export function SearchBox({
             {/* Nothing to scope or escape on a resting inline field, so it says
                 nothing rather than offering a key that does nothing. */}
             {!inline || panelOpen ? (
-              <kbd className="search-kbd">
-                {chip === "idle" ? "⇥ scope" : "esc"}
-              </kbd>
+              <kbd className="search-kbd">{canScope ? "⇥ scope" : "esc"}</kbd>
             ) : null}
           </div>
         ) : (
@@ -438,7 +506,7 @@ export function SearchBox({
             <>
               {results.length ? (
                 <>
-                  <p className="search-group">in {crate}</p>
+                  <p className="search-group">in {effectiveCrate}</p>
                   <ul
                     className="search-results"
                     id={listId}
@@ -480,7 +548,7 @@ export function SearchBox({
               ) : (
                 <p className="search-empty">
                   {!debounced
-                    ? `Search ${crate} by name or documentation.`
+                    ? `Search ${effectiveCrate} by name or documentation.`
                     : isFetching
                       ? "Searching…"
                       : `No matches for “${debounced}”.`}
@@ -494,7 +562,7 @@ export function SearchBox({
             <span className="search-hints">
               {crateMode
                 ? crateResults.length
-                  ? "↑↓ navigate · ⏎ open"
+                  ? "↑↓ navigate · ⏎ open · ⇥ scope"
                   : "⏎ open crate"
                 : "↑↓ navigate · ⏎ open · ⇥ scope"}
             </span>

@@ -20,13 +20,20 @@
 }
 .topbar-brand {
   display: flex;
-  align-items: center;
+  /* Baseline, not center: the brand, crate name, and version are three different
+     type sizes, and centering leaves their baselines a pixel or two apart. The
+     logo keeps its own `align-items: center` internally, so its mark stays put. */
+  align-items: baseline;
   gap: 0.75rem;
   flex-shrink: 0;
 }
 .logo {
   display: inline-flex;
-  align-items: center;
+  /* Baseline, so the logo contributes its "ferritin" text baseline to the brand
+     row rather than a baseline synthesized from the taller mark's box bottom —
+     which is what dropped the wordmark below the crate name and version. The mark
+     opts back out to `center` below, keeping the circle vertically centered. */
+  align-items: baseline;
   gap: 0.55rem;
   font-weight: 700;
   font-size: 1.05rem;
@@ -44,6 +51,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  /* Center against the wordmark's line rather than sitting on its baseline. */
+  align-self: center;
 }
 .logo-mark::after {
   content: "";
@@ -58,6 +67,15 @@
 .brand-crate {
   color: var(--ty);
   font-weight: 500;
+}
+/* The crate's version, riding just behind its name: smaller and quieter than the
+   name so it reads as an attribute of the crate rather than a second breadcrumb
+   segment. Held steady across item loads (see `TopBar`), so it never flickers. */
+.brand-version {
+  color: var(--faint);
+  font-size: 0.8em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 /* No `margin-left: auto` here — `.search-slot` absorbs the free space, so the
    search box (and the theme toggle after it) sit hard against the right edge. */
@@ -163,9 +181,10 @@
 }
 /* Inline is permanently `data-expanded` — that is what "no resting state" means —
    so it would otherwise wear the morph's lit border and drop shadow at all times.
-   Walk both back, then re-spend them deliberately: in the top bar the field is a
-   utility and should recede, but here it is the call to action, so it carries an
-   accent ring at rest rather than the neutral one that made it read as decoration. */
+   Walk both back and re-spend them by state. At rest it is the page's call to
+   action, so it keeps an accent-tinted border and a plain drop shadow — but *no
+   glow ring*: the ring is reserved for focus alone, so the lit look now means
+   "focused" honestly instead of decorating an idle field. */
 .search-slot.inline .search-box,
 .search-slot.inline .search-box[data-expanded] {
   position: static;
@@ -173,24 +192,22 @@
   height: auto;
   overflow: visible;
   background: var(--bg);
-  border-color: color-mix(in oklch, var(--accent) 42%, var(--border));
-  box-shadow:
-    0 0 0 4px color-mix(in oklch, var(--accent) 9%, transparent),
-    0 2px 10px -4px color-mix(in oklch, var(--ink) 18%, transparent);
+  border-color: color-mix(in oklch, var(--accent) 30%, var(--border));
+  box-shadow: 0 2px 12px -6px color-mix(in oklch, var(--ink) 20%, transparent);
   transition:
     border-color 160ms var(--search-ease),
     box-shadow 160ms var(--search-ease);
 }
 .search-slot.inline .search-box:hover {
-  border-color: color-mix(in oklch, var(--accent) 62%, var(--border));
-  box-shadow:
-    0 0 0 5px color-mix(in oklch, var(--accent) 13%, transparent),
-    0 4px 16px -6px color-mix(in oklch, var(--ink) 22%, transparent);
+  border-color: color-mix(in oklch, var(--accent) 50%, var(--border));
+  box-shadow: 0 4px 16px -6px color-mix(in oklch, var(--ink) 24%, transparent);
 }
+/* Focused: the accent border goes full-strength and the glow ring appears — the
+   one place it does — so the jump from resting to focused is unmistakable. */
 .search-slot.inline .search-box[data-focused] {
   border-color: var(--accent);
   box-shadow:
-    0 0 0 4px color-mix(in oklch, var(--accent) 16%, transparent),
+    0 0 0 4px color-mix(in oklch, var(--accent) 22%, transparent),
     0 18px 50px -20px color-mix(in oklch, var(--ink) 32%, transparent);
 }
 /* The icon is the field's one piece of colour at rest — it reads as "act here"
@@ -199,31 +216,8 @@
   color: var(--accent);
   font-size: 1.15rem;
 }
-/* One pass of the ring on arrival: enough to catch the eye as the page settles,
-   then gone. It runs once, not on a loop — a permanently pulsing control is a
-   nag rather than an invitation. */
-@media (prefers-reduced-motion: no-preference) {
-  .search-slot.inline .search-box {
-    animation: search-attention 1.6s var(--search-ease) 0.35s 1 both;
-  }
-}
-@keyframes search-attention {
-  0% {
-    box-shadow:
-      0 0 0 0 color-mix(in oklch, var(--accent) 34%, transparent),
-      0 2px 10px -4px color-mix(in oklch, var(--ink) 18%, transparent);
-  }
-  55% {
-    box-shadow:
-      0 0 0 11px color-mix(in oklch, var(--accent) 0%, transparent),
-      0 2px 10px -4px color-mix(in oklch, var(--ink) 18%, transparent);
-  }
-  100% {
-    box-shadow:
-      0 0 0 4px color-mix(in oklch, var(--accent) 9%, transparent),
-      0 2px 10px -4px color-mix(in oklch, var(--ink) 18%, transparent);
-  }
-}
+/* The field takes focus on load (see SearchBox's mount effect), so the focus ring
+   is the arrival cue — no separate attention pulse to fight it for the eye. */
 /* No clip to fade out of — the panel is simply there when it has something to say.
    `display: flex` below is an author rule, so it beats the UA's `[hidden]` sheet:
    without this, `hidden` would set the attribute and change nothing. */
@@ -452,7 +446,8 @@
      and as the scope chip. The chip is the one that earns its place: it says what
      the search will search, and tapping its × is how you leave that scope. */
   .brand-sep,
-  .brand-crate {
+  .brand-crate,
+  .brand-version {
     display: none;
   }
   /* `backdrop-filter` makes an element the containing block for its fixed-position
@@ -777,7 +772,42 @@
 }
 .home-try {
   color: var(--muted);
+  margin: 0 0 0.6rem;
+}
+
+/* The rotating example lives on its own line with a reserved height, so the
+   cross-fade between one type and the next never reflows the prose around it —
+   long name to short, the search box below it does not move. */
+.home-cycle-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  min-height: 1.9rem;
   margin: 0 0 1rem;
+}
+.home-cycle-lead {
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* The one child of `.home-cycle`; it carries the fade and the hover target. */
+.home-cycle-type {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  color: var(--ty);
+  text-decoration: none;
+  transition: opacity 650ms ease;
+}
+.home-cycle-type:hover {
+  text-decoration: underline;
+}
+/* Reduced motion swaps in place (the component skips the dip); drop the fade so a
+   half-transparent frame can't linger. */
+@media (prefers-reduced-motion: reduce) {
+  .home-cycle-type {
+    transition: none;
+  }
 }
 
 /* Each pitch section is separated by a rule rather than a heading weight jump,
