@@ -25,6 +25,20 @@ function renderBox(crate?: string) {
   );
 }
 
+/** Stub `fetch` so typeahead and search return canned JSON keyed off the URL. */
+function stubApi(handler: (url: string) => unknown) {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: RequestInfo | URL) => {
+      const url = input instanceof Request ? input.url : String(input);
+      return new Response(JSON.stringify(handler(url)), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    }),
+  );
+}
+
 afterEach(() => vi.unstubAllGlobals());
 
 describe("SearchBox", () => {
@@ -67,5 +81,88 @@ describe("SearchBox", () => {
     );
 
     expect(await screen.findByText("in serde")).toBeInTheDocument();
+  });
+
+  /**
+   * The mirror of unscoping: from crate mode, choosing a crate re-scopes *into*
+   * it. Tab on the highlighted suggestion promotes it to the chip and the field
+   * switches back to item search — the keyboard path for hopping between crates
+   * without leaving the field. This works even with no page crate at all.
+   */
+  it("promotes a highlighted crate to the chip on Tab", async () => {
+    stubApi((url) =>
+      url.includes("/typeahead")
+        ? { results: [{ name: "serde", version: "1.0.0" }], total: 1 }
+        : { results: [], total: 0 },
+    );
+
+    const user = userEvent.setup();
+    renderBox(); // no page crate — the field opens straight into crate mode.
+
+    await user.click(screen.getByRole("button", { expanded: false }));
+    await user.keyboard("serde");
+
+    // The suggestion arrives highlighted; Tab scopes into it.
+    await screen.findByRole("option", { name: /serde/ });
+    await user.keyboard("{Tab}");
+
+    expect(await screen.findByText("in serde")).toBeInTheDocument();
+    // Item search, scoped to the picked crate — no longer crate mode.
+    expect(
+      screen.getByRole("combobox", { name: /search serde/i }),
+    ).toBeInTheDocument();
+  });
+
+  /**
+   * The typed shorthand for the same move: in crate mode a `::` is a scope
+   * gesture, not text — `tokio::` makes `tokio` the chip and carries anything
+   * after the separator into the item query.
+   */
+  it("scopes into the crate when `::` is typed", async () => {
+    stubApi((url) =>
+      url.includes("/typeahead")
+        ? { results: [{ name: "tokio", version: "1.0.0" }], total: 1 }
+        : { results: [], total: 0 },
+    );
+
+    const user = userEvent.setup();
+    renderBox();
+
+    await user.click(screen.getByRole("button", { expanded: false }));
+    await user.keyboard("tokio::");
+
+    expect(await screen.findByText("in tokio")).toBeInTheDocument();
+    expect(
+      screen.getByRole("combobox", { name: /search tokio/i }),
+    ).toBeInTheDocument();
+  });
+
+  /**
+   * Both queries hold their previous results as a placeholder so the list never
+   * blanks between keystrokes — but an emptied input is a *cleared* search, not a
+   * pause, so the held results must collapse with it rather than lingering under
+   * the chip.
+   */
+  it("clears the results when the query is emptied", async () => {
+    stubApi((url) =>
+      url.includes("/search/")
+        ? { results: [{ path: "tokio::spawn", kind: "function" }], total: 1 }
+        : { results: [], total: 0 },
+    );
+
+    const user = userEvent.setup();
+    renderBox("tokio");
+
+    await user.click(screen.getByRole("button", { expanded: false }));
+    await user.keyboard("spawn");
+    expect(await screen.findByText("tokio::spawn")).toBeInTheDocument();
+
+    await user.keyboard("{Backspace>5/}");
+    await waitFor(() =>
+      expect(screen.queryByText("tokio::spawn")).not.toBeInTheDocument(),
+    );
+    expect(
+      screen.getByText(/search tokio by name or documentation/i),
+    ).toBeInTheDocument();
   });
 });

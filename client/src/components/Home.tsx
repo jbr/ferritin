@@ -1,4 +1,4 @@
-import { Link } from "rhoto-router";
+import { CyclingType } from "./CyclingType";
 import { DocsLayout } from "./layout/DocsLayout";
 import { Install } from "./Install";
 import { SearchBox } from "./search/SearchBox";
@@ -19,17 +19,16 @@ export function Home() {
         <header className="home-hero">
           <h1 className="home-title">Ferritin Rust Documentation</h1>
           <p className="home-lede">
-            Ferritin reads rustdoc's JSON — the same data the compiler emits
-            when it documents a crate — and resolves it into a structured model
-            of the API. That model renders in your terminal, in your coding
-            agent's context, and right here in your browser.
+            Ferritin reads rustdoc's JSON output and resolves it into a
+            structured model of the API that can be formatted in various
+            contexts.
           </p>
           <p className="home-try">
-            Open an item to start —{" "}
-            <Link href="/trillium::Conn">trillium::Conn</Link>,{" "}
-            <Link href="/std::vec::Vec">std::vec::Vec</Link>,{" "}
-            <Link href="/serde::Deserialize">serde::Deserialize</Link> — or
-            reach for any crate published to docs.rs:
+            Open an item to start, or view any crate published to docs.rs:
+          </p>
+          <p className="home-cycle-row">
+            <span className="home-cycle-lead">try</span>
+            <CyclingType />
           </p>
           <SearchBox inline />
         </header>
@@ -51,8 +50,7 @@ export function Home() {
             <li>
               <strong>Render the model.</strong> That model supports several
               interfaces: an interactive TUI, a one-shot CLI, token-efficient
-              markdown for agents, and this web app. Same structure, same links,
-              same data.
+              markdown for agents, and this web app.
             </li>
           </ol>
         </section>

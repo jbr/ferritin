@@ -1,4 +1,5 @@
 import { Link } from "rhoto-router";
+import { useItem } from "../../api/queries";
 import { itemHref } from "../../lib/paths";
 import { ThemeToggle } from "../../theme/ThemeToggle";
 import { SearchBox } from "../search/SearchBox";
@@ -16,6 +17,13 @@ export function TopBar({
   crate?: string;
   search?: boolean;
 }) {
+  // The version is read off the crate root, keyed on the crate name rather than
+  // the current item path, so it holds steady while you move between items and
+  // only changes when you switch crates — the same query CrateNav already warms,
+  // so this costs no extra request.
+  const { data: root } = useItem(crate ?? "", !!crate);
+  const version = root?.meta.crateVersion;
+
   return (
     <header className="topbar">
       <div className="topbar-brand">
@@ -29,6 +37,9 @@ export function TopBar({
             <Link href={itemHref(crate)} className="brand-crate mono">
               {crate}
             </Link>
+            {version ? (
+              <span className="brand-version mono">v{version}</span>
+            ) : null}
           </>
         ) : null}
       </div>

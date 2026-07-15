@@ -17,15 +17,19 @@ export function useItem(path: string, enabled = true) {
 /**
  * Crate-scoped search; disabled until both crate and query are present.
  *
- * Previous results are held while the next query is in flight, so a typeahead list
- * never blanks out between keystrokes — it updates in place.
+ * Previous results are held while the next query is in flight, so the list never
+ * blanks out between keystrokes — it updates in place. That hold is deliberately
+ * scoped to a *single crate*: re-scoping from one crate to another (or an empty
+ * query while a new chip settles) must not leave the old crate's items showing
+ * under the new scope, so the placeholder is dropped the moment the crate changes.
  */
 export function useSearch(crate: string, q: string) {
   return useQuery({
     queryKey: ["search", crate, q],
     queryFn: () => search(crate, q),
     enabled: crate.length > 0 && q.length > 0,
-    placeholderData: keepPreviousData,
+    placeholderData: (previous, previousQuery) =>
+      previousQuery?.queryKey[1] === crate ? previous : undefined,
   });
 }
 
