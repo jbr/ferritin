@@ -4,6 +4,7 @@ import type { TocEntry } from "../../lib/toc";
 import { TopBar } from "./TopBar";
 import { CrateNav } from "./CrateNav";
 import { PageToc } from "./PageToc";
+import { Colophon } from "./Colophon";
 
 /**
  * The three-column reading shell: top bar spanning the width, a left crate-nav,
@@ -37,6 +38,7 @@ export function DocsLayout({
         <main className="docs-main">{children}</main>
         <PageToc entries={toc} />
       </div>
+      <Colophon />
     </div>
   );
 }
