@@ -211,7 +211,7 @@ impl DocsRsClient {
 
         if let Some(entry) = self.crate_index.get(crate_name).await {
             let cached = CachedMetadata::from(entry);
-            self.disk_store(crate_name, &cached).await?;
+            self.disk_store(crate_name, &cached).await;
             if let Some(resolved) = cached.resolve(version_req) {
                 log::debug!(
                     "resolved {crate_name}@{} from the crate-names artifact",
@@ -230,7 +230,7 @@ impl DocsRsClient {
         else {
             return Ok(None);
         };
-        self.disk_store(crate_name, &cached).await?;
+        self.disk_store(crate_name, &cached).await;
         Ok(cached.resolve(version_req))
     }
 
@@ -331,11 +331,26 @@ impl DocsRsClient {
         }
     }
 
-    /// Write a crate's version metadata to the on-disk tier via a temp file +
-    /// atomic rename, so a concurrent CLI invocation can never observe a torn
-    /// file. The temp name carries our PID to avoid colliding with a concurrent
-    /// writer of the same crate.
-    async fn disk_store(&self, crate_name: &str, entry: &CachedMetadata) -> Result<()> {
+    /// Write a crate's version metadata to the on-disk tier, best-effort. This
+    /// is a cache: a write failure must never fail the resolution that produced
+    /// the data (especially on the artifact path, which needs no network at
+    /// all), so errors are logged and swallowed rather than propagated.
+    async fn disk_store(&self, crate_name: &str, entry: &CachedMetadata) {
+        if let Err(error) = self.try_disk_store(crate_name, entry).await {
+            log::warn!("failed to persist version cache for {crate_name}: {error:#}");
+        }
+    }
+
+    /// Write via a temp file + atomic rename, so a concurrent reader can never
+    /// observe a torn file. The temp name carries our PID *and* a per-write
+    /// sequence number: the PID alone only disambiguates separate processes,
+    /// but the long-lived server resolves the same hot crate (e.g. `memchr`)
+    /// concurrently, and two in-flight writers sharing one temp name race — the
+    /// first rename wins and the second fails `ENOENT` on the already-moved
+    /// temp. The sequence makes every writer's temp path unique.
+    async fn try_disk_store(&self, crate_name: &str, entry: &CachedMetadata) -> Result<()> {
+        static TMP_SEQ: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
         let path = self.version_cache_path(crate_name);
         if let Some(parent) = path.parent() {
             async_fs::create_dir_all(parent)
@@ -344,7 +359,8 @@ impl DocsRsClient {
         }
 
         let json = sonic_rs::to_string(entry).context("Failed to serialize version cache")?;
-        let tmp = path.with_extension(format!("{}.tmp", std::process::id()));
+        let seq = TMP_SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let tmp = path.with_extension(format!("{}.{seq}.tmp", std::process::id()));
         async_fs::write(&tmp, json)
             .await
             .context("Failed to write version cache temp file")?;
