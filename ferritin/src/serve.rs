@@ -354,8 +354,8 @@ pub(crate) fn handler(typeahead: Arc<TypeaheadService>) -> impl Handler {
         // carries no timestamp because journald stamps every line it ingests.
         Logger::new().with_formatter(log_format!(
             "<- {ip} {version} {method} {url} {response_time} {status} {body_len_human} \
-             {content_encoding} {user_agent}",
-            content_encoding = formatters::response_header(KnownHeaderName::ContentEncoding)
+             {content_encoding} {user_agent} {referer}",
+            content_encoding = formatters::response_header(KnownHeaderName::ContentEncoding),
         )),
         reject_other_methods,
         Head::new(),
