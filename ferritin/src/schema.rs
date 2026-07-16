@@ -27,6 +27,14 @@
 
 use schemars::{Schema, generate::SchemaSettings, json_schema};
 
+/// Version of the JSON API contract, deliberately independent of the binary's
+/// `CARGO_PKG_VERSION`. The schema describes the shape of the API, which changes
+/// far more slowly than the crate; tying the two together made every release-plz
+/// version bump rewrite this document and trip the drift guard below. Bump the
+/// minor for additive changes (a new endpoint or optional field) and the major
+/// for anything that breaks existing clients.
+const SCHEMA_VERSION: &str = "1.0.0";
+
 /// Default destination for `ferritin schema`: the committed asset, resolved
 /// relative to this crate's manifest so it works regardless of the current
 /// working directory. Baking in the build-tree path is fine — the `schema`
@@ -57,7 +65,7 @@ pub(crate) fn openapi_document() -> String {
         openapi: "3.0.3",
         info: Info {
             title: "ferritin",
-            version: env!("CARGO_PKG_VERSION"),
+            version: SCHEMA_VERSION,
             description: "Structured Rust documentation as JSON (the semantic IR).",
         },
         // The JSON API is mounted under /api so it never collides with the SPA's
