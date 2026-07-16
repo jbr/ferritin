@@ -92,6 +92,13 @@ impl<'a, T> From<DocRef<'a, T>> for ItemKey {
     }
 }
 
+/// Hard cap on resolver recursion depth (frames on the stack). Well above any
+/// real documentation path — re-export chains are a handful of hops deep — and
+/// well below the native-stack budget of even the main thread (~8 MB / a few KB
+/// per recursive `find_named` frame ≈ thousands), so it prevents a stack
+/// overflow without truncating any legitimate lookup. See [`Resolver::with_pushed`].
+const MAX_RESOLVE_DEPTH: usize = 256;
+
 #[derive(Clone, PartialEq, Eq, Debug)]
 struct Frame {
     item: ItemKey,
@@ -134,7 +141,7 @@ impl<'a> Resolver<'a> {
     }
 
     /// Push a frame, run `f`, pop. Returns `None` if the frame is already on
-    /// the stack (cycle).
+    /// the stack (cycle) or if the stack has reached [`MAX_RESOLVE_DEPTH`].
     fn with_pushed<R>(
         &mut self,
         item: ItemKey,
@@ -145,6 +152,18 @@ impl<'a> Resolver<'a> {
             item,
             segment: segment.map(str::to_owned),
         };
+        // The exact-frame cycle guard below catches a re-export loop only when
+        // it repeats a `(item, segment)` frame. In a large mutually-re-exporting
+        // crate graph — the ~40-crate `solana-*` family is the case that found
+        // this — resolution can descend through thousands of *distinct* frames
+        // before any exact repeat, overflowing the native stack and aborting the
+        // whole process. A depth cap bounds native recursion unconditionally; no
+        // legitimate documentation path is anywhere near this deep, so an
+        // over-deep branch is abandoned exactly like a cycle.
+        if self.stack.len() >= MAX_RESOLVE_DEPTH {
+            log::debug!("resolve depth cap ({MAX_RESOLVE_DEPTH}) hit at {frame:?}");
+            return None;
+        }
         if self.stack.contains(&frame) {
             log::trace!("cycle: {frame:?}");
             return None;
@@ -689,7 +708,16 @@ impl<'a> Resolver<'a> {
             // descendant (for `pub use private_mod::*`) is left as best-effort.
             match source_item.inner() {
                 ItemEnum::Module(module) => {
-                    self.collect_ids(source_item, &module.items, include_uses, None, out);
+                    // Glob re-exports can form cycles across crate boundaries —
+                    // the ~40-crate solana-* family mutually `pub use`s sibling
+                    // crates, so expanding one module's globs leads back to it.
+                    // Unlike `find_named`, this display-time enumeration had no
+                    // cycle guard and recursed until the stack overflowed and
+                    // aborted the process. Push the source module as a frame so a
+                    // revisit (cycle) or an over-deep chain is pruned here.
+                    self.with_pushed(source_item.into(), None, |resolver| {
+                        resolver.collect_ids(source_item, &module.items, include_uses, None, out);
+                    });
                 }
                 ItemEnum::Enum(enum_item) => {
                     self.collect_ids(source_item, &enum_item.variants, include_uses, None, out);
