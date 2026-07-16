@@ -5,7 +5,110 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.15.0] - 2026-07-16
+
+### Added
+
+- `Store`: the long-lived owner of the sources and the caches, and the type the
+  source builders now live on. A `Store` is shared — behind an `Arc`, by as many
+  `Navigator`s as you like, concurrently — and its caches are keyed by resolved
+  name *and* exact version, so it holds conflicting versions of one crate at
+  once and loads any given crate only once no matter how many callers race for
+  it.
+- `Store::with_weight_cap`, `with_search_weight_cap`, and `with_rss_high_water`
+  bound the caches, by summed entry weight and by process RSS respectively. All
+  three are unbounded by default, which is the previous behavior: nothing is
+  ever evicted unless you ask for a cap. Eviction never invalidates a borrow —
+  a `Navigator` pins everything its query touches, and a pinned entry outlives
+  its eviction.
+- `LoadFailure`, distinguishing a crate the sources definitively do not have
+  from one that failed transiently.
+- `CrateIndex` and `CrateEntry` (the `crate_names` module): a local copy of the
+  crates.io name→version table, answering version resolution and name
+  completion without a request per crate. It fetches ~7.5 MB of compressed
+  artifacts into a `crate-names` subdirectory of the docs.rs cache dir on first
+  query and revalidates hourly; `FERRITIN_CRATE_NAMES_URL` and
+  `FERRITIN_CRATE_DESCRIPTIONS_URL` point it at a mirror.
+- `CratePath`, the parsed form of a `name@req` crate specifier, so callers can
+  identify the crate a request names without loading it.
+- `Navigator::new`, `Navigator::store`, `Navigator::local_source`, and
+  `Navigator::pinned_version` (the exact version a name was pinned at).
+- `DocRef::parent_item`, the item a member is documented under.
+- `RustdocData::lib_name`, the library name rustdoc writes into item paths
+  (`sha1`) — distinct from `RustdocData::name`, the package name the version
+  qualifies (`sha-1`). They diverge whenever a crate declares an explicit
+  `[lib] name`, and mixing them up produces URLs that 404.
+- `FERRITIN_USER_AGENT`, the `User-Agent` every ferritin http client sends.
+- Reads rustdoc JSON format version 60.
+
+### Changed
+
+- **`Navigator` no longer owns sources or caches**; it is now a per-query view
+  over a `Store`, holding pins that keep its own borrows valid. The source
+  builders moved with the ownership, so
+  `Navigator::default().with_std_source(s)` becomes
+  `Navigator::new(Arc::new(Store::default().with_std_source(s)))`.
+  `Navigator::default()` still exists but now yields a Navigator over an empty
+  Store with no sources at all — useful in tests, not the start of a builder
+  chain. Construct one `Store` and a `Navigator` per query.
+- **`Source::lookup` and `Source::load` return `Result<Option<T>>`** rather than
+  `Option<T>`. `Ok(None)` means this source definitively does not have the
+  crate; `Err` means a transient failure that must not be remembered as absence.
+  `Source::load` also takes `&Version` rather than `Option<&Version>` — the
+  exact version is resolved before the load, not during it.
+- **`CrateInfo::version` returns `&Version`, not `Option<&Version>`.** Every
+  listed crate has a resolved version. The type also moved from `navigator` to
+  `store`; the `ferritin_common::CrateInfo` re-export is unchanged.
+- **`RustdocData::all_items` is removed.** Nothing needs to iterate the whole
+  index any more: the queries it existed for — the impls targeting a type, the
+  implementors of a trait, the parent of a member — are precomputed reverse
+  indexes read straight out of the mmapped sidecar, and a crate's resident
+  footprint is now bounded by the items actually touched rather than by its size.
+- **`LocalSource::can_load` is removed.**
+- Following a link into another crate loads the version the query's first crate
+  was *built against*, rather than the newest release or whatever the
+  referencing crate recorded — so cross-crate traversal no longer depends on the
+  order crates were requested in. An exact version request (`=1.2.3`) skips
+  resolution entirely.
+- Resolving a bare crate name, or any requirement the newest release satisfies,
+  reads the `CrateIndex` rather than the crates.io API. Resolution works offline
+  once the table is on disk, and can lag crates.io by up to a day. A requirement
+  that excludes the newest release, and a crate published since the table was
+  built, still reach the API.
+- Fetching a crate from docs.rs takes one request instead of up to seven, and
+  waits 30 seconds rather than 2 — cold fetches of large crates were timing out.
+  A release whose rustdoc JSON predates format 55 is now reported unavailable
+  rather than probed for.
+- A failed docs.rs fetch is retried after a short interval instead of being
+  remembered for the life of the `Store`.
+- Search ranking is retuned and result order will differ throughout: names weigh
+  more heavily against prose, the final query word matches name prefixes so
+  partial words return results, and items are indexed under their ancestors'
+  names as well as their own, so `hashmap insert` finds `HashMap::insert`.
+- The on-disk caches changed format — sidecars regenerate and search indexes
+  rebuild on first touch. Sidecar filenames now carry the rkyv version, so
+  superseded `.rkyv1-*` files are ignored rather than replaced, and linger until
+  deleted.
+
+### Fixed
+
+- **`CrateName`'s `Borrow<str>` impl is removed; it was unsound.** `CrateName`
+  hashes `-` and `_` alike, which `str` does not, so a `&str` lookup into a
+  `CrateName`-keyed map hashed differently from the key it was meant to find and
+  silently never matched. `LocalSource::canonicalize` was a no-op for this
+  reason. Look up with a `CrateName`.
+- Resolving a path through a large family of crates that glob-re-export each
+  other (the ~40 `solana-*` crates found this) could overflow the stack and
+  abort the process. Resolution deeper than 256 frames is now abandoned the way
+  a cycle is.
+- Crates with deeply nested generic types — anything leaning on `typenum` —
+  failed to load at all: the JSON parser had a hard 255-layer recursion cap.
+- Searching a crate for a term its documentation uses everywhere, its own name
+  included, ranked the best matches last: `Regex` was unfindable in a search of
+  `regex`.
+- A crate could fail to resolve when its version metadata couldn't be written to
+  the cache directory, and two processes resolving the same crate at once could
+  race over that file. The write is now best-effort and atomic.
 
 ## [0.14.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.13.0...ferritin-common-v0.14.0) - 2026-06-28
 

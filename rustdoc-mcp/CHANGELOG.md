@@ -5,7 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.8.0] - 2026-07-16
+
+### Added
+
+- Reads rustdoc JSON format version 60.
+
+### Changed
+
+- Resolving a bare crate name — or any requirement the newest release satisfies
+  — no longer asks crates.io. rustdoc-mcp keeps its own copy of the crates.io
+  name→version table in `$CARGO_HOME/rustdoc-json/crate-names/`, fetched once
+  (~7.5 MB compressed) and revalidated hourly in the background. So resolution
+  works offline once the table is on disk, and it can lag crates.io by up to a
+  day: a release published this morning may still resolve to yesterday's
+  version. A requirement that excludes the newest release, and a crate published
+  since the table was built, still reach the crates.io API.
+- Following a link into another crate loads the version the crate you queried
+  was *built against*, rather than the newest release or whatever the
+  referencing crate happened to record. Items reached through `std::vec::Vec`
+  into `alloc`, or through a dependency's re-export, now come from the versions
+  that crate actually compiles against, and no longer depend on the order they
+  were requested in.
+- Fetching a crate from docs.rs takes one request instead of up to seven, and
+  waits 30 seconds rather than 2 — cold fetches of large crates were timing out
+  and reporting the crate as unavailable. A release whose rustdoc JSON predates
+  format 55 is now reported unavailable rather than probed for.
+- A failed docs.rs fetch is retried after a short interval instead of being
+  remembered for the life of the process, so a network blip no longer makes a
+  crate unavailable for the rest of the server's session.
+- `search` ranking is retuned and result order will differ throughout. Names
+  weigh more heavily against prose; a query's final word matches name prefixes,
+  so partial words return results; and a query naming both a container and a
+  member (`hashmap insert`) finds `HashMap::insert`, since items are now indexed
+  under their ancestors' names as well as their own.
+- The caches under `$CARGO_HOME/rustdoc-json/` changed format: the first lookup
+  of each crate after upgrading re-parses its JSON and rebuilds its search
+  index. The superseded `.rkyv1-*` sidecars are not cleaned up — delete them to
+  reclaim the disk.
+
+### Fixed
+
+- Looking up an item in a large family of crates that glob-re-export each other
+  (the ~40 `solana-*` crates found this) could overflow the stack and abort the
+  server. Over-deep resolution is now abandoned the way a cycle is.
+- Crates with deeply nested generic types — anything leaning on `typenum` —
+  failed to load at all.
+- Searching a crate for a term its documentation uses everywhere, its own name
+  included, ranked the best matches last: `Regex` was unfindable in a search of
+  `regex`.
+- A crate could fail to resolve when its version metadata couldn't be written to
+  the cache directory, and two processes resolving the same crate at once could
+  race over that file.
 
 ## [0.7.2](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.7.1...rustdoc-mcp-v0.7.2) - 2026-06-28
 

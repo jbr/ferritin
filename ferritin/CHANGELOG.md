@@ -5,7 +5,93 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.14.0] - 2026-07-16
+
+### Added
+
+- `--format <tty|plain|agent|json>` selects the output format explicitly.
+  Without it, ferritin autodetects as before: agent format under a coding agent,
+  ANSI on a TTY, plain when piped.
+- `--format json` prints a structured model of the result rather than rendered
+  text. `get` emits the item as its kind's own shape — a struct's fields, an
+  enum's variants, a trait's members and every one of its implementors, a
+  module's children, a type's trait impls — each type reference carrying the
+  path or URL it points at, and each code block carrying syntax-highlight
+  classes. `search` and `list` emit their results the same way. It cannot be
+  combined with `--interactive`.
+- Unions render like structs. They were previously `[not yet implemented]`.
+- Negative impls (`impl !Send for T`) appear among a type's trait impls,
+  prefixed with `!`. They were previously dropped.
+- Reads rustdoc JSON format version 60.
+- A `serve` cargo feature, off by default, adds a `ferritin serve` subcommand
+  that runs a documentation web server. Distributed binaries are built without
+  it.
+
+### Changed
+
+- **`--agent` and its `--ai` alias are removed**; use `--format agent`.
+  Autodetection from `CLAUDECODE`/`GEMINI_CLI`/`CODEX_SANDBOX` is unchanged.
+- Resolving a bare crate name — or any requirement the newest release satisfies
+  — no longer asks crates.io. ferritin keeps its own copy of the crates.io
+  name→version table in `$CARGO_HOME/rustdoc-json/crate-names/`, fetched once
+  (~7.5 MB compressed) and revalidated hourly in the background. So resolution
+  works offline once the table is on disk, and it can lag crates.io by up to a
+  day: a release published this morning may still resolve to yesterday's
+  version. A requirement that excludes the newest release, and a crate published
+  since the table was built, still reach the crates.io API.
+- Following a link into another crate loads the version the crate you queried
+  was *built against*, rather than the newest release or whatever the
+  referencing crate happened to record. Items reached through `std::vec::Vec`
+  into `alloc`, or through a dependency's re-export, now come from the versions
+  that crate actually compiles against, and no longer depend on the order you
+  navigated in.
+- Fetching a crate from docs.rs takes one request instead of up to seven, and
+  waits 30 seconds rather than 2 — cold fetches of large crates were timing out
+  and reporting the crate as unavailable. A release whose rustdoc JSON predates
+  format 55 is now reported unavailable rather than probed for.
+- A failed docs.rs fetch is retried after a short interval instead of being
+  remembered for the life of the process. In the TUI, a network blip no longer
+  makes a crate unavailable for the rest of the session.
+- Search ranking is retuned and result order will differ throughout. Names weigh
+  more heavily against prose than before, and long prose that dwells on a term
+  can outrank the item named for it — for documentation search that is usually
+  the page you want, and the named item lands just below it.
+- Search matches a name prefix on the final word of a query, so results appear
+  before you finish typing (`Vec::pu` reaches `push`), including at interior
+  word boundaries (`set` reaches `TypeSet`).
+- A query naming both a container and a member (`hashmap insert`) finds
+  `HashMap::insert`. Items are indexed under their ancestors' names as well as
+  their own, weighted by distance.
+- The caches under `$CARGO_HOME/rustdoc-json/` changed format: the first lookup
+  of each crate after upgrading re-parses its JSON and rebuilds its search
+  index. The superseded `.rkyv1-*` sidecars are not cleaned up — delete them to
+  reclaim the disk.
+
+### Fixed
+
+- Looking up an item in a large family of crates that glob-re-export each other
+  (the ~40 `solana-*` crates found this) could overflow the stack and abort
+  ferritin. Over-deep resolution is now abandoned the way a cycle is.
+- Crates with deeply nested generic types — anything leaning on `typenum` —
+  failed to load at all.
+- Searching a crate for a term its documentation uses everywhere, its own name
+  included, ranked the best matches last: `Regex` was unfindable in a search of
+  `regex`.
+- docs.rs links for a crate whose library name differs from its package name
+  (`sha-1`, whose lib is `sha1`) pointed at a 404.
+- Links to attribute and derive macros pointed at `macro.{name}.html`, which
+  404s for both.
+- A relative link in a crate's prose (`struct.TcpStream.html`) resolved against
+  the crate root rather than the module the page is rendered in, reaching the
+  wrong item or none.
+- A docs.rs URL written out by hand in a doc comment now resolves to the item it
+  names and navigates in place, instead of being treated as an ordinary external
+  link.
+- The TUI status line's key hints vanished on the first mouse move and stayed
+  gone for the session.
+- A crate could fail to resolve when its version metadata couldn't be written to
+  the cache directory, and two ferritin processes resolving the same crate at
+  once could race over that file.
 
 ## [0.13.0](https://github.com/jbr/ferritin/compare/ferritin-v0.12.0...ferritin-v0.13.0) - 2026-06-28
 
