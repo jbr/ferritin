@@ -344,7 +344,12 @@ export function SearchBox({
   // Inline reveals its results on demand rather than sitting permanently open on
   // an empty list: a dead "Type a crate name." panel under the hero would read as
   // a broken element rather than an invitation.
-  const panelOpen = inline ? focused || query.trim() !== "" : expanded;
+  //
+  // Keyed to the query alone, never to focus: the inline panel is in flow, so
+  // collapsing it on blur would yank everything below the field upward — out from
+  // under the pointer that caused the blur, which made the link under the hero
+  // unclickable.
+  const panelOpen = inline ? query.trim() !== "" : expanded;
 
   return (
     <div className={inline ? "search-slot inline" : "search-slot"}>
