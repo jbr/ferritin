@@ -18,7 +18,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <Router>
+        <Router scrollToTop>
           <App />
         </Router>
         {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
