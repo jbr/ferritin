@@ -207,7 +207,7 @@ The <inline-code>ByteStr</inline-code> and <inline-code>ByteString</inline-code>
 <type-name>cell</type-name> </p>
 <truncated level="single-line"><p>
 Shareable mutable containers.</p>
-Rust memory safety is based on this rule: Given an<inline-code>T</inline-code>, it is only possible to have one of the following: <elided chars="8916"/></truncated>
+Rust memory safety is based on this rule: Given an<inline-code>T</inline-code>, it is only possible to have one of the following: <elided chars="8911"/></truncated>
 </item>
   <item><p>
 <type-name>char</type-name> </p>
