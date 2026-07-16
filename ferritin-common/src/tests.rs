@@ -345,6 +345,72 @@ fn synth_use(id: u32, name: &str, source: &str, target: Option<u32>) -> rustdoc_
     )
 }
 
+#[cfg(test)]
+fn synth_glob_use(id: u32, source: &str, target: Option<u32>) -> rustdoc_types::Item {
+    use rustdoc_types::{ItemEnum, Use};
+    synth_item(
+        id,
+        None,
+        ItemEnum::Use(Use {
+            source: source.to_owned(),
+            name: String::new(),
+            id: target.map(rustdoc_types::Id),
+            is_glob: true,
+        }),
+    )
+}
+
+/// Regression test for the `solana-program` stack overflow: two sibling modules
+/// that mutually glob-re-export each other (`alpha` globs `beta`, `beta` globs
+/// `alpha`) form a cycle. Before glob expansion was routed through the frame
+/// stack, enumerating either module recursed `collect_ids` ↔ `collect_use_children`
+/// until the native stack overflowed and aborted the whole process — a request
+/// for any such crate was a DoS. The guard must prune the revisit so enumeration
+/// terminates, still surfacing each module's own item and the glob-pulled sibling.
+#[test]
+fn glob_reexport_cycle_terminates() {
+    let krate = synth_crate(
+        "globcycle",
+        1,
+        vec![
+            (1, None, vec![2, 3]),
+            (2, Some("alpha"), vec![10, 4]),
+            (3, Some("beta"), vec![11, 5]),
+        ],
+        vec![
+            synth_glob_use(10, "beta", Some(3)),
+            synth_item(4, Some("Alpha"), synth_unit_struct()),
+            synth_glob_use(11, "alpha", Some(2)),
+            synth_item(5, Some("Beta"), synth_unit_struct()),
+        ],
+    );
+
+    let nav = Navigator::default();
+    nav.pin_for_test("globcycle", krate);
+    let mut resolver = Resolver::new(&nav);
+
+    let alpha = resolver
+        .resolve_path("globcycle::alpha", &mut vec![])
+        .expect("alpha module resolves");
+
+    // The core assertion is simply that this *returns* — before the fix it
+    // overflowed the stack and aborted the test binary.
+    let names: Vec<String> = resolver
+        .children(alpha)
+        .into_iter()
+        .filter_map(|child| child.name().map(str::to_owned))
+        .collect();
+
+    assert!(
+        names.contains(&"Alpha".to_string()),
+        "own item missing: {names:?}"
+    );
+    assert!(
+        names.contains(&"Beta".to_string()),
+        "glob should pull sibling `Beta` into `alpha`: {names:?}"
+    );
+}
+
 /// Build the two-crate test setup used by the prefix-resolution tests below.
 ///
 /// Layout:
