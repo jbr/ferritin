@@ -393,7 +393,12 @@ impl<'a> Terms<'a> {
         // ancestor tokens are for filtering, not navigation.
         let own_tokens: Vec<String> = item
             .name()
-            .map(|name| tokenize(name).iter().map(|t| t.to_lowercase()).collect())
+            .map(|name| {
+                tokenize(name, DOC_MIN_CHARS)
+                    .iter()
+                    .map(|t| t.to_lowercase())
+                    .collect()
+            })
             .unwrap_or_default();
         if !own_tokens.is_empty() {
             self.name_tokens.insert(id, own_tokens.clone());
@@ -513,7 +518,7 @@ impl<'a> Terms<'a> {
     }
 
     fn add_terms(&mut self, text: &str, id: (u64, u32), weight: usize) -> usize {
-        let words = tokenize(text);
+        let words = tokenize(text, DOC_MIN_CHARS);
         let doc_length = words.len();
 
         // Count word frequencies in this document
@@ -569,11 +574,19 @@ fn knob(name: &str, default: usize, index_time: bool) -> usize {
 static NAME_PREFIX_COUNT: LazyLock<usize> =
     LazyLock::new(|| knob("FERRITIN_NAME_PREFIX_COUNT", 20, false));
 
-/// Upper bound on how many distinct name-dictionary terms one prefix expands
-/// to, so a very short prefix can't drag in the whole vocabulary. A tuning
-/// knob (`FERRITIN_PREFIX_EXPANSION_CAP`).
-static PREFIX_EXPANSION_CAP: LazyLock<usize> =
-    LazyLock::new(|| knob("FERRITIN_PREFIX_EXPANSION_CAP", 64, false));
+/// Minimum length of a token stored *in* the index — item names and doc prose.
+/// Below this a token is noise that would inflate every posting list, and the
+/// name dictionary is prefix-searched, so a short query still reaches a longer
+/// term (`v` finds `vec`) without `v` itself being indexed.
+const DOC_MIN_CHARS: usize = 3;
+
+/// Minimum length of a token in a *query*. One, i.e. no floor: the last query
+/// token is prefix-expanded over the name dictionary, so a 1- or 2-char token
+/// is meaningful as a prefix even though it can never hash to an indexed term
+/// (nothing below [`DOC_MIN_CHARS`] is in the index). Dropping it instead —
+/// which is what a shared floor did — left `tokens.last()` empty and made short
+/// queries return nothing at all.
+const QUERY_MIN_CHARS: usize = 1;
 
 /// Weight of an item's own (leaf) name tokens. When someone searches "vec"
 /// they almost certainly want the `Vec` struct, not its methods. A tuning
@@ -658,17 +671,27 @@ impl SearchIndex {
 impl SearchableTerms {
     /// The distinct documents whose leaf name contains a token beginning with
     /// `prefix` (folded to lowercase). The dictionary is sorted, so the prefix
-    /// range starts at a binary-searched `partition_point`; iteration stops at
-    /// the first non-matching term or after `cap` matched terms, whichever
-    /// comes first, bounding a short prefix's fan-out.
-    fn name_docs_with_prefix(&self, prefix: &str, cap: usize) -> Vec<DocumentId> {
+    /// range starts at a binary-searched `partition_point` and iteration stops
+    /// at the first non-matching term.
+    ///
+    /// Deliberately unbounded. A count cap here was worse than useless: the
+    /// dictionary is sorted by term, so truncating it selected the
+    /// alphabetically-first terms rather than the best ones — `v` expanded to
+    /// `vaargsafe`, `vacant`, … and could not reach `vec` at all — and it also
+    /// *understated* the prefix's document frequency, which the caller feeds to
+    /// IDF. That inverted the intended self-regulation, scoring a wide prefix as
+    /// though it were a rare, highly discriminating term. IDF is the honest
+    /// limiter, and it only works when this count is true. The full expansion
+    /// measured free against the crate load that precedes it, even for the
+    /// broadest single letters over `std`.
+    fn name_docs_with_prefix(&self, prefix: &str) -> Vec<DocumentId> {
         let key = prefix.to_lowercase();
         let start = self
             .name_terms
             .partition_point(|name_term| name_term.term.as_str() < key.as_str());
 
         let mut docs = Vec::new();
-        for name_term in self.name_terms[start..].iter().take(cap) {
+        for name_term in &self.name_terms[start..] {
             if !name_term.term.starts_with(&key) {
                 break;
             }
@@ -680,7 +703,7 @@ impl SearchableTerms {
     }
 
     fn search<'a>(&self, query: &'a str) -> SearchResults<'a> {
-        let tokens = tokenize(query);
+        let tokens = tokenize(query, QUERY_MIN_CHARS);
 
         // Build lookup from hash to original token
         let token_map: HashMap<TermHash, &'a str> = tokens
@@ -724,7 +747,7 @@ impl SearchableTerms {
         // attributed to the typed token itself, so a prefix reaching few names
         // scores as a rare (high-IDF) term and one reaching many as common.
         if let Some(&last) = tokens.last() {
-            let prefix_docs = self.name_docs_with_prefix(last, *PREFIX_EXPANSION_CAP);
+            let prefix_docs = self.name_docs_with_prefix(last);
             if !prefix_docs.is_empty() {
                 for doc in &prefix_docs {
                     let counts = doc_term_counts.entry(*doc).or_default();
@@ -1107,10 +1130,15 @@ fn add_token<'a>(token: &'a str, tokens: &mut Vec<&'a str>) {
     tokens.push(token);
 }
 
-/// Simple tokenizer: split on whitespace and punctuation, lowercase, filter short words
-fn tokenize(text: &str) -> Vec<&str> {
+/// Split on whitespace, punctuation, and case changes, keeping both subwords and
+/// the whole word (`TypeSet` -> `type`, `set`, `typeset`). Tokens shorter than
+/// `min_chars` are dropped.
+///
+/// `min_chars` differs by side, which is the point of the parameter:
+/// [`DOC_MIN_CHARS`] for anything that lands *in* the index, [`QUERY_MIN_CHARS`]
+/// for a query being matched *against* it. See [`QUERY_MIN_CHARS`].
+fn tokenize(text: &str, min_chars: usize) -> Vec<&str> {
     let mut tokens = vec![];
-    let min_chars = 2;
     let mut last_case = None;
     let mut word_start = 0;
     let mut subword_start = 0;
@@ -1135,20 +1163,20 @@ fn tokenize(text: &str) -> Vec<&str> {
         last_case = current_case;
 
         if c == '-' || c == '_' {
-            if i.saturating_sub(subword_start) > min_chars {
+            if i.saturating_sub(subword_start) >= min_chars {
                 add_token(&text[subword_start..i], &mut tokens);
             }
             subword_start_next_char = true;
         } else if !c.is_alphabetic() {
-            if i.saturating_sub(subword_start) > min_chars && subword_start != word_start {
+            if i.saturating_sub(subword_start) >= min_chars && subword_start != word_start {
                 add_token(&text[subword_start..i], &mut tokens);
             }
-            if i.saturating_sub(word_start) > min_chars {
+            if i.saturating_sub(word_start) >= min_chars {
                 add_token(&text[word_start..i], &mut tokens);
             }
             word_start_next_char = true;
         } else if case_change {
-            if i.saturating_sub(subword_start) > min_chars {
+            if i.saturating_sub(subword_start) >= min_chars {
                 add_token(&text[subword_start..i], &mut tokens);
             }
             subword_start = i;
@@ -1158,12 +1186,12 @@ fn tokenize(text: &str) -> Vec<&str> {
     if !word_start_next_char {
         let last_subword = &text[subword_start..];
 
-        if word_start != subword_start && last_subword.len() > min_chars {
+        if word_start != subword_start && last_subword.len() >= min_chars {
             add_token(last_subword, &mut tokens);
         }
 
         let last_word = &text[word_start..];
-        if last_word.len() > min_chars {
+        if last_word.len() >= min_chars {
             add_token(last_word, &mut tokens);
         }
     }

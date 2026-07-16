@@ -749,10 +749,16 @@ fn all_exact_indices(query_tokens: &[String], index: &TokenIndex) -> HashSet<u32
 }
 
 /// Split a crate name into its lowercased alphanumeric segments
-/// (`tokio-postgres` -> `tokio`, `postgres`), dropping single characters — a
-/// 2-char query floor can never prefix-match a 1-char token. The whole-name
-/// prefix is handled by the sorted names table, so only interior segments
-/// matter here.
+/// (`tokio-postgres` -> `tokio`, `postgres`), dropping single characters. The
+/// whole-name prefix is handled by the sorted names table, so only interior
+/// segments matter here.
+///
+/// Dropping 1-char segments is what keeps a single-character *query* cheap and
+/// sensible now that there is no length floor: it tokenizes to nothing, so it
+/// contributes no interior-token candidates and is answered by the whole-name
+/// prefix alone. Admitting 1-char tokens would instead fan `s` out over every
+/// name containing an `s`-initial segment, for no gain — a lone character is
+/// mid-typing, and its whole-name prefix is the useful reading of it.
 fn name_tokens(name: &str) -> impl Iterator<Item = String> + '_ {
     name.split(|c: char| !c.is_ascii_alphanumeric())
         .filter(|segment| segment.len() >= 2)

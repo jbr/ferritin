@@ -3,7 +3,10 @@ use super::*;
 #[test]
 fn test_tokenize() {
     assert_eq!(
-        tokenize("Hello, world! This is a test. CamelCase hyphenate-word snake_word"),
+        tokenize(
+            "Hello, world! This is a test. CamelCase hyphenate-word snake_word",
+            DOC_MIN_CHARS
+        ),
         vec![
             "Hello",
             "world",
@@ -20,6 +23,21 @@ fn test_tokenize() {
             "snake_word"
         ]
     );
+}
+
+/// A query keeps the short tokens a document drops: they can never hash to an
+/// indexed term, but the trailing one is prefix-expanded, and dropping it left
+/// `tokens.last()` empty — which is what made short queries return nothing.
+#[test]
+fn test_tokenize_query_keeps_short_tokens() {
+    assert_eq!(tokenize("v", QUERY_MIN_CHARS), vec!["v"]);
+    assert_eq!(tokenize("ve", QUERY_MIN_CHARS), vec!["ve"]);
+    assert!(tokenize("v", DOC_MIN_CHARS).is_empty());
+    assert!(tokenize("ve", DOC_MIN_CHARS).is_empty());
+
+    // The trailing partial word is what prefix expansion consumes, so it must
+    // survive alongside the complete token before it.
+    assert_eq!(tokenize("hashmap i", QUERY_MIN_CHARS).last(), Some(&"i"));
 }
 
 #[test]
@@ -96,7 +114,9 @@ fn test_prose_slices_matches_pulldown_cmark() {
 
     for text in test_cases {
         // Tokenize our prose slices
-        let our_tokens: Vec<&str> = prose_slices(text).flat_map(tokenize).collect();
+        let our_tokens: Vec<&str> = prose_slices(text)
+            .flat_map(|slice| tokenize(slice, DOC_MIN_CHARS))
+            .collect();
 
         // Extract non-code content from pulldown-cmark and tokenize
         let mut cmark_prose = String::new();
@@ -118,7 +138,7 @@ fn test_prose_slices_matches_pulldown_cmark() {
             }
         }
 
-        let cmark_tokens = tokenize(&cmark_prose);
+        let cmark_tokens = tokenize(&cmark_prose, DOC_MIN_CHARS);
 
         assert_eq!(
             our_tokens, cmark_tokens,

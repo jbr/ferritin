@@ -9,11 +9,6 @@
 use ferritin_common::crate_names::{CrateEntry, CrateIndex, normalize};
 use std::sync::Arc;
 
-/// Below this query length the endpoint returns nothing: single-character
-/// results are noise and would fan out over a large fraction of the namespace.
-/// A visible floor also makes the completion feel as-you-type.
-const TYPEAHEAD_MIN_CHARS: usize = 2;
-
 /// An owned typeahead result.
 #[derive(Debug, Clone)]
 pub(crate) struct TypeaheadEntry {
@@ -79,9 +74,16 @@ impl TypeaheadService {
     /// [`CrateIndex::typeahead`](ferritin_common::crate_names::CrateIndex::typeahead)),
     /// plus the total match count. `None` means no data is available (cold
     /// start fetch failed or hasn't succeeded yet) — the endpoint maps it to a
-    /// 503. A query shorter than [`TYPEAHEAD_MIN_CHARS`] returns an empty result.
+    /// 503.
+    ///
+    /// There is no query-length floor: a single character already names a
+    /// useful answer, since a 1-char query tokenizes to nothing (see
+    /// [`name_tokens`](ferritin_common::crate_names)) and so falls through to
+    /// the whole-name prefix alone, ranked by downloads — `s` means serde. An
+    /// *empty* query is still nothing, though: it prefixes every name, so the
+    /// only thing it could rank is the whole namespace.
     pub(crate) async fn typeahead(&self, prefix: &str, limit: usize) -> Option<TypeaheadResults> {
-        if prefix.chars().count() < TYPEAHEAD_MIN_CHARS {
+        if prefix.is_empty() {
             return Some(TypeaheadResults {
                 entries: Vec::new(),
                 total: 0,
