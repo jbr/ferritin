@@ -7,24 +7,45 @@
 //! any signal to act on: a log in which every probe succeeds gives fail2ban
 //! nothing to count.
 //!
-//! The app's routes are exactly `/` and `/{rust::item::path}` — a single
-//! segment. So a path that can't be a Rust item path can't be a route, and
-//! 404ing it is both more honest and more useful.
+//! The app's routes are exactly `/`, `/{rust::item::path}`, and the handful of
+//! `/~name` pages — all of them a single segment, with no `/` and no `.`. So a
+//! path that is none of those can't be a route, and 404ing it is both more
+//! honest and more useful.
 
 use percent_encoding::percent_decode_str;
 
-/// Whether `path` could name a Rust item, and so may be answered with the SPA
-/// index.
+/// The pages that aren't item paths.
 ///
-/// Accepts the root and one segment of `::`-separated identifiers: a crate name
-/// (which may contain `-`) followed by path segments (which may not). Rust item
-/// paths contain no `/` and no `.`, which is what excludes essentially all
-/// probe traffic.
+/// A crate name is `[A-Za-z0-9_-]+`, so a leading `~` can never collide with one
+/// — that is the whole reason the pages are named this way, and why this list can
+/// grow without ever shadowing a crate.
 ///
-/// The path is percent-decoded first, so an encoded `/` or `.` can't smuggle
-/// itself past the check.
+/// Exact matches, not a `/~` prefix: this gate's job is to name what exists. A
+/// prefix match would answer `/~anything` with the index and hand scanners a
+/// path that always 200s.
+///
+/// Keep in sync with the client's routes (`client/src/App.tsx`,
+/// `client/src/lib/paths.ts`).
+const PAGES: &[&str] = &["/~install"];
+
+/// Whether `path` could name a Rust item or a known page, and so may be answered
+/// with the SPA index.
+///
+/// Accepts the root, the pages in [`PAGES`], and one segment of `::`-separated
+/// identifiers: a crate name (which may contain `-`) followed by path segments
+/// (which may not). Rust item paths contain no `/` and no `.`, which is what
+/// excludes essentially all probe traffic — and the pages hold to that same
+/// shape, so nothing here weakens it.
+///
+/// The path is percent-decoded first, so an encoded `/`, `.` or `~` can't
+/// smuggle itself past the check.
 pub(super) fn is_app_route(path: &str) -> bool {
     let path = percent_decode_str(path).decode_utf8_lossy();
+
+    if PAGES.contains(&path.as_ref()) {
+        return true;
+    }
+
     let Some(path) = path.strip_prefix('/') else {
         return false;
     };
@@ -68,6 +89,37 @@ mod tests {
         assert!(is_app_route("/trillium-ratelimit"));
         assert!(is_app_route("/base64::engine::general_purpose::STANDARD"));
         assert!(is_app_route("/std::vec::Vec"));
+    }
+
+    #[test]
+    fn accepts_the_pages() {
+        assert!(is_app_route("/~install"));
+        // The decode happens before the check, so the encoded form is the same
+        // route rather than a second, unlisted one.
+        assert!(is_app_route("/%7Einstall"));
+    }
+
+    /// The `~` names the pages that exist; it does not open a namespace that
+    /// always answers. A crate can never live here, but neither can anything we
+    /// haven't listed.
+    #[test]
+    fn rejects_unlisted_pages() {
+        assert!(!is_app_route("/~"));
+        assert!(!is_app_route("/~nope"));
+        assert!(!is_app_route("/%7Enope"));
+        // Not a directory: the nested spelling is not the page, and never was.
+        assert!(!is_app_route("/~/install"));
+        assert!(!is_app_route("/~install/extra"));
+    }
+
+    /// The pages are one segment like every other route, so traversal is
+    /// rejected by the item-path grammar itself — there is no `/` for it to
+    /// hide behind.
+    #[test]
+    fn rejects_traversal_dressed_as_a_page() {
+        assert!(!is_app_route("/~install/../../.env"));
+        assert!(!is_app_route("/~/../.env"));
+        assert!(!is_app_route("/%7Einstall%2F..%2F.env"));
     }
 
     #[test]

@@ -775,22 +775,19 @@
   font-size: 1.1rem;
   line-height: 1.6;
   color: var(--muted);
-  margin: 0 0 1rem;
-}
-.home-try {
-  color: var(--muted);
-  margin: 0 0 0.6rem;
+  margin: 0 0 1.75rem;
 }
 
 /* The rotating example lives on its own line with a reserved height, so the
-   cross-fade between one type and the next never reflows the prose around it —
-   long name to short, the search box below it does not move. */
+   cross-fade between one type and the next never reflows the prose around it.
+   It trails the search box now, so the reserved height only has to keep the
+   hero's own bottom edge still. */
 .home-cycle-row {
   display: flex;
   align-items: baseline;
   gap: 0.6rem;
   min-height: 1.9rem;
-  margin: 0 0 1rem;
+  margin: 0.7rem 0 0;
 }
 .home-cycle-lead {
   font-size: 0.82rem;
@@ -853,6 +850,43 @@
   font-weight: 600;
 }
 
+/* The landing page's one pair of buttons. The primary is filled so it reads as
+   the section's action; the secondary only ever borders, so the two don't
+   compete — and neither competes with the search field, which is still the
+   page's real call to action. */
+.home-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1.4rem 0 0;
+}
+.home-cta {
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: var(--bg);
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+.home-cta:hover {
+  background: color-mix(in oklch, var(--accent) 85%, var(--ink));
+}
+.home-cta.secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--muted);
+}
+.home-cta.secondary:hover {
+  border-color: color-mix(in oklch, var(--accent) 50%, var(--border));
+  color: var(--ink);
+}
+
 .home-points {
   margin: 0;
 }
@@ -877,6 +911,14 @@
 /* --- install picker --- */
 .install {
   margin-bottom: 2.5rem;
+}
+/* The one snippet that wraps instead of scrolling. Everywhere else a long line
+   scrolling under the copy button is fine — you already know what the command
+   is. This one is a `curl … | sh`, and a reader deciding whether to pipe it into
+   a shell has to be able to read all of it without dragging it sideways first. */
+.install .snippet .code-block pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 .install-tabs {
   display: flex;
@@ -909,6 +951,106 @@
 }
 .install-note code {
   font-size: 0.9em;
+}
+
+/* --- lightbox --- */
+/* No border, panel or radius of our own. The screenshot carries a drop shadow in
+   its alpha, and that shadow *is* the frame: it's what makes the terminal read as
+   a window onto another context rather than one more card belonging to this page.
+   A border of ours would trace the image's box — which is the shadow's bounds, not
+   the window's — and land visibly crooked around it.
+   `line-height: 0` since the img is the button's only in-flow box; otherwise the
+   inline baseline reserves descender space beneath it. */
+.lightbox-trigger {
+  display: block;
+  width: 100%;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  line-height: 0;
+  background: transparent;
+  border: none;
+  cursor: zoom-in;
+  /* Transform only: it's composited, so the hover never invalidates layout and
+     never repaints the image — the whole animation lives on the GPU. */
+  transition: transform 200ms ease;
+}
+.lightbox-trigger:hover,
+.lightbox-trigger:focus-visible {
+  transform: scale(1.02);
+}
+.lightbox-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+.lightbox-trigger img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Drop the growth rather than merely un-animating it: a hover that snaps to a
+   larger size is the motion this preference is asking us not to make. The
+   zoom-in cursor and the focus ring still carry the affordance. */
+@media (prefers-reduced-motion: reduce) {
+  .lightbox-trigger {
+    transition: none;
+  }
+  .lightbox-trigger:hover,
+  .lightbox-trigger:focus-visible {
+    transform: none;
+  }
+}
+
+.lightbox {
+  max-width: 94vw;
+  max-height: 94vh;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: visible;
+}
+.lightbox img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 94vw;
+  max-height: 94vh;
+  border-radius: 10px;
+}
+/* A literal colour, not `var(--ink)`: `::backdrop` inherits from the originating
+   element only in recent browsers, and where it doesn't a custom property
+   resolves to nothing and the backdrop renders fully transparent. The image is a
+   dark terminal either way, so one dark scrim serves both themes. */
+.lightbox::backdrop {
+  background: rgb(0 0 0 / 0.72);
+}
+/* Fixed to the viewport corner rather than anchored to the image: the image's
+   box includes its transparent shadow margin, so anchoring would float the
+   control in dead space a variable distance from the window it closes. The
+   dialog is in the top layer, so this sits above the page regardless. */
+.lightbox-close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: rgb(255 255 255 / 0.75);
+  background: rgb(0 0 0 / 0.4);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.lightbox-close:hover {
+  color: #fff;
+  border-color: rgb(255 255 255 / 0.6);
+}
+/* `showModal` makes the page inert but not unscrollable, so the wheel still
+   moves the document behind the scrim. */
+body:has(dialog.lightbox[open]) {
+  overflow: hidden;
 }
 
 @media (max-width: 60rem) {
