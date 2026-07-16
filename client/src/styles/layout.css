@@ -84,8 +84,23 @@
   font-weight: 500;
   letter-spacing: -0.01em;
 }
-/* No `margin-left: auto` here — `.search-slot` absorbs the free space, so the
-   search box (and the theme toggle after it) sit hard against the right edge. */
+/* The crate appears twice in a bar too narrow for it once — as the breadcrumb and
+   as the scope chip. The chip is the one that earns its place: it says what the
+   search will search, and its × is how you leave that scope. Dropping the
+   breadcrumb here rather than at the phone breakpoint is what keeps the resting
+   box's room ahead of its appetite: it sizes itself to the chip (see
+   `min-width: max-content` below), and a long crate name would otherwise outgrow
+   the gap between breadcrumb and toggle and cover the very name it repeats. */
+@media (max-width: 60rem) {
+  .brand-sep,
+  .brand-crate,
+  .brand-version {
+    display: none;
+  }
+}
+/* No `margin-left: auto` here — `.search-slot` absorbs the free space (it is
+   `flex: 1`), so the search box and the theme toggle after it sit hard against the
+   right edge. */
 .topbar-right {
   display: flex;
   align-items: center;
@@ -104,10 +119,14 @@
    height animate, so it grows leftward and downward — expanding in place rather
    than teleporting. The results are mounted from the start and simply clipped by
    `overflow: hidden` at the resting size. */
+/* The slot is the box's *room*, not its footprint: it takes the top bar's free
+   space (`flex: 1`) rather than a fixed width, so the box — pinned to its right
+   edge — is free to size itself to its own row. That is what lets a long scope
+   chip widen the resting box leftward instead of being clipped by it. */
 .search-slot {
   position: relative;
-  margin-left: auto;
-  width: var(--search-w);
+  flex: 1;
+  min-width: var(--search-w);
   height: var(--search-h);
   --search-w: 196px;
   --search-h: 32px;
@@ -121,6 +140,13 @@
   right: 0;
   z-index: 60;
   width: var(--search-w);
+  /* Never narrower than its own row, so a long scope chip ("in trillium-http")
+     widens the box rather than pushing the ⌘K key out through its right edge.
+     `--search-w` is the *floor*, not the width. Held in both states so the growth
+     animation starts from the width the box actually had — the clamp simply stops
+     applying once the interpolated width passes it. Only the row may size the box
+     this way: the panel below is contained and the input contributes nothing. */
+  min-width: max-content;
   height: var(--search-h);
   display: flex;
   flex-direction: column;
@@ -181,8 +207,8 @@
    pinning, no overlay. It sits in the flow under the hero, permanently open, so
    the crate typeahead over all of crates.io is the first thing you can touch. */
 .search-slot.inline {
-  margin-left: 0;
   width: 100%;
+  min-width: 0;
   height: auto;
   --search-h: 52px;
 }
@@ -302,6 +328,13 @@
   border-color: var(--accent);
   color: var(--bg);
 }
+/* Only ever truncates where the chip is allowed to shrink (a phone, below) — the
+   box grows to fit it everywhere else. */
+.scope-chip-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .scope-chip-x {
   background: none;
   border: none;
@@ -328,8 +361,13 @@
 .search-icon {
   color: var(--faint);
 }
+/* `width: 0` with an `auto` basis, not `flex: 1`'s percentage basis: the input's
+   default intrinsic width (~20 characters) would otherwise count towards the box's
+   `min-width: max-content` and widen the open box for no one. It still grows into
+   whatever the row has left, which is the only width that ever mattered here. */
 .search-input {
-  flex: 1;
+  flex: 1 1 auto;
+  width: 0;
   min-width: 0;
   background: none;
   border: none;
@@ -370,6 +408,10 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  /* The panel takes its width from the box, never the other way round: result
+     paths are `nowrap`, so without inline-size containment their intrinsic width
+     would feed back into the box's `min-width: max-content` and blow it open. */
+  contain: inline-size;
   border-top: 1px dashed var(--border);
 }
 .search-results {
@@ -449,14 +491,6 @@
     gap: 0.75rem;
     padding: 0.75rem 0.9rem;
   }
-  /* The crate appears twice in a bar too narrow for it once — as the breadcrumb
-     and as the scope chip. The chip is the one that earns its place: it says what
-     the search will search, and tapping its × is how you leave that scope. */
-  .brand-sep,
-  .brand-crate,
-  .brand-version {
-    display: none;
-  }
   /* `backdrop-filter` makes an element the containing block for its fixed-position
      descendants: with the blur on, the sheet below is positioned against the top
      bar in WebKit but against the viewport in Blink. A phone doesn't need the
@@ -476,6 +510,17 @@
   .search-slot {
     --search-w-open: calc(100vw - 1rem);
     --search-h-open: min(60svh, 22rem);
+  }
+  /* A phone has no free space for the box to grow leftward into — widening it to
+     fit a long crate name would just walk it over the brand. So the clamp comes
+     off and the chip is the thing that gives way: it shrinks and ellipsises
+     ("in tokio-tungsteni…") inside the footprint the box already has. */
+  .search-box {
+    min-width: 0;
+  }
+  .scope-chip {
+    flex-shrink: 1;
+    min-width: 0;
   }
   .search-box[data-expanded] {
     position: fixed;
