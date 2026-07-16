@@ -111,10 +111,26 @@ pub(super) struct RenderCache<'a> {
     pub actions: Vec<(Rect, TuiAction<'a>)>,
 }
 
+/// The status line when nothing more specific has anything to say.
+///
+/// This is the TUI's only discoverability affordance — there is no menu bar — so
+/// the resting state of the status line is what you can press.
+pub(super) const IDLE_HINT: &str =
+    "ferritin - q:quit ?:help ←/→:history g:go s:search l:list c:code";
+
 /// UI display state
 #[derive(Debug)]
 pub(super) struct UiState {
     pub mouse_enabled: bool,
+    /// The status line's contents — **not** debug output, despite the name.
+    /// This is the key hints, errors, load progress, the search buffer and the
+    /// hovered link's target: the only line of the TUI that talks to the reader.
+    ///
+    /// The name has invited exactly one bug already, so it is worth stating: the
+    /// idle branch used to print the mouse's coordinates here, which silently ate
+    /// the key hints on the first mouse move and left them gone for the session.
+    /// Nothing belongs here that a reader would not want to read. See
+    /// [`InteractiveState::idle_status`].
     pub debug_message: Cow<'static, str>,
     pub is_hovering: bool,
     pub supports_cursor: bool,
@@ -214,8 +230,7 @@ impl<'a> InteractiveState<'a> {
             ui_mode: UiMode::Normal,
             ui: UiState {
                 mouse_enabled: true,
-                debug_message: "ferritin - q:quit ?:help ←/→:history g:go s:search l:list c:code"
-                    .into(),
+                debug_message: IDLE_HINT.into(),
                 is_hovering: false,
                 supports_cursor: supports_cursor_shape(),
                 include_source: false,
@@ -231,6 +246,29 @@ impl<'a> InteractiveState<'a> {
             render_context,
             theme,
             current_theme_name,
+        }
+    }
+
+    /// The status line with nothing to report: the key hints, plus any mode that
+    /// is *not* where you'd assume it.
+    ///
+    /// A mode announces itself only when it's off its default — `Mouse: ON` and
+    /// `Source: OFF` describe the state you already expected, so saying them
+    /// costs the hints their only line and teaches the eye to skip the bar.
+    /// Their opposites are worth the space: each one explains a surprise.
+    pub(super) fn idle_status(&self) -> Cow<'static, str> {
+        let source = if self.ui.include_source {
+            " | Source: ON"
+        } else {
+            ""
+        };
+
+        if !self.ui.mouse_enabled {
+            format!("Mouse: OFF (text selection enabled - m to re-enable){source}").into()
+        } else if source.is_empty() {
+            IDLE_HINT.into()
+        } else {
+            format!("{IDLE_HINT}{source}").into()
         }
     }
 

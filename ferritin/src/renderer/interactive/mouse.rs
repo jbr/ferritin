@@ -257,22 +257,11 @@ impl<'a> super::InteractiveState<'a> {
                         }
                     };
                 } else {
-                    self.ui.debug_message = format!(
-                        "Pos: ({}, {}) | Scroll: {} | Mouse: ON | Source: {}",
-                        pos.x,
-                        pos.y,
-                        self.viewport.scroll_offset,
-                        if self.ui.include_source { "ON" } else { "OFF" }
-                    )
-                    .into();
+                    self.ui.debug_message = self.idle_status();
                 }
             }
         } else {
-            self.ui.debug_message = format!(
-                "Mouse: OFF (text selection enabled - m to re-enable) | Source: {}",
-                if self.ui.include_source { "ON" } else { "OFF" }
-            )
-            .into();
+            self.ui.debug_message = self.idle_status();
         }
     }
 
