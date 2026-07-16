@@ -380,7 +380,9 @@ export function SearchBox({
                 // Backspace-Backspace path.
                 aria-label={`Scoped to ${effectiveCrate}`}
               >
-                in {effectiveCrate}
+                {/* The label is one element, not loose text, so it can be the
+                    thing that truncates when the chip runs out of room. */}
+                <span className="scope-chip-label">in {effectiveCrate}</span>
                 <button
                   type="button"
                   className="scope-chip-x"
@@ -444,7 +446,9 @@ export function SearchBox({
               ⌕
             </span>
             {crate ? (
-              <span className="scope-chip">in {crate}</span>
+              <span className="scope-chip">
+                <span className="scope-chip-label">in {crate}</span>
+              </span>
             ) : (
               <span className="search-label">{restingLabel}</span>
             )}
