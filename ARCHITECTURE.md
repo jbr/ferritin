@@ -258,7 +258,7 @@ $CARGO_HOME/rustdoc-json/{format-version}/{crate}/{version}.json
 ```
 
 **Multi-version support:**
-- Supports rustdoc JSON format versions 55-60 natively, plus newer additive formats (see below)
+- Supports rustdoc JSON format versions 48-60 natively, plus newer additive formats (see below)
 - Fetches zstd-compressed JSON from docs.rs via the suffix-less URL
   (`.../json`), which serves whatever format the release was built with; the
   actual `format_version` is read from the JSON itself. Formats older than the
@@ -302,9 +302,11 @@ Results are scored `term_match · (tokens matched) + whole_prefix (for a whole-n
 
 The `conversions` module normalizes any supported rustdoc JSON format to the canonical `FORMAT_VERSION` on read. This lets us cache older-format JSON and avoid re-fetches when normalization logic changes.
 
-Every format bump in the supported range (55..=current) has so far been **read-compatible**: each adds a field or an enum variant without removing, renaming, or retyping anything we read. Because `rustdoc-types` does not `deny_unknown_fields`, an added `Option` field defaults to `None` when absent, and an added enum variant never appears in older data, such formats deserialize *directly* into the canonical types — no per-version `rustdoc-types` crate is needed. The single exception across 55..=60 is `ExternalCrate::path`, a required `PathBuf` added in format 57; `load_and_normalize` injects an empty value into pre-57 JSON (its only structural patch) before parsing. This same additive tolerance handles formats *newer* than the `rustdoc-types` we build against: `load_and_normalize` parses them directly and surfaces a clear "needs an update" error only if a genuinely breaking change prevents it, so ferritin can read crates built with a newer docs.rs toolchain before a matching `rustdoc-types` release exists.
+Most format bumps in the supported range (48..=current) are **read-compatible**: each adds a field or an enum variant without removing, renaming, or retyping anything we read. Because `rustdoc-types` does not `deny_unknown_fields`, an added `Option` field defaults to `None` when absent, and an added enum variant never appears in older data, such formats deserialize *directly* into the canonical types — no per-version `rustdoc-types` crate is needed. The two exceptions across 48..=60 are both handled by a single `serde_json::Value` walk before the typed parse: `ExternalCrate::path`, a required `PathBuf` added in format 57 (`load_and_normalize` injects an empty value into pre-57 JSON), and `Item::attrs`, retyped from `Vec<String>` to the structured `Vec<Attribute>` in format 54 (pre-54 JSON carries plain strings that can't deserialize into `Attribute`, so `load_and_normalize` blanks the field — which ferritin never reads — to `[]`). A third non-additive change, `Path::args` gaining an `Option` wrapper in format 51, needs no patch: serde reads a present value as `Some`, so pre-51 data parses unchanged. This same additive tolerance handles formats *newer* than the `rustdoc-types` we build against: `load_and_normalize` parses them directly and surfaces a clear "needs an update" error only if a genuinely breaking change prevents it, so ferritin can read crates built with a newer docs.rs toolchain before a matching `rustdoc-types` release exists.
 
-**If a future format makes a genuinely read-breaking change**, the additive shortcut fails for that hop. The fix is to pin a `rustdoc-types` crate for the older format, parse with it, and translate to the canonical types in `conversions` — the chained-conversion pattern this module used before the formats turned out to be uniformly additive (preserved in git history).
+The 48 floor is *surveyed*, not intrinsic — every hop from 48 up is either additive or covered by those patches. Older formats are untriaged rather than known-broken; lowering the floor is a matter of diffing the intervening `rustdoc-types` releases for a read-breaking change to a field we actually consume (`attrs`, which we ignore, does not count).
+
+**If a future — or older — format makes a genuinely read-breaking change to a field we consume**, neither JSON-level shortcut applies for that hop. The fix is to pin a `rustdoc-types` crate for that format, parse with it, and translate to the canonical types in `conversions` — the chained-conversion pattern this module used before the formats turned out to be near-uniformly additive (preserved in git history).
 
 ### rkyv Sidecar Cache
 
