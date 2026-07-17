@@ -13,3 +13,15 @@ git_release_draft = true
 name = "ferritin-common"
 git_tag_enable = false
 git_release_enable = false
+
+# ferritin's `include` ships `client/dist`, which is gitignored and built by the
+# release workflow's `pnpm build` step. Cargo's VCS check runs before packaging
+# and rejects package files that aren't committed, so the very assets we mean to
+# ship read as "uncommitted changes" and abort the publish. Scoped to this
+# package rather than the workspace: ferritin-common and rustdoc-mcp have no
+# build artifacts and should keep the strict check. The blast radius here is
+# exactly `client/dist` — the CI checkout is clean, and the only other thing
+# `pnpm build` writes is `node_modules`, which `include` does not match.
+[[package]]
+name = "ferritin"
+publish_allow_dirty = true
