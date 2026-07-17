@@ -28,7 +28,7 @@ Search results for 'generic struct'
   ◦ [core::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.0
     A trait for borrowing data. [...]
 
-  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html)  (Struct) - score: 63.7
+  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html)  (Struct) - score: 63.6
     A simple struct for testing basic functionality. [...]
 
   ◦ [std::clone::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 63.4
