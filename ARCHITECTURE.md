@@ -379,10 +379,14 @@ Returns appropriate items based on item type:
 
 ### Resolving a `Use` target
 
-A `Use` carries both a target `id` and a `source` *string* (the path as written
-in Rust source). `Resolver::follow_use` resolves them in this order, and the
-order matters for correctness:
+A `Use` carries an optional target `id` and a `source` *string* (the path as
+written in Rust source). `Resolver::follow_use` resolves them in this order, and
+the order matters for correctness:
 
+0. **No `id` at all** → a primitive re-export (`pub use i32 as my_i32;`), and
+   nothing else: rustdoc documents `Use::id` as `None` exactly for this case,
+   because primitives have no DefId to record. Handled by
+   `Resolver::resolve_primitive`, which never reaches step 3.
 1. **`id` in the local index** → a same-crate target; return it directly. Index
    membership is the definitive test for locality, so this is deterministic, not
    a guess: within one crate an `id` is either a local item (in `index`) or a
@@ -390,8 +394,7 @@ order matters for correctness:
 2. **`id` via the `paths` map** (`Resolver::get_path`) → a cross-crate re-export.
    The summary names the owning crate and the item's *definition path*; we cross
    into that crate and resolve there.
-3. **The `source` string** → last resort only (the `id` is absent, or names no
-   reachable item).
+3. **The `source` string** → last resort only (the `id` names no reachable item).
 
 The `source` string is the fallback rather than the primary key because **its
 leading segment can be a local alias, not a real crate name.** rustdoc emits
@@ -402,6 +405,18 @@ crate literally named `proto` (an unrelated crate on docs.rs) and fail; the
 `use.id`, by contrast, points through the `paths` map at the real
 `quinn_proto`. The fixture `tests/test-workspace/crate-b` reproduces this with a
 source-level alias (`use crate_a as aliased_a`).
+
+Primitive re-exports are pulled out ahead of that fallback for the same reason,
+in its sharpest form: their `source` is a bare primitive name, and `bool`,
+`char`, `str` and `u128` are all real crates on crates.io. `core::primitive` is
+17 such re-exports, and `std::primitive` *is* `core::primitive` (a single
+`use core::primitive` with a real id), so indexing `std` reached all 17 — loading
+four unrelated crates from crates.io and splicing them into the `std` search
+index under fabricated `std::primitive::bool::…` paths, while 404ing on the other
+13. `resolve_primitive` instead looks the name up in the kind-qualified path
+index (`prim@bool`), which can only match a primitive, so no hardcoded list of
+primitive names is needed. `core` and `std` each carry their own primitive items,
+so only a third-party re-export falls back to loading `core`.
 
 `get_path` resolves the cross-crate definition path through the target crate's
 reverse path index (`RustdocData::lookup_definition_path`) rather than a

@@ -139,6 +139,17 @@ impl RustdocData {
             .paths
             .insert(id, summary);
     }
+
+    /// Insert an extra item into the resident crate's index, for items reached
+    /// through the path index rather than a module's `items` list.
+    pub(crate) fn insert_item_for_test(&mut self, item: rustdoc_types::Item) {
+        self.resident
+            .as_mut()
+            .and_then(Arc::get_mut)
+            .expect("test crate must be uniquely resident")
+            .index
+            .insert(item.id, item);
+    }
 }
 
 impl RustdocData {

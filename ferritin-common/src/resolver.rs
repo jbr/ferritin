@@ -37,6 +37,7 @@ use crate::{
     DocRef, Navigator, RustdocData,
     doc_ref::ParentRef,
     iterators::{LazyChild, LazyChildren},
+    rustdoc_data::kind_discriminator,
     string_utils::case_aware_jaro_winkler,
 };
 use fieldwork::Fieldwork;
@@ -537,24 +538,31 @@ impl<'a> Resolver<'a> {
         parent_module: DocRef<'a, Item>,
     ) -> Option<DocRef<'a, Item>> {
         let use_inner = use_item.item();
-        // An id present in this crate's index *is* a local item — index
-        // membership is the definitive locality test, so this is deterministic,
-        // not a guess. If the id is absent from the index it's a foreign
-        // reference; `get_path` reads the `paths` summary to cross into the
-        // owning crate and resolve there. Only when neither succeeds (no id, or
-        // an id that names no reachable item) do we fall through to parsing the
+        // No id at all means a primitive re-export, definitively: rustdoc
+        // documents `Use::id` as `None` exactly for `pub use i32 as my_i32;`,
+        // because primitives have no DefId to record. Those never reach the
+        // `source` fallback below — see `resolve_primitive`.
+        //
+        // Otherwise: an id present in this crate's index *is* a local item —
+        // index membership is the definitive locality test, so this is
+        // deterministic, not a guess. If the id is absent from the index it's a
+        // foreign reference; `get_path` reads the `paths` summary to cross into
+        // the owning crate and resolve there. Only when neither succeeds (an id
+        // that names no reachable item) do we fall through to parsing the
         // `source` string. That string is the last resort precisely because its
         // leading segment can be a local alias: quinn re-exports `quinn_proto`
         // as `proto` and `quinn_udp` as `udp`, so a `source` of
         // `proto::ServerConfig` / `udp` would otherwise load the unrelated
         // `proto` / `udp` crates from crates.io.
-        if let Some(id) = use_inner.id {
-            if let Some(target) = use_item.crate_docs().get(self.navigator, &id) {
-                return Some(target);
-            }
-            if let Some(target) = self.get_path(parent_module, id) {
-                return Some(target);
-            }
+        let Some(id) = use_inner.id else {
+            return self.resolve_primitive(use_item, &use_inner.source);
+        };
+
+        if let Some(target) = use_item.crate_docs().get(self.navigator, &id) {
+            return Some(target);
+        }
+        if let Some(target) = self.get_path(parent_module, id) {
+            return Some(target);
         }
 
         self.with_pushed(use_item.into(), None, |resolver| {
@@ -563,6 +571,48 @@ impl<'a> Resolver<'a> {
             resolver.resolve_path(&rewritten, &mut vec![])
         })
         .flatten()
+    }
+
+    /// Resolve a primitive re-export — a `Use` with no target id — to the
+    /// primitive item itself.
+    ///
+    /// The bare primitive name in `source` is all that identifies the target,
+    /// and it must never be read as a crate path: `bool`, `char`, `str` and
+    /// `u128` are all real crates.io crates, so `core::primitive`'s 17
+    /// `pub use bool;`-style items would otherwise each load an unrelated crate
+    /// and splice it into the caller's crate — under a fabricated
+    /// `std::primitive::bool::…` path, if the caller is building a search index.
+    ///
+    /// The kind-qualified path index does the work: `prim@bool` can only match
+    /// a primitive, so no list of primitive names is needed here and `f16` /
+    /// `f128` / anything added later stays correct. `core` and `std` both carry
+    /// their own primitive items, so only a third-party re-export reaches past
+    /// its own crate into `core`.
+    /// Takes `&self`: a primitive re-export terminates the chain, so unlike the
+    /// `source`-string fallback there is nothing here to cycle through.
+    fn resolve_primitive(
+        &self,
+        use_item: DocRef<'a, Use>,
+        source: &str,
+    ) -> Option<DocRef<'a, Item>> {
+        // `source` is normally the bare name, but a `pub use std::primitive::i32`
+        // spells the target out; the kind filter makes the last segment safe.
+        let name = source.rsplit("::").next()?;
+        let key = format!("{}@{name}", kind_discriminator(ItemKind::Primitive));
+
+        let own = use_item.crate_docs();
+        if let Some(target) = own
+            .path_to_id
+            .get(&key)
+            .and_then(|id| own.get(self.navigator, id))
+        {
+            return Some(target);
+        }
+
+        let core = self.navigator.load_crate("core", &VersionReq::STAR)?;
+        core.path_to_id
+            .get(&key)
+            .and_then(|id| core.get(self.navigator, id))
     }
 
     /// Resolve a [`LazyChild`] to a concrete item. For non-glob Uses, the

@@ -551,7 +551,13 @@ impl<'a> Terms<'a> {
 /// previously recursed them without pushing their id, so their document key
 /// collapsed to the already-visited trait's and they were dropped entirely —
 /// no `Iterator::collect`, no `Read::read_to_string`.
-const INDEX_FORMAT_VERSION: u32 = 4;
+///
+/// v5: the format is unchanged; the bump exists to invalidate v4 archives,
+/// whose contents are wrong. `core::primitive`'s primitive re-exports used to
+/// resolve their bare `source` name as a crate name, so indexing any crate that
+/// reaches `core::primitive` walked the unrelated crates.io `bool`, `char`,
+/// `str` and `u128` crates into the archive under `std::primitive::*` paths.
+const INDEX_FORMAT_VERSION: u32 = 5;
 
 /// Dev tuning knob: an env-var override for a scoring constant, so parameter
 /// point probes don't need a recompile per point. `index_time` knobs bake into

@@ -563,6 +563,176 @@ fn cross_crate_prefix_resolves_in_nested_module() {
     );
 }
 
+/// Build a synthetic primitive item plus the `paths` entry that puts it in the
+/// kind-qualified path index as `prim@{name}`, the key `resolve_primitive` uses.
+#[cfg(test)]
+fn add_synth_primitive(krate: &mut RustdocData, crate_name: &str, id: u32, name: &str) {
+    use rustdoc_types::{Id, ItemSummary, Primitive};
+
+    krate.insert_item_for_test(synth_item(
+        id,
+        Some(name),
+        rustdoc_types::ItemEnum::Primitive(Primitive {
+            name: name.to_owned(),
+            impls: vec![],
+        }),
+    ));
+    krate.insert_path_for_test(
+        Id(id),
+        ItemSummary {
+            crate_id: 0,
+            path: vec![crate_name.to_owned(), name.to_owned()],
+            kind: ItemKind::Primitive,
+        },
+    );
+    krate.build_path_index();
+}
+
+/// A `Use` with no target id is a primitive re-export, and nothing else:
+/// rustdoc documents `Use::id` as `None` exactly for `pub use i32 as my_i32;`,
+/// because primitives have no DefId to record. Its `source` is then the bare
+/// primitive name — which must never be read as a crate name, because `bool`,
+/// `char`, `str` and `u128` are all real crates on crates.io.
+///
+/// `core::primitive` is 17 such re-exports and `std::primitive` *is*
+/// `core::primitive`, so indexing `std` used to load those four unrelated crates
+/// and splice them into the search index under fabricated `std::primitive::bool::…`
+/// paths (404ing on the other 13 en route). The crate named `bool` pinned below
+/// stands in for the crates.io one: resolution must reach the primitive, not it.
+#[test]
+fn primitive_reexport_does_not_resolve_to_a_crate_of_the_same_name() {
+    let mut home = synth_crate(
+        "home",
+        1,
+        vec![(1, None, vec![2]), (2, Some("primitive"), vec![10])],
+        vec![synth_use(10, "bool", "bool", None)],
+    );
+    add_synth_primitive(&mut home, "home", 50, "bool");
+
+    // Stands in for the real crates.io `bool` crate (0.3.0), which the old
+    // `source`-string fallback resolved to.
+    let decoy = synth_crate(
+        "bool",
+        1,
+        vec![(1, None, vec![100])],
+        vec![synth_item(100, Some("Decoy"), synth_unit_struct())],
+    );
+
+    let nav = Navigator::default();
+    nav.pin_for_test("home", home);
+    nav.pin_for_test("bool", decoy);
+
+    let item = resolve(&nav, "home::primitive::bool");
+
+    assert_eq!(
+        item.kind(),
+        ItemKind::Primitive,
+        "`use bool;` must resolve to the primitive, not to the crate named `bool`"
+    );
+    assert_eq!(
+        item.crate_docs().name(),
+        "home",
+        "resolution must stay in the re-exporting crate, not cross into the decoy"
+    );
+}
+
+/// The primitive lookup is kind-filtered (`prim@bool`), so a *non*-primitive
+/// item sharing the name can't be mistaken for one. Without the kind filter the
+/// unqualified `bool` entry in the path index would match this struct.
+#[test]
+fn primitive_reexport_ignores_same_named_non_primitive() {
+    use rustdoc_types::{Id, ItemSummary};
+
+    let mut home = synth_crate(
+        "home",
+        1,
+        vec![(1, None, vec![2]), (2, Some("primitive"), vec![10])],
+        vec![
+            synth_use(10, "bool", "bool", None),
+            synth_item(60, Some("bool"), synth_unit_struct()),
+        ],
+    );
+    home.insert_path_for_test(
+        Id(60),
+        ItemSummary {
+            crate_id: 0,
+            path: vec!["home".into(), "bool".into()],
+            kind: ItemKind::Struct,
+        },
+    );
+    home.build_path_index();
+
+    let nav = Navigator::default();
+    nav.pin_for_test("home", home);
+
+    // No primitive anywhere to find (no `core` source on this Navigator), and the
+    // struct must not stand in for one.
+    assert!(
+        Resolver::new(&nav)
+            .resolve_path("home::primitive::bool", &mut vec![])
+            .is_none(),
+        "a struct named `bool` must not satisfy a primitive re-export"
+    );
+}
+
+/// A third-party crate's primitive re-export (`pub use i32 as my_i32;` —
+/// rustdoc's own documented example) has no primitive item of its own to resolve
+/// against, so it falls back to `core`.
+#[test]
+fn third_party_primitive_reexport_falls_back_to_core() {
+    let home = synth_crate(
+        "home",
+        1,
+        vec![(1, None, vec![10])],
+        vec![synth_use(10, "my_i32", "i32", None)],
+    );
+
+    // test_navigator carries a real StdSource, so `core` is loadable.
+    let nav = test_navigator();
+    nav.pin_for_test("home", home);
+
+    let item = resolve(&nav, "home::my_i32");
+
+    assert_eq!(item.kind(), ItemKind::Primitive);
+    assert_eq!(
+        item.crate_docs().name(),
+        "core",
+        "a crate with no primitive items of its own resolves them through core"
+    );
+    // The `as my_i32` rename survives the hop into core: `resolve_lazy_child`
+    // reapplies the import's name to the target it lands on.
+    assert_eq!(item.name(), Some("my_i32"));
+}
+
+/// The real thing, end to end against the toolchain's rustdoc JSON: every
+/// primitive re-exported by `core::primitive` resolves to that primitive.
+/// `std::primitive` reaches the same 17 items through a single
+/// `use core::primitive` that *does* carry an id.
+#[test]
+fn std_primitive_module_resolves_to_primitives() {
+    let nav = test_navigator();
+
+    for name in ["bool", "char", "str", "u128", "f32", "usize"] {
+        for path in [
+            format!("core::primitive::{name}"),
+            format!("std::primitive::{name}"),
+        ] {
+            let item = resolve(&nav, &path);
+            assert_eq!(
+                item.kind(),
+                ItemKind::Primitive,
+                "{path} should be a primitive"
+            );
+            assert_eq!(item.name(), Some(name), "{path} resolved to the wrong item");
+            assert_eq!(
+                item.crate_docs().name(),
+                "core",
+                "{path} should resolve to core's primitive item"
+            );
+        }
+    }
+}
+
 /// Regression guard: previously, if any one `Use` in a module's `items` list could not
 /// be resolved (neither `use.id` in the local index nor `resolve_path(&use.source)`),
 /// `IdIter` short-circuited via `?` and yielded nothing further. That silently dropped
