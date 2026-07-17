@@ -153,12 +153,21 @@ pub fn serve() {
     // The typeahead reads the same crate-names artifact the docs.rs source
     // resolves versions from, so it shares that index rather than loading a
     // second copy of it.
-    let typeahead = Arc::new(TypeaheadService::new(
-        store
-            .docsrs_source()
-            .map(|source| Arc::clone(source.client().crate_index())),
-        std_crates,
-    ));
+    let crate_index = store
+        .docsrs_source()
+        .map(|source| Arc::clone(source.client().crate_index()));
+
+    // Keep that shared index fresh out of band: a detached task loads it once
+    // and revalidates hourly, so no request ever pays to fetch or revalidate
+    // the artifact — every lookup just reads what the task last loaded.
+    if let Some(index) = crate_index.clone() {
+        trillium_smol::async_global_executor::spawn(async move {
+            index.run_periodic_refresh().await;
+        })
+        .detach();
+    }
+
+    let typeahead = Arc::new(TypeaheadService::new(crate_index, std_crates));
 
     let pool = Arc::new(
         ThreadPoolBuilder::new()

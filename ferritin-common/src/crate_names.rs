@@ -4,8 +4,8 @@
 //! download rank and description — is published daily as a pair of zstd
 //! artifacts (~2 MB and ~5.5 MB) by <https://github.com/jbr/crate-names>.
 //! [`CrateIndex`] fetches them, caches them on disk, revalidates them with a
-//! conditional GET (`If-None-Match`) once per [`REFRESH_INTERVAL`], and hands
-//! queries to the sans-io [`crate_names`] readers.
+//! conditional GET (`If-None-Match`), and hands queries to the sans-io
+//! [`crate_names`] readers.
 //!
 //! Two callers share one index:
 //!
@@ -22,12 +22,24 @@
 //! Callers must treat a miss as "unknown", not "no such crate", and fall back
 //! to the crates.io API; see [`DocsRsClient::resolve`](crate::sources::DocsRsSource).
 //!
-//! Within that bound, freshness is stale-while-revalidate: once data is loaded,
-//! queries are answered immediately from it, and at most one caller pays for a
-//! revalidation in the background of its own query. Only a cold start (nothing
-//! in memory *or* on disk) waits on the network, and fetch failures are
-//! remembered briefly so an offline process degrades to fast misses rather than
-//! hanging every lookup on a timeout.
+//! Within that bound, refresh is kept off the request path. A query never
+//! fetches once data is loaded; it only reads what is in memory. Freshness is
+//! someone else's job:
+//!
+//! - A long-lived server runs [`CrateIndex::run_periodic_refresh`] as a detached task, which loads
+//!   the data once at startup and thereafter revalidates it with a conditional GET (a 304 in the
+//!   common case) scheduled from the artifact's `Last-Modified` — once a day, timed to just after
+//!   the next expected publish rather than polled hourly (see [`CrateIndex::refresh_delay`]). Every
+//!   request is answered from whatever that task last loaded — within [`WATCH_INTERVAL`] of the
+//!   artifact, itself up to a day behind crates.io.
+//! - A short-lived CLI process runs no such task. Its first query cold-starts, loading from disk
+//!   and revalidating then only if a new daily build is already due, and the process exits before
+//!   that data could go stale in memory.
+//!
+//! Either way, only a genuine cold start (nothing in memory *or* on disk) waits
+//! on the network, and cold-start failures are remembered briefly so an offline
+//! process degrades to fast misses rather than hanging every lookup on a
+//! timeout.
 //!
 //! # Tiers
 //!
@@ -56,13 +68,21 @@ use trillium_compression::client::Compression;
 use trillium_logger::{Target, client::ClientLogger};
 use trillium_redirect::client::FollowRedirects;
 use trillium_rustls::RustlsConfig;
-use trillium_smol::ClientConfig;
+use trillium_smol::{ClientConfig, async_io::Timer};
 
-/// How long loaded data is served before a revalidation is attempted. The
-/// artifacts only change once a day, so hourly conditional GETs (a 304 in the
-/// common case) keep us within an hour of publication for the cost of one
-/// round trip an hour, shared across every crate.
-const REFRESH_INTERVAL: Duration = Duration::from_secs(60 * 60);
+/// Expected wall-clock time between artifact publishes. The crate-names
+/// workflow rebuilds once a day, so a copy we hold stays current until about
+/// this long after its `Last-Modified`, and the next revalidation is *scheduled*
+/// for then rather than polled for every hour. See
+/// [`CrateIndex::run_periodic_refresh`].
+const PUBLISH_PERIOD: Duration = Duration::from_secs(24 * 60 * 60);
+
+/// How often to re-check once a rebuild is overdue: we are past the expected
+/// publish but the artifact we hold has not changed yet (the workflow ran late,
+/// or its response carried no `Last-Modified` to schedule from). Short enough to
+/// catch a late publish promptly, long enough that a skipped day costs a handful
+/// of conditional GETs rather than one an hour.
+const WATCH_INTERVAL: Duration = Duration::from_secs(30 * 60);
 
 /// After a failed fetch with nothing loaded, how long lookups fail fast before
 /// the next network attempt.
@@ -108,6 +128,13 @@ struct DiskMeta {
     /// Unix seconds at the last successful fetch *or revalidation*. A 304
     /// refreshes this without rewriting the artifacts.
     fetched_at: u64,
+    /// The artifact's upstream `Last-Modified` as unix seconds — when this build
+    /// was published — which is what the next revalidation is scheduled from.
+    /// `None` when the response carried no parseable `Last-Modified` (or the
+    /// sidecar predates this field), in which case we fall back to a
+    /// [`WATCH_INTERVAL`] cadence off `fetched_at`.
+    #[serde(default)]
+    last_modified: Option<u64>,
 }
 
 impl DiskMeta {
@@ -115,6 +142,16 @@ impl DiskMeta {
     /// jumped backwards reads as "just now" rather than "impossibly stale".
     fn age(&self) -> Duration {
         Duration::from_secs(now_unix().saturating_sub(self.fetched_at))
+    }
+
+    /// Unix seconds at which the held artifact is due for revalidation: one
+    /// [`PUBLISH_PERIOD`] after it was published, or — lacking a `Last-Modified`
+    /// to anchor to — one [`WATCH_INTERVAL`] after we last confirmed it.
+    fn due_at(&self) -> u64 {
+        match self.last_modified {
+            Some(published) => published.saturating_add(PUBLISH_PERIOD.as_secs()),
+            None => self.fetched_at.saturating_add(WATCH_INTERVAL.as_secs()),
+        }
     }
 }
 
@@ -129,6 +166,10 @@ struct Loaded {
     names: CrateNames,
     descriptions: Descriptions,
     etags: Etags,
+    /// The loaded build's `Last-Modified` as unix seconds — when it was
+    /// published — which [`CrateIndex::refresh_delay`] schedules the next
+    /// revalidation from. `None` if the response carried no parseable one.
+    last_modified: Option<u64>,
     /// Inverted index over name tokens, built lazily on the first typeahead
     /// query (see [`TokenIndex`]).
     token_index: OnceLock<TokenIndex>,
@@ -142,9 +183,11 @@ struct Loaded {
 #[derive(Default)]
 struct State {
     loaded: Option<Loaded>,
-    /// When this process last attempted a fetch (successful or not); drives
-    /// both the refresh interval and the failure cooldown. Process-local, so a
-    /// CLI invocation always consults [`DiskMeta::age`] instead.
+    /// When this process last attempted a cold-start fetch (successful or not),
+    /// driving the [`FAILURE_COOLDOWN`] fast-fail. Process-local and only
+    /// consulted before anything is loaded; scheduling once loaded is anchored
+    /// to the artifact's `Last-Modified` instead (see [`DiskMeta::due_at`],
+    /// [`CrateIndex::refresh_delay`]).
     attempted_at: Option<Instant>,
 }
 
@@ -156,8 +199,9 @@ pub struct CrateIndex {
     descriptions_url: String,
     /// Where the artifact files and their [`DiskMeta`] live.
     dir: PathBuf,
-    /// Serializes fetches: cold-start callers queue behind one download, and
-    /// `try_lock` gives stale-while-revalidate a single revalidator.
+    /// Serializes fetches: concurrent cold-start callers queue behind one
+    /// download, and the background refresher takes it so its revalidation never
+    /// races a cold start.
     fetch_lock: async_lock::Mutex<()>,
     state: RwLock<State>,
 }
@@ -252,36 +296,93 @@ impl CrateIndex {
         })
     }
 
-    /// Whether enough time has passed since the last attempt to try again —
-    /// [`REFRESH_INTERVAL`] once loaded, [`FAILURE_COOLDOWN`] before.
+    /// Whether enough time has passed since the last failed cold-start attempt
+    /// to try loading again. Only consulted before anything is loaded — once
+    /// data is in memory the query path stops fetching entirely (see
+    /// [`Self::ensure_fresh`]), so this need only rate-limit the retry after a
+    /// cold start found nothing in memory, nothing on disk, and the network
+    /// down.
     fn should_fetch(&self) -> bool {
         let state = self.state.read().unwrap();
-        let interval = if state.loaded.is_some() {
-            REFRESH_INTERVAL
-        } else {
-            FAILURE_COOLDOWN
-        };
         state
             .attempted_at
-            .is_none_or(|attempted| attempted.elapsed() >= interval)
+            .is_none_or(|attempted| attempted.elapsed() >= FAILURE_COOLDOWN)
     }
 
+    /// Load the data into memory if it is not there yet, and no more. Once
+    /// loaded, the query path never touches the network again: a short-lived
+    /// CLI process serves what it cold-started with, and a long-lived server
+    /// keeps its copy current out of band via [`Self::run_periodic_refresh`].
+    /// Only a genuine cold start — nothing in memory — reaches the network here,
+    /// and it does so behind the lock so concurrent first queries load once.
     async fn ensure_fresh(&self) {
+        if self.state.read().unwrap().loaded.is_some() {
+            return;
+        }
         if !self.should_fetch() {
             return;
         }
-        if self.state.read().unwrap().loaded.is_some() {
-            // Stale-while-revalidate: one caller revalidates, concurrent
-            // callers are answered from the stale data immediately.
-            if let Some(_guard) = self.fetch_lock.try_lock() {
-                self.refresh().await;
-            }
+        let _guard = self.fetch_lock.lock().await;
+        // Re-check under the lock: a concurrent cold start — or the background
+        // refresher — may have loaded the data while we queued for it.
+        if self.state.read().unwrap().loaded.is_none() && self.should_fetch() {
+            self.refresh().await;
+        }
+    }
+
+    /// Revalidate the in-memory data against the artifact server once, behind
+    /// the fetch lock so it never races a cold-start [`Self::ensure_fresh`]. A
+    /// long-lived process calls this on an interval via
+    /// [`Self::run_periodic_refresh`]; the first call also performs the initial
+    /// load (from disk, or the network if there is no disk copy).
+    pub async fn refresh_once(&self) {
+        let _guard = self.fetch_lock.lock().await;
+        self.refresh().await;
+    }
+
+    /// Keep the in-memory data fresh for the lifetime of a long-lived process:
+    /// load it once immediately, then revalidate on the [`Self::refresh_delay`]
+    /// cadence — once a day, timed to the artifact's publication rather than
+    /// polled hourly. Never returns — spawn it as a detached task. This is what
+    /// moves refresh off the request path: with a refresher running, queries
+    /// only ever read the loaded data, and the daily rebuild is picked up by
+    /// this task rather than by whichever request happened to notice.
+    ///
+    /// The CLI does not run this. Each short-lived invocation instead
+    /// cold-starts on its first query and revalidates a stale disk copy then.
+    pub async fn run_periodic_refresh(&self) {
+        loop {
+            self.refresh_once().await;
+            let delay = self.refresh_delay();
+            log::debug!("next crate-names revalidation in {delay:?}");
+            Timer::after(delay).await;
+        }
+    }
+
+    /// How long until the loaded artifact's next revalidation, from its
+    /// `Last-Modified`: the daily rebuild is due one [`PUBLISH_PERIOD`] after the
+    /// build we hold, so we sleep until then and spend one conditional GET a day
+    /// instead of one an hour. Once that moment has passed — a rebuild is
+    /// overdue, or we never had a `Last-Modified` to anchor to — we poll at
+    /// [`WATCH_INTERVAL`] until the new artifact lands. Capped at
+    /// [`PUBLISH_PERIOD`] so even a bogus far-future timestamp rechecks daily.
+    fn refresh_delay(&self) -> Duration {
+        let last_modified = self
+            .state
+            .read()
+            .unwrap()
+            .loaded
+            .as_ref()
+            .and_then(|loaded| loaded.last_modified);
+        let Some(published) = last_modified else {
+            return WATCH_INTERVAL;
+        };
+        let due = published.saturating_add(PUBLISH_PERIOD.as_secs());
+        let now = now_unix();
+        if now >= due {
+            WATCH_INTERVAL
         } else {
-            // Cold start: queue behind a single load rather than racing.
-            let _guard = self.fetch_lock.lock().await;
-            if self.should_fetch() {
-                self.refresh().await;
-            }
+            Duration::from_secs(due - now).min(PUBLISH_PERIOD)
         }
     }
 
@@ -295,7 +396,7 @@ impl CrateIndex {
         if self.state.read().unwrap().loaded.is_none()
             && let Some((loaded, meta)) = self.load_from_disk().await
         {
-            let fresh = meta.age() < REFRESH_INTERVAL;
+            let fresh = now_unix() < meta.due_at();
             let mut state = self.state.write().unwrap();
             state.loaded = Some(loaded);
             if fresh {
@@ -304,16 +405,16 @@ impl CrateIndex {
             }
         }
 
-        let etags = {
+        let (etags, last_modified) = {
             let state = self.state.read().unwrap();
             state
                 .loaded
                 .as_ref()
-                .map(|loaded| loaded.etags.clone())
+                .map(|loaded| (loaded.etags.clone(), loaded.last_modified))
                 .unwrap_or_default()
         };
 
-        let outcome = self.fetch(&etags).await;
+        let outcome = self.fetch(&etags, last_modified).await;
 
         let mut state = self.state.write().unwrap();
         state.attempted_at = Some(Instant::now());
@@ -354,9 +455,14 @@ impl CrateIndex {
         let names = async_fs::read(self.names_path()).await.ok()?;
         let descriptions = async_fs::read(self.descriptions_path()).await.ok()?;
 
-        let loaded = parse(&names, &descriptions, meta.etags.clone())
-            .inspect_err(|error| log::warn!("discarding cached crate-names artifacts: {error:#}"))
-            .ok()?;
+        let loaded = parse(
+            &names,
+            &descriptions,
+            meta.etags.clone(),
+            meta.last_modified,
+        )
+        .inspect_err(|error| log::warn!("discarding cached crate-names artifacts: {error:#}"))
+        .ok()?;
 
         log::debug!(
             "⏱️ loaded {} crate names from {} in {:?} ({:?} old)",
@@ -399,13 +505,15 @@ impl CrateIndex {
     }
 
     /// Record a revalidation that found nothing changed, so the *next* process
-    /// reads the disk copy as fresh instead of revalidating it again. Best
-    /// effort: if the metadata can't be rewritten, the only cost is a redundant
-    /// conditional GET later.
-    async fn touch_disk_meta(&self, etags: &Etags) {
+    /// reads the disk copy as fresh instead of revalidating it again. Preserves
+    /// the artifact's `Last-Modified` — a 304 doesn't change when it was
+    /// published — so the schedule stays anchored. Best effort: if the metadata
+    /// can't be rewritten, the only cost is a redundant conditional GET later.
+    async fn touch_disk_meta(&self, etags: &Etags, last_modified: Option<u64>) {
         let meta = DiskMeta {
             etags: etags.clone(),
             fetched_at: now_unix(),
+            last_modified,
         };
         let write = async {
             let path = self.meta_path();
@@ -423,7 +531,7 @@ impl CrateIndex {
     /// changed. The two are versioned together and only meaningful together, so
     /// a change in either re-downloads both rather than leaving a half-updated
     /// pair on disk.
-    async fn fetch(&self, etags: &Etags) -> Result<Option<Loaded>> {
+    async fn fetch(&self, etags: &Etags, last_modified: Option<u64>) -> Result<Option<Loaded>> {
         let names = self
             .fetch_one(&self.names_url, etags.names.as_deref())
             .await?;
@@ -432,21 +540,21 @@ impl CrateIndex {
             .await?;
 
         if names.is_none() && descriptions.is_none() {
-            self.touch_disk_meta(etags).await;
+            self.touch_disk_meta(etags, last_modified).await;
             return Ok(None);
         }
 
         // One side changed and the other didn't: re-fetch the unchanged side
         // unconditionally rather than pairing new data with a stale buffer we
         // may not still hold (a cold start has no in-memory copy to reuse).
-        let (names, names_etag) = match names {
+        let names = match names {
             Some(fetched) => fetched,
             None => self
                 .fetch_one(&self.names_url, None)
                 .await?
                 .ok_or_else(|| anyhow!("names artifact reported not-modified without an etag"))?,
         };
-        let (descriptions, descriptions_etag) = match descriptions {
+        let descriptions = match descriptions {
             Some(fetched) => fetched,
             None => self
                 .fetch_one(&self.descriptions_url, None)
@@ -457,18 +565,29 @@ impl CrateIndex {
         };
 
         let etags = Etags {
-            names: names_etag,
-            descriptions: descriptions_etag,
+            names: names.etag,
+            descriptions: descriptions.etag,
         };
-        let loaded = parse(&names, &descriptions, etags.clone())?;
+        // The pair is published together, seconds apart; take the later stamp as
+        // "the pair was current as of", falling back to whichever side carried
+        // one. `None.max(Some(x)) == Some(x)`, so this also survives one side
+        // omitting the header.
+        let last_modified = names.last_modified.max(descriptions.last_modified);
+        let loaded = parse(
+            &names.bytes,
+            &descriptions.bytes,
+            etags.clone(),
+            last_modified,
+        )?;
 
         if let Err(error) = self
             .store_to_disk(
-                &names,
-                &descriptions,
+                &names.bytes,
+                &descriptions.bytes,
                 &DiskMeta {
                     etags,
                     fetched_at: now_unix(),
+                    last_modified,
                 },
             )
             .await
@@ -482,11 +601,7 @@ impl CrateIndex {
     }
 
     /// GET one artifact, returning `Ok(None)` on a 304 Not Modified.
-    async fn fetch_one(
-        &self,
-        url: &str,
-        etag: Option<&str>,
-    ) -> Result<Option<(Vec<u8>, Option<String>)>> {
+    async fn fetch_one(&self, url: &str, etag: Option<&str>) -> Result<Option<Fetched>> {
         let mut request = self.client.get(url);
         if let Some(etag) = etag {
             request = request.with_request_header(KnownHeaderName::IfNoneMatch, etag.to_owned());
@@ -504,22 +619,52 @@ impl CrateIndex {
             .response_headers()
             .get_str(KnownHeaderName::Etag)
             .map(str::to_owned);
+        let last_modified = conn
+            .response_headers()
+            .get_str(KnownHeaderName::LastModified)
+            .and_then(parse_http_date);
         let bytes = conn
             .response_body()
             .read_bytes()
             .await
             .with_context(|| format!("reading {url}"))?;
-        Ok(Some((bytes, etag)))
+        Ok(Some(Fetched {
+            bytes,
+            etag,
+            last_modified,
+        }))
     }
 }
 
+/// One artifact fetched from the network: its bytes and the response's cache
+/// validators. `etag` feeds the next `If-None-Match`; `last_modified` (unix
+/// seconds) anchors the refresh schedule (see [`CrateIndex::refresh_delay`]).
+struct Fetched {
+    bytes: Vec<u8>,
+    etag: Option<String>,
+    last_modified: Option<u64>,
+}
+
+/// Parse an HTTP-date header value (`Last-Modified`) to unix seconds, or `None`
+/// if it is malformed or predates the epoch.
+fn parse_http_date(value: &str) -> Option<u64> {
+    let time = httpdate::parse_http_date(value).ok()?;
+    Some(time.duration_since(UNIX_EPOCH).ok()?.as_secs())
+}
+
 /// Decompress and index a fetched or cached artifact pair.
-fn parse(names: &[u8], descriptions: &[u8], etags: Etags) -> Result<Loaded> {
+fn parse(
+    names: &[u8],
+    descriptions: &[u8],
+    etags: Etags,
+    last_modified: Option<u64>,
+) -> Result<Loaded> {
     Ok(Loaded {
         names: CrateNames::from_zstd(names).context("parsing crate names artifact")?,
         descriptions: Descriptions::from_zstd(descriptions)
             .context("parsing crate descriptions artifact")?,
         etags,
+        last_modified,
         token_index: OnceLock::new(),
         trigram_index: OnceLock::new(),
     })
