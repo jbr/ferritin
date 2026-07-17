@@ -1321,6 +1321,7 @@ dependencies = [
  "env_logger",
  "fieldwork 0.5.2",
  "home",
+ "httpdate",
  "log",
  "memchr",
  "memmap2",

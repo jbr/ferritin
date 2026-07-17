@@ -29,6 +29,7 @@ fn load() -> Loaded {
         &read(crate_names::NAMES_FILE_V2),
         &read(crate_names::DESCRIPTIONS_FILE_V2),
         Etags::default(),
+        None,
     )
     .expect("parsing cached artifacts")
 }
