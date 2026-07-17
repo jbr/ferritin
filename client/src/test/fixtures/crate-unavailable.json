@@ -1,0 +1,5 @@
+{
+  "error": "crateUnavailable",
+  "query": "ripgrep",
+  "unavailableCrate": "ripgrep"
+}

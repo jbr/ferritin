@@ -6,12 +6,12 @@ Could not find 'crate::TestTrait::test_methid'
 
 Did you mean:
 
-  ◦ crate::TestTrait::ASSOCIATED_CONSTANT
+  ◦ crate::TestTrait::test_method
 
   ◦ crate::TestTrait::T
 
-  ◦ crate::TestTrait::test_method
-
   ◦ crate::TestTrait::process
 
-  ◦ crate::submodule
+  ◦ crate::TestTrait::ASSOCIATED_CONSTANT
+
+  ◦ crate::TestEnum

@@ -8,18 +8,18 @@ Could not find 'crate::TestTrait::test_methid'</p>
 Did you mean:</p>
 <list>
   <item><p>
-crate::TestTrait::ASSOCIATED_CONSTANT</p>
+crate::TestTrait::test_method</p>
 </item>
   <item><p>
 crate::TestTrait::T</p>
 </item>
   <item><p>
-crate::TestTrait::test_method</p>
-</item>
-  <item><p>
 crate::TestTrait::process</p>
 </item>
   <item><p>
-crate::submodule</p>
+crate::TestTrait::ASSOCIATED_CONSTANT</p>
+</item>
+  <item><p>
+crate::TestEnum</p>
 </item>
 </list>

@@ -7,29 +7,29 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::DoesNotExist\")
   "query": "crate::DoesNotExist",
   "suggestions": [
     {
-      "path": "crate::submodule",
-      "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html"
+      "path": "crate::TestUnion",
+      "kind": "union",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html"
     },
     {
-      "path": "crate::link_resolution_tests",
-      "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/index.html"
+      "path": "crate::TestEnum",
+      "kind": "enum",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html"
     },
     {
-      "path": "crate::reexport_mod",
+      "path": "crate::prefix_tests",
       "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/reexport_mod/index.html"
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/index.html"
+    },
+    {
+      "path": "crate::ComplexTrait",
+      "kind": "trait",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html"
     },
     {
       "path": "crate::markdown_test",
       "kind": "module",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/markdown_test/index.html"
-    },
-    {
-      "path": "crate::namespace_collisions",
-      "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/index.html"
     }
   ]
 }

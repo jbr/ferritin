@@ -110,9 +110,10 @@ export async function typeahead(q: string): Promise<TypeaheadResponse> {
 }
 
 function isNotFound(value: unknown): value is NotFound {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    (value as { error?: string }).error === "notFound"
-  );
+  if (typeof value !== "object" || value === null) return false;
+  // Both discriminants carry a `JsonNotFound` payload the UI can render: a plain
+  // miss (`notFound`, with suggestions) and a crate that exists on crates.io but
+  // whose docs we can't serve (`crateUnavailable`, with `unavailableCrate`).
+  const error = (value as { error?: string }).error;
+  return error === "notFound" || error === "crateUnavailable";
 }

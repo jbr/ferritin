@@ -1,13 +1,13 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests_rooted(Commands::get(\"crate::TestStruct::cute\"), OutputMode\n:: Ai, & get_fixture_crate_path ())"
+expression: "render_for_tests_rooted(Commands::get(\"crate::TestStruct::cute\"), OutputMode\n:: Agent, & get_fixture_crate_path ())"
 ---
 Could not find 'crate::TestStruct::cute'
 
 Did you mean:
 
-- crate::TestStruct::ASSOCIATED_CONST
 - crate::TestStruct::new
-- crate::TestStruct::get_field
 - crate::TestStruct::increment_count
-- crate::submodule
+- crate::TestStruct::get_field
+- crate::TestStruct::ASSOCIATED_CONST
+- crate::TupleStruct

@@ -38,8 +38,40 @@ export function ItemView({ path }: { path: string }) {
 }
 
 function NotFoundView({ path, error }: { path: string; error: Error }) {
-  const suggestions =
-    error instanceof ApiError ? error.notFound?.suggestions : undefined;
+  const notFound = error instanceof ApiError ? error.notFound : undefined;
+  const suggestions = notFound?.suggestions;
+  // A crate that exists on crates.io but whose docs we can't serve is a distinct
+  // outcome from a typo: name it, and offer no misleading "did you mean".
+  const unavailableCrate =
+    notFound?.error === "crateUnavailable"
+      ? notFound.unavailableCrate
+      : undefined;
+
+  if (unavailableCrate) {
+    return (
+      <div className="status error">
+        <h1 className="not-found-title">
+          Documentation unavailable for {unavailableCrate}
+        </h1>
+        <p>
+          <code>{unavailableCrate}</code> exists on crates.io, but its
+          documentation isn’t available here — docs.rs has no rustdoc JSON for
+          it (often a build failure or a crate with no library target).
+        </p>
+        <p>
+          <a
+            href={`https://docs.rs/crate/${encodeURIComponent(unavailableCrate)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View {unavailableCrate} on docs.rs
+          </a>{" "}
+          for its build status and versions.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="status error">
       <h1 className="not-found-title">No item at {path}</h1>

@@ -6,12 +6,12 @@ Could not find 'crate::DoesNotExist'
 
 Did you mean:
 
-  ◦ [crate::submodule](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html)
+  ◦ [crate::TestUnion](https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html)
 
-  ◦ [crate::link_resolution_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/index.html)
+  ◦ [crate::TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html)
 
-  ◦ [crate::reexport_mod](https://docs.rs/fixture-crate/0.1.0/fixture_crate/reexport_mod/index.html)
+  ◦ [crate::prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/index.html)
+
+  ◦ [crate::ComplexTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html)
 
   ◦ [crate::markdown_test](https://docs.rs/fixture-crate/0.1.0/fixture_crate/markdown_test/index.html)
-
-  ◦ [crate::namespace_collisions](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/index.html)

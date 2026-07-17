@@ -1,6 +1,6 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests(Commands::get(\"crate::TestStruct::test_metod\"), OutputMode ::\nTestMode)"
+expression: "render_for_tests_rooted(Commands::get(\"crate::TestStruct::test_metod\"),\nOutputMode :: TestMode, & get_fixture_crate_path ())"
 ---
 <p>
 Could not find 'crate::TestStruct::test_metod'</p>
@@ -8,18 +8,18 @@ Could not find 'crate::TestStruct::test_metod'</p>
 Did you mean:</p>
 <list>
   <item><p>
-crate::TestStruct::ASSOCIATED_CONST</p>
+crate::TestStruct::get_field</p>
 </item>
   <item><p>
 crate::TestStruct::new</p>
 </item>
   <item><p>
-crate::TestStruct::get_field</p>
-</item>
-  <item><p>
 crate::TestStruct::increment_count</p>
 </item>
   <item><p>
-crate::submodule</p>
+crate::TestStruct::ASSOCIATED_CONST</p>
+</item>
+  <item><p>
+crate::TestEnum</p>
 </item>
 </list>

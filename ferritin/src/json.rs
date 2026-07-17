@@ -230,9 +230,13 @@ impl<'a> JsonSearchResult<'a> {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct JsonNotFound {
-    /// Always `"notFound"`.
+    /// `"notFound"` for a path that didn't resolve, or `"crateUnavailable"`
+    /// when the crate exists on crates.io but its docs couldn't be loaded.
     error: &'static str,
     query: String,
+    /// The canonical crate name, set only for the `"crateUnavailable"` case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unavailable_crate: Option<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     suggestions: Vec<JsonSuggestion>,
 }
@@ -295,9 +299,15 @@ impl JsonList {
 
 impl JsonNotFound {
     pub(crate) fn new(not_found: &NotFoundDoc<'_>) -> Self {
+        let error = if not_found.unavailable_crate.is_some() {
+            "crateUnavailable"
+        } else {
+            "notFound"
+        };
         Self {
-            error: "notFound",
+            error,
             query: not_found.query.clone(),
+            unavailable_crate: not_found.unavailable_crate.clone(),
             suggestions: not_found
                 .suggestions
                 .iter()
