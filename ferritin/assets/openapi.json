@@ -1182,7 +1182,7 @@
         "type": "object",
         "properties": {
           "error": {
-            "description": "Always `\"notFound\"`.",
+            "description": "`\"notFound\"` for a path that didn't resolve, or `\"crateUnavailable\"`\nwhen the crate exists on crates.io but its docs couldn't be loaded.",
             "type": "string"
           },
           "query": {
@@ -1193,6 +1193,11 @@
             "items": {
               "$ref": "#/components/schemas/JsonSuggestion"
             }
+          },
+          "unavailableCrate": {
+            "description": "The canonical crate name, set only for the `\"crateUnavailable\"` case.",
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [

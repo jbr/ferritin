@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createQueryClient } from "../api/queryClient";
 import { ItemView } from "./ItemView";
 import notFoundFixture from "../test/fixtures/not-found.json";
+import crateUnavailableFixture from "../test/fixtures/crate-unavailable.json";
 
 /**
  * A 404 must render the not-found view with its suggestions. It previously rendered
@@ -53,5 +54,30 @@ describe("ItemView", () => {
     // right one — that is the whole point of the not-found view.
     const suggestion = screen.getByRole("link", { name: "std::vec::Drain" });
     expect(suggestion).toHaveAttribute("href", "/std::vec::Drain");
+  });
+
+  it("names an existing-but-unavailable crate instead of offering suggestions", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify(crateUnavailableFixture), {
+            status: 404,
+            headers: { "content-type": "application/json" },
+          }),
+      ),
+    );
+
+    renderAt("ripgrep");
+
+    await waitFor(
+      () =>
+        expect(
+          screen.getByText(/Documentation unavailable for ripgrep/),
+        ).toBeInTheDocument(),
+      { timeout: 1000 },
+    );
+    // It is a real crate, not a typo — so no "did you mean" list.
+    expect(screen.queryByText(/did you mean/i)).not.toBeInTheDocument();
   });
 });

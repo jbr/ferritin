@@ -45,7 +45,7 @@ A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
 </item>
   <item><p>
-fixture-crate::TestStruct  (Struct) - score: 63.6</p>
+fixture-crate::TestStruct  (Struct) - score: 63.7</p>
 <truncated level="single-line"><p>
 A simple struct for testing basic functionality.</p>
 This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>

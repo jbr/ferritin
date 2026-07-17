@@ -12,6 +12,7 @@ use crate::{
     CrateName, RustdocData,
     search::SearchIndex,
     store::{CrateInfo, Store, exact_req, exact_version},
+    string_utils::case_aware_jaro_winkler,
 };
 use elsa::sync::FrozenMap;
 use semver::{Version, VersionReq};
@@ -21,6 +22,24 @@ use std::{
     fmt::Debug,
     sync::{Arc, OnceLock},
 };
+
+/// How many crates.io candidates [`Navigator::classify_missing_crate`] pulls
+/// from the namespace index — headroom over the handful ultimately surfaced,
+/// since the caller re-ranks and truncates.
+const CRATE_INDEX_FETCH: usize = 10;
+
+/// The outcome of a crate-level lookup miss, resolved against the crates.io
+/// namespace index by [`Navigator::classify_missing_crate`].
+#[derive(Debug, Default)]
+pub struct MissingCrate {
+    /// The crates.io-canonical name, set when the crate exists but its docs
+    /// couldn't be loaded (docs.rs has no rustdoc JSON) — a real crate we can't
+    /// serve, distinct from a typo. When set, `suggestions` is empty.
+    pub exists_as: Option<String>,
+    /// Crate-name "did you mean" candidates as `(name, similarity)`, drawn from
+    /// the whole namespace and left for the caller to merge, rank, and truncate.
+    pub suggestions: Vec<(String, f64)>,
+}
 
 /// A per-query view of a [`Store`]: resolution goes through the Store's
 /// caches, and everything the query touches is pinned here so borrows are
@@ -88,6 +107,58 @@ impl Navigator {
     /// List all available crate names from all sources
     pub fn list_available_crates(&self) -> impl Iterator<Item = &CrateInfo> {
         self.store.list_available_crates()
+    }
+
+    /// The crates.io namespace index, if a docs.rs source is configured — the
+    /// same [`CrateIndex`](crate::crate_names::CrateIndex) version resolution
+    /// and the server's typeahead read. `None` for a store with no docs.rs
+    /// source (e.g. a purely local or std-only one).
+    pub fn crate_index(&self) -> Option<&crate::crate_names::CrateIndex> {
+        self.store
+            .docsrs_source()
+            .map(|source| source.client().crate_index().as_ref())
+    }
+
+    /// Classify a crate-level lookup miss (nothing loaded for `requested`)
+    /// against the crates.io namespace index: whether the crate exists but its
+    /// docs couldn't be served, and the crate-name "did you mean" candidates.
+    ///
+    /// Async because it reads the index, which may revalidate the artifact. It
+    /// deliberately does **not** block: a synchronous caller drives it with
+    /// [`block_on`](crate::block_on) at its own boundary, so no hidden block
+    /// lives on the resolution path. `MissingCrate::default` (no crate, no
+    /// suggestions) when there is no index to consult.
+    pub async fn classify_missing_crate(&self, requested: &str) -> MissingCrate {
+        let Some(index) = self.crate_index() else {
+            return MissingCrate::default();
+        };
+
+        // A crate the index knows is real — docs.rs simply has no rustdoc JSON
+        // for it. That is not a typo, so it carries no suggestions.
+        if let Some(entry) = index.get(requested).await {
+            return MissingCrate {
+                exists_as: Some(entry.name),
+                suggestions: Vec::new(),
+            };
+        }
+
+        // Otherwise, near-miss crate names from the whole namespace (prefix and
+        // token matches, plus fuzzy fill), scored the same way the resolver
+        // scores its locally-listable suggestions so the two rank together.
+        let suggestions = match index.typeahead(requested, CRATE_INDEX_FETCH).await {
+            Some((entries, _)) => entries
+                .into_iter()
+                .map(|entry| {
+                    let score = case_aware_jaro_winkler(&entry.name, requested);
+                    (entry.name, score)
+                })
+                .collect(),
+            None => Vec::new(),
+        };
+        MissingCrate {
+            exists_as: None,
+            suggestions,
+        }
     }
 
     /// Look up a crate by name, returning canonical name and metadata.

@@ -39,6 +39,7 @@
 #[cfg(test)]
 mod probe;
 
+use crate::string_utils::case_aware_jaro_winkler;
 use anyhow::{Context, Result, anyhow};
 pub use crate_names::normalize;
 use crate_names::{CrateNames, Descriptions};
@@ -131,6 +132,11 @@ struct Loaded {
     /// Inverted index over name tokens, built lazily on the first typeahead
     /// query (see [`TokenIndex`]).
     token_index: OnceLock<TokenIndex>,
+    /// Inverted index over character trigrams, built lazily on the first
+    /// *fuzzy* query (see [`TrigramIndex`]). Separate from `token_index`
+    /// because most typeahead queries are answered by prefix/token matching
+    /// alone and never pay for it.
+    trigram_index: OnceLock<TrigramIndex>,
 }
 
 #[derive(Default)]
@@ -515,6 +521,7 @@ fn parse(names: &[u8], descriptions: &[u8], etags: Etags) -> Result<Loaded> {
             .context("parsing crate descriptions artifact")?,
         etags,
         token_index: OnceLock::new(),
+        trigram_index: OnceLock::new(),
     })
 }
 
@@ -635,11 +642,183 @@ fn typeahead_scored(
     });
     scored.truncate(limit);
 
-    let entries = scored
+    let mut entries: Vec<CrateEntry> = scored
         .into_iter()
         .filter_map(|(_, crate_index)| entry(loaded, loaded.names.entry_at(crate_index as usize)?))
         .collect();
+
+    // When prefix/token matching underfills the page, fill the remaining slots
+    // with fuzzy matches — so a typo like `tokoi` still surfaces `tokio`. These
+    // sort *after* every prefix/token match by construction (they are only
+    // appended), and `total` is lifted to cover them so the caller doesn't read
+    // the padded page as truncated.
+    let mut total = total;
+    if entries.len() < limit {
+        let mut seen: HashSet<String> = entries.iter().map(|e| normalize(&e.name)).collect();
+        for extra in fuzzy_scored(loaded, prefix, limit) {
+            if entries.len() >= limit {
+                break;
+            }
+            if seen.insert(normalize(&extra.name)) {
+                entries.push(extra);
+            }
+        }
+        total = total.max(entries.len());
+    }
+
     (entries, total)
+}
+
+/// Safety ceiling on how many trigram-overlap candidates are scored with
+/// [`case_aware_jaro_winkler`] per fuzzy query. Not a tuning knob: it is set far
+/// above any real query's candidate set (the commonest trigrams reach ~13k
+/// names) purely to bound a pathological query. Candidates are *not* pre-cut by
+/// overlap count below this — doing so drops the true match in a boundary
+/// transposition of a short name (`tokoi`/`tokio` share only the very common
+/// `tok`), and jaro scoring is cheap enough (~200ns each) to run over the whole
+/// natural candidate set. If the ceiling ever bites, the highest-overlap
+/// candidates are kept, since a near match cannot share *fewer* trigrams than an
+/// unrelated one at equal name length.
+const FUZZY_CANDIDATE_CEILING: usize = 20_000;
+
+/// Minimum [`case_aware_jaro_winkler`] similarity for a fuzzy match to be
+/// offered. The floor exists so that genuine gibberish yields no suggestions at
+/// all, rather than the five least-dissimilar random crates.
+const FUZZY_THRESHOLD: f64 = 0.7;
+
+/// Fuzzy crate-name matches for `query`, ranked by similarity then download
+/// rank. Candidate generation is a trigram-overlap gather over [`TrigramIndex`]
+/// (scored in full, save the [`FUZZY_CANDIDATE_CEILING`] backstop); survivors
+/// are scored with [`case_aware_jaro_winkler`] and filtered to
+/// [`FUZZY_THRESHOLD`]. Powers both the typeahead fuzzy fill above and
+/// crate-name "did you mean" suggestions.
+fn fuzzy_scored(loaded: &Loaded, query: &str, limit: usize) -> Vec<CrateEntry> {
+    let index = loaded
+        .trigram_index
+        .get_or_init(|| TrigramIndex::build(&loaded.names));
+
+    let norm = normalize(query);
+    let mut grams: Vec<[u8; 3]> = trigrams(&norm).collect();
+    grams.sort_unstable();
+    grams.dedup();
+
+    // Per-candidate count of how many distinct query trigrams it shares.
+    let mut overlap: HashMap<u32, u32> = HashMap::new();
+    for gram in &grams {
+        for &crate_index in index.indices_with_trigram(gram) {
+            *overlap.entry(crate_index).or_insert(0) += 1;
+        }
+    }
+
+    let mut candidates: Vec<(u32, u32)> = overlap
+        .into_iter()
+        .map(|(crate_index, count)| (count, crate_index))
+        .collect();
+    // Only the pathological-query backstop cuts anything; real candidate sets
+    // stay well under the ceiling and are scored in full.
+    if candidates.len() > FUZZY_CANDIDATE_CEILING {
+        candidates.select_nth_unstable_by(FUZZY_CANDIDATE_CEILING, |a, b| b.0.cmp(&a.0));
+        candidates.truncate(FUZZY_CANDIDATE_CEILING);
+    }
+
+    let mut scored: Vec<(f64, u8, &str, usize)> = candidates
+        .into_iter()
+        .filter_map(|(_, crate_index)| {
+            let found = loaded.names.entry_at(crate_index as usize)?;
+            let score = case_aware_jaro_winkler(found.name, query);
+            (score >= FUZZY_THRESHOLD).then_some((
+                score,
+                found.rank,
+                found.name,
+                crate_index as usize,
+            ))
+        })
+        .collect();
+
+    scored.sort_by(|a, b| {
+        b.0.total_cmp(&a.0)
+            .then_with(|| b.1.cmp(&a.1))
+            .then_with(|| a.2.cmp(b.2))
+    });
+    scored.truncate(limit);
+
+    scored
+        .into_iter()
+        .filter_map(|(_, _, _, crate_index)| entry(loaded, loaded.names.entry_at(crate_index)?))
+        .collect()
+}
+
+/// Character trigrams of a normalized name, as fixed-size keys. A name shorter
+/// than three bytes yields a single zero-padded key so it stays matchable
+/// (crate names are ASCII after [`normalize`], so `0` never occurs in one).
+fn trigrams(norm: &str) -> impl Iterator<Item = [u8; 3]> + '_ {
+    let bytes = norm.as_bytes();
+    let short = (bytes.len() < 3).then(|| {
+        let mut key = [0u8; 3];
+        key[..bytes.len()].copy_from_slice(bytes);
+        key
+    });
+    let windows = (bytes.len() >= 3)
+        .then(|| bytes.windows(3).map(|w| [w[0], w[1], w[2]]))
+        .into_iter()
+        .flatten();
+    short.into_iter().chain(windows)
+}
+
+/// A lazily-built inverted index over the character trigrams of each crate's
+/// normalized name, mapping each trigram to the [`CrateNames`] line indices it
+/// occurs in. The fuzzy analogue of [`TokenIndex`]: same line-index values, same
+/// build-once/drop-on-refresh lifecycle, but keyed by 3-byte character windows
+/// so it can find near-misses (`tokoi` → `tokio`) that token prefixes cannot.
+#[derive(Debug, Default)]
+struct TrigramIndex {
+    /// Sorted by trigram, so a lookup is a binary search. Values are sorted,
+    /// deduped crate line indices.
+    postings: Vec<([u8; 3], Vec<u32>)>,
+}
+
+impl TrigramIndex {
+    fn build(names: &CrateNames) -> Self {
+        let start = Instant::now();
+        let mut map: BTreeMap<[u8; 3], Vec<u32>> = BTreeMap::new();
+        for index in 0..names.len() {
+            let Some(found) = names.entry_at(index) else {
+                continue;
+            };
+            let norm = normalize(found.name);
+            for gram in trigrams(&norm) {
+                map.entry(gram).or_default().push(index as u32);
+            }
+        }
+        let index = Self {
+            postings: map
+                .into_iter()
+                .map(|(gram, mut indices)| {
+                    // A trigram repeated within one name pushes its index
+                    // twice adjacently; across names indices ascend. Either way
+                    // adjacent-dedup leaves each index once.
+                    indices.dedup();
+                    (gram, indices)
+                })
+                .collect(),
+        };
+        log::debug!(
+            "⏱️ built trigram index ({} trigrams) in {:?}",
+            index.postings.len(),
+            start.elapsed()
+        );
+        index
+    }
+
+    /// The crate line-indices whose name contains `gram` (already sorted and
+    /// deduped at build time).
+    fn indices_with_trigram(&self, gram: &[u8; 3]) -> &[u32] {
+        let start = self.postings.partition_point(|(entry, _)| entry < gram);
+        match self.postings.get(start) {
+            Some((entry, indices)) if entry == gram => indices,
+            _ => &[],
+        }
+    }
 }
 
 /// A lazily-built inverted index over crate-name tokens — the `-`/`_` separated

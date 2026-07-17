@@ -55,8 +55,15 @@ pub struct Suggestion<'a> {
 }
 
 impl<'a> Suggestion<'a> {
-    /// Crate-name suggestions for a failed crate load, scored against the
-    /// requested name.
+    /// Crate-name suggestions for a failed crate load, drawn from the locally
+    /// listable crates (std, plus any local workspace/dependency source) and
+    /// scored against the requested name.
+    ///
+    /// This is the sync pool only. The crates.io namespace — the pool that makes
+    /// suggestions useful on the public server, where the only *listable* crates
+    /// are std — is folded in by the caller via the async
+    /// [`Navigator::classify_missing_crate`], since it must not block here on the
+    /// resolution path.
     pub(crate) fn for_crate_name(navigator: &'a Navigator, requested: &str) -> Vec<Self> {
         navigator
             .list_available_crates()
@@ -66,6 +73,17 @@ impl<'a> Suggestion<'a> {
                 score: case_aware_jaro_winkler(crate_info.name(), requested),
             })
             .collect()
+    }
+
+    /// A crate-name suggestion (no resolved item) with a precomputed similarity
+    /// score. Used by the caller to fold in crates.io namespace candidates from
+    /// [`Navigator::classify_missing_crate`] alongside the local pool.
+    pub fn for_crate(name: String, score: f64) -> Self {
+        Suggestion {
+            path: name,
+            item: None,
+            score,
+        }
     }
 }
 

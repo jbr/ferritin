@@ -433,10 +433,15 @@ export interface components {
          *     distinguishes it from a found item by the `error` discriminant.
          */
         JsonNotFound: {
-            /** @description Always `"notFound"`. */
+            /**
+             * @description `"notFound"` for a path that didn't resolve, or `"crateUnavailable"`
+             *     when the crate exists on crates.io but its docs couldn't be loaded.
+             */
             error: string;
             query: string;
             suggestions?: components["schemas"]["JsonSuggestion"][];
+            /** @description The canonical crate name, set only for the `"crateUnavailable"` case. */
+            unavailableCrate?: string | null;
         };
         /**
          * @description A search outcome. `error` is set only for the no-crates-loaded case; an empty

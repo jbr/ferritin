@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ApiError, fetchItem } from "./client";
 import functionFixture from "../test/fixtures/function.json";
 import notFoundFixture from "../test/fixtures/not-found.json";
+import crateUnavailableFixture from "../test/fixtures/crate-unavailable.json";
 
 /** Stub global fetch (what openapi-fetch calls) with a canned JSON response. */
 function mockFetch(body: unknown, status = 200) {
@@ -50,6 +51,17 @@ describe("fetchItem", () => {
     expect((error as ApiError).notFound?.suggestions?.length).toBeGreaterThan(
       0,
     );
+  });
+
+  it("carries the crateUnavailable payload on 404", async () => {
+    // Same 404 status as a plain miss, but a different discriminant: the
+    // transport must still attach the structured payload so the UI can name the
+    // crate rather than showing a generic failure.
+    mockFetch(crateUnavailableFixture, 404);
+    const error = await fetchItem("ripgrep").catch((e) => e);
+    expect(error).toBeInstanceOf(ApiError);
+    expect((error as ApiError).notFound?.error).toBe("crateUnavailable");
+    expect((error as ApiError).notFound?.unavailableCrate).toBe("ripgrep");
   });
 
   // A failure openapi-fetch cannot parse as JSON must still *reject*. If it

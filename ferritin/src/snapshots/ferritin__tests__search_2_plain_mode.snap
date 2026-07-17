@@ -26,7 +26,7 @@ Search results for 'generic struct'
   ◦ core::borrow::Borrow  (Trait) - score: 64.0
     A trait for borrowing data. [...]
 
-  ◦ fixture-crate::TestStruct  (Struct) - score: 63.6
+  ◦ fixture-crate::TestStruct  (Struct) - score: 63.7
     A simple struct for testing basic functionality. [...]
 
   ◦ std::clone::Clone  (Trait) - score: 63.4

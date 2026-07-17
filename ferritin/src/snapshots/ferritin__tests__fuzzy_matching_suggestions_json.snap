@@ -7,9 +7,9 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct::inc
   "query": "crate::TestStruct::incrementCount",
   "suggestions": [
     {
-      "path": "crate::TestStruct::ASSOCIATED_CONST",
-      "kind": "assocconst",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#associatedconstant.ASSOCIATED_CONST"
+      "path": "crate::TestStruct::increment_count",
+      "kind": "function",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.increment_count"
     },
     {
       "path": "crate::TestStruct::new",
@@ -17,19 +17,19 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestStruct::inc
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.new"
     },
     {
+      "path": "crate::TestStruct::ASSOCIATED_CONST",
+      "kind": "assocconst",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#associatedconstant.ASSOCIATED_CONST"
+    },
+    {
       "path": "crate::TestStruct::get_field",
       "kind": "function",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.get_field"
     },
     {
-      "path": "crate::TestStruct::increment_count",
-      "kind": "function",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.increment_count"
-    },
-    {
-      "path": "crate::submodule",
-      "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html"
+      "path": "crate::TestEnum",
+      "kind": "enum",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html"
     }
   ]
 }
