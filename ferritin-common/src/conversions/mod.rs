@@ -1,35 +1,57 @@
 //! Format-version normalization for rustdoc JSON.
 //!
-//! Every rustdoc JSON format bump in the range we support has been
-//! *read-compatible*: each one adds a field or an enum variant without
-//! removing, renaming, or retyping anything we read. Such changes need no
-//! per-version `rustdoc-types` crate — older JSON deserializes straight into
-//! the canonical types, because an added `Option` field defaults to `None` when
-//! absent and an added enum variant simply never appears in older data.
+//! Most rustdoc JSON format bumps are *read-compatible*: each adds a field or an
+//! enum variant without removing, renaming, or retyping anything we read. Such
+//! changes need no per-version `rustdoc-types` crate — older JSON deserializes
+//! straight into the canonical types, because an added `Option` field defaults
+//! to `None` when absent and an added enum variant simply never appears in older
+//! data.
 //!
-//! The sole exception across formats 55..=60 is [`ExternalCrate::path`], a
-//! required `PathBuf` added in format 57. Pre-57 JSON omits it, so we inject an
-//! empty value before parsing. That single JSON-level patch is the entire
-//! normalization story today.
+//! Across the whole supported range (48..=current) exactly two hops are *not*
+//! purely additive, and both are handled with a single `serde_json::Value` walk
+//! before the typed parse:
 //!
-//! **If a future format makes a genuinely read-breaking change** (removing,
-//! renaming, or retyping a field we read), the additive shortcut no longer
-//! works for that hop: pull in a pinned `rustdoc-types` crate for the older
-//! format, parse with it, and translate to the canonical types here — the
-//! approach this module used before the formats turned out to be uniformly
-//! additive (see git history for the chained-conversion pattern).
+//! - **`ExternalCrate::path`** became a required `PathBuf` in format 57. Pre-57 JSON omits it, so
+//!   we inject an empty value ([`add_external_crate_paths`]).
+//! - **`Item::attrs`** was retyped from `Vec<String>` to the structured `Vec<Attribute>` in format
+//!   54 (the "Structured Attributes" bump). Pre-54 JSON carries plain strings that will not
+//!   deserialize into `Attribute`. ferritin never reads `attrs`, so we blank every array to `[]`
+//!   ([`blank_attrs`]) — lossless for our purposes.
+//!
+//! (The one other non-additive change in range, `Path::args` gaining an `Option`
+//! wrapper in format 51, needs no patch: serde reads a present value as `Some`,
+//! so pre-51 data deserializes unchanged.)
+//!
+//! **If a future — or older — format makes a genuinely read-breaking change to a
+//! field we consume** (unlike `attrs`, which we ignore), neither shortcut
+//! applies: pull in a pinned `rustdoc-types` crate for that format, parse with
+//! it, and translate to the canonical types here — the approach this module used
+//! before the formats turned out to be near-uniformly additive (see git history
+//! for the chained-conversion pattern).
 
 use anyhow::{Context, Result};
 use rustdoc_types::{Crate, FORMAT_VERSION};
 use serde::Deserialize;
 
 /// Oldest rustdoc JSON format version we can normalize.
-const MIN_FORMAT_VERSION: u32 = 55;
+///
+/// 48 is the surveyed floor: every hop from 48 up is either additive or covered
+/// by the two JSON-level patches in this module (see the module docs). Older
+/// formats are untriaged, not known-broken — lowering this floor is a matter of
+/// diffing the intervening `rustdoc-types` releases for a read-breaking change
+/// to a field we actually consume.
+const MIN_FORMAT_VERSION: u32 = 48;
 
 /// The format version at which [`ExternalCrate::path`] became a required field.
 /// JSON older than this must have the field injected before it will parse with
 /// the canonical types.
 const EXTERNAL_CRATE_PATH_VERSION: u32 = 57;
+
+/// The format version at which [`Item::attrs`] became the structured
+/// `Vec<Attribute>` (was `Vec<String>`). JSON older than this carries plain
+/// strings that will not deserialize into `Attribute`, so we blank the field —
+/// which ferritin never reads — before parsing.
+const STRUCTURED_ATTRS_VERSION: u32 = 54;
 
 /// Load rustdoc JSON and normalize it to the canonical [`FORMAT_VERSION`].
 ///
@@ -71,10 +93,14 @@ pub fn load_and_normalize(json: &[u8], format_version: Option<u32>) -> Result<Cr
         });
     }
 
-    // Format 55..=56: inject the required `ExternalCrate::path` (added in 57),
-    // then parse with the canonical types.
+    // Format 48..=56: JSON-level patching before the typed parse. Everything
+    // below 57 needs `ExternalCrate::path` injected; everything below 54 also
+    // needs `attrs` blanked (see module docs).
     let mut value: serde_json::Value =
         parse_unbounded(json).context("Failed to parse rustdoc JSON")?;
+    if format_version < STRUCTURED_ATTRS_VERSION {
+        blank_attrs(&mut value);
+    }
     add_external_crate_paths(&mut value);
     Crate::deserialize(serde_stacker::Deserializer::new(&value)).with_context(|| {
         format!("Failed to parse normalized rustdoc JSON (was format version {format_version})")
@@ -154,6 +180,22 @@ pub(crate) fn peek_crate_version(json: &[u8]) -> Option<semver::Version> {
     let value = value.strip_prefix(b"\"")?;
     let end = memchr::memchr(b'"', value)?;
     semver::Version::parse(&String::from_utf8_lossy(&value[..end])).ok()
+}
+
+/// Blank every item's `attrs` array to `[]`, so pre-54 JSON (where `attrs` is
+/// `Vec<String>`) parses against the current `Vec<Attribute>` type. ferritin
+/// never reads `attrs`, so discarding it is lossless for our purposes — this is
+/// cheaper and more robust than mapping each legacy string into `Attribute`.
+fn blank_attrs(value: &mut serde_json::Value) {
+    if let Some(index) = value.get_mut("index").and_then(|v| v.as_object_mut()) {
+        for item in index.values_mut() {
+            if let Some(obj) = item.as_object_mut()
+                && obj.contains_key("attrs")
+            {
+                obj.insert("attrs".to_string(), serde_json::json!([]));
+            }
+        }
+    }
 }
 
 /// Add an empty `path` to every `external_crates` entry that lacks one, so
@@ -265,6 +307,79 @@ mod tests {
                 .major,
             2
         );
+    }
+
+    /// A pre-54 doc carries `attrs` as `Vec<String>`, which cannot deserialize
+    /// into the current `Vec<Attribute>`. Normalization must blank the field
+    /// (which ferritin never reads) so the doc still parses — the whole point of
+    /// supporting formats below the structured-attributes bump.
+    #[test]
+    fn pre_54_string_attrs_are_blanked_and_parse() {
+        let mut item = synth_item(
+            1,
+            Some("Widget"),
+            ItemEnum::Module(Module {
+                is_crate: false,
+                items: vec![],
+                is_stripped: false,
+            }),
+        );
+        item.attrs = vec![]; // canonical shape; we downgrade it in the JSON below
+
+        let mut index = rustc_hash::FxHashMap::default();
+        index.insert(
+            Id(0),
+            synth_item(
+                0,
+                Some("root"),
+                ItemEnum::Module(Module {
+                    is_crate: true,
+                    items: vec![Id(1)],
+                    is_stripped: false,
+                }),
+            ),
+        );
+        index.insert(Id(1), item);
+        let krate = Crate {
+            root: Id(0),
+            crate_version: Some("1.2.3".to_string()),
+            includes_private: false,
+            index,
+            paths: Default::default(),
+            external_crates: Default::default(),
+            target: Target {
+                triple: String::new(),
+                target_features: vec![],
+            },
+            format_version: FORMAT_VERSION,
+        };
+
+        // Downgrade to a format-53 wire shape: attrs as Vec<String>, older tag.
+        let mut value: serde_json::Value =
+            serde_json::from_slice(&serde_json::to_vec(&krate).unwrap()).unwrap();
+        value["format_version"] = serde_json::json!(53);
+        for entry in value["index"].as_object_mut().unwrap().values_mut() {
+            entry["attrs"] = serde_json::json!(["#[repr(C)]", "#[inline]"]);
+        }
+        let json = serde_json::to_vec(&value).unwrap();
+
+        // As-is it must fail (proving the blank is load-bearing)...
+        assert!(
+            parse_crate(&json).is_err(),
+            "format-53 string attrs should not parse against Vec<Attribute>"
+        );
+        // ...and normalization must recover it.
+        let normalized = load_and_normalize(&json, None).expect("pre-54 doc must normalize");
+        assert!(normalized.index.contains_key(&Id(1)));
+    }
+
+    /// A format below the floor is a definitive "cannot read", not a silent
+    /// empty parse.
+    #[test]
+    fn below_floor_bails() {
+        let json = br#"{"root":0,"index":{},"paths":{},"external_crates":{},"format_version":47}"#;
+        assert!(load_and_normalize(json, None).is_err());
+        assert!(load_and_normalize(json, Some(47)).is_err());
     }
 
     /// typenum regression: its type-level integers nest hundreds of JSON

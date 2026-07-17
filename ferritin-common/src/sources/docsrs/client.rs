@@ -39,8 +39,9 @@ struct CrateVersion {
     pub(super) num: Version,
 }
 
-/// Minimum supported format version (inclusive)
-const MIN_FORMAT_VERSION: u32 = 55;
+/// Minimum supported format version (inclusive). Must match
+/// `conversions::MIN_FORMAT_VERSION`.
+const MIN_FORMAT_VERSION: u32 = 48;
 
 /// How long a cached version lookup stays fresh. crates.io sends no cache
 /// headers on its API, and the fact we extract — a crate's version list — only
