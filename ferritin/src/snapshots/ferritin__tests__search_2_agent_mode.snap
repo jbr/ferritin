@@ -11,6 +11,6 @@ expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), Outpu
 - std::mem::type_info::Generic  (Enum) - score: 64.4 — Compile-time type information about instantiated generics of structs, enum and union variants.
 - std::borrow::Borrow  (Trait) - score: 64.3 — A trait for borrowing data. [+19 lines]
 - core::borrow::Borrow  (Trait) - score: 64.0 — A trait for borrowing data. [+19 lines]
-- fixture-crate::TestStruct  (Struct) - score: 63.7 — A simple struct for testing basic functionality. [+2 lines]
+- fixture-crate::TestStruct  (Struct) - score: 63.6 — A simple struct for testing basic functionality. [+2 lines]
 - std::clone::Clone  (Trait) - score: 63.4 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
 - std::ops::Deref  (Trait) - score: 62.3 — Used for immutable dereferencing operations, like *v. [+23 lines]
