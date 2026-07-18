@@ -7,6 +7,7 @@ pub mod conversions;
 pub mod crate_name;
 pub mod crate_names;
 pub mod doc_ref;
+pub mod ferritin_home;
 mod indexes;
 pub mod iterators;
 mod navigator;

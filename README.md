@@ -143,13 +143,52 @@ Schema is planned.)
 
 ## Caching and Storage
 
-Ferritin caches documentation JSON files to avoid repeated downloads and builds:
+Ferritin keeps its caches under a single directory — `$FERRITIN_HOME` if set,
+else `$XDG_CACHE_HOME/ferritin`, else `~/.cache/ferritin`. Everything in it is
+reconstructible (fetched or derived), so it is always safe to delete:
 
-- **Crates.io documentation**: Cached in `$CARGO_HOME/rustdoc-json/{format-version}/{crate_name}/{crate_version}.json`
-- **Search indices**: Binary `.index` files are generated lazily on first search and stored alongside JSON files
-- **Standard library search indices**: Written to `{rustc sysroot}/share/doc/rust/json/` if available
+- **Crates.io documentation**: raw rustdoc JSON at
+  `docs/{crate}/{version}/{format-version}.json`, with derived binary caches
+  beside it (an rkyv archive for fast partial loads, and a `.index` file
+  generated lazily on first search)
+- **crates.io metadata**: the crate-names artifacts (`crate-names/`) used for
+  version resolution and typeahead, and per-crate version lookups
+  (`crates-io-versions/`)
+- **Standard library search indices**: written to
+  `{rustc sysroot}/share/doc/rust/json/` if available
+- **Local workspace documentation**: built into the workspace's own
+  `target/doc/`, not the shared cache
 
-The cache uses cargo's home directory (typically `~/.cargo` on Unix systems).
+Earlier versions cached under `$CARGO_HOME/rustdoc-json`; a cache found there
+is migrated automatically on first run.
+
+## Environment Variables
+
+| Variable | Meaning |
+| --- | --- |
+| `FERRITIN_HOME` | Cache root override (see above) |
+| `FERRITIN_THEME` | Default color theme (equivalent to `--theme`) |
+| `FERRITIN_CRATE_NAMES_URL`, `FERRITIN_CRATE_DESCRIPTIONS_URL` | Override where the crate-names artifacts are fetched from (e.g. a mirror) |
+
+`ferritin serve` (the opt-in `serve`/`acme` features; not present in
+distributed binaries) is configured 12-factor style:
+
+| Variable | Meaning |
+| --- | --- |
+| `HOST`, `PORT` | Bind address (`::` binds dual-stack) |
+| `FERRITIN_CACHE_BYTES` | In-memory crate-cache weight cap |
+| `FERRITIN_RSS_HIGH_WATER_BYTES` | RSS guard threshold (Linux only): shed cache weight when anonymous RSS exceeds it |
+| `FERRITIN_RATELIMIT` | Per-client `/api` requests per minute |
+| `FERRITIN_ACME_DOMAIN` | Activates automatic HTTPS via Let's Encrypt for this domain |
+| `FERRITIN_ACME_CACHE_DIR` | Required with ACME: persists the account key and certificates |
+| `FERRITIN_ACME_CONTACT` | Optional ACME contact email |
+| `FERRITIN_ACME_PRODUCTION` | Use the Let's Encrypt production directory (default: staging) |
+
+Development-only knobs (not part of the stable interface): `FERRITIN_TEST_MODE`
+(normalized snapshot-test output), `FERRITIN_REINDEX` (rebuild search indexes
+in memory, bypassing the disk cache), and the search-scoring probes
+`FERRITIN_NAME_WEIGHT`, `FERRITIN_ANCESTOR_WEIGHTS`, and
+`FERRITIN_NAME_PREFIX_COUNT`.
 
 ## Current Status
 

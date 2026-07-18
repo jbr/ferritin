@@ -245,6 +245,10 @@ fn main() -> ExitCode {
         return ExitCode::SUCCESS;
     }
 
+    // Use env_logger for CLI mode; initialized before source construction so
+    // that construction-time work (e.g. the legacy cache migration) is logged.
+    env_logger::init();
+
     // Non-interactive mode: build sources eagerly and handle errors upfront
     let std_source = StdSource::from_rustup();
     let store = if use_local {
@@ -269,9 +273,6 @@ fn main() -> ExitCode {
 
     let format_context = FormatContext::new().with_public(cli.public);
     let mut request = Request::new(&navigator, format_context);
-
-    // Use env_logger for CLI mode
-    env_logger::init();
 
     // `--format json` takes a separate path: it serializes the semantic item
     // model directly instead of going through the `Document` render pipeline.

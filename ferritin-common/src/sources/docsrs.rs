@@ -23,12 +23,16 @@ impl DocsRsSource {
         Ok(Self { client })
     }
 
-    /// Try to create from default cache location
+    /// Create rooted at the default cache location ([`ferritin_home`]),
+    /// migrating a legacy `$CARGO_HOME/rustdoc-json` cache into it if one
+    /// exists. Explicit [`new`](Self::new) callers (tests, custom roots) never
+    /// trigger the migration.
+    ///
+    /// [`ferritin_home`]: crate::ferritin_home
     pub fn from_default_cache() -> Option<Self> {
-        let cache_dir = home::cargo_home().ok()?.join("rustdoc-json");
-        DocsRsClient::new(cache_dir)
-            .ok()
-            .map(|client| Self { client })
+        let root = crate::ferritin_home::resolve()?;
+        crate::ferritin_home::migrate_legacy_cache(&root);
+        DocsRsClient::new(root).ok().map(|client| Self { client })
     }
 
     /// Load a crate from docs.rs
