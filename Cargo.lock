@@ -1261,7 +1261,7 @@ dependencies = [
 
 [[package]]
 name = "ferritin"
-version = "0.15.0"
+version = "0.15.1"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -1310,7 +1310,7 @@ dependencies = [
 
 [[package]]
 name = "ferritin-common"
-version = "0.16.0"
+version = "0.16.1"
 dependencies = [
  "anyhow",
  "async-fs",
@@ -3365,7 +3365,7 @@ dependencies = [
 
 [[package]]
 name = "rustdoc-mcp"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "anyhow",
  "clap",
