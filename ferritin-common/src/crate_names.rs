@@ -45,8 +45,9 @@
 //!
 //! In-memory, then on disk, then the network. The disk tier is what makes this
 //! viable for the CLI, whose every invocation is a fresh process: the artifacts
-//! are downloaded once and thereafter read from `~/.cargo/rustdoc-json`, so a
-//! lookup costs a decompression rather than a request.
+//! are downloaded once and thereafter read from the `crate-names` directory
+//! under the ferritin cache root (see [`crate::ferritin_home`]), so a lookup
+//! costs a decompression rather than a request.
 
 #[cfg(test)]
 mod probe;
@@ -216,9 +217,10 @@ impl std::fmt::Debug for CrateIndex {
 }
 
 impl CrateIndex {
-    /// `cache_dir` is the docs.rs cache directory; the artifacts live in a
-    /// `crate-names` subdirectory of it. Construction is cheap and does no
-    /// io — nothing is read or fetched until the first query.
+    /// `cache_dir` is the ferritin cache root (see [`crate::ferritin_home`]);
+    /// the artifacts live in a `crate-names` subdirectory of it. Construction
+    /// is cheap and does no io — nothing is read or fetched until the first
+    /// query.
     pub fn new(cache_dir: &Path) -> Self {
         let client = Client::new(RustlsConfig::<ClientConfig>::default())
             .with_handler((

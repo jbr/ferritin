@@ -160,7 +160,10 @@ impl DocsRsClient {
         &self.crate_index
     }
 
-    /// Create a new docs.rs client with the specified cache directory
+    /// Create a new docs.rs client rooted at a ferritin cache directory
+    /// (see [`crate::ferritin_home`]): rustdoc JSON under `docs/`, the
+    /// crates.io namespace artifacts under `crate-names/`, and per-crate
+    /// version metadata under `crates-io-versions/`.
     pub fn new(cache_dir: PathBuf) -> Result<Self> {
         let http_client = Client::new(RustlsConfig::<ClientConfig>::default())
             .with_handler((
@@ -419,9 +422,20 @@ impl DocsRsClient {
         }))
     }
 
+    /// The version directory holding a release's raw JSON and everything
+    /// derived from it (rkyv sidecars, search indexes; eventually xrefs one
+    /// level up).
+    fn version_dir(&self, crate_name: &str, version: &Version) -> PathBuf {
+        self.cache_dir
+            .join("docs")
+            .join(crate_name)
+            .join(version.to_string())
+    }
+
     /// Construct the cache file path for a crate
     ///
-    /// Cache is organized by source format version (from docs.rs), not normalized version.
+    /// Cache is organized as `docs/{crate}/{version}/{source format}.json` —
+    /// raw JSON indexed by the format docs.rs served, not the normalized one.
     /// This allows us to update normalization logic without re-fetching.
     fn cache_path(
         &self,
@@ -429,50 +443,45 @@ impl DocsRsClient {
         version: &Version,
         source_format_version: u32,
     ) -> PathBuf {
-        self.cache_dir
-            .join(source_format_version.to_string())
-            .join(crate_name)
-            .join(format!("{version}.json"))
+        self.version_dir(crate_name, version)
+            .join(format!("{source_format_version}.json"))
     }
 
-    /// Format-version directories currently present in the cache, newest first.
+    /// The newest format version cached for this exact release.
     ///
-    /// The cache is laid out as `cache_dir/{format_version}/...`, so the set of
-    /// supported formats is whatever directories exist — including formats newer
-    /// than [`FORMAT_VERSION`] that were fetched via the latest-format fallback.
-    /// Directories older than [`MIN_FORMAT_VERSION`] (which we can't normalize)
-    /// are skipped.
-    fn cached_formats(&self) -> Vec<u32> {
-        let mut formats: Vec<u32> = std::fs::read_dir(&self.cache_dir)
+    /// The candidates are whatever `{format}.json` files exist in the release's
+    /// version directory — including formats newer than [`FORMAT_VERSION`]
+    /// fetched from a newer docs.rs toolchain (they can coexist after a
+    /// rebuild, and newest wins). Formats older than [`MIN_FORMAT_VERSION`]
+    /// (which we can't normalize) are skipped.
+    fn newest_cached_format(&self, crate_name: &str, version: &Version) -> Option<u32> {
+        std::fs::read_dir(self.version_dir(crate_name, version))
             .into_iter()
             .flatten()
             .flatten()
-            .filter_map(|entry| entry.file_name().to_str()?.parse::<u32>().ok())
+            .filter_map(|entry| {
+                entry
+                    .file_name()
+                    .to_str()?
+                    .strip_suffix(".json")?
+                    .parse::<u32>()
+                    .ok()
+            })
             .filter(|format| *format >= MIN_FORMAT_VERSION)
-            .collect();
-        formats.sort_unstable_by(|a, b| b.cmp(a));
-        formats
+            .max()
     }
 
     /// Load from cache if available and valid
     ///
-    /// Tries to find the crate in cache across different format versions.
-    /// The cached JSON is normalized to the current format version on read.
+    /// Reads the newest format version actually cached for this release,
+    /// normalized to the current format version on read.
     async fn load_from_cache(
         &self,
         crate_name: &str,
         version: &Version,
     ) -> Result<Option<RustdocData>> {
-        // Try format versions in descending order (prefer newer versions).
-        // We enumerate the format directories actually present rather than a
-        // fixed range so that formats newer than the one we were built against
-        // (fetched via the latest-format fallback) are still found on read.
-        for source_format in self.cached_formats() {
+        if let Some(source_format) = self.newest_cached_format(crate_name, version) {
             let path = self.cache_path(crate_name, version, source_format);
-
-            if !path.exists() {
-                continue;
-            }
 
             log::info!(
                 "Found cached file with format version {}: {}",

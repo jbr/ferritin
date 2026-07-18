@@ -12,9 +12,8 @@ use super::*;
 /// with a hint if they are absent — the probe is only meaningful over real
 /// data.
 fn load() -> Loaded {
-    let dir = home::cargo_home()
-        .expect("cargo home")
-        .join("rustdoc-json")
+    let dir = crate::ferritin_home::resolve()
+        .expect("ferritin home")
         .join("crate-names");
     let read = |file: &str| {
         std::fs::read(dir.join(file)).unwrap_or_else(|e| {

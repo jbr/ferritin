@@ -252,10 +252,33 @@ This is how re-exports work transparently. Viewing documentation for an item aut
 
 ### DocsRs Caching Strategy
 
-Documentation fetched from docs.rs is cached at:
+Documentation fetched from docs.rs is cached under the **ferritin cache root**
+(`ferritin_home` module): `$FERRITIN_HOME` if set, else `$XDG_CACHE_HOME/ferritin`,
+else `~/.cache/ferritin` on every platform. Everything under it is
+reconstructible cache; the root has three residents:
+
 ```
-$CARGO_HOME/rustdoc-json/{format-version}/{crate}/{version}.json
+$FERRITIN_HOME/
+  docs/{crate}/{version}/{format-version}.json   # raw rustdoc JSON, plus the
+                                                 # rkyv sidecar and search index
+                                                 # beside it
+  crate-names/                                   # crates.io namespace artifacts
+  crates-io-versions/                            # per-crate version-resolution cache
 ```
+
+The per-version directory is deliberately keyed `{crate}/{version}/{format}`
+rather than the historical `{format}/{crate}/{version}`: format sharding was
+load-bearing when reading was format-careful, but normalization made it
+vestigial, and the inversion gives each release's derived family one directory
+and each crate *name* one directory (where cross-crate xref data will live).
+Read picks the highest `{format}.json` present, so a docs.rs rebuild with a
+newer toolchain coexists and wins. A legacy `$CARGO_HOME/rustdoc-json` cache is
+migrated in a one-shot sweep when the default location is resolved
+(`from_default_cache` — explicitly-constructed cache dirs never migrate): pure
+per-file renames (copy across filesystems), skipping files the destination
+already has (a concurrent fetch produced identical content), removing the old
+root once emptied — its presence is the trigger, so a finished migration costs
+one `stat` thereafter. Unrecognized files are left behind and logged.
 
 **Multi-version support:**
 - Supports rustdoc JSON format versions 48-60 natively, plus newer additive formats (see below)
@@ -285,7 +308,7 @@ For version resolution it replaces a per-crate crates.io API request with a per-
 - A request that **excludes the latest** version needs the full version list, which the artifact does not carry.
 - A **miss**, which means "crates.io did not have this yesterday", not "no such crate" — a crate published since the last build is simply absent. Treating a miss as absence would make new crates unfindable for a day.
 
-**Freshness is bounded by the artifact's daily rebuild**, so resolution can lag crates.io by up to ~24h: a release published this morning may still resolve to yesterday's version. That is the deliberate trade for the request it eliminates. Within that bound the tiers are memory → disk → network, and **refresh is kept off the request path**: a query only ever reads what is loaded, never fetches. Keeping it fresh is a separate job split by process lifetime. A long-lived server runs `CrateIndex::run_periodic_refresh` as a detached task, which loads the artifact once at startup and then revalidates it with a conditional GET **scheduled from the response's `Last-Modified`** — since the artifact is our own once-a-day rebuild, the task sleeps until ~24h after the build it holds was published rather than polling hourly, so steady state is ~1 conditional GET a day, not 24. If a rebuild is overdue (the workflow ran late, or sent no `Last-Modified`), it falls back to a 30-minute watch poll until the new build lands. Every request is answered from whatever that task last loaded, and no request pays to fetch or even to notice the artifact changed. A short-lived CLI process runs no such task: its first query cold-starts (loading from disk, revalidating only if a new daily build is already due), and it exits before the in-memory copy could age — so the CLI, too, now touches the network about once a day instead of hourly. Only a genuine cold start — nothing in memory *or* on disk — blocks on the network, behind a lock so concurrent first queries load once, with a brief failure cooldown so an offline cold start degrades to fast misses. The disk tier (`$CARGO_HOME/rustdoc-json/crate-names/`) is what makes this viable for the CLI, whose every invocation is a fresh process — it downloads the artifacts once and thereafter pays a ~40 ms decompression instead of a request, and works offline. A cold offline server still degrades to fast 503s on typeahead.
+**Freshness is bounded by the artifact's daily rebuild**, so resolution can lag crates.io by up to ~24h: a release published this morning may still resolve to yesterday's version. That is the deliberate trade for the request it eliminates. Within that bound the tiers are memory → disk → network, and **refresh is kept off the request path**: a query only ever reads what is loaded, never fetches. Keeping it fresh is a separate job split by process lifetime. A long-lived server runs `CrateIndex::run_periodic_refresh` as a detached task, which loads the artifact once at startup and then revalidates it with a conditional GET **scheduled from the response's `Last-Modified`** — since the artifact is our own once-a-day rebuild, the task sleeps until ~24h after the build it holds was published rather than polling hourly, so steady state is ~1 conditional GET a day, not 24. If a rebuild is overdue (the workflow ran late, or sent no `Last-Modified`), it falls back to a 30-minute watch poll until the new build lands. Every request is answered from whatever that task last loaded, and no request pays to fetch or even to notice the artifact changed. A short-lived CLI process runs no such task: its first query cold-starts (loading from disk, revalidating only if a new daily build is already due), and it exits before the in-memory copy could age — so the CLI, too, now touches the network about once a day instead of hourly. Only a genuine cold start — nothing in memory *or* on disk — blocks on the network, behind a lock so concurrent first queries load once, with a brief failure cooldown so an offline cold start degrades to fast misses. The disk tier (`$FERRITIN_HOME/crate-names/`) is what makes this viable for the CLI, whose every invocation is a fresh process — it downloads the artifacts once and thereafter pays a ~40 ms decompression instead of a request, and works offline. A cold offline server still degrades to fast 503s on typeahead.
 
 #### Crate-name typeahead
 
