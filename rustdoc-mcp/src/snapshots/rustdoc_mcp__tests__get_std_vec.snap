@@ -75,7 +75,7 @@ pin // Types that pin data to a location in memory. [+916 more lines]
 prelude // # The Rust Prelude [+106 more lines]
 primitive // This module reexports the primitive types to allow usage that is not [+37 more lines]
 process // A module for working with processes. [+145 more lines]
-ptr // Manually manage memory through raw pointers. [+394 more lines]
+ptr // Manually manage memory through raw pointers. [+399 more lines]
 random // Random value generation.
 range // # Replacement range types [+15 more lines]
 rc // Single-threaded reference-counting pointers. 'Rc' stands for 'Reference [+239 more lines]
