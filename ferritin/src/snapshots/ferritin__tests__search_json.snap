@@ -150,43 +150,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "alloc::collections::BTreeMap",
-      "kind": "struct",
-      "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html",
-      "score": 30.9,
-      "docs": [
-        {
-          "type": "truncatedBlock",
-          "nodes": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "An ordered map based on a ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "B-Tree",
-                  "style": "Plain",
-                  "url": "https://en.wikipedia.org/wiki/B-tree"
-                },
-                {
-                  "text": ".",
-                  "style": "Plain"
-                }
-              ]
-            }
-          ],
-          "level": "SingleLine",
-          "truncated": true
-        }
-      ]
-    },
-    {
       "path": "core::arch::x86::_mm_prefetch",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.9,
+      "score": 30.8,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -226,7 +193,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::arch::x86::_mm_prefetch",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.9,
+      "score": 30.8,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -300,6 +267,30 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
                 },
                 {
                   "text": ") is detected.",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ],
+          "level": "SingleLine",
+          "truncated": true
+        }
+      ]
+    },
+    {
+      "path": "std::io::Stdin::read_line",
+      "kind": "function",
+      "url": "https://doc.rust-lang.org/nightly/std/io/stdio/struct.Stdin.html#method.read_line",
+      "score": 30.5,
+      "docs": [
+        {
+          "type": "truncatedBlock",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "Locks this handle and reads a line of input, appending it to the specified buffer.",
                   "style": "Plain"
                 }
               ]
