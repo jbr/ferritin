@@ -105,7 +105,7 @@ Non-exhaustive list of known limitations:
 
 - alloc — Memory allocation APIs. [+9 lines]
 - any — Utilities for dynamic typing or type reflection. [+9 lines]
-- arch — SIMD and vendor intrinsics module. [+36 lines]
+- arch — SIMD and vendor intrinsics module. [+39 lines]
 - array — Utilities for the array primitive type. [+1 lines]
 - ascii — Operations on ASCII strings and characters. [+3 lines]
 - async_iter — Composable asynchronous iteration. [+20 lines]

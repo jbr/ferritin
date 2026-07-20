@@ -11,36 +11,40 @@ A trait for testing extremely long documentation that exceeds line limits.</p>
 This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
 </item>
   <item><p>
-std::line  (Macro) - score: 54.3</p>
+std::line  (Macro) - score: 54.2</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-core::line  (Macro) - score: 54.2</p>
+core::line  (Macro) - score: 54.0</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-proc_macro::Span::line  (Function) - score: 39.2</p>
+proc_macro::Span::line  (Function) - score: 39.1</p>
 <truncated level="single-line"><p>
 The one-indexed line of the source file where the span starts.</p>
 To obtain the<inline-code>span.end().line()</inline-code>. <elided chars="42"/></truncated>
 </item>
   <item><p>
-core::panic::Location::line  (Function) - score: 39.1</p>
+core::panic::Location::line  (Function) - score: 39.0</p>
 <truncated level="single-line"><p>
 Returns the line number from which the panic originated.</p>
 <title>Examples</title>
  <elided chars="279"/></truncated>
 </item>
   <item><p>
-std::panic::Location::line  (Function) - score: 39.1</p>
+std::panic::Location::line  (Function) - score: 39.0</p>
 <truncated level="single-line"><p>
 Returns the line number from which the panic originated.</p>
 <title>Examples</title>
  <elided chars="279"/></truncated>
+</item>
+  <item><p>
+alloc::io::BufRead::read_line  (Function) - score: 33.4</p>
+<truncated level="single-line">Reads all bytes until a newline (the <inline-code>0xA</inline-code> byte) is reached, and append them to the provided <inline-code>String</inline-code> buffer. <elided chars="1694"/></truncated>
 </item>
   <item><p>
 core::arch::x86::_mm_prefetch  (Function) - score: 30.8</p>
@@ -55,11 +59,7 @@ Fetch the cache line that contains address <inline-code>p</inline-code> using th
 The <inline-code>STRATEGY</inline-code> must be <elided chars="1362"/></truncated>
 </item>
   <item><p>
-std::io::LineWriter  (Struct) - score: 30.7</p>
+std::io::LineWriter  (Struct) - score: 30.6</p>
 <truncated level="single-line">Wraps a writer and buffers output to it, flushing whenever a newline (<inline-code>0x0a</inline-code>, <inline-code>'\n'</inline-code>) is detected. <elided chars="1914"/></truncated>
-</item>
-  <item><p>
-std::io::Stdin::read_line  (Function) - score: 30.5</p>
-<truncated level="single-line">Locks this handle and reads a line of input, appending it to the specified <elided chars="743"/></truncated>
 </item>
 </list>
