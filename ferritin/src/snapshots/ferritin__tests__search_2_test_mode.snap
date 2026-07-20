@@ -11,12 +11,6 @@ A generic struct for testing multi-paragraph documentation.</p>
 This struct and provides a <elided chars="401"/></truncated>
 </item>
   <item><p>
-alloc::borrow::Borrow  (Trait) - score: 67.7</p>
-<truncated level="single-line"><p>
-A trait for borrowing data.</p>
-In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
-</item>
-  <item><p>
 fixture-crate::GenericEnum  (Enum) - score: 67.2</p>
 <truncated level="single-line"><p>
 A generic enum for testing</p>
@@ -25,11 +19,17 @@ See also <inline-code>crate::TestEnum</inline-code></p>
 </truncated>
 </item>
   <item><p>
-core::mem::type_info::Generic  (Enum) - score: 64.3</p>
+alloc::borrow::Borrow  (Trait) - score: 67.2</p>
+<truncated level="single-line"><p>
+A trait for borrowing data.</p>
+In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
+</item>
+  <item><p>
+core::mem::type_info::Generic  (Enum) - score: 64.4</p>
 <truncated level="single-line">Compile-time type information about instantiated generics of structs, enum and <elided chars="14"/></truncated>
 </item>
   <item><p>
-std::mem::type_info::Generic  (Enum) - score: 64.3</p>
+std::mem::type_info::Generic  (Enum) - score: 64.4</p>
 <truncated level="single-line">Compile-time type information about instantiated generics of structs, enum and <elided chars="14"/></truncated>
 </item>
   <item><p>
