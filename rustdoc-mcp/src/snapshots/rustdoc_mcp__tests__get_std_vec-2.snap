@@ -22,6 +22,7 @@ low such as during system boot may be of a lower quality.
 
 ```rust
 struct HashMap<K, V, S = crate::hash::RandomState, A: Allocator = crate::alloc::Global> {
+    base: base::HashMap<K, V, S, A>,
 }
 ```
 
@@ -171,4 +172,4 @@ where
     Removes a key from the map, returning the stored key and value if the [+18 more lines]
 
 
-std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Default, Eq, Extend<(&'a K, &'a V)>, Extend<(K, V)> [+18 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Default, Eq, Extend<(&'a K, &'a V)>, Extend<(K, V)> [+20 more]

@@ -82,6 +82,8 @@ A minimal test crate for rustdoc JSON testing
 - TestUnion::from_int — Construct a TestUnion from its integer view.
 - Vec::allocator — Returns a reference to the underlying allocator.
 - Vec::append — Moves all the elements of other into self, leaving other empty. [+4 lines]
+- Vec::append_elements — Appends elements to self from other buffer.
+- Vec::append_elements_unreserved — Appends elements to self from other buffer without reserving additional capacity.
 - Vec::as_mut_ptr — Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer valid for zero sized reads if the vector didn't allocate. [+9 lines]
 - Vec::as_mut_slice — Extracts a mutable slice of the entire vector. [+3 lines]
 - Vec::as_non_null — Returns a NonNull pointer to the vector's buffer, or a dangling NonNull pointer valid for zero sized reads if the vector didn't allocate. [+6 lines]
@@ -94,8 +96,11 @@ A minimal test crate for rustdoc JSON testing
 - Vec::dedup_by — Removes all but the first of consecutive elements in the vector that are "equal" according to the given predicate function. [+7 lines]
 - Vec::dedup_by_key — Removes all but the first of consecutive elements in the vector that resolve to the same key. [+3 lines]
 - Vec::drain — Removes the subslice indicated by the given range from the vector, returning a double-ended iterator over the removed subslice. [+8 lines]
+- Vec::extend_desugared
 - Vec::extend_from_slice — Clones and appends all elements in a slice to the Vec. [+6 lines]
 - Vec::extend_from_within — Given a range src, clones a slice of elements in that range and appends it to the end. [+5 lines]
+- Vec::extend_trusted
+- Vec::extend_with — Extend the vector by n clones of value.
 - Vec::extract_if — Creates an iterator which uses a closure to determine if an element in the range should be removed. [+14 lines]
 - Vec::from_fn — Creates a Vec<T> where each element is produced by calling f with that element's index while walking forward through the Vec<T>. [+8 lines]
 - Vec::from_parts — Creates a Vec<T> directly from a NonNull pointer, a length, and a capacity. [+10 lines]
@@ -137,9 +142,12 @@ A minimal test crate for rustdoc JSON testing
 - Vec::spare_capacity_mut — Returns the remaining spare capacity of the vector as a slice of MaybeUninit<T>. [+3 lines]
 - Vec::splice — Creates a splicing iterator that replaces the specified range in the vector with the given replace_with iterator and yields the removed items. replace_with does not need to be the same length as range. [+12 lines]
 - Vec::split_at_spare_mut — Returns vector content as a slice of T, along with the remaining spare capacity of the vector as a slice of MaybeUninit<T>. [+4 lines]
+- Vec::split_at_spare_mut_with_len — Safety: changing returned .2 (&mut usize) is considered the same as calling .set_len(_). [+1 lines]
 - Vec::split_off — Splits the collection into two at the given index. [+6 lines]
 - Vec::swap_remove — Removes an element from the vector and returns it. [+6 lines]
 - Vec::truncate — Shortens the vector, keeping the first len elements and dropping the rest. [+10 lines]
+- Vec::try_append_elements — Appends elements to self from other buffer, returning TryReserveError on OOM.
+- Vec::try_extend_from_slice_of_bytes
 - Vec::try_remove — Remove and return the element at position index within the vector, shifting all elements after it to the left, or None if it does not exist. [+3 lines]
 - Vec::try_reserve — Tries to reserve capacity for at least additional more elements to be inserted in the given Vec<T>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling try_reserve, capacity will be greater than or equal to self.len() + additional if it returns Ok(()). Does nothing if capacity is already sufficient. This method preserves the contents even if an error occurs. [+4 lines]
 - Vec::try_reserve_exact — Tries to reserve the minimum capacity for at least additional elements to be inserted in the given Vec<T>. Unlike try_reserve, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling try_reserve_exact, capacity will be greater than or equal to self.len() + additional if it returns Ok(()). Does nothing if the capacity is already sufficient. [+5 lines]
@@ -194,15 +202,18 @@ A minimal test crate for rustdoc JSON testing
 - link_resolution_tests::RenamedTestStruct::increment_count — Update the count
 - link_resolution_tests::RenamedTestStruct::new — Create a new TestStruct
 - link_resolution_tests::Tree::append — Moves all elements from other into self, leaving other empty. [+3 lines]
+- link_resolution_tests::Tree::bulk_build_from_sorted_iter — Makes a BTreeMap from a sorted iterator.
 - link_resolution_tests::Tree::clear — Clears the map, removing all elements. [+2 lines]
 - link_resolution_tests::Tree::contains_key — Returns true if the map contains a value for the specified key. [+3 lines]
 - link_resolution_tests::Tree::entry — Gets the given key's corresponding entry in the map for in-place manipulation. [+2 lines]
 - link_resolution_tests::Tree::extract_if — Creates an iterator that visits elements (key-value pairs) in the specified range in ascending key order and uses a closure to determine if an element should be removed. [+5 lines]
+- link_resolution_tests::Tree::extract_if_inner
 - link_resolution_tests::Tree::first_entry — Returns the first entry in the map for in-place manipulation. The key of this entry is the minimum key in the map. [+2 lines]
 - link_resolution_tests::Tree::first_key_value — Returns the first key-value pair in the map. The key in this pair is the minimum key in the map. [+2 lines]
 - link_resolution_tests::Tree::get — Returns a reference to the value corresponding to the key. [+3 lines]
 - link_resolution_tests::Tree::get_key_value — Returns the key-value pair corresponding to the supplied key. This is potentially useful: [+4 lines]
 - link_resolution_tests::Tree::get_mut — Returns a mutable reference to the value corresponding to the key. [+3 lines]
+- link_resolution_tests::Tree::get_or_insert_with
 - link_resolution_tests::Tree::insert — Inserts a key-value pair into the map. [+4 lines]
 - link_resolution_tests::Tree::into_keys — Creates a consuming iterator visiting all the keys, in sorted order. The map cannot be used after calling this. The iterator element type is K. [+2 lines]
 - link_resolution_tests::Tree::into_values — Creates a consuming iterator visiting all the values, in order by key. The map cannot be used after calling this. The iterator element type is V. [+2 lines]
@@ -224,6 +235,7 @@ A minimal test crate for rustdoc JSON testing
 - link_resolution_tests::Tree::range_mut — Constructs a mutable double-ended iterator over a sub-range of elements in the map. The simplest way is to use the range syntax min..max, thus range(min..max) will yield elements from min (inclusive) to max (exclusive). The range may also be entered as (Bound<T>, Bound<T>), so for example range((Excluded(4), Included(10))) will yield a left-exclusive, right-inclusive range from 4 to 10. [+4 lines]
 - link_resolution_tests::Tree::remove — Removes a key from the map, returning the value at the key if the key was previously in the map. [+3 lines]
 - link_resolution_tests::Tree::remove_entry — Removes a key from the map, returning the stored key and value if the key was previously in the map. [+3 lines]
+- link_resolution_tests::Tree::replace
 - link_resolution_tests::Tree::retain — Retains only the elements specified by the predicate. [+3 lines]
 - link_resolution_tests::Tree::split_off — Splits the collection into two at the given key. Returns everything after the given key, including the key. If the key is not present, the split will occur at the nearest greater key, or return an empty map if no such key exists. [+2 lines]
 - link_resolution_tests::Tree::try_insert — Tries to insert a key-value pair into the map, and returns a mutable reference to the value in the entry. [+3 lines]
@@ -264,6 +276,7 @@ A minimal test crate for rustdoc JSON testing
 - link_resolution_tests::nested::Str::pop — Removes the last character from the string buffer and returns it. [+3 lines]
 - link_resolution_tests::nested::Str::push — Appends the given char to the end of this String. [+4 lines]
 - link_resolution_tests::nested::Str::push_str — Appends a given string slice onto the end of this String. [+4 lines]
+- link_resolution_tests::nested::Str::push_str_slice
 - link_resolution_tests::nested::Str::remove — Removes a char from this String at byte position idx and returns it. [+6 lines]
 - link_resolution_tests::nested::Str::remove_matches — Remove all matches of pattern pat in the String. [+4 lines]
 - link_resolution_tests::nested::Str::replace_first — Replaces the leftmost occurrence of a pattern with another string, in-place. [+4 lines]
@@ -276,6 +289,7 @@ A minimal test crate for rustdoc JSON testing
 - link_resolution_tests::nested::Str::shrink_to_fit — Shrinks the capacity of this String to match its length. [+2 lines]
 - link_resolution_tests::nested::Str::split_off — Splits the string into two at the given byte index. [+6 lines]
 - link_resolution_tests::nested::Str::truncate — Shortens this String to the specified length. [+6 lines]
+- link_resolution_tests::nested::Str::try_push_str — Appends a given string slice onto the end of this String, returning TryReserveError otherwise.
 - link_resolution_tests::nested::Str::try_reserve — Tries to reserve capacity for at least additional bytes more than the current length. The allocator may reserve more space to speculatively avoid frequent allocations. After calling try_reserve, capacity will be greater than or equal to self.len() + additional if it returns Ok(()). Does nothing if capacity is already sufficient. This method preserves the contents even if an error occurs. [+4 lines]
 - link_resolution_tests::nested::Str::try_reserve_exact — Tries to reserve the minimum capacity for at least additional bytes more than the current length. Unlike try_reserve, this will not deliberately over-allocate to speculatively avoid frequent allocations. After calling try_reserve_exact, capacity will be greater than or equal to self.len() + additional if it returns Ok(()). Does nothing if the capacity is already sufficient. [+5 lines]
 - link_resolution_tests::nested::Str::try_with_capacity — Creates a new empty String with at least the specified capacity. [+2 lines]

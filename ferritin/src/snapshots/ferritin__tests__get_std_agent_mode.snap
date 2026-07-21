@@ -103,33 +103,56 @@ Non-exhaustive list of known limitations:
 
 ## Modules
 
+- __restricted_std_workaround
 - alloc — Memory allocation APIs. [+9 lines]
+- allow_attribute — The allow attribute suppresses lint diagnostics that would otherwise produce warnings or errors. It can be used on any lint or lint group (except those set to forbid). [+11 lines]
 - any — Utilities for dynamic typing or type reflection. [+9 lines]
 - arch — SIMD and vendor intrinsics module. [+39 lines]
 - array — Utilities for the array primitive type. [+1 lines]
+- as_keyword — Cast between types, rename an import, or qualify paths to associated items. [+14 lines]
 - ascii — Operations on ASCII strings and characters. [+3 lines]
 - async_iter — Composable asynchronous iteration. [+20 lines]
+- async_keyword — Returns a Future instead of blocking the current thread. [+14 lines]
 - autodiff — This module provides support for automatic differentiation. For precise information on differences between the autodiff_forward and autodiff_reverse macros and how to use them, see their respective documentation. [+22 lines]
+- await_keyword — Suspend execution until the result of a Future is ready. [+5 lines]
 - backtrace — Support for capturing a stack backtrace of an OS thread [+13 lines]
+- backtrace_rs — A library for acquiring a backtrace at runtime [+11 lines]
+- become_keyword — Perform a tail-call of a function. [+12 lines]
 - borrow — A module for working with borrowed data.
 - boxed — The Box<T> type for heap allocation. [+30 lines]
+- break_keyword — Exit early from a loop or labelled block. [+9 lines]
 - bstr — The ByteStr and ByteString types and trait implementations.
 - cell — Shareable mutable containers. [+38 lines]
+- cfg_attribute — Used for conditional compilation. [+8 lines]
 - char — Utilities for the char primitive type. [+4 lines]
 - clone — The Clone trait for types that cannot be 'implicitly copied'. [+5 lines]
 - cmp — Utilities for comparing and ordering values. [+3 lines]
+- cold_attribute — Hint to the compiler that a function is unlikely to be called. [+4 lines]
 - collections — Collection types. [+69 lines]
+- const_keyword — Compile-time constants, compile-time blocks, compile-time evaluable functions, and raw pointers. [+18 lines]
+- continue_keyword — Skip to the next iteration of a loop. [+5 lines]
 - convert — Traits for conversions between types. [+7 lines]
+- crate_keyword — A Rust binary or library. [+6 lines]
 - default — The Default trait for types with a default value.
+- deny_attribute — Emits an error, preventing the compilation from finishing, when a lint check has failed. This is useful for enforcing rules or preventing certain patterns: [+7 lines]
+- deprecated_attribute — Emits a warning during compilation when an item with this attribute is used. since and note are optional fields giving more detail about why the item is deprecated. [+5 lines]
+- dyn_keyword — dyn is a prefix of a trait object's type. [+8 lines]
+- else_keyword — What expression to evaluate when an if condition evaluates to false. [+9 lines]
+- enum_keyword — A type that can be any one of several variants. [+5 lines]
 - env — Inspection and manipulation of the process's environment. [+2 lines]
 - error — Interfaces for working with Errors. [+27 lines]
+- extern_keyword — Link to or import external code. [+8 lines]
 - f128 — Constants for the f128 quadruple-precision floating point type. [+2 lines]
 - f16 — Constants for the f16 half-precision floating point type. [+2 lines]
 - f32 — Constants for the f32 single-precision floating point type. [+3 lines]
 - f64 — Constants for the f64 double-precision floating point type. [+3 lines]
+- false_keyword — A value of type prim@bool representing logical false. [+2 lines]
 - ffi — Utilities related to FFI bindings. [+24 lines]
 - field — Field Reflection
 - fmt — Utilities for formatting and printing Strings. [+100 lines]
+- fn_keyword — A function or function pointer. [+8 lines]
+- for_keyword — Iteration with in, trait implementation with impl, or higher-ranked trait bounds (for<'a>). [+11 lines]
+- forbid_attribute — Emits an error, preventing the compilation from finishing, when a lint check has failed. [+7 lines]
 - from — Unstable module containing the unstable From derive macro.
 - fs — Filesystem manipulation operations. [+7 lines]
 - future — Asynchronous basic functionality. [+1 lines]
@@ -140,47 +163,111 @@ Non-exhaustive list of known limitations:
 - i32 — Redundant constants module for the i32 primitive type. [+1 lines]
 - i64 — Redundant constants module for the i64 primitive type. [+1 lines]
 - i8 — Redundant constants module for the i8 primitive type. [+1 lines]
+- if_keyword — Evaluate a block if a condition holds. [+8 lines]
+- impl_keyword — Implementations of functionality for a type, or a type implementing some functionality. [+16 lines]
+- in_keyword — Iterate over a series of values with for. [+9 lines]
+- inline_attribute — Suggest that the compiler inline a function at its call sites. [+8 lines]
 - intrinsics — Compiler intrinsics. [+12 lines]
 - io — Traits, helpers, and type definitions for core I/O functionality. [+41 lines]
 - isize — Redundant constants module for the isize primitive type. [+1 lines]
 - iter — Composable external iteration. [+61 lines]
+- let_keyword — Bind a value to a variable. [+8 lines]
+- loop_keyword — Loop indefinitely. [+7 lines]
+- macros — Standard library macros [+1 lines]
 - marker — Primitive traits and types representing basic properties of types. [+1 lines]
+- match_keyword — Control flow based on pattern matching. [+5 lines]
 - mem — Basic functions for dealing with memory, values, and types. [+3 lines]
+- mod_keyword — Organize code into modules. [+4 lines]
+- move_keyword — Capture a closure's environment by value. [+9 lines]
+- must_use_attribute — Warn when a value is ignored. [+15 lines]
+- mut_keyword — A mutable variable, reference, or pointer. [+7 lines]
 - net — Networking primitives for TCP/UDP communication. [+4 lines]
+- no_std_attribute — Prevents automatically linking the standard library. [+8 lines]
 - num — Additional functionality for numerics. [+1 lines]
 - offload — This module provides support for gpu offloading. For technical details regarding the offload_kernel and how to use it, see their respective documentation. [+8 lines]
 - ops — Overloadable operators. [+16 lines]
 - option — Optional values. [+82 lines]
 - os — OS-specific functionality.
 - panic — Panic support in the standard library.
+- panicking — Implementation of various bits and pieces of the panic! macro and associated runtime pieces. [+2 lines]
 - pat — Helper module for exporting the pattern_type macro
 - path — Cross-platform path manipulation. [+15 lines]
 - pin — Types that pin data to a location in memory. [+137 lines]
 - prelude — The Rust Prelude [+12 lines]
+- prim_array — A fixed-size array, denoted [T; N], for the element type, T, and the non-negative compile-time constant size, N. [+30 lines]
+- prim_bool — The boolean type. [+11 lines]
+- prim_char — A character type. [+23 lines]
+- prim_f128 — A 128-bit floating-point type (specifically, the "binary128" type defined in IEEE 754-2008). [+4 lines]
+- prim_f16 — A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE 754-2008). [+3 lines]
+- prim_f32 — A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE 754-2008). [+31 lines]
+- prim_f64 — A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE 754-2008). [+2 lines]
+- prim_fn — Function pointers, like fn(usize) -> bool. [+48 lines]
+- prim_i128 — The 128-bit signed integer type. [+3 lines]
+- prim_i16 — The 16-bit signed integer type.
+- prim_i32 — The 32-bit signed integer type.
+- prim_i64 — The 64-bit signed integer type.
+- prim_i8 — The 8-bit signed integer type.
+- prim_isize — The pointer-sized signed integer type. [+1 lines]
+- prim_never — The ! type, also called "never". [+44 lines]
+- prim_pointer — Raw, unsafe pointers, *const T, and *mut T. [+20 lines]
+- prim_ref — References, &T and &mut T. [+26 lines]
+- prim_slice — A dynamically-sized view into a contiguous sequence, [T]. [+21 lines]
+- prim_str — String slices. [+14 lines]
+- prim_tuple — A finite heterogeneous sequence, (T, U, ..). [+23 lines]
+- prim_u128 — The 128-bit unsigned integer type. [+1 lines]
+- prim_u16 — The 16-bit unsigned integer type.
+- prim_u32 — The 32-bit unsigned integer type.
+- prim_u64 — The 64-bit unsigned integer type.
+- prim_u8 — The 8-bit unsigned integer type.
+- prim_unit — The () type, also called "unit". [+4 lines]
+- prim_usize — The pointer-sized unsigned integer type. [+1 lines]
 - primitive — This module reexports the primitive types to allow usage that is not possibly shadowed by other declared types. [+7 lines]
+- proc_macro_attribute — Defines a function-like procedural macro. [+7 lines]
 - process — A module for working with processes. [+20 lines]
 - ptr — Manually manage memory through raw pointers. [+66 lines]
+- pub_keyword — Make an item visible to others. [+2 lines]
 - random — Random value generation.
 - range — Replacement range types [+2 lines]
 - rc — Single-threaded reference-counting pointers. 'Rc' stands for 'Reference Counted'. [+20 lines]
+- ref_keyword — Bind by reference during pattern matching. [+8 lines]
 - result — Error handling with the Result type. [+78 lines]
+- return_keyword — Returns a value from a function. [+8 lines]
+- rt — Runtime services [+1 lines]
+- sealed
+- self_keyword — The receiver of a method, or the current module. [+10 lines]
+- self_upper_keyword — The implementing type within a trait or impl block, or the current type within a type definition. [+8 lines]
 - simd — Portable SIMD module. [+14 lines]
 - slice — Utilities for the slice primitive type. [+3 lines]
+- static_keyword — A static item is a value which is valid for the entire duration of your program (a 'static lifetime). [+15 lines]
+- std_float
 - str — Utilities for the str primitive type. [+1 lines]
 - string — A UTF-8–encoded, growable string. [+8 lines]
+- struct_keyword — A type that is composed of other types. [+18 lines]
+- super_keyword — The parent of the current module. [+3 lines]
 - sync — Useful synchronization primitives. [+22 lines]
+- sys
 - task — Types and Traits for working with asynchronous tasks.
 - thread — Native threads. [+31 lines]
 - time — Temporal quantification. [+5 lines]
+- track_caller_attribute — Make a function report the location of its caller instead of its own. [+4 lines]
+- trait_keyword — A common interface for a group of types. [+36 lines]
+- true_keyword — A value of type prim@bool representing logical true. [+4 lines]
+- type_keyword — Define an alias for an existing type. [+8 lines]
 - u128 — Redundant constants module for the u128 primitive type. [+1 lines]
 - u16 — Redundant constants module for the u16 primitive type. [+1 lines]
 - u32 — Redundant constants module for the u32 primitive type. [+1 lines]
 - u64 — Redundant constants module for the u64 primitive type. [+1 lines]
 - u8 — Redundant constants module for the u8 primitive type. [+1 lines]
+- union_keyword — The Rust equivalent of a C-style union. [+9 lines]
 - unsafe_binder — Operators used to turn types into unsafe binders and back.
+- unsafe_keyword — Code or interfaces whose memory safety cannot be verified by the type system. [+35 lines]
+- use_keyword — Import or rename items from other crates or modules, use values under ergonomic clones semantic, or specify precise capturing with use<..>. [+20 lines]
 - usize — Redundant constants module for the usize primitive type. [+1 lines]
 - vec — A contiguous growable array type with heap-allocated contents, written Vec<T>. [+16 lines]
 - view — Helper module for exporting the view_types macro.
+- warn_attribute — Emits a warning during compilation when a lint check failed. [+8 lines]
+- where_keyword — Add constraints that must be upheld to use an item. [+13 lines]
+- while_keyword — Loop while a condition is upheld. [+8 lines]
 
 ## Macros
 
@@ -207,7 +294,9 @@ Non-exhaustive list of known limitations:
 - file — Expands to the file name in which it was invoked. [+6 lines]
 - format — Creates a String using interpolation of runtime expressions. [+9 lines]
 - format_args — Constructs parameters for the other string-formatting macros. [+9 lines]
+- format_args_nl — Same as format_args, but adds a newline in the end.
 - hash_map — Creates a HashMap containing the arguments. [+9 lines]
+- impl_sealed
 - include — Parses a file as an expression or an item according to the context. [+13 lines]
 - include_bytes — Includes a file as a reference to a byte array. [+9 lines]
 - include_str — Includes a UTF-8 encoded file as a string. [+9 lines]
@@ -219,6 +308,7 @@ Non-exhaustive list of known limitations:
 - panic — Panics the current thread. [+21 lines]
 - print — Prints to the standard output. [+11 lines]
 - println — Prints to the standard output, with a newline. [+11 lines]
+- repetition_utils
 - stringify — Stringifies its arguments. [+4 lines]
 - thread_local — Declare a new thread local storage key of type std::thread::LocalKey. [+7 lines]
 - todo — Indicates unfinished code. [+11 lines]
