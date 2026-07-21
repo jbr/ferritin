@@ -84,6 +84,17 @@ fn detect_tty_mode() -> OutputMode {
     OutputMode::Tty
 }
 
+/// Render a document in agent (LLM) mode without a [`RenderContext`].
+///
+/// The agent renderer uses no theme, terminal width, or color state — [`render`]
+/// discards the context for `OutputMode::Agent` — so callers that only ever want
+/// agent output (the MCP endpoint) can skip constructing one, which loads a
+/// syntax set and theme per call.
+#[cfg(feature = "mcp")]
+pub(crate) fn render_agent(document: &Document, output: &mut impl Write) -> std::fmt::Result {
+    agent::render(document, output)
+}
+
 /// Render a document to a string based on the output mode
 pub fn render(
     document: &Document,
