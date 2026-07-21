@@ -1322,6 +1322,54 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "link_resolution_tests::nested::Str::try_push_str",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_push_str",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Appends a given string slice onto the end of this ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "String",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", returning",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "TryReserveError",
+                    "style": "InlineCode",
+                    "path": "alloc::collections::TryReserveError"
+                  },
+                  {
+                    "text": " otherwise.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::nested::Str::push_str_slice",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push_str_slice"
+      },
+      {
         "path": "link_resolution_tests::nested::Str::extend_from_within",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.extend_from_within",
@@ -2774,6 +2822,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "link_resolution_tests::Tree::replace",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.replace"
+      },
+      {
+        "path": "link_resolution_tests::Tree::get_or_insert_with",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get_or_insert_with"
+      },
+      {
         "path": "link_resolution_tests::Tree::new",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.new",
@@ -3661,6 +3719,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "link_resolution_tests::Tree::extract_if_inner",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.extract_if_inner"
+      },
+      {
         "path": "link_resolution_tests::Tree::into_keys",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_keys",
@@ -3751,6 +3814,36 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
             ],
             "level": "SingleLine",
             "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "link_resolution_tests::Tree::bulk_build_from_sorted_iter",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.bulk_build_from_sorted_iter",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Makes a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "BTreeMap",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " from a sorted iterator.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
           }
         ]
       },
@@ -9075,6 +9168,105 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "Vec::append_elements",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append_elements",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Appends elements to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "self",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " from other buffer.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::try_append_elements",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_append_elements",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Appends elements to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "self",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " from other buffer, returning ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "TryReserveError",
+                    "style": "InlineCode",
+                    "path": "alloc::collections::TryReserveError"
+                  },
+                  {
+                    "text": " on OOM.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "Vec::append_elements_unreserved",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append_elements_unreserved",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Appends elements to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "self",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " from other buffer without reserving additional capacity.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "Vec::drain",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.drain",
@@ -9386,6 +9578,37 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "Vec::split_at_spare_mut_with_len",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_at_spare_mut_with_len",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Safety: changing returned .2 (&mut usize) is considered the same as calling ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": ".set_len(_)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
         "path": "Vec::into_chunks",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_chunks",
@@ -9629,6 +9852,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "Vec::try_extend_from_slice_of_bytes",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_extend_from_slice_of_bytes"
+      },
+      {
         "path": "Vec::into_flattened",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened",
@@ -9668,6 +9896,36 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "Vec::extend_with",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_with",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Extend the vector by ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "n",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " clones of value.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "Vec::dedup",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup",
@@ -9702,6 +9960,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
             "truncated": true
           }
         ]
+      },
+      {
+        "path": "Vec::extend_desugared",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_desugared"
+      },
+      {
+        "path": "Vec::extend_trusted",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_trusted"
       },
       {
         "path": "Vec::splice",

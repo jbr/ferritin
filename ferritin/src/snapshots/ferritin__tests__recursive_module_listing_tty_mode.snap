@@ -201,6 +201,13 @@ Functions
   ◦ [Vec::append](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append) 
     Moves all the elements of other into self, leaving other empty. [...]
 
+  ◦ [Vec::append_elements](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append_elements) 
+    Appends elements to self from other buffer.
+
+  ◦ [Vec::append_elements_unreserved](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append_elements_unreserved) 
+    Appends elements to self from other buffer without reserving additional
+    capacity.
+
   ◦ [Vec::as_mut_ptr](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_ptr) 
     Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer
     valid for zero sized reads if the vector didn't allocate. [...]
@@ -245,12 +252,19 @@ Functions
     Removes the subslice indicated by the given range from the vector, returning a
     double-ended iterator over the removed subslice. [...]
 
+  ◦ [Vec::extend_desugared](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_desugared) 
+
   ◦ [Vec::extend_from_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_slice) 
     Clones and appends all elements in a slice to the Vec. [...]
 
   ◦ [Vec::extend_from_within](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_within) 
     Given a range src, clones a slice of elements in that range and appends it to
     the end. [...]
+
+  ◦ [Vec::extend_trusted](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_trusted) 
+
+  ◦ [Vec::extend_with](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_with) 
+    Extend the vector by n clones of value.
 
   ◦ [Vec::extract_if](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if) 
     Creates an iterator which uses a closure to determine if an element in the
@@ -407,6 +421,10 @@ Functions
     Returns vector content as a slice of T, along with the remaining spare capacity
     of the vector as a slice of MaybeUninit<T>. [...]
 
+  ◦ [Vec::split_at_spare_mut_with_len](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_at_spare_mut_with_len) 
+    Safety: changing returned .2 (&mut usize) is considered the same as calling .
+    set_len(_). [...]
+
   ◦ [Vec::split_off](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_off) 
     Splits the collection into two at the given index. [...]
 
@@ -415,6 +433,11 @@ Functions
 
   ◦ [Vec::truncate](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.truncate) 
     Shortens the vector, keeping the first len elements and dropping the rest. [...]
+
+  ◦ [Vec::try_append_elements](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_append_elements) 
+    Appends elements to self from other buffer, returning [TryReserveError](https://doc.rust-lang.org/nightly/alloc/collections/struct.TryReserveError.html) on OOM.
+
+  ◦ [Vec::try_extend_from_slice_of_bytes](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_extend_from_slice_of_bytes) 
 
   ◦ [Vec::try_remove](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_remove) 
     Remove and return the element at position index within the vector, shifting all
@@ -620,6 +643,9 @@ Functions
   ◦ [link_resolution_tests::Tree::append](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.append) 
     Moves all elements from other into self, leaving other empty. [...]
 
+  ◦ [link_resolution_tests::Tree::bulk_build_from_sorted_iter](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.bulk_build_from_sorted_iter) 
+    Makes a BTreeMap from a sorted iterator.
+
   ◦ [link_resolution_tests::Tree::clear](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.clear) 
     Clears the map, removing all elements. [...]
 
@@ -633,6 +659,8 @@ Functions
     Creates an iterator that visits elements (key-value pairs) in the specified
     range in ascending key order and uses a closure to determine if an element 
     should be removed. [...]
+
+  ◦ [link_resolution_tests::Tree::extract_if_inner](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.extract_if_inner) 
 
   ◦ [link_resolution_tests::Tree::first_entry](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.first_entry) 
     Returns the first entry in the map for in-place manipulation. The key of this
@@ -651,6 +679,8 @@ Functions
 
   ◦ [link_resolution_tests::Tree::get_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get_mut) 
     Returns a mutable reference to the value corresponding to the key. [...]
+
+  ◦ [link_resolution_tests::Tree::get_or_insert_with](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get_or_insert_with) 
 
   ◦ [link_resolution_tests::Tree::insert](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.insert) 
     Inserts a key-value pair into the map. [...]
@@ -732,6 +762,8 @@ Functions
   ◦ [link_resolution_tests::Tree::remove_entry](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.remove_entry) 
     Removes a key from the map, returning the stored key and value if the key was
     previously in the map. [...]
+
+  ◦ [link_resolution_tests::Tree::replace](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.replace) 
 
   ◦ [link_resolution_tests::Tree::retain](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.retain) 
     Retains only the elements specified by the predicate. [...]
@@ -869,6 +901,8 @@ Functions
   ◦ [link_resolution_tests::nested::Str::push_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push_str) 
     Appends a given string slice onto the end of this String. [...]
 
+  ◦ [link_resolution_tests::nested::Str::push_str_slice](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push_str_slice) 
+
   ◦ [link_resolution_tests::nested::Str::remove](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.remove) 
     Removes a [char](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar) from this String at byte position idx and returns it. [...]
 
@@ -912,6 +946,10 @@ Functions
 
   ◦ [link_resolution_tests::nested::Str::truncate](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.truncate) 
     Shortens this String to the specified length. [...]
+
+  ◦ [link_resolution_tests::nested::Str::try_push_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_push_str) 
+    Appends a given string slice onto the end of this String, returning [TryReserve](https://doc.rust-lang.org/nightly/alloc/collections/struct.TryReserveError.html)
+    [Error](https://doc.rust-lang.org/nightly/alloc/collections/struct.TryReserveError.html) otherwise.
 
   ◦ [link_resolution_tests::nested::Str::try_reserve](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve) 
     Tries to reserve capacity for at least additional bytes more than the current

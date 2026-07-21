@@ -378,6 +378,16 @@ Moves all the elements of <inline-code>other</inline-code> into <inline-code>sel
 Panics if<inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>. <elided chars="189"/></truncated>
 </item>
   <item><p>
+<type-name>Vec::append_elements</type-name> </p>
+<truncated level="single-line"><p>
+Appends elements to <inline-code>self</inline-code> from other buffer.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>Vec::append_elements_unreserved</type-name> </p>
+<truncated level="single-line">Appends elements to <inline-code>self</inline-code> from other buffer without reserving additional capacity. <elided chars="1"/></truncated>
+</item>
+  <item><p>
 <type-name>Vec::as_mut_ptr</type-name> </p>
 <truncated level="single-line">Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer valid for zero sized reads if the vector didn't allocate. <elided chars="2164"/></truncated>
 </item>
@@ -440,6 +450,9 @@ Note that this method has no effect on of the vector. <elided chars="105"/></tru
 <truncated level="single-line">Removes the subslice indicated by the given range from the vector, returning a double-ended iterator over the removed subslice. <elided chars="774"/></truncated>
 </item>
   <item><p>
+<type-name>Vec::extend_desugared</type-name> </p>
+</item>
+  <item><p>
 <type-name>Vec::extend_from_slice</type-name> </p>
 <truncated level="single-line"><p>
 Clones and appends all elements in a slice to the <inline-code>Vec</inline-code>.</p>
@@ -448,6 +461,15 @@ Iterates over the slice <inline-code>other</inline-code>, clones each element, i
   <item><p>
 <type-name>Vec::extend_from_within</type-name> </p>
 <truncated level="single-line">Given a range <inline-code>src</inline-code>, clones a slice of elements in that range and appends it to the end. <elided chars="696"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::extend_trusted</type-name> </p>
+</item>
+  <item><p>
+<type-name>Vec::extend_with</type-name> </p>
+<truncated level="single-line"><p>
+Extend the vector by <inline-code>n</inline-code> clones of value.</p>
+</truncated>
 </item>
   <item><p>
 <type-name>Vec::extract_if</type-name> </p>
@@ -656,6 +678,10 @@ Returns the remaining spare capacity of the vector as a slice of <inline-code>Ma
 <truncated level="single-line">Returns vector content as a slice of <inline-code>T</inline-code>, along with the remaining spare capacity of the vector as a slice of <inline-code>MaybeUninit<T></inline-code>. <elided chars="999"/></truncated>
 </item>
   <item><p>
+<type-name>Vec::split_at_spare_mut_with_len</type-name> </p>
+<truncated level="single-line">Safety: changing returned .2 (&mut usize) is considered the same as calling <inline-code>.set_len(_)</inline-code>. <elided chars="90"/></truncated>
+</item>
+  <item><p>
 <type-name>Vec::split_off</type-name> </p>
 <truncated level="single-line"><p>
 Splits the collection into two at the given index.</p>
@@ -672,6 +698,15 @@ The removed element is <elided chars="407"/></truncated>
 <truncated level="single-line"><p>
 Shortens the vector, keeping the first <inline-code>len</inline-code> elements and dropping the rest.</p>
 If <inline-code>len</inline-code> is no <elided chars="665"/></truncated>
+</item>
+  <item><p>
+<type-name>Vec::try_append_elements</type-name> </p>
+<truncated level="single-line"><p>
+Appends elements to <inline-code>self</inline-code> from other buffer, returning <inline-code>TryReserveError</inline-code> on OOM.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>Vec::try_extend_from_slice_of_bytes</type-name> </p>
 </item>
   <item><p>
 <type-name>Vec::try_remove</type-name> </p>
@@ -951,6 +986,12 @@ Moves all elements from <inline-code>other</inline-code> into <inline-code>self<
 If a key from <inline-code>other</inline-code> is already<inline-code>self</inline-code>, the respective value from <inline-code>self</inline-code> will be<inline-code>other</inline-code>. Similar to <inline-code>insert</inline-code>, though, the key which matters for<inline-code>==</inline-code> without being <elided chars="739"/></truncated>
 </item>
   <item><p>
+<type-name>link_resolution_tests::Tree::bulk_build_from_sorted_iter</type-name> </p>
+<truncated level="single-line"><p>
+Makes a <inline-code>BTreeMap</inline-code> from a sorted iterator.</p>
+</truncated>
+</item>
+  <item><p>
 <type-name>link_resolution_tests::Tree::clear</type-name> </p>
 <truncated level="single-line"><p>
 Clears the map, removing all elements.</p>
@@ -972,6 +1013,9 @@ Gets the given key's corresponding entry in the map for in-place manipulation.</
   <item><p>
 <type-name>link_resolution_tests::Tree::extract_if</type-name> </p>
 <truncated level="single-line">Creates an iterator that visits elements (key-value pairs) in the specified ascending key order and uses a closure to determine if an element should be removed. <elided chars="1488"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::extract_if_inner</type-name> </p>
 </item>
   <item><p>
 <type-name>link_resolution_tests::Tree::first_entry</type-name> </p>
@@ -996,6 +1040,9 @@ The key may be any on the borrowed form <emphasis>must</emphasis> match the orde
 <truncated level="single-line"><p>
 Returns a mutable reference to the value corresponding to the key.</p>
 The key may on the<emphasis>must</emphasis> match the <elided chars="288"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::get_or_insert_with</type-name> </p>
 </item>
   <item><p>
 <type-name>link_resolution_tests::Tree::insert</type-name> </p>
@@ -1107,6 +1154,9 @@ Makes a new empty BTreeMap with a reasonable choice for B.</p>
   <item><p>
 <type-name>link_resolution_tests::Tree::remove_entry</type-name> </p>
 <truncated level="single-line">Removes a key from the map, returning the stored key and value if the key was previously in the map. <elided chars="335"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::replace</type-name> </p>
 </item>
   <item><p>
 <type-name>link_resolution_tests::Tree::retain</type-name> </p>
@@ -1330,6 +1380,9 @@ Appends a given string slice onto the end of this <inline-code>String</inline-co
 Panics if the<inline-code>isize::MAX</inline-code> <emphasis>bytes</emphasis>. <elided chars="121"/></truncated>
 </item>
   <item><p>
+<type-name>link_resolution_tests::nested::Str::push_str_slice</type-name> </p>
+</item>
+  <item><p>
 <type-name>link_resolution_tests::nested::Str::remove</type-name> </p>
 <truncated level="single-line"><p>
 Removes a <inline-code>char</inline-code> from this <inline-code>String</inline-code> at byte position <inline-code>idx</inline-code> and returns it.</p>
@@ -1396,6 +1449,10 @@ Returns a newly allocated <inline-code>String</inline-code>. <inline-code>self</
 <truncated level="single-line"><p>
 Shortens this <inline-code>String</inline-code> to the specified length.</p>
 If <inline-code>new_len</inline-code> is greater than or equal to the effect. <elided chars="263"/></truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::nested::Str::try_push_str</type-name> </p>
+<truncated level="single-line">Appends a given string slice onto the end of this <inline-code>String</inline-code>, returning <inline-code>TryReserveError</inline-code> otherwise. <elided chars="14"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::try_reserve</type-name> </p>

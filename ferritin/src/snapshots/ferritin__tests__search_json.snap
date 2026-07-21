@@ -30,10 +30,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "std::line",
+      "path": "core::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 54.2,
+      "score": 53.2,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -54,10 +54,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "core::line",
+      "path": "std::prelude::v1::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 54.0,
+      "score": 53.2,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -81,7 +81,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "proc_macro::Span::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line",
-      "score": 39.1,
+      "score": 38.1,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -102,10 +102,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "core::panic::Location::line",
+      "path": "core::prelude::v1::ambiguous_macros_only::panic::location::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 39.0,
+      "score": 37.9,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -126,10 +126,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "std::panic::Location::line",
+      "path": "std::prelude::v1::ambiguous_macros_only::panic::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 39.0,
+      "score": 37.9,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -150,10 +150,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "alloc::io::BufRead::read_line",
+      "path": "alloc::io::buf_read::BufRead::read_line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/alloc/io/buf_read/trait.BufRead.html#method.read_line",
-      "score": 33.4,
+      "score": 32.5,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -199,10 +199,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "core::arch::x86::_mm_prefetch",
+      "path": "core::prelude::v1::ambiguous_macros_only::core_arch::arch::x86::sse::_mm_prefetch",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.8,
+      "score": 30.3,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -239,10 +239,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "std::arch::x86::_mm_prefetch",
+      "path": "std::prelude::v1::ambiguous_macros_only::arch::x86::sse::_mm_prefetch",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.8,
+      "score": 30.3,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -279,10 +279,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "std::io::LineWriter",
+      "path": "std::prelude::v1::ambiguous_macros_only::io::LineWriter",
       "kind": "struct",
       "url": "https://doc.rust-lang.org/nightly/std/io/buffered/linewriter/struct.LineWriter.html",
-      "score": 30.6,
+      "score": 29.8,
       "docs": [
         {
           "type": "truncatedBlock",
