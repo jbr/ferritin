@@ -1,4 +1,4 @@
-# Builds the aarch64 serve+acme binary that the ferritin.rs server runs.
+# Builds the aarch64 serve+acme+mcp binary that the ferritin.rs server runs.
 #
 # On push to main so a deployable artifact is always ready, plus
 # workflow_dispatch to build any ref (e.g. a feature branch destined for the
@@ -19,7 +19,7 @@ on:
 
 jobs:
   build:
-    name: aarch64 serve+acme
+    name: aarch64 serve+acme+mcp
     runs-on: ubuntu-24.04-arm
     # Build inside AL2023 so the binary links against the glibc it will run
     # on: the instance runs AL2023 (glibc 2.34), older than the runner's
@@ -60,7 +60,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2.9.1
 
       - name: Build
-        run: cargo build --locked --profile dist -p ferritin --features serve,acme
+        run: cargo build --locked --profile dist -p ferritin --features serve,acme,mcp
 
       - name: Strip
         run: strip target/dist/ferritin
