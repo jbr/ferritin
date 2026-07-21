@@ -137,10 +137,17 @@ under UNIX, before main, file descriptors 0, 1, and 2 may be unchanged (they are
 </truncated>
 <section><section-title>Modules</section-title><list>
   <item><p>
+<type-name>__restricted_std_workaround</type-name> </p>
+</item>
+  <item><p>
 <type-name>alloc</type-name> </p>
 <truncated level="single-line"><p>
 Memory allocation APIs.</p>
 In a given program, the standard library has one that is used for example by <inline-code>Box<T></inline-code> and <inline-code>Vec<T></inline-code>. <elided chars="1530"/></truncated>
+</item>
+  <item><p>
+<type-name>allow_attribute</type-name> </p>
+<truncated level="single-line">The <inline-code>allow</inline-code> attribute suppresses lint diagnostics that would otherwise produce warnings or errors. It can be used on any lint or lint group (except those set to <inline-code>forbid</inline-code>). <elided chars="1204"/></truncated>
 </item>
   <item><p>
 <type-name>any</type-name> </p>
@@ -164,6 +171,12 @@ Utilities for the array primitive type.</p>
 </truncated>
 </item>
   <item><p>
+<type-name>as_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Cast between types, rename an import, or qualify paths to associated items.</p>
+ <elided chars="2915"/></truncated>
+</item>
+  <item><p>
 <type-name>ascii</type-name> </p>
 <truncated level="single-line"><p>
 Operations on ASCII strings and characters.</p>
@@ -176,14 +189,38 @@ Composable asynchronous iteration.</p>
 If you've found yourself with an asynchronous and needed to perform an operation on the you'll quickly run into 'async iterators'. idiomatic asynchronous Rust code, so it's <elided chars="3798"/></truncated>
 </item>
   <item><p>
+<type-name>async_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Returns a <inline-code>Future</inline-code> instead of blocking the current thread.</p>
+Use <inline-code>async</inline-code> in front of <inline-code>fn</inline-code>, <inline-code>closure</inline-code>, or a <inline-code>block</inline-code> to turn the marked<inline-code>Future</inline-code>. As such the code will future is <inline-code>.await</inline-code>ed. <elided chars="1279"/></truncated>
+</item>
+  <item><p>
 <type-name>autodiff</type-name> </p>
 <truncated level="single-line">This module provides support for automatic differentiation. For precise differences between the <inline-code>autodiff_forward</inline-code> and <inline-code>autodiff_reverse</inline-code> macros and how to use them, see their respective documentation. <elided chars="4146"/></truncated>
+</item>
+  <item><p>
+<type-name>await_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Suspend execution until the result of a <inline-code>Future</inline-code> is ready.</p>
+<inline-code>.await</inline-code>ing a future will has run the future to <elided chars="285"/></truncated>
 </item>
   <item><p>
 <type-name>backtrace</type-name> </p>
 <truncated level="single-line"><p>
 Support for capturing a stack backtrace of an OS thread</p>
 This module contains the running OS thread from<inline-code>Backtrace</inline-code> type supports capturing a stack trace<inline-code>Backtrace::capture</inline-code> and <inline-code>Backtrace::force_capture</inline-code> functions. <elided chars="2527"/></truncated>
+</item>
+  <item><p>
+<type-name>backtrace_rs</type-name> </p>
+<truncated level="single-line"><p>
+A library for acquiring a backtrace at runtime</p>
+This library is meant to<inline-code>RUST_BACKTRACE=1</inline-code> support of the standard library by allowing an programmatically. The backtraces parsed, for example, and expose implementations. <elided chars="2900"/></truncated>
+</item>
+  <item><p>
+<type-name>become_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Perform a tail-call of a function.</p>
+<inline-code>feature(explicit_tail_calls)</inline-code> is currently incomplete and may not work <elided chars="3078"/></truncated>
 </item>
   <item><p>
 <type-name>borrow</type-name> </p>
@@ -198,6 +235,12 @@ The <inline-code>Box<T></inline-code> type for heap allocation.</p>
 <inline-code>Box<T></inline-code>, casually referred to as a 'box', provides heap allocation in Rust. Boxes provide drop their contents when they go out of never allocate more than <inline-code>isize::MAX</inline-code> bytes. <elided chars="5839"/></truncated>
 </item>
   <item><p>
+<type-name>break_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Exit early from a loop or labelled block.</p>
+When <inline-code>break</inline-code> is encountered, execution of the immediately terminated. <elided chars="1931"/></truncated>
+</item>
+  <item><p>
 <type-name>bstr</type-name> </p>
 <truncated level="single-line"><p>
 The <inline-code>ByteStr</inline-code> and <inline-code>ByteString</inline-code> types and trait implementations.</p>
@@ -208,6 +251,12 @@ The <inline-code>ByteStr</inline-code> and <inline-code>ByteString</inline-code>
 <truncated level="single-line"><p>
 Shareable mutable containers.</p>
 Rust memory safety is based on this rule: Given an<inline-code>T</inline-code>, it is only possible to have one of the following: <elided chars="8911"/></truncated>
+</item>
+  <item><p>
+<type-name>cfg_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Used for conditional compilation.</p>
+The <inline-code>cfg</inline-code> attribute allows compiling an item under will be ignored. <elided chars="978"/></truncated>
 </item>
   <item><p>
 <type-name>char</type-name> </p>
@@ -230,10 +279,26 @@ Utilities for comparing and ordering values.</p>
 This module contains various tools summary: <elided chars="854"/></truncated>
 </item>
   <item><p>
+<type-name>cold_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Hint to the compiler that a function is unlikely to be called.</p>
+Marking a<inline-code>#[cold]</inline-code> tells the optimize for the compiler may <elided chars="601"/></truncated>
+</item>
+  <item><p>
 <type-name>collections</type-name> </p>
 <truncated level="single-line"><p>
 Collection types.</p>
 Rust's standard collection library provides efficient most common general purpose programming data structures. By standard implementations, it should be possible for two communicate without significant data conversion. <elided chars="15364"/></truncated>
+</item>
+  <item><p>
+<type-name>const_keyword</type-name> </p>
+<truncated level="single-line">Compile-time constants, compile-time blocks, compile-time evaluable functions, <elided chars="2696"/></truncated>
+</item>
+  <item><p>
+<type-name>continue_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Skip to the next iteration of a loop.</p>
+When <inline-code>continue</inline-code> is encountered, the current iteration is loop head, typically continuing with the <elided chars="712"/></truncated>
 </item>
   <item><p>
 <type-name>convert</type-name> </p>
@@ -242,10 +307,42 @@ Traits for conversions between types.</p>
 The traits in this module provide a way to Each trait serves a different purpose: <elided chars="1458"/></truncated>
 </item>
   <item><p>
+<type-name>crate_keyword</type-name> </p>
+<truncated level="single-line"><p>
+A Rust binary or library.</p>
+The primary use of the <inline-code>crate</inline-code> keyword is as a part of <inline-code>extern crate</inline-code> declarations, which are used to specify a dependency on a crate external to fundamental compilation unit of Rust code, and can be be read about crates in the Reference. <elided chars="1091"/></truncated>
+</item>
+  <item><p>
 <type-name>default</type-name> </p>
 <truncated level="single-line"><p>
 The <inline-code>Default</inline-code> trait for types with a default value.</p>
 </truncated>
+</item>
+  <item><p>
+<type-name>deny_attribute</type-name> </p>
+<truncated level="single-line">Emits an error, preventing the compilation from finishing, when a lint check This is useful for enforcing rules or preventing certain patterns: <elided chars="711"/></truncated>
+</item>
+  <item><p>
+<type-name>deprecated_attribute</type-name> </p>
+<truncated level="single-line">Emits a warning during compilation when an item with this attribute is used. <inline-code>since</inline-code> and <inline-code>note</inline-code> are optional fields giving more detail about why the item is deprecated. <elided chars="626"/></truncated>
+</item>
+  <item><p>
+<type-name>dyn_keyword</type-name> </p>
+<truncated level="single-line"><p>
+<inline-code>dyn</inline-code> is a prefix of a trait object's type.</p>
+The <inline-code>dyn</inline-code> keyword is used to highlight that<inline-code>Trait</inline-code> are dynamically dispatched. To use the trait this way, it must<emphasis>dyn compatible</emphasis>^1. <elided chars="1098"/></truncated>
+</item>
+  <item><p>
+<type-name>else_keyword</type-name> </p>
+<truncated level="single-line"><p>
+What expression to evaluate when an <inline-code>if</inline-code> condition evaluates to <inline-code>false</inline-code>.</p>
+<inline-code>else</inline-code> to the unit<inline-code>()</inline-code>. <elided chars="1166"/></truncated>
+</item>
+  <item><p>
+<type-name>enum_keyword</type-name> </p>
+<truncated level="single-line"><p>
+A type that can be any one of several variants.</p>
+Enums in Rust are similar to differences that make them known as Algebraic Data Types if you're coming from a The important detail is that <elided chars="1671"/></truncated>
 </item>
   <item><p>
 <type-name>env</type-name> </p>
@@ -259,6 +356,12 @@ This module contains environment variables, other important <elided chars="323"/
 Interfaces for working with Errors.</p>
 <title>Error Handling In Rust</title>
 The Rust language representing, These responsibilities components of the commonly used to components of the<inline-code>Result</inline-code>, the error traits, defined types, are your program. <elided chars="4878"/></truncated>
+</item>
+  <item><p>
+<type-name>extern_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Link to or import external code.</p>
+The <inline-code>extern</inline-code> keyword is used in two places in Rust. One is<inline-code>crate</inline-code> keyword to make your Rust code aware of other<inline-code>extern crate lazy_static;</inline-code>. The other use is in foreign function <elided chars="1479"/></truncated>
 </item>
   <item><p>
 <type-name>f128</type-name> </p>
@@ -285,6 +388,12 @@ Constants for the <inline-code>f64</inline-code> double-precision floating point
 <emphasis>See also the </emphasis><inline-code>f64</inline-code><emphasis> primitive type</emphasis><emphasis>.</emphasis> <elided chars="279"/></truncated>
 </item>
   <item><p>
+<type-name>false_keyword</type-name> </p>
+<truncated level="single-line"><p>
+A value of type <inline-code>prim@bool</inline-code> representing logical <strong>false</strong>.</p>
+<inline-code>false</inline-code> is the logical opposite<inline-code>true</inline-code>. <elided chars="63"/></truncated>
+</item>
+  <item><p>
 <type-name>ffi</type-name> </p>
 <truncated level="single-line"><p>
 Utilities related to FFI bindings.</p>
@@ -301,6 +410,20 @@ Field Reflection</p>
 <truncated level="single-line"><p>
 Utilities for formatting and printing <inline-code>String</inline-code>s.</p>
 This module contains the runtime<inline-code>format!</inline-code> syntax extension. This macro is implemented in the order to format arguments at <elided chars="20000"/></truncated>
+</item>
+  <item><p>
+<type-name>fn_keyword</type-name> </p>
+<truncated level="single-line"><p>
+A function or function pointer.</p>
+Functions are the primary way code is executed called functions, can be defined in a variety of different attributes and modifiers. <elided chars="1420"/></truncated>
+</item>
+  <item><p>
+<type-name>for_keyword</type-name> </p>
+<truncated level="single-line">Iteration with <inline-code>in</inline-code>, trait implementation with <inline-code>impl</inline-code>, or higher-ranked trait bounds (<inline-code>for<'a></inline-code>). <elided chars="1610"/></truncated>
+</item>
+  <item><p>
+<type-name>forbid_attribute</type-name> </p>
+<truncated level="single-line">Emits an error, preventing the compilation from finishing, when a lint check <elided chars="775"/></truncated>
 </item>
   <item><p>
 <type-name>from</type-name> </p>
@@ -363,6 +486,28 @@ Redundant constants module for the <inline-code>i8</inline-code> primitive type.
 New code should use the <elided chars="49"/></truncated>
 </item>
   <item><p>
+<type-name>if_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Evaluate a block if a condition holds.</p>
+<inline-code>if</inline-code> is a familiar construct to most your code. However, unlike in most<inline-code>if</inline-code> blocks can also act as expressions. <elided chars="1521"/></truncated>
+</item>
+  <item><p>
+<type-name>impl_keyword</type-name> </p>
+<truncated level="single-line">Implementations of functionality for a type, or a type implementing some <elided chars="2220"/></truncated>
+</item>
+  <item><p>
+<type-name>in_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Iterate over a series of values with <inline-code>for</inline-code>.</p>
+The expression immediately following <inline-code>in</inline-code> must implement the <inline-code>IntoIterator</inline-code> trait. <elided chars="667"/></truncated>
+</item>
+  <item><p>
+<type-name>inline_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Suggest that the compiler inline a function at its call sites.</p>
+Inlining replaces overhead of the<inline-code>inline</inline-code> attribute is it already inline can make a <elided chars="1294"/></truncated>
+</item>
+  <item><p>
 <type-name>intrinsics</type-name> </p>
 <truncated level="single-line"><p>
 Compiler intrinsics.</p>
@@ -387,10 +532,34 @@ Composable external iteration.</p>
 If you've found yourself with a collection of perform an operation on the elements of said into 'iterators'. Iterators are heavily used in it's worth becoming familiar with them. <elided chars="9380"/></truncated>
 </item>
   <item><p>
+<type-name>let_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Bind a value to a variable.</p>
+The primary use for the <inline-code>let</inline-code> keyword is in <inline-code>let</inline-code> statements, which are used to introduce a new set of variables into the current scope, as given by <elided chars="1875"/></truncated>
+</item>
+  <item><p>
+<type-name>loop_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Loop indefinitely.</p>
+<inline-code>loop</inline-code> is used to define the simplest kind of loop supported in it until the code uses <inline-code>break</inline-code> or the program exits. <elided chars="698"/></truncated>
+</item>
+  <item><p>
+<type-name>macros</type-name> </p>
+<truncated level="single-line"><p>
+Standard library macros</p>
+This module contains a set of macros which are exported library. Each macro is available for use when linking library. <elided chars="100"/></truncated>
+</item>
+  <item><p>
 <type-name>marker</type-name> </p>
 <truncated level="single-line"><p>
 Primitive traits and types representing basic properties of types.</p>
 Rust types their as traits. <elided chars="127"/></truncated>
+</item>
+  <item><p>
+<type-name>match_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Control flow based on pattern matching.</p>
+<inline-code>match</inline-code> can be used to run code conditionally. be handled exhaustively either <inline-code>_</inline-code> in the <inline-code>match</inline-code>. Since <inline-code>match</inline-code> is an expression, values can also be returned. <elided chars="945"/></truncated>
 </item>
   <item><p>
 <type-name>mem</type-name> </p>
@@ -399,10 +568,40 @@ Basic functions for dealing with memory, values, and types.</p>
 The contents of this <elided chars="727"/></truncated>
 </item>
   <item><p>
+<type-name>mod_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Organize code into modules.</p>
+Use <inline-code>mod</inline-code> to create new modules to encapsulate code, including other modules: <elided chars="300"/></truncated>
+</item>
+  <item><p>
+<type-name>move_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Capture a closure's environment by value.</p>
+<inline-code>move</inline-code> converts any variables captured by to variables captured by value. <elided chars="1090"/></truncated>
+</item>
+  <item><p>
+<type-name>must_use_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Warn when a value is ignored.</p>
+The <inline-code>must_use</inline-code> attribute applies to values where simply creating often not enough. If a value marked with <inline-code>#[must_use]</inline-code> is produced and then ignored, the compiler warns through the <inline-code>unused_must_use</inline-code> lint. <elided chars="2165"/></truncated>
+</item>
+  <item><p>
+<type-name>mut_keyword</type-name> </p>
+<truncated level="single-line"><p>
+A mutable variable, reference, or pointer.</p>
+<inline-code>mut</inline-code> can be used in several situations. which can be used anywhere you can examples: <elided chars="1068"/></truncated>
+</item>
+  <item><p>
 <type-name>net</type-name> </p>
 <truncated level="single-line"><p>
 Networking primitives for TCP/UDP communication.</p>
 This module provides networking Datagram Protocols, as well as to network properties. <elided chars="987"/></truncated>
+</item>
+  <item><p>
+<type-name>no_std_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Prevents automatically linking the standard library.</p>
+Written as an inner<inline-code>no_std</inline-code> attribute stops the compiler from linking <inline-code>std</inline-code> into the crate, and only<inline-code>core</inline-code>. <elided chars="1014"/></truncated>
 </item>
   <item><p>
 <type-name>num</type-name> </p>
@@ -439,6 +638,10 @@ Panic support in the standard library.</p>
 </truncated>
 </item>
   <item><p>
+<type-name>panicking</type-name> </p>
+<truncated level="single-line">Implementation of various bits and pieces of the <inline-code>panic!</inline-code> macro and associated runtime pieces. <elided chars="153"/></truncated>
+</item>
+  <item><p>
 <type-name>pat</type-name> </p>
 <truncated level="single-line"><p>
 Helper module for exporting the <inline-code>pattern_type</inline-code> macro</p>
@@ -462,8 +665,173 @@ It is sometimes useful to be able<emphasis>move</emphasis>, in the sense that it
 Rust comes with a variety of things in its standard library. you had to manually import every single thing that you used, it very verbose. But importing a lot of things that a program good either. A balance needs to be struck. <elided chars="3107"/></truncated>
 </item>
   <item><p>
+<type-name>prim_array</type-name> </p>
+<truncated level="single-line">A fixed-size array, denoted <inline-code>[T; N]</inline-code>, for the element type, <inline-code>T</inline-code>, and the non-negative compile-time constant size, <inline-code>N</inline-code>. <elided chars="5525"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_bool</type-name> </p>
+<truncated level="single-line"><p>
+The boolean type.</p>
+The <inline-code>bool</inline-code> represents a value, which could only be either <inline-code>true</inline-code> or <inline-code>false</inline-code>. If you cast a <inline-code>bool</inline-code> into an integer, <inline-code>true</inline-code> will be 1 and <inline-code>false</inline-code> will be 0. <elided chars="1023"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_char</type-name> </p>
+<truncated level="single-line"><p>
+A character type.</p>
+The <inline-code>char</inline-code> type represents a single character. More specifically, since 'character' isn't a well-defined concept in Unicode, <inline-code>char</inline-code> is a 'Unicode scalar value'. <elided chars="3613"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_f128</type-name> </p>
+<truncated level="single-line">A 128-bit floating-point type (specifically, the "binary128" type defined in <elided chars="883"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_f16</type-name> </p>
+<truncated level="single-line">A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE <elided chars="705"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_f32</type-name> </p>
+<truncated level="single-line">A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE <elided chars="9241"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_f64</type-name> </p>
+<truncated level="single-line">A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE <elided chars="241"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_fn</type-name> </p>
+<truncated level="single-line"><p>
+Function pointers, like <inline-code>fn(usize) -> bool</inline-code>.</p>
+<emphasis>See also the traits </emphasis><inline-code>Fn</inline-code><emphasis>, </emphasis><inline-code>FnMut</inline-code><emphasis>, and </emphasis><inline-code>FnOnce</inline-code><emphasis>.</emphasis> <elided chars="11049"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_i128</type-name> </p>
+<truncated level="single-line"><p>
+The 128-bit signed integer type.</p>
+<title>ABI compatibility</title>
+Rust's <inline-code>i128</inline-code> is expected to be<inline-code>__int128</inline-code> on platforms where the type is available, which includes <inline-code>__int128</inline-code> are updated to introduce it,<inline-code>i128</inline-code> ABI on relevant targets will to match. <elided chars="580"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_i16</type-name> </p>
+<truncated level="single-line"><p>
+The 16-bit signed integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prim_i32</type-name> </p>
+<truncated level="single-line"><p>
+The 32-bit signed integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prim_i64</type-name> </p>
+<truncated level="single-line"><p>
+The 64-bit signed integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prim_i8</type-name> </p>
+<truncated level="single-line"><p>
+The 8-bit signed integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prim_isize</type-name> </p>
+<truncated level="single-line"><p>
+The pointer-sized signed integer type.</p>
+The size of this primitive is how many location in memory. For example, on a 32 and on a 64 bit target, this is 8 bytes. <elided chars="138"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_never</type-name> </p>
+<truncated level="single-line"><p>
+The <inline-code>!</inline-code> type, also called "never".</p>
+<inline-code>!</inline-code> represents the type of computations which the <inline-code>exit</inline-code> function <inline-code>fn exit(code: i32) -> !</inline-code> exits the process without ever returning, and so returns <inline-code>!</inline-code>. <elided chars="6668"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_pointer</type-name> </p>
+<truncated level="single-line"><p>
+Raw, unsafe pointers, <inline-code>*const T</inline-code>, and <inline-code>*mut T</inline-code>.</p>
+<p>
+<emphasis>See also the </emphasis><inline-code>std::ptr</inline-code><emphasis> module</emphasis><emphasis>.</emphasis></p>
+Working can be<inline-code>null</inline-code>. pointer,valid for tuple of in-bound. <elided chars="2971"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_ref</type-name> </p>
+<truncated level="single-line"><p>
+References, <inline-code>&T</inline-code> and <inline-code>&mut T</inline-code>.</p>
+A reference represents a borrow of some owned value.<inline-code>&</inline-code> or <inline-code>&mut</inline-code> operators on a value, or by using a <inline-code>ref</inline-code> or ref mut pattern. <elided chars="4803"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_slice</type-name> </p>
+<truncated level="single-line"><p>
+A dynamically-sized view into a contiguous sequence, <inline-code>[T]</inline-code>.</p>
+Contiguous here means distance from its <elided chars="2514"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_str</type-name> </p>
+<truncated level="single-line"><p>
+String slices.</p>
+<p>
+<emphasis>See also the </emphasis><inline-code>std::str</inline-code><emphasis> module</emphasis><emphasis>.</emphasis></p>
+The <inline-code>str</inline-code> type, also called a 'string slice', type. It is usually seen in its<inline-code>&str</inline-code>. It is also the type of string literals, <inline-code>&'static str</inline-code>. <elided chars="1664"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_tuple</type-name> </p>
+<truncated level="single-line"><p>
+A finite heterogeneous sequence, <inline-code>(T, U, ..)</inline-code>.</p>
+<p>
+Let's cover each of those in turn:</p>
+Tu<emphasis>fi</emphasis>. of<inline-code>3</inline-code>: <elided chars="2244"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_u128</type-name> </p>
+<truncated level="single-line"><p>
+The 128-bit unsigned integer type.</p>
+Please see the documentation for <inline-code>i128</inline-code> for information on ABI compatibility. <elided chars="29"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_u16</type-name> </p>
+<truncated level="single-line"><p>
+The 16-bit unsigned integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prim_u32</type-name> </p>
+<truncated level="single-line"><p>
+The 32-bit unsigned integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prim_u64</type-name> </p>
+<truncated level="single-line"><p>
+The 64-bit unsigned integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prim_u8</type-name> </p>
+<truncated level="single-line"><p>
+The 8-bit unsigned integer type.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>prim_unit</type-name> </p>
+<truncated level="single-line"><p>
+The <inline-code>()</inline-code> type, also called "unit".</p>
+The <inline-code>()</inline-code> type has exactly one value <inline-code>()</inline-code>, and is used when there is no other meaningful value that could be<inline-code>()</inline-code> is most commonly seen implicitly: functions without a <inline-code>-> ...</inline-code> implicitly have return type <inline-code>()</inline-code>, that is, these are equivalent: <elided chars="529"/></truncated>
+</item>
+  <item><p>
+<type-name>prim_usize</type-name> </p>
+<truncated level="single-line"><p>
+The pointer-sized unsigned integer type.</p>
+The size of this primitive is how many location in memory. For example, on a and on a 64 bit target, this is 8 bytes. <elided chars="140"/></truncated>
+</item>
+  <item><p>
 <type-name>primitive</type-name> </p>
 <truncated level="single-line">This module reexports the primitive types to allow usage that is not possibly shadowed by other declared types. <elided chars="674"/></truncated>
+</item>
+  <item><p>
+<type-name>proc_macro_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Defines a function-like procedural macro.</p>
+Applied to a <inline-code>pub</inline-code> function at the root of a proc-macro<inline-code>proc_macro</inline-code> makes that function usable as a macro <inline-code>foo!(...)</inline-code> in other crates. The function<inline-code>TokenStream</inline-code> and returns the <inline-code>TokenStream</inline-code> that replaces the invocation: <elided chars="1102"/></truncated>
 </item>
   <item><p>
 <type-name>process</type-name> </p>
@@ -476,6 +844,12 @@ This module is mostly concerned with processes, but it also provides <inline-cod
 <truncated level="single-line"><p>
 Manually manage memory through raw pointers.</p>
 <emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="20274"/></truncated>
+</item>
+  <item><p>
+<type-name>pub_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Make an item visible to others.</p>
+The keyword <inline-code>pub</inline-code> makes any module, function, or data structure of external modules. The <inline-code>pub</inline-code> keyword may also be used in a <inline-code>use</inline-code> declaration to re-export an identifier from a namespace. <elided chars="290"/></truncated>
 </item>
   <item><p>
 <type-name>random</type-name> </p>
@@ -493,10 +867,41 @@ The types within this module are meant to replace the<inline-code>Range</inline-
 <truncated level="single-line">Single-threaded reference-counting pointers. 'Rc' stands for 'Reference Counted'. <elided chars="7806"/></truncated>
 </item>
   <item><p>
+<type-name>ref_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Bind by reference during pattern matching.</p>
+<inline-code>ref</inline-code> annotates pattern bindings to make It is <strong>not</strong> a part of the pattern as far as not affect <emphasis>whether</emphasis> a value is matched, only <emphasis>how</emphasis> it is matched. <elided chars="1343"/></truncated>
+</item>
+  <item><p>
 <type-name>result</type-name> </p>
 <truncated level="single-line"><p>
 Error handling with the <inline-code>Result</inline-code> type.</p>
 <inline-code>Result<T, E></inline-code> is the type used for returning and errors. It is an enum with the variants, <inline-code>Ok(T)</inline-code>, representing success and containing a value, and <inline-code>Err(E)</inline-code>, representing error and containing an error value. <elided chars="13755"/></truncated>
+</item>
+  <item><p>
+<type-name>return_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Returns a value from a function.</p>
+A <inline-code>return</inline-code> marks the end of an execution path in a <elided chars="809"/></truncated>
+</item>
+  <item><p>
+<type-name>rt</type-name> </p>
+<truncated level="single-line"><p>
+Runtime services</p>
+The <inline-code>rt</inline-code> module provides a narrow set of runtime services, including the global heap (exported in <inline-code>heap</inline-code>) and unwinding and backtrace support. The APIs in this module are highly unstable, and should be considered as private implementation details for time being. <elided chars="198"/></truncated>
+</item>
+  <item><p>
+<type-name>sealed</type-name> </p>
+</item>
+  <item><p>
+<type-name>self_keyword</type-name> </p>
+<truncated level="single-line"><p>
+The receiver of a method, or the current module.</p>
+<inline-code>self</inline-code> is used in two situations: the receiver of a method. <elided chars="1650"/></truncated>
+</item>
+  <item><p>
+<type-name>self_upper_keyword</type-name> </p>
+<truncated level="single-line">The implementing type within a <inline-code>trait</inline-code> or <inline-code>impl</inline-code> block, or the current type within a type definition. <elided chars="638"/></truncated>
 </item>
   <item><p>
 <type-name>simd</type-name> </p>
@@ -513,6 +918,13 @@ Utilities for the slice primitive type.</p>
 Most using<inline-code>slice.i</inline-code><inline-code>Iter</inline-code>. <elided chars="232"/></truncated>
 </item>
   <item><p>
+<type-name>static_keyword</type-name> </p>
+<truncated level="single-line">A static item is a value which is valid for the entire duration of your program (a <inline-code>'static</inline-code> lifetime). <elided chars="2145"/></truncated>
+</item>
+  <item><p>
+<type-name>std_float</type-name> </p>
+</item>
+  <item><p>
 <type-name>str</type-name> </p>
 <truncated level="single-line"><p>
 Utilities for the <inline-code>str</inline-code> primitive type.</p>
@@ -527,11 +939,26 @@ A UTF-8–encoded, growable string.</p>
 This module contains the <inline-code>String</inline-code> type, the <inline-code>ToString</inline-code> trait for converting to strings, and several error working with <inline-code>String</inline-code>s. <elided chars="799"/></truncated>
 </item>
   <item><p>
+<type-name>struct_keyword</type-name> </p>
+<truncated level="single-line"><p>
+A type that is composed of other types.</p>
+Structs in Rust come in three flavors: structs. <elided chars="2999"/></truncated>
+</item>
+  <item><p>
+<type-name>super_keyword</type-name> </p>
+<truncated level="single-line"><p>
+The parent of the current module.</p>
+ <elided chars="202"/></truncated>
+</item>
+  <item><p>
 <type-name>sync</type-name> </p>
 <truncated level="single-line"><p>
 Useful synchronization primitives.</p>
 <section-heading>The need for synchronization</section-heading>
 Conceptually, a be executed on a program is <elided chars="5737"/></truncated>
+</item>
+  <item><p>
+<type-name>sys</type-name> </p>
 </item>
   <item><p>
 <type-name>task</type-name> </p>
@@ -552,6 +979,32 @@ An executing Rust program consists of a each with their own stack and local stat
 Temporal quantification.</p>
 <title>Examples</title>
 There are multiple ways to create a new <inline-code>Duration</inline-code>: <elided chars="653"/></truncated>
+</item>
+  <item><p>
+<type-name>track_caller_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Make a function report the location of its caller instead of its own.</p>
+When a where the<inline-code>#[track_cal</inline-code> changes <inline-code>Location</inline-code> it was<inline-code>Location::c</inline-code>) points at <inline-code>Option::unw</inline-code>, so a<inline-code>unwrap</inline-code> blames inside the <elided chars="768"/></truncated>
+</item>
+  <item><p>
+<type-name>trait_keyword</type-name> </p>
+<truncated level="single-line"><p>
+A common interface for a group of types.</p>
+A <inline-code>trait</inline-code> is like an interface that data types implements a trait it can be treated or trait objects. <elided chars="3241"/></truncated>
+</item>
+  <item><p>
+<type-name>true_keyword</type-name> </p>
+<truncated level="single-line"><p>
+A value of type <inline-code>prim@bool</inline-code> representing logical <strong>true</strong>.</p>
+Logically <inline-code>true</inline-code> is not equal to <inline-code>false</inline-code>. <elided chars="623"/></truncated>
+</item>
+  <item><p>
+<type-name>type_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Define an alias for an existing type.</p>
+<p>
+The syntax is <inline-code>type Name = ExistingType;</inline-code>.</p>
+ <elided chars="551"/></truncated>
 </item>
   <item><p>
 <type-name>u128</type-name> </p>
@@ -584,10 +1037,26 @@ Redundant constants module for the <inline-code>u8</inline-code> primitive type.
 New code should use the <elided chars="49"/></truncated>
 </item>
   <item><p>
+<type-name>union_keyword</type-name> </p>
+<truncated level="single-line"><p>
+The Rust equivalent of a C-style union.</p>
+A <inline-code>union</inline-code> looks like a <inline-code>struct</inline-code> in terms of declaration, but all of its fields exist in the same memory, if we wanted some bits in memory that we<inline-code>u32</inline-code> and sometimes as an <inline-code>f32</inline-code>, we could write: <elided chars="1489"/></truncated>
+</item>
+  <item><p>
 <type-name>unsafe_binder</type-name> </p>
 <truncated level="single-line"><p>
 Operators used to turn types into unsafe binders and back.</p>
 </truncated>
+</item>
+  <item><p>
+<type-name>unsafe_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Code or interfaces whose memory safety cannot be verified by the type system.</p>
+The<inline-code>uns</inline-code> <elided chars="9482"/></truncated>
+</item>
+  <item><p>
+<type-name>use_keyword</type-name> </p>
+<truncated level="single-line">Import or rename items from other crates or modules, use values under ergonomic semantic, or specify precise capturing with <inline-code>use<..></inline-code>. <elided chars="2851"/></truncated>
 </item>
   <item><p>
 <type-name>usize</type-name> </p>
@@ -606,6 +1075,24 @@ Ve<emphasis>O</emphasis>(1<emphasis>O</emphasis>(1 <emphasis>O</emphasis>(1 <eli
 <truncated level="single-line"><p>
 Helper module for exporting the <inline-code>view_types</inline-code> macro.</p>
 </truncated>
+</item>
+  <item><p>
+<type-name>warn_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Emits a warning during compilation when a lint check failed.</p>
+Unlike <inline-code>deny</inline-code> or <inline-code>forbid</inline-code>, <inline-code>warn</inline-code> does not produce a continues, but the<inline-code>warn</inline-code> can be overridden<inline-code>allow</inline-code>, <inline-code>deny</inline-code>, and <inline-code>forbid</inline-code>. <elided chars="845"/></truncated>
+</item>
+  <item><p>
+<type-name>where_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Add constraints that must be upheld to use an item.</p>
+<inline-code>where</inline-code> allows specifying The RFC introducing <inline-code>where</inline-code> contains detailed keyword. <elided chars="1856"/></truncated>
+</item>
+  <item><p>
+<type-name>while_keyword</type-name> </p>
+<truncated level="single-line"><p>
+Loop while a condition is upheld.</p>
+A <inline-code>while</inline-code> expression is used for predicate loops. The <inline-code>while</inline-code> expression runs the conditional expression before running the loop body, then expression evaluates to <inline-code>true</inline-code>, or exits the loop otherwise. <elided chars="1122"/></truncated>
 </item>
 </list>
 </section><section><section-title>Macros</section-title><list>
@@ -748,10 +1235,19 @@ Constructs parameters for the other string-formatting macros.</p>
 This macro <inline-code>{}</inline-code> for each<inline-code>format_args!</inline-code> prepares the additional and canonicalizes the <inline-code>Display</inline-code> trait can be<inline-code>format_args!</inline-code>, as can any <inline-code>Debug</inline-code> implementation be<inline-code>{:?}</inline-code> within the <elided chars="1767"/></truncated>
 </item>
   <item><p>
+<type-name>format_args_nl</type-name> </p>
+<truncated level="single-line"><p>
+Same as <inline-code>format_args</inline-code>, but adds a newline in the end.</p>
+</truncated>
+</item>
+  <item><p>
 <type-name>hash_map</type-name> </p>
 <truncated level="single-line"><p>
 Creates a <inline-code>HashMap</inline-code> containing the arguments.</p>
 <inline-code>hash_map!</inline-code> allows specifying the entries that up the <inline-code>HashMap</inline-code> where the key and value are<inline-code>=></inline-code>. <elided chars="818"/></truncated>
+</item>
+  <item><p>
+<type-name>impl_sealed</type-name> </p>
 </item>
   <item><p>
 <type-name>include</type-name> </p>
@@ -818,6 +1314,9 @@ Equivalent to the <inline-code>println!</inline-code> macro except that a newlin
 <truncated level="single-line"><p>
 Prints to the standard output, with a newline.</p>
 On all platforms, the newline is<inline-code>\n</inline-code>/<inline-code>U+000A</inline-code>) alone (no additional CARRIAGE RETURN (<inline-code>\r</inline-code>/<inline-code>U+000D</inline-code>)). <elided chars="1033"/></truncated>
+</item>
+  <item><p>
+<type-name>repetition_utils</type-name> </p>
 </item>
   <item><p>
 <type-name>stringify</type-name> </p>

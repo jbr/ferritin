@@ -194,8 +194,15 @@ Non-exhaustive list of known limitations:
 
 Modules
 
+  ◦ [__restricted_std_workaround](https://doc.rust-lang.org/nightly/std/__restricted_std_workaround/index.html) 
+
   ◦ [alloc](https://doc.rust-lang.org/nightly/std/alloc/index.html) 
     Memory allocation APIs. [...]
+
+  ◦ [allow_attribute](https://doc.rust-lang.org/nightly/std/allow_attribute/index.html) 
+    The allow attribute suppresses lint diagnostics that would otherwise produce 
+    warnings or errors. It can be used on any lint or lint group (except those set
+    to [forbid](./attribute.forbid.html)). [...]
 
   ◦ [any](https://doc.rust-lang.org/nightly/core/any/index.html) 
     Utilities for dynamic typing or type reflection. [...]
@@ -206,19 +213,34 @@ Modules
   ◦ [array](https://doc.rust-lang.org/nightly/core/array/index.html) 
     Utilities for the array primitive type. [...]
 
+  ◦ [as_keyword](https://doc.rust-lang.org/nightly/std/as_keyword/index.html) 
+    Cast between types, rename an import, or qualify paths to associated items. [...]
+
   ◦ [ascii](https://doc.rust-lang.org/nightly/std/ascii/index.html) 
     Operations on ASCII strings and characters. [...]
 
   ◦ [async_iter](https://doc.rust-lang.org/nightly/core/async_iter/index.html) 
     Composable asynchronous iteration. [...]
 
+  ◦ [async_keyword](https://doc.rust-lang.org/nightly/std/async_keyword/index.html) 
+    Returns a [Future](https://doc.rust-lang.org/nightly/core/future/future/index.html?search=core%3A%3Afuture%3A%3Afuture%3A%3AFuture) instead of blocking the current thread. [...]
+
   ◦ [autodiff](https://doc.rust-lang.org/nightly/std/autodiff/index.html) 
     This module provides support for automatic differentiation. For precise
     information on differences between the autodiff_forward and autodiff_reverse
     macros and how to use them, see their respective documentation. [...]
 
+  ◦ [await_keyword](https://doc.rust-lang.org/nightly/std/await_keyword/index.html) 
+    Suspend execution until the result of a [Future](https://doc.rust-lang.org/nightly/core/future/future/index.html?search=core%3A%3Afuture%3A%3Afuture%3A%3AFuture) is ready. [...]
+
   ◦ [backtrace](https://doc.rust-lang.org/nightly/std/backtrace/index.html) 
     Support for capturing a stack backtrace of an OS thread [...]
+
+  ◦ [backtrace_rs](https://doc.rust-lang.org/nightly/std/backtrace_rs/index.html) 
+    A library for acquiring a backtrace at runtime [...]
+
+  ◦ [become_keyword](https://doc.rust-lang.org/nightly/std/become_keyword/index.html) 
+    Perform a tail-call of a function. [...]
 
   ◦ [borrow](https://doc.rust-lang.org/nightly/alloc/borrow/index.html) 
     A module for working with borrowed data.
@@ -226,11 +248,17 @@ Modules
   ◦ [boxed](https://doc.rust-lang.org/nightly/alloc/boxed/index.html) 
     The Box<T> type for heap allocation. [...]
 
+  ◦ [break_keyword](https://doc.rust-lang.org/nightly/std/break_keyword/index.html) 
+    Exit early from a loop or labelled block. [...]
+
   ◦ [bstr](https://doc.rust-lang.org/nightly/std/bstr/index.html) 
     The ByteStr and ByteString types and trait implementations.
 
   ◦ [cell](https://doc.rust-lang.org/nightly/core/cell/index.html) 
     Shareable mutable containers. [...]
+
+  ◦ [cfg_attribute](https://doc.rust-lang.org/nightly/std/cfg_attribute/index.html) 
+    Used for conditional compilation. [...]
 
   ◦ [char](https://doc.rust-lang.org/nightly/core/char/index.html) 
     Utilities for the char primitive type. [...]
@@ -241,20 +269,54 @@ Modules
   ◦ [cmp](https://doc.rust-lang.org/nightly/core/cmp/index.html) 
     Utilities for comparing and ordering values. [...]
 
+  ◦ [cold_attribute](https://doc.rust-lang.org/nightly/std/cold_attribute/index.html) 
+    Hint to the compiler that a function is unlikely to be called. [...]
+
   ◦ [collections](https://doc.rust-lang.org/nightly/std/collections/index.html) 
     Collection types. [...]
+
+  ◦ [const_keyword](https://doc.rust-lang.org/nightly/std/const_keyword/index.html) 
+    Compile-time constants, compile-time blocks, compile-time evaluable functions,
+    and raw pointers. [...]
+
+  ◦ [continue_keyword](https://doc.rust-lang.org/nightly/std/continue_keyword/index.html) 
+    Skip to the next iteration of a loop. [...]
 
   ◦ [convert](https://doc.rust-lang.org/nightly/core/convert/index.html) 
     Traits for conversions between types. [...]
 
+  ◦ [crate_keyword](https://doc.rust-lang.org/nightly/std/crate_keyword/index.html) 
+    A Rust binary or library. [...]
+
   ◦ [default](https://doc.rust-lang.org/nightly/core/default/index.html) 
     The Default trait for types with a default value.
+
+  ◦ [deny_attribute](https://doc.rust-lang.org/nightly/std/deny_attribute/index.html) 
+    Emits an error, preventing the compilation from finishing, when a lint check
+    has failed. This is useful for enforcing rules or preventing certain patterns: [...]
+
+  ◦ [deprecated_attribute](https://doc.rust-lang.org/nightly/std/deprecated_attribute/index.html) 
+    Emits a warning during compilation when an item with this attribute is used. 
+    since and note are optional fields giving more detail about why the item is
+    deprecated. [...]
+
+  ◦ [dyn_keyword](https://doc.rust-lang.org/nightly/std/dyn_keyword/index.html) 
+    dyn is a prefix of a [trait object](../book/ch17-02-trait-objects.html)'s type. [...]
+
+  ◦ [else_keyword](https://doc.rust-lang.org/nightly/std/else_keyword/index.html) 
+    What expression to evaluate when an [if](https://doc.rust-lang.org/nightly/std/else_keyword/keyword.if.html) condition evaluates to [false](https://doc.rust-lang.org/nightly/std/else_keyword/keyword.false.html). [...]
+
+  ◦ [enum_keyword](https://doc.rust-lang.org/nightly/std/enum_keyword/index.html) 
+    A type that can be any one of several variants. [...]
 
   ◦ [env](https://doc.rust-lang.org/nightly/std/env/index.html) 
     Inspection and manipulation of the process's environment. [...]
 
   ◦ [error](https://doc.rust-lang.org/nightly/std/error/index.html) 
     Interfaces for working with Errors. [...]
+
+  ◦ [extern_keyword](https://doc.rust-lang.org/nightly/std/extern_keyword/index.html) 
+    Link to or import external code. [...]
 
   ◦ [f128](https://doc.rust-lang.org/nightly/std/f128/index.html) 
     Constants for the f128 quadruple-precision floating point type. [...]
@@ -268,6 +330,9 @@ Modules
   ◦ [f64](https://doc.rust-lang.org/nightly/std/f64/index.html) 
     Constants for the f64 double-precision floating point type. [...]
 
+  ◦ [false_keyword](https://doc.rust-lang.org/nightly/std/false_keyword/index.html) 
+    A value of type [prim@bool](https://doc.rust-lang.org/nightly/std/primitive.bool.html) representing logical false. [...]
+
   ◦ [ffi](https://doc.rust-lang.org/nightly/std/ffi/index.html) 
     Utilities related to FFI bindings. [...]
 
@@ -276,6 +341,17 @@ Modules
 
   ◦ [fmt](https://doc.rust-lang.org/nightly/alloc/fmt/index.html) 
     Utilities for formatting and printing Strings. [...]
+
+  ◦ [fn_keyword](https://doc.rust-lang.org/nightly/std/fn_keyword/index.html) 
+    A function or function pointer. [...]
+
+  ◦ [for_keyword](https://doc.rust-lang.org/nightly/std/for_keyword/index.html) 
+    Iteration with [in](https://doc.rust-lang.org/nightly/std/for_keyword/keyword.in.html), trait implementation with [impl](https://doc.rust-lang.org/nightly/std/for_keyword/keyword.impl.html), or [higher-ranked trait bounds](../reference/trait-bounds.html#higher-ranked-trait-bounds)
+     (for<'a>). [...]
+
+  ◦ [forbid_attribute](https://doc.rust-lang.org/nightly/std/forbid_attribute/index.html) 
+    Emits an error, preventing the compilation from finishing, when a lint check
+    has failed. [...]
 
   ◦ [from](https://doc.rust-lang.org/nightly/std/from/index.html) 
     Unstable module containing the unstable From derive macro.
@@ -292,20 +368,33 @@ Modules
   ◦ [hint](https://doc.rust-lang.org/nightly/core/hint/index.html) 
     Hints to compiler that affects how code should be emitted or optimized. [...]
 
-  ◦ [i128](https://doc.rust-lang.org/nightly/core/i128/index.html) 
+  ◦ [i128](https://doc.rust-lang.org/nightly/core/legacy_int_modules/i128/index.html) 
     Redundant constants module for the [i128](https://doc.rust-lang.org/nightly/core/primitive.i128.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.i128.html). [...]
 
-  ◦ [i16](https://doc.rust-lang.org/nightly/core/i16/index.html) 
+  ◦ [i16](https://doc.rust-lang.org/nightly/core/legacy_int_modules/i16/index.html) 
     Redundant constants module for the [i16](https://doc.rust-lang.org/nightly/core/primitive.i16.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.i16.html). [...]
 
-  ◦ [i32](https://doc.rust-lang.org/nightly/core/i32/index.html) 
+  ◦ [i32](https://doc.rust-lang.org/nightly/core/legacy_int_modules/i32/index.html) 
     Redundant constants module for the [i32](https://doc.rust-lang.org/nightly/core/primitive.i32.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.i32.html). [...]
 
-  ◦ [i64](https://doc.rust-lang.org/nightly/core/i64/index.html) 
+  ◦ [i64](https://doc.rust-lang.org/nightly/core/legacy_int_modules/i64/index.html) 
     Redundant constants module for the [i64](https://doc.rust-lang.org/nightly/core/primitive.i64.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.i64.html). [...]
 
-  ◦ [i8](https://doc.rust-lang.org/nightly/core/i8/index.html) 
+  ◦ [i8](https://doc.rust-lang.org/nightly/core/legacy_int_modules/i8/index.html) 
     Redundant constants module for the [i8](https://doc.rust-lang.org/nightly/core/primitive.i8.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.i8.html). [...]
+
+  ◦ [if_keyword](https://doc.rust-lang.org/nightly/std/if_keyword/index.html) 
+    Evaluate a block if a condition holds. [...]
+
+  ◦ [impl_keyword](https://doc.rust-lang.org/nightly/std/impl_keyword/index.html) 
+    Implementations of functionality for a type, or a type implementing some
+    functionality. [...]
+
+  ◦ [in_keyword](https://doc.rust-lang.org/nightly/std/in_keyword/index.html) 
+    Iterate over a series of values with [for](https://doc.rust-lang.org/nightly/std/in_keyword/keyword.for.html). [...]
+
+  ◦ [inline_attribute](https://doc.rust-lang.org/nightly/std/inline_attribute/index.html) 
+    Suggest that the compiler inline a function at its call sites. [...]
 
   ◦ [intrinsics](https://doc.rust-lang.org/nightly/core/intrinsics/index.html) 
     Compiler intrinsics. [...]
@@ -313,20 +402,47 @@ Modules
   ◦ [io](https://doc.rust-lang.org/nightly/std/io/index.html) 
     Traits, helpers, and type definitions for core I/O functionality. [...]
 
-  ◦ [isize](https://doc.rust-lang.org/nightly/core/isize/index.html) 
+  ◦ [isize](https://doc.rust-lang.org/nightly/core/legacy_int_modules/isize/index.html) 
     Redundant constants module for the [isize](https://doc.rust-lang.org/nightly/core/primitive.isize.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.isize.html). [...]
 
   ◦ [iter](https://doc.rust-lang.org/nightly/core/iter/index.html) 
     Composable external iteration. [...]
 
+  ◦ [let_keyword](https://doc.rust-lang.org/nightly/std/let_keyword/index.html) 
+    Bind a value to a variable. [...]
+
+  ◦ [loop_keyword](https://doc.rust-lang.org/nightly/std/loop_keyword/index.html) 
+    Loop indefinitely. [...]
+
+  ◦ [macros](https://doc.rust-lang.org/nightly/std/macros/index.html) 
+    Standard library macros [...]
+
   ◦ [marker](https://doc.rust-lang.org/nightly/core/marker/index.html) 
     Primitive traits and types representing basic properties of types. [...]
+
+  ◦ [match_keyword](https://doc.rust-lang.org/nightly/std/match_keyword/index.html) 
+    Control flow based on pattern matching. [...]
 
   ◦ [mem](https://doc.rust-lang.org/nightly/core/mem/index.html) 
     Basic functions for dealing with memory, values, and types. [...]
 
+  ◦ [mod_keyword](https://doc.rust-lang.org/nightly/std/mod_keyword/index.html) 
+    Organize code into [modules](../reference/items/modules.html). [...]
+
+  ◦ [move_keyword](https://doc.rust-lang.org/nightly/std/move_keyword/index.html) 
+    Capture a [closure](../book/ch13-01-closures.html)'s environment by value. [...]
+
+  ◦ [must_use_attribute](https://doc.rust-lang.org/nightly/std/must_use_attribute/index.html) 
+    Warn when a value is ignored. [...]
+
+  ◦ [mut_keyword](https://doc.rust-lang.org/nightly/std/mut_keyword/index.html) 
+    A mutable variable, reference, or pointer. [...]
+
   ◦ [net](https://doc.rust-lang.org/nightly/std/net/index.html) 
     Networking primitives for TCP/UDP communication. [...]
+
+  ◦ [no_std_attribute](https://doc.rust-lang.org/nightly/std/no_std_attribute/index.html) 
+    Prevents automatically linking the standard library. [...]
 
   ◦ [num](https://doc.rust-lang.org/nightly/std/num/index.html) 
     Additional functionality for numerics. [...]
@@ -348,6 +464,10 @@ Modules
   ◦ [panic](https://doc.rust-lang.org/nightly/std/panic/index.html) 
     Panic support in the standard library.
 
+  ◦ [panicking](https://doc.rust-lang.org/nightly/std/panicking/index.html) 
+    Implementation of various bits and pieces of the panic! macro and associated
+    runtime pieces. [...]
+
   ◦ [pat](https://doc.rust-lang.org/nightly/std/pat/index.html) 
     Helper module for exporting the pattern_type macro
 
@@ -360,15 +480,107 @@ Modules
   ◦ [prelude](https://doc.rust-lang.org/nightly/std/prelude/index.html) 
     The Rust Prelude [...]
 
+  ◦ [prim_array](https://doc.rust-lang.org/nightly/std/prim_array/index.html) 
+    A fixed-size array, denoted [T; N], for the element type, T, and the 
+    non-negative compile-time constant size, N. [...]
+
+  ◦ [prim_bool](https://doc.rust-lang.org/nightly/std/prim_bool/index.html) 
+    The boolean type. [...]
+
+  ◦ [prim_char](https://doc.rust-lang.org/nightly/std/prim_char/index.html) 
+    A character type. [...]
+
+  ◦ [prim_f128](https://doc.rust-lang.org/nightly/std/prim_f128/index.html) 
+    A 128-bit floating-point type (specifically, the "binary128" type defined in
+    IEEE 754-2008). [...]
+
+  ◦ [prim_f16](https://doc.rust-lang.org/nightly/std/prim_f16/index.html) 
+    A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE
+    754-2008). [...]
+
+  ◦ [prim_f32](https://doc.rust-lang.org/nightly/std/prim_f32/index.html) 
+    A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE
+    754-2008). [...]
+
+  ◦ [prim_f64](https://doc.rust-lang.org/nightly/std/prim_f64/index.html) 
+    A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE
+    754-2008). [...]
+
+  ◦ [prim_fn](https://doc.rust-lang.org/nightly/std/prim_fn/index.html) 
+    Function pointers, like fn(usize) -> bool. [...]
+
+  ◦ [prim_i128](https://doc.rust-lang.org/nightly/std/prim_i128/index.html) 
+    The 128-bit signed integer type. [...]
+
+  ◦ [prim_i16](https://doc.rust-lang.org/nightly/std/prim_i16/index.html) 
+    The 16-bit signed integer type.
+
+  ◦ [prim_i32](https://doc.rust-lang.org/nightly/std/prim_i32/index.html) 
+    The 32-bit signed integer type.
+
+  ◦ [prim_i64](https://doc.rust-lang.org/nightly/std/prim_i64/index.html) 
+    The 64-bit signed integer type.
+
+  ◦ [prim_i8](https://doc.rust-lang.org/nightly/std/prim_i8/index.html) 
+    The 8-bit signed integer type.
+
+  ◦ [prim_isize](https://doc.rust-lang.org/nightly/std/prim_isize/index.html) 
+    The pointer-sized signed integer type. [...]
+
+  ◦ [prim_never](https://doc.rust-lang.org/nightly/std/prim_never/index.html) 
+    The ! type, also called "never". [...]
+
+  ◦ [prim_pointer](https://doc.rust-lang.org/nightly/std/prim_pointer/index.html) 
+    Raw, unsafe pointers, *const T, and *mut T. [...]
+
+  ◦ [prim_ref](https://doc.rust-lang.org/nightly/std/prim_ref/index.html) 
+    References, &T and &mut T. [...]
+
+  ◦ [prim_slice](https://doc.rust-lang.org/nightly/std/prim_slice/index.html) 
+    A dynamically-sized view into a contiguous sequence, [T]. [...]
+
+  ◦ [prim_str](https://doc.rust-lang.org/nightly/std/prim_str/index.html) 
+    String slices. [...]
+
+  ◦ [prim_tuple](https://doc.rust-lang.org/nightly/std/prim_tuple/index.html) 
+    A finite heterogeneous sequence, (T, U, ..). [...]
+
+  ◦ [prim_u128](https://doc.rust-lang.org/nightly/std/prim_u128/index.html) 
+    The 128-bit unsigned integer type. [...]
+
+  ◦ [prim_u16](https://doc.rust-lang.org/nightly/std/prim_u16/index.html) 
+    The 16-bit unsigned integer type.
+
+  ◦ [prim_u32](https://doc.rust-lang.org/nightly/std/prim_u32/index.html) 
+    The 32-bit unsigned integer type.
+
+  ◦ [prim_u64](https://doc.rust-lang.org/nightly/std/prim_u64/index.html) 
+    The 64-bit unsigned integer type.
+
+  ◦ [prim_u8](https://doc.rust-lang.org/nightly/std/prim_u8/index.html) 
+    The 8-bit unsigned integer type.
+
+  ◦ [prim_unit](https://doc.rust-lang.org/nightly/std/prim_unit/index.html) 
+    The () type, also called "unit". [...]
+
+  ◦ [prim_usize](https://doc.rust-lang.org/nightly/std/prim_usize/index.html) 
+    The pointer-sized unsigned integer type. [...]
+
   ◦ [primitive](https://doc.rust-lang.org/nightly/core/primitive/index.html) 
     This module reexports the primitive types to allow usage that is not possibly
     shadowed by other declared types. [...]
+
+  ◦ [proc_macro_attribute](https://doc.rust-lang.org/nightly/std/proc_macro_attribute/index.html) 
+    Defines a function-like procedural macro. [...]
 
   ◦ [process](https://doc.rust-lang.org/nightly/std/process/index.html) 
     A module for working with processes. [...]
 
   ◦ [ptr](https://doc.rust-lang.org/nightly/core/ptr/index.html) 
     Manually manage memory through raw pointers. [...]
+
+  ◦ [pub_keyword](https://doc.rust-lang.org/nightly/std/pub_keyword/index.html) 
+    Make an item visible to others. [...]
 
   ◦ [random](https://doc.rust-lang.org/nightly/std/random/index.html) 
     Random value generation.
@@ -380,8 +592,26 @@ Modules
     Single-threaded reference-counting pointers. 'Rc' stands for 'Reference 
     Counted'. [...]
 
+  ◦ [ref_keyword](https://doc.rust-lang.org/nightly/std/ref_keyword/index.html) 
+    Bind by reference during pattern matching. [...]
+
   ◦ [result](https://doc.rust-lang.org/nightly/core/result/index.html) 
     Error handling with the Result type. [...]
+
+  ◦ [return_keyword](https://doc.rust-lang.org/nightly/std/return_keyword/index.html) 
+    Returns a value from a function. [...]
+
+  ◦ [rt](https://doc.rust-lang.org/nightly/std/rt/index.html) 
+    Runtime services [...]
+
+  ◦ [sealed](https://doc.rust-lang.org/nightly/std/sealed/index.html) 
+
+  ◦ [self_keyword](https://doc.rust-lang.org/nightly/std/self_keyword/index.html) 
+    The receiver of a method, or the current module. [...]
+
+  ◦ [self_upper_keyword](https://doc.rust-lang.org/nightly/std/self_upper_keyword/index.html) 
+    The implementing type within a [trait](https://doc.rust-lang.org/nightly/std/self_upper_keyword/keyword.trait.html) or [impl](https://doc.rust-lang.org/nightly/std/self_upper_keyword/keyword.impl.html) block, or the current type within
+    a type definition. [...]
 
   ◦ [simd](https://doc.rust-lang.org/nightly/std/simd/index.html) 
     Portable SIMD module. [...]
@@ -389,14 +619,28 @@ Modules
   ◦ [slice](https://doc.rust-lang.org/nightly/alloc/slice/index.html) 
     Utilities for the slice primitive type. [...]
 
+  ◦ [static_keyword](https://doc.rust-lang.org/nightly/std/static_keyword/index.html) 
+    A static item is a value which is valid for the entire duration of your program
+    (a 'static lifetime). [...]
+
+  ◦ [std_float](https://doc.rust-lang.org/nightly/std/std_float/index.html) 
+
   ◦ [str](https://doc.rust-lang.org/nightly/alloc/str/index.html) 
     Utilities for the str primitive type. [...]
 
   ◦ [string](https://doc.rust-lang.org/nightly/alloc/string/index.html) 
     A UTF-8–encoded, growable string. [...]
 
+  ◦ [struct_keyword](https://doc.rust-lang.org/nightly/std/struct_keyword/index.html) 
+    A type that is composed of other types. [...]
+
+  ◦ [super_keyword](https://doc.rust-lang.org/nightly/std/super_keyword/index.html) 
+    The parent of the current [module](../reference/items/modules.html). [...]
+
   ◦ [sync](https://doc.rust-lang.org/nightly/std/sync/index.html) 
     Useful synchronization primitives. [...]
+
+  ◦ [sys](https://doc.rust-lang.org/nightly/std/sys/index.html) 
 
   ◦ [task](https://doc.rust-lang.org/nightly/std/task/index.html) 
     Types and Traits for working with asynchronous tasks.
@@ -407,25 +651,47 @@ Modules
   ◦ [time](https://doc.rust-lang.org/nightly/std/time/index.html) 
     Temporal quantification. [...]
 
-  ◦ [u128](https://doc.rust-lang.org/nightly/core/u128/index.html) 
+  ◦ [track_caller_attribute](https://doc.rust-lang.org/nightly/std/track_caller_attribute/index.html) 
+    Make a function report the location of its caller instead of its own. [...]
+
+  ◦ [trait_keyword](https://doc.rust-lang.org/nightly/std/trait_keyword/index.html) 
+    A common interface for a group of types. [...]
+
+  ◦ [true_keyword](https://doc.rust-lang.org/nightly/std/true_keyword/index.html) 
+    A value of type [prim@bool](https://doc.rust-lang.org/nightly/std/primitive.bool.html) representing logical true. [...]
+
+  ◦ [type_keyword](https://doc.rust-lang.org/nightly/std/type_keyword/index.html) 
+    Define an [alias](../reference/items/type-aliases.html) for an existing type. [...]
+
+  ◦ [u128](https://doc.rust-lang.org/nightly/core/legacy_int_modules/u128/index.html) 
     Redundant constants module for the [u128](https://doc.rust-lang.org/nightly/core/primitive.u128.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.u128.html). [...]
 
-  ◦ [u16](https://doc.rust-lang.org/nightly/core/u16/index.html) 
+  ◦ [u16](https://doc.rust-lang.org/nightly/core/legacy_int_modules/u16/index.html) 
     Redundant constants module for the [u16](https://doc.rust-lang.org/nightly/core/primitive.u16.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.u16.html). [...]
 
-  ◦ [u32](https://doc.rust-lang.org/nightly/core/u32/index.html) 
+  ◦ [u32](https://doc.rust-lang.org/nightly/core/legacy_int_modules/u32/index.html) 
     Redundant constants module for the [u32](https://doc.rust-lang.org/nightly/core/primitive.u32.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.u32.html). [...]
 
-  ◦ [u64](https://doc.rust-lang.org/nightly/core/u64/index.html) 
+  ◦ [u64](https://doc.rust-lang.org/nightly/core/legacy_int_modules/u64/index.html) 
     Redundant constants module for the [u64](https://doc.rust-lang.org/nightly/core/primitive.u64.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.u64.html). [...]
 
-  ◦ [u8](https://doc.rust-lang.org/nightly/core/u8/index.html) 
+  ◦ [u8](https://doc.rust-lang.org/nightly/core/legacy_int_modules/u8/index.html) 
     Redundant constants module for the [u8](https://doc.rust-lang.org/nightly/core/primitive.u8.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.u8.html). [...]
+
+  ◦ [union_keyword](https://doc.rust-lang.org/nightly/std/union_keyword/index.html) 
+    The [Rust equivalent of a C-style union](../reference/items/unions.html). [...]
 
   ◦ [unsafe_binder](https://doc.rust-lang.org/nightly/core/unsafe_binder/index.html) 
     Operators used to turn types into unsafe binders and back.
 
-  ◦ [usize](https://doc.rust-lang.org/nightly/core/usize/index.html) 
+  ◦ [unsafe_keyword](https://doc.rust-lang.org/nightly/std/unsafe_keyword/index.html) 
+    Code or interfaces whose [memory safety](../book/ch19-01-unsafe-rust.html) cannot be verified by the type system. [...]
+
+  ◦ [use_keyword](https://doc.rust-lang.org/nightly/std/use_keyword/index.html) 
+    Import or rename items from other crates or modules, use values under ergonomic
+    clones semantic, or specify precise capturing with use<..>. [...]
+
+  ◦ [usize](https://doc.rust-lang.org/nightly/core/legacy_int_modules/usize/index.html) 
     Redundant constants module for the [usize](https://doc.rust-lang.org/nightly/core/primitive.usize.html)[ primitive type](https://doc.rust-lang.org/nightly/core/primitive.usize.html). [...]
 
   ◦ [vec](https://doc.rust-lang.org/nightly/alloc/vec/index.html) 
@@ -433,6 +699,15 @@ Modules
 
   ◦ [view](https://doc.rust-lang.org/nightly/std/view/index.html) 
     Helper module for exporting the view_types macro.
+
+  ◦ [warn_attribute](https://doc.rust-lang.org/nightly/std/warn_attribute/index.html) 
+    Emits a warning during compilation when a lint check failed. [...]
+
+  ◦ [where_keyword](https://doc.rust-lang.org/nightly/std/where_keyword/index.html) 
+    Add constraints that must be upheld to use an item. [...]
+
+  ◦ [while_keyword](https://doc.rust-lang.org/nightly/std/while_keyword/index.html) 
+    Loop while a condition is upheld. [...]
 
 Macros
 
@@ -506,8 +781,13 @@ Macros
   ◦ [format_args](https://doc.rust-lang.org/nightly/core/macro.format_args.html) 
     Constructs parameters for the other string-formatting macros. [...]
 
+  ◦ [format_args_nl](https://doc.rust-lang.org/nightly/core/macro.format_args_nl.html) 
+    Same as [format_args](https://doc.rust-lang.org/nightly/core/macro.format_args.html), but adds a newline in the end.
+
   ◦ [hash_map](https://doc.rust-lang.org/nightly/std/macro.hash_map.html) 
     Creates a [HashMap](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html) containing the arguments. [...]
+
+  ◦ [impl_sealed](https://doc.rust-lang.org/nightly/std/macro.impl_sealed.html) 
 
   ◦ [include](https://doc.rust-lang.org/nightly/core/macro.include.html) 
     Parses a file as an expression or an item according to the context. [...]
@@ -541,6 +821,8 @@ Macros
 
   ◦ [println](https://doc.rust-lang.org/nightly/std/macro.println.html) 
     Prints to the standard output, with a newline. [...]
+
+  ◦ [repetition_utils](https://doc.rust-lang.org/nightly/std/macro.repetition_utils.html) 
 
   ◦ [stringify](https://doc.rust-lang.org/nightly/core/macro.stringify.html) 
     Stringifies its arguments. [...]

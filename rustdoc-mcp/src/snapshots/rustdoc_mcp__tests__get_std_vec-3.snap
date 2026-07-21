@@ -15,6 +15,8 @@ A contiguous growable array type, written as `Vec<T>`, short for 'vector'.
 
 ```rust
 struct Vec<T, A: Allocator = crate::alloc::Global> {
+    buf: crate::raw_vec::RawVec<T, A>,
+    len: usize,
 }
 ```
 
@@ -187,6 +189,15 @@ where
 • pub fn append(&mut self, other: &mut Self)
     Moves all the elements of `other` into `self`, leaving `other` empty. [+14 more lines]
 
+• pub(::vec) unsafe fn append_elements(&mut self, other: *const [T])
+    Appends elements to `self` from other buffer.
+
+• pub(::vec) unsafe fn try_append_elements(&mut self, other: *const [T]) -> Result<(), TryReserveError>
+    Appends elements to `self` from other buffer, returning [`TryReserveError`] on OOM.
+
+• pub(::vec) unsafe fn append_elements_unreserved(&mut self, other: *const [T])
+    Appends elements to `self` from other buffer without reserving additional capacity.
+
 • pub fn drain<R>(&mut self, range: R) -> Drain<'_, T, A>
 where
     R: RangeBounds<usize>
@@ -222,6 +233,9 @@ where
 • pub fn split_at_spare_mut(&mut self) -> (&mut [T], &mut [MaybeUninit<T>])
     Returns vector content as a slice of `T`, along with the remaining spare [+50 more lines]
 
+• pub(::vec) unsafe fn split_at_spare_mut_with_len(&mut self) -> (&mut [T], &mut [MaybeUninit<T>], &mut usize)
+    Safety: changing returned .2 (&mut usize) is considered the same as calling `.set_len(_)`. [+2 more lines]
+
 • pub fn into_chunks<const N: usize>(self) -> Vec<[T; N], A>
     Groups every `N` elements in the `Vec<T>` into chunks to produce a `Vec<[T; N]>`, dropping [+23 more lines]
 
@@ -241,11 +255,20 @@ where
     R: RangeBounds<usize>
     Given a range `src`, clones a slice of elements in that range and appends it to the end. [+24 more lines]
 
+• pub(crate) fn try_extend_from_slice_of_bytes(&mut self, other: &[u8]) -> Result<(), TryReserveError>
+
 • pub fn into_flattened(self) -> Vec<T, A>
     Takes a `Vec<[T; N]>` and flattens it into a `Vec<T>`. [+18 more lines]
 
+• pub(::vec) fn extend_with(&mut self, n: usize, value: T)
+    Extend the vector by `n` clones of value.
+
 • pub fn dedup(&mut self)
     Removes consecutive repeated elements in the vector according to the [+13 more lines]
+
+• pub(::vec) fn extend_desugared<I: Iterator<Item = T>>(&mut self, iterator: I)
+
+• pub(::vec) fn extend_trusted<impl iter::TrustedLen<Item = T>: iter::TrustedLen<Item = T>>(&mut self, iterator: impl iter::TrustedLen<Item = T>)
 
 • pub fn splice<R, I>(&mut self, range: R, replace_with: I) -> Splice<'_, <I as >::IntoIter, A>
 where
@@ -260,4 +283,4 @@ where
     Creates an iterator which uses a closure to determine if an element in the range should be removed. [+73 more lines]
 
 
-std traits: Any, AsMut<Vec<T, A>>, AsMut<[T]>, AsRef<Vec<T, A>>, AsRef<[T]>, Borrow<T>, Borrow<[T]>, BorrowMut<T>, BorrowMut<[T]>, Clone [+52 more]
+std traits: Any, AsMut<Vec<T, A>>, AsMut<[T]>, AsRef<Vec<T, A>>, AsRef<[T]>, Borrow<T>, Borrow<[T]>, BorrowMut<T>, BorrowMut<[T]>, BufGuard<T> [+68 more]
