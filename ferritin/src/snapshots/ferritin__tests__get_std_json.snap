@@ -1952,6 +1952,52 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
+        "path": "macros",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/macros/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Standard library macros",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "rt",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/rt/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Runtime services",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
         "path": "f128",
         "kind": "module",
         "url": "https://doc.rust-lang.org/nightly/std/f128/index.html",
@@ -2608,6 +2654,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
+        "path": "std_float",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/std_float/index.html"
+      },
+      {
         "path": "simd",
         "kind": "module",
         "url": "https://doc.rust-lang.org/nightly/std/simd/index.html",
@@ -2766,6 +2817,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
+        "path": "sys",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/sys/index.html"
+      },
+      {
         "path": "alloc",
         "kind": "module",
         "url": "https://doc.rust-lang.org/nightly/std/alloc/index.html",
@@ -2778,6 +2834,68 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                 "spans": [
                   {
                     "text": "Memory allocation APIs.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "panicking",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/panicking/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Implementation of various bits and pieces of the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "panic!",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " macro and",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "associated runtime pieces.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "backtrace_rs",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/backtrace_rs/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A library for acquiring a backtrace at runtime",
                     "style": "Plain"
                   }
                 ]
@@ -2817,6 +2935,2241 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             "level": "SingleLine"
           }
         ]
+      },
+      {
+        "path": "must_use_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/must_use_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Warn when a value is ignored.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "allow_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/allow_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "allow",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " attribute suppresses lint diagnostics that would otherwise produce",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "warnings or errors. It can be used on any lint or lint group (except those",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "set to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "forbid",
+                    "style": "InlineCode",
+                    "url": "./attribute.forbid.html"
+                  },
+                  {
+                    "text": ").",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "cfg_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/cfg_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Used for conditional compilation.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "deny_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/deny_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Emits an error, preventing the compilation from finishing, when a lint check has failed.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "This is useful for enforcing rules or preventing certain patterns:",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "forbid_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/forbid_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Emits an error, preventing the compilation from finishing, when a lint check has failed.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "deprecated_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/deprecated_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Emits a warning during compilation when an item with this attribute is used.",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "since",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " and ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "note",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " are optional fields giving more detail about why the item is deprecated.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "warn_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/warn_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Emits a warning during compilation when a lint check failed.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "no_std_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/no_std_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Prevents automatically linking the standard library.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "inline_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/inline_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Suggest that the compiler inline a function at its call sites.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "cold_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/cold_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Hint to the compiler that a function is unlikely to be called.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "track_caller_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/track_caller_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Make a function report the location of its caller instead of its own.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "proc_macro_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/proc_macro_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Defines a function-like procedural macro.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "as_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/as_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Cast between types, rename an import, or qualify paths to associated items.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "break_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/break_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Exit early from a loop or labelled block.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "const_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/const_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Compile-time constants, compile-time blocks, compile-time evaluable functions, and raw pointers.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "continue_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/continue_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Skip to the next iteration of a loop.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "crate_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/crate_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A Rust binary or library.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "else_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/else_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "What expression to evaluate when an ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "if",
+                    "style": "InlineCode",
+                    "path": "std::else_keyword::if"
+                  },
+                  {
+                    "text": " condition evaluates to ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "false",
+                    "style": "InlineCode",
+                    "path": "std::else_keyword::false"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "enum_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/enum_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A type that can be any one of several variants.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "extern_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/extern_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Link to or import external code.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "false_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/false_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A value of type ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "prim@bool",
+                    "style": "InlineCode",
+                    "path": "std::bool"
+                  },
+                  {
+                    "text": " representing logical ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "false",
+                    "style": "Strong"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "fn_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/fn_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A function or function pointer.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "for_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/for_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Iteration with ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "in",
+                    "style": "InlineCode",
+                    "path": "std::for_keyword::in"
+                  },
+                  {
+                    "text": ", trait implementation with ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "impl",
+                    "style": "InlineCode",
+                    "path": "std::for_keyword::impl"
+                  },
+                  {
+                    "text": ", or ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "higher-ranked trait bounds",
+                    "style": "Plain",
+                    "url": "../reference/trait-bounds.html#higher-ranked-trait-bounds"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "(",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "for<'a>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ").",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "if_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/if_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Evaluate a block if a condition holds.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "impl_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/impl_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Implementations of functionality for a type, or a type implementing some functionality.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "in_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/in_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Iterate over a series of values with ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "for",
+                    "style": "InlineCode",
+                    "path": "std::in_keyword::for"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "let_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/let_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Bind a value to a variable.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "loop_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/loop_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Loop indefinitely.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "match_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/match_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Control flow based on pattern matching.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "mod_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/mod_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Organize code into ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "modules",
+                    "style": "Plain",
+                    "url": "../reference/items/modules.html"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "move_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/move_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Capture a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "closure",
+                    "style": "Plain",
+                    "url": "../book/ch13-01-closures.html"
+                  },
+                  {
+                    "text": "'s environment by value.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "mut_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/mut_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A mutable variable, reference, or pointer.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "pub_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/pub_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Make an item visible to others.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "ref_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/ref_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Bind by reference during pattern matching.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "return_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/return_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns a value from a function.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "become_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/become_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Perform a tail-call of a function.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "self_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/self_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The receiver of a method, or the current module.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "self_upper_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/self_upper_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The implementing type within a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "trait",
+                    "style": "InlineCode",
+                    "path": "std::self_upper_keyword::trait"
+                  },
+                  {
+                    "text": " or ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "impl",
+                    "style": "InlineCode",
+                    "path": "std::self_upper_keyword::impl"
+                  },
+                  {
+                    "text": " block, or the current type within a type",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "definition.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "static_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/static_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A static item is a value which is valid for the entire duration of your",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "program (a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "'static",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " lifetime).",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "struct_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/struct_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A type that is composed of other types.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "super_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/super_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The parent of the current ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "module",
+                    "style": "Plain",
+                    "url": "../reference/items/modules.html"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "trait_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/trait_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A common interface for a group of types.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "true_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/true_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A value of type ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "prim@bool",
+                    "style": "InlineCode",
+                    "path": "std::bool"
+                  },
+                  {
+                    "text": " representing logical ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "true",
+                    "style": "Strong"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "type_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/type_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Define an ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "alias",
+                    "style": "Plain",
+                    "url": "../reference/items/type-aliases.html"
+                  },
+                  {
+                    "text": " for an existing type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "unsafe_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/unsafe_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Code or interfaces whose ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "memory safety",
+                    "style": "Plain",
+                    "url": "../book/ch19-01-unsafe-rust.html"
+                  },
+                  {
+                    "text": " cannot be verified by the type",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "system.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "use_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/use_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Import or rename items from other crates or modules, use values under ergonomic clones",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "semantic, or specify precise capturing with ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "use<..>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "where_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/where_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Add constraints that must be upheld to use an item.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "while_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/while_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Loop while a condition is upheld.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "async_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/async_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Future",
+                    "style": "InlineCode",
+                    "path": "core::future::future::Future"
+                  },
+                  {
+                    "text": " instead of blocking the current thread.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "await_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/await_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Suspend execution until the result of a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Future",
+                    "style": "InlineCode",
+                    "path": "core::future::future::Future"
+                  },
+                  {
+                    "text": " is ready.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "dyn_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/dyn_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "dyn",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is a prefix of a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "trait object",
+                    "style": "Plain",
+                    "url": "../book/ch17-02-trait-objects.html"
+                  },
+                  {
+                    "text": "'s type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "union_keyword",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/union_keyword/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Rust equivalent of a C-style union",
+                    "style": "Plain",
+                    "url": "../reference/items/unions.html"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_bool",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_bool/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The boolean type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_never",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_never/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "!",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " type, also called \"never\".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_char",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_char/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A character type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_unit",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_unit/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "()",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " type, also called \"unit\".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_pointer",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_pointer/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Raw, unsafe pointers, ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "*const T",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", and ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "*mut T",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_array",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_array/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A fixed-size array, denoted ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "[T; N]",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", for the element type, ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "T",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", and the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "non-negative compile-time constant size, ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "N",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_slice",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_slice/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A dynamically-sized view into a contiguous sequence, ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "[T]",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_str",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_str/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "String slices.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_tuple",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_tuple/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A finite heterogeneous sequence, ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "(T, U, ..)",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_f16",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_f16/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A 16-bit floating-point type (specifically, the \"binary16\" type defined in IEEE 754-2008).",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_f32",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_f32/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A 32-bit floating-point type (specifically, the \"binary32\" type defined in IEEE 754-2008).",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_f64",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_f64/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A 64-bit floating-point type (specifically, the \"binary64\" type defined in IEEE 754-2008).",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_f128",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_f128/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A 128-bit floating-point type (specifically, the \"binary128\" type defined in IEEE 754-2008).",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_i8",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_i8/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 8-bit signed integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "prim_i16",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_i16/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 16-bit signed integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "prim_i32",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_i32/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 32-bit signed integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "prim_i64",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_i64/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 64-bit signed integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "prim_i128",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_i128/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 128-bit signed integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_u8",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_u8/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 8-bit unsigned integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "prim_u16",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_u16/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 16-bit unsigned integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "prim_u32",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_u32/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 32-bit unsigned integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "prim_u64",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_u64/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 64-bit unsigned integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "prim_u128",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_u128/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The 128-bit unsigned integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_isize",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_isize/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The pointer-sized signed integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_usize",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_usize/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The pointer-sized unsigned integer type.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_ref",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_ref/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "References, ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "&T",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " and ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "&mut T",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "prim_fn",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/prim_fn/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Function pointers, like ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "fn(usize) -> bool",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "__restricted_std_workaround",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/__restricted_std_workaround/index.html"
+      },
+      {
+        "path": "sealed",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/sealed/index.html"
       },
       {
         "path": "any",
@@ -3119,7 +5472,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i8",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/i8/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/i8/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3156,7 +5509,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i16",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/i16/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/i16/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3193,7 +5546,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i32",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/i32/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/i32/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3230,7 +5583,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i64",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/i64/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/i64/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3267,7 +5620,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "i128",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/i128/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/i128/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3327,7 +5680,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "isize",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/isize/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/isize/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3580,7 +5933,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u8",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/u8/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/u8/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3617,7 +5970,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u16",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/u16/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/u16/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3654,7 +6007,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u32",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/u32/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/u32/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3691,7 +6044,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u64",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/u64/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/u64/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3728,7 +6081,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "u128",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/u128/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/u128/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3787,7 +6140,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
       {
         "path": "usize",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/core/usize/index.html",
+        "url": "https://doc.rust-lang.org/nightly/core/legacy_int_modules/usize/index.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4490,6 +6843,37 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
+        "path": "format_args_nl",
+        "kind": "macro",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.format_args_nl.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Same as ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "format_args",
+                    "style": "InlineCode",
+                    "path": "core::format_args"
+                  },
+                  {
+                    "text": ", but adds a newline in the end.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "include",
         "kind": "macro",
         "url": "https://doc.rust-lang.org/nightly/core/macro.include.html",
@@ -4997,6 +7381,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
+        "path": "impl_sealed",
+        "kind": "macro",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.impl_sealed.html"
+      },
+      {
         "path": "panic",
         "kind": "macro",
         "url": "https://doc.rust-lang.org/nightly/std/macro.panic.html",
@@ -5141,6 +7530,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             "truncated": true
           }
         ]
+      },
+      {
+        "path": "repetition_utils",
+        "kind": "macro",
+        "url": "https://doc.rust-lang.org/nightly/std/macro.repetition_utils.html"
       },
       {
         "path": "hash_map",

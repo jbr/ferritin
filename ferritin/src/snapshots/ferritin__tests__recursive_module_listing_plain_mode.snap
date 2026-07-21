@@ -198,6 +198,12 @@ Functions
   ◦ Vec::append 
     Moves all the elements of other into self, leaving other empty. [...]
 
+  ◦ Vec::append_elements 
+    Appends elements to self from other buffer.
+
+  ◦ Vec::append_elements_unreserved 
+    Appends elements to self from other buffer without reserving additional capacity.
+
   ◦ Vec::as_mut_ptr 
     Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer valid for zero sized reads if the vector didn't allocate. [...]
 
@@ -234,11 +240,18 @@ Functions
   ◦ Vec::drain 
     Removes the subslice indicated by the given range from the vector, returning a double-ended iterator over the removed subslice. [...]
 
+  ◦ Vec::extend_desugared 
+
   ◦ Vec::extend_from_slice 
     Clones and appends all elements in a slice to the Vec. [...]
 
   ◦ Vec::extend_from_within 
     Given a range src, clones a slice of elements in that range and appends it to the end. [...]
+
+  ◦ Vec::extend_trusted 
+
+  ◦ Vec::extend_with 
+    Extend the vector by n clones of value.
 
   ◦ Vec::extract_if 
     Creates an iterator which uses a closure to determine if an element in the range should be removed. [...]
@@ -363,6 +376,9 @@ Functions
   ◦ Vec::split_at_spare_mut 
     Returns vector content as a slice of T, along with the remaining spare capacity of the vector as a slice of MaybeUninit<T>. [...]
 
+  ◦ Vec::split_at_spare_mut_with_len 
+    Safety: changing returned .2 (&mut usize) is considered the same as calling .set_len(_). [...]
+
   ◦ Vec::split_off 
     Splits the collection into two at the given index. [...]
 
@@ -371,6 +387,11 @@ Functions
 
   ◦ Vec::truncate 
     Shortens the vector, keeping the first len elements and dropping the rest. [...]
+
+  ◦ Vec::try_append_elements 
+    Appends elements to self from other buffer, returning TryReserveError on OOM.
+
+  ◦ Vec::try_extend_from_slice_of_bytes 
 
   ◦ Vec::try_remove 
     Remove and return the element at position index within the vector, shifting all elements after it to the left, or None if it does not exist. [...]
@@ -534,6 +555,9 @@ Functions
   ◦ link_resolution_tests::Tree::append 
     Moves all elements from other into self, leaving other empty. [...]
 
+  ◦ link_resolution_tests::Tree::bulk_build_from_sorted_iter 
+    Makes a BTreeMap from a sorted iterator.
+
   ◦ link_resolution_tests::Tree::clear 
     Clears the map, removing all elements. [...]
 
@@ -545,6 +569,8 @@ Functions
 
   ◦ link_resolution_tests::Tree::extract_if 
     Creates an iterator that visits elements (key-value pairs) in the specified range in ascending key order and uses a closure to determine if an element should be removed. [...]
+
+  ◦ link_resolution_tests::Tree::extract_if_inner 
 
   ◦ link_resolution_tests::Tree::first_entry 
     Returns the first entry in the map for in-place manipulation. The key of this entry is the minimum key in the map. [...]
@@ -560,6 +586,8 @@ Functions
 
   ◦ link_resolution_tests::Tree::get_mut 
     Returns a mutable reference to the value corresponding to the key. [...]
+
+  ◦ link_resolution_tests::Tree::get_or_insert_with 
 
   ◦ link_resolution_tests::Tree::insert 
     Inserts a key-value pair into the map. [...]
@@ -623,6 +651,8 @@ Functions
 
   ◦ link_resolution_tests::Tree::remove_entry 
     Removes a key from the map, returning the stored key and value if the key was previously in the map. [...]
+
+  ◦ link_resolution_tests::Tree::replace 
 
   ◦ link_resolution_tests::Tree::retain 
     Retains only the elements specified by the predicate. [...]
@@ -744,6 +774,8 @@ Functions
   ◦ link_resolution_tests::nested::Str::push_str 
     Appends a given string slice onto the end of this String. [...]
 
+  ◦ link_resolution_tests::nested::Str::push_str_slice 
+
   ◦ link_resolution_tests::nested::Str::remove 
     Removes a char from this String at byte position idx and returns it. [...]
 
@@ -779,6 +811,9 @@ Functions
 
   ◦ link_resolution_tests::nested::Str::truncate 
     Shortens this String to the specified length. [...]
+
+  ◦ link_resolution_tests::nested::Str::try_push_str 
+    Appends a given string slice onto the end of this String, returning TryReserveError otherwise.
 
   ◦ link_resolution_tests::nested::Str::try_reserve 
     Tries to reserve capacity for at least additional bytes more than the current length. The allocator may reserve more space to speculatively avoid frequent allocations. After calling try_reserve, capacity will be greater than or equal to self.len() + additional if it returns Ok(()). Does nothing if capacity is already sufficient. This method preserves the contents even if an error occurs. [...]
