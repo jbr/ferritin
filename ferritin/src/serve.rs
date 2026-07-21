@@ -19,6 +19,8 @@
 
 mod caching;
 mod crawlers;
+#[cfg(feature = "mcp")]
+mod mcp;
 mod spa_route;
 
 use crate::{
@@ -351,10 +353,14 @@ mod acme {
 /// RCE probe) currently gets a success in the log.
 async fn reject_other_methods(conn: Conn) -> Conn {
     if matches!(conn.method(), Method::Get | Method::Head) {
-        conn
-    } else {
-        conn.with_status(Status::MethodNotAllowed).halt()
+        return conn;
     }
+    // The MCP endpoint is the one route that legitimately takes a `POST`.
+    #[cfg(feature = "mcp")]
+    if conn.method() == Method::Post && conn.path() == "/mcp" {
+        return conn;
+    }
+    conn.with_status(Status::MethodNotAllowed).halt()
 }
 
 pub(crate) fn handler(typeahead: Arc<TypeaheadService>) -> impl Handler {
@@ -372,12 +378,25 @@ pub(crate) fn handler(typeahead: Arc<TypeaheadService>) -> impl Handler {
         CachingHeaders::new(),
         caching_policy(),
         trillium::state(typeahead),
-        Router::new()
-            .get("/api/*", (api_limiter(), api_router()))
-            .get("/robots.txt", crawlers::robots)
-            .get("/sitemap.xml", crawlers::sitemap),
+        router(),
         frontend(),
     )
+}
+
+/// The route table: the `/api` tree, the crawler files, and — under the `mcp`
+/// feature — the MCP endpoint (`POST` for messages, `GET` answered `405`).
+fn router() -> Router {
+    let router = Router::new()
+        .get("/api/*", (api_limiter(), api_router()))
+        .get("/robots.txt", crawlers::robots)
+        .get("/sitemap.xml", crawlers::sitemap);
+
+    #[cfg(feature = "mcp")]
+    let router = router
+        .post("/mcp", (mcp::limiter(), mcp::post))
+        .get("/mcp", mcp::get);
+
+    router
 }
 
 /// The `Cache-Control` policy for every response — except under `dev-proxy`,

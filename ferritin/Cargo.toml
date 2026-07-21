@@ -62,6 +62,7 @@ semver = "1.0.28"
 percent-encoding = "2.3"
 mimalloc = "0.1.52"
 schemars = { version = "1.2.1", optional = true }
+serde_json = { version = "1.0.145", optional = true }
 
 # `serve`-only. The HTTP server and its crate-name typeahead; see [features].
 anyhow = { workspace = true, optional = true }
@@ -121,6 +122,13 @@ serve = [
     "dep:trillium-rustls",
     "dep:trillium-smol",
 ]
+
+# The Model Context Protocol server: a stateless Streamable-HTTP MCP endpoint
+# (`/mcp`, a sibling to `/api`) exposing `get` and `search` as tools that return
+# agent-format documentation text. Off by default. Implies `serve` — it rides
+# the same shared `Store` and big-stack worker pool — and adds the JSON-RPC/MCP
+# protocol types (serde_json) and their input schemas (schemars).
+mcp = ["serve", "dep:serde_json", "dep:schemars"]
 
 # Deployment-only: automatic HTTPS via Let's Encrypt (tls-alpn-01) plus HTTP/3,
 # activated at runtime by `FERRITIN_ACME_DOMAIN` (absent it, `serve` runs
