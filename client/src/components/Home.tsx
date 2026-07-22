@@ -71,11 +71,25 @@ export function Home() {
           </p>
         </section>
         <section className="home-section">
+          <h2>Point your agent at it</h2>
+          <p>
+            This site is also an MCP server, so a coding agent can look an API
+            up here instead of guessing at it — one command, no install and no
+            key.
+          </p>
+          <p className="home-cta-row">
+            <Link className="home-cta" href="/~mcp">
+              Connect your agent
+            </Link>
+          </p>
+        </section>
+
+        <section className="home-section">
           <h2>Run it locally</h2>
           <p>
             Ferritin is open source. Prefer the terminal? The same engine runs
-            locally as a CLI, an interactive TUI, and an MCP server for coding
-            agents.
+            locally as a CLI, an interactive TUI, and an Agent Skill that reads
+            your own workspace's docs.
           </p>
           <p className="home-cta-row">
             <Link className="home-cta" href="/~install">

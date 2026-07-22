@@ -26,7 +26,7 @@ use percent_encoding::percent_decode_str;
 ///
 /// Keep in sync with the client's routes (`client/src/App.tsx`,
 /// `client/src/lib/paths.ts`).
-const PAGES: &[&str] = &["/~install"];
+const PAGES: &[&str] = &["/~install", "/~mcp"];
 
 /// Whether `path` could name a Rust item or a known page, and so may be answered
 /// with the SPA index.
@@ -94,6 +94,7 @@ mod tests {
     #[test]
     fn accepts_the_pages() {
         assert!(is_app_route("/~install"));
+        assert!(is_app_route("/~mcp"));
         // The decode happens before the check, so the encoded form is the same
         // route rather than a second, unlisted one.
         assert!(is_app_route("/%7Einstall"));

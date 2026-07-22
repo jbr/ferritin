@@ -953,24 +953,25 @@
   margin: 0.5rem 0 0.6rem;
 }
 
-/* --- install picker --- */
-.install {
+/* --- tabbed snippet picker (the install command, the MCP client configs) --- */
+.picker {
   margin-bottom: 2.5rem;
 }
-/* The one snippet that wraps instead of scrolling. Everywhere else a long line
-   scrolling under the copy button is fine — you already know what the command
-   is. This one is a `curl … | sh`, and a reader deciding whether to pipe it into
-   a shell has to be able to read all of it without dragging it sideways first. */
-.install .snippet .code-block pre {
+/* The one snippet that wraps instead of scrolling — hence keyed on `.install`
+   rather than every picker. Everywhere else a long line scrolling under the copy
+   button is fine — you already know what the command is. This one is a
+   `curl … | sh`, and a reader deciding whether to pipe it into a shell has to be
+   able to read all of it without dragging it sideways first. */
+.picker.install .snippet .code-block pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-.install-tabs {
+.picker-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
 }
-.install-tab {
+.picker-tab {
   font-family: var(--sans);
   font-size: 0.8rem;
   padding: 0.4rem 0.7rem;
@@ -980,21 +981,21 @@
   color: var(--muted);
   cursor: pointer;
 }
-.install-tab:hover {
+.picker-tab:hover {
   color: var(--ink);
   border-color: color-mix(in oklch, var(--accent) 40%, var(--border));
 }
-.install-tab[aria-selected="true"] {
+.picker-tab[aria-selected="true"] {
   background: color-mix(in oklch, var(--accent) 14%, transparent);
   border-color: color-mix(in oklch, var(--accent) 40%, transparent);
   color: var(--ink);
   font-weight: 500;
 }
-.install-note {
+.picker-note {
   font-size: 0.85rem;
   margin: 0.6rem 0 0;
 }
-.install-note code {
+.picker-note code {
   font-size: 0.9em;
 }
 

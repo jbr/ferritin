@@ -1,3 +1,4 @@
+import { Link } from "rhoto-router";
 import { DocsLayout } from "./layout/DocsLayout";
 import { Install } from "./Install";
 import { Lightbox } from "./Lightbox";
@@ -69,7 +70,8 @@ export function InstallPage() {
                 Token-efficient markdown, selected automatically when ferritin
                 detects it's running under a coding agent. It ships an Agent
                 Skill too, so your agent looks the API up instead of guessing at
-                it.
+                it. No install required either — this site speaks MCP, so you
+                can <Link href="/~mcp">connect an agent to it directly</Link>.
               </dd>
             </div>
           </dl>

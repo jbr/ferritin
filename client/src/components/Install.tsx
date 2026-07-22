@@ -39,15 +39,15 @@ export function Install() {
   const autoDetected = override === null && detected !== null;
 
   return (
-    <div className="install">
-      <div className="install-tabs" role="tablist" aria-label="Platform">
+    <div className="picker install">
+      <div className="picker-tabs" role="tablist" aria-label="Platform">
         {PLATFORMS.map((p) => (
           <button
             key={p.id}
             type="button"
             role="tab"
             aria-selected={p.id === activeId}
-            className="install-tab"
+            className="picker-tab"
             onClick={() => setOverride(p.id)}
           >
             {p.label}
@@ -57,7 +57,7 @@ export function Install() {
 
       <Snippet code={active.command} />
 
-      <p className="install-note">
+      <p className="picker-note">
         {autoDetected ? (
           <>
             Detected <strong>{active.label}</strong> — not right? Pick another
