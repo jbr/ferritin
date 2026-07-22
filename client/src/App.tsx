@@ -2,6 +2,7 @@ import { Route } from "rhoto-router";
 import { Home } from "./components/Home";
 import { InstallPage } from "./components/InstallPage";
 import { ItemView } from "./components/ItemView";
+import { McpPage } from "./components/McpPage";
 import { HoverPreview } from "./components/preview/HoverPreview";
 import { isReservedPath } from "./lib/paths";
 
@@ -16,6 +17,12 @@ export function App() {
           that can never collide with a crate, and why it stays one segment. */}
       <Route path="/~install" exact>
         <InstallPage />
+      </Route>
+
+      {/* `/~mcp`, not `/mcp` — the latter is the MCP endpoint itself, served by
+          the API rather than the client. */}
+      <Route path="/~mcp" exact>
+        <McpPage />
       </Route>
 
       {/* Everything else is an item path. The reserved sigil is carved out here
