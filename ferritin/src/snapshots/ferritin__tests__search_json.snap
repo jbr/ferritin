@@ -33,7 +33,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 53.2,
+      "score": 53.0,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -57,7 +57,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::prelude::v1::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 53.2,
+      "score": 53.0,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -81,7 +81,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "proc_macro::Span::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line",
-      "score": 38.1,
+      "score": 37.9,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -105,7 +105,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::prelude::v1::ambiguous_macros_only::panic::location::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 37.9,
+      "score": 37.8,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -129,7 +129,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::prelude::v1::ambiguous_macros_only::panic::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 37.9,
+      "score": 37.8,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -153,7 +153,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "alloc::io::buf_read::BufRead::read_line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/alloc/io/buf_read/trait.BufRead.html#method.read_line",
-      "score": 32.5,
+      "score": 32.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -279,10 +279,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "std::prelude::v1::ambiguous_macros_only::io::LineWriter",
+      "path": "alloc::io::LineWriter",
       "kind": "struct",
-      "url": "https://doc.rust-lang.org/nightly/std/io/buffered/linewriter/struct.LineWriter.html",
-      "score": 29.8,
+      "url": "https://doc.rust-lang.org/nightly/alloc/io/buffered/linewriter/struct.LineWriter.html",
+      "score": 29.6,
       "docs": [
         {
           "type": "truncatedBlock",
