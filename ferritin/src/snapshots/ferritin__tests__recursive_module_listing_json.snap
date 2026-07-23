@@ -506,7 +506,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::new",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.new",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.new.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -537,7 +537,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::with_capacity",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.with_capacity",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.with_capacity.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -599,7 +599,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::from_utf8",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf8.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -630,7 +630,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::from_utf8_lossy",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_lossy",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf8_lossy.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -653,7 +653,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::from_utf8_lossy_owned",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_lossy_owned",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf8_lossy_owned.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -701,7 +701,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::from_utf16",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf16.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -740,7 +740,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Err",
                     "style": "InlineCode",
-                    "path": "alloc::Err"
+                    "path": "core::result::Result::Err"
                   },
                   {
                     "text": " if ",
@@ -870,7 +870,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Err",
                     "style": "InlineCode",
-                    "path": "alloc::Err"
+                    "path": "core::result::Result::Err"
                   },
                   {
                     "text": " if ",
@@ -1000,7 +1000,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "Err",
                     "style": "InlineCode",
-                    "path": "alloc::Err"
+                    "path": "core::result::Result::Err"
                   },
                   {
                     "text": " if ",
@@ -1130,7 +1130,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::from_raw_parts",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_raw_parts",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_raw_parts.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -1161,7 +1161,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::from_utf8_unchecked",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_unchecked",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf8_unchecked.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -1200,7 +1200,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::into_bytes",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_bytes",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.into_bytes.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -1231,7 +1231,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::as_str",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_str",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.as_str.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -1293,7 +1293,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::push_str",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push_str",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.push_str.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -1403,7 +1403,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::capacity",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.capacity",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.capacity.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -1434,7 +1434,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::reserve",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.reserve.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -1605,7 +1605,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::try_reserve",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.try_reserve.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -1800,7 +1800,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::shrink_to_fit",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.shrink_to_fit",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.shrink_to_fit.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -1862,7 +1862,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::push",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.push.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2206,7 +2206,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::len",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.len",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.len.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2332,7 +2332,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::clear",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.clear",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.clear.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2363,7 +2363,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::drain",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.drain",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.drain.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2394,7 +2394,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::into_chars",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_chars",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.into_chars.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -2519,7 +2519,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::nested::Str::into_boxed_str",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_boxed_str",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/String/fn.into_boxed_str.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3205,7 +3205,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::insert",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.insert",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.insert.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3228,7 +3228,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::try_insert",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.try_insert",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.try_insert.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3321,7 +3321,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::retain",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.retain",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.retain.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3344,7 +3344,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::append",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.append",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.append.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3438,7 +3438,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::range",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.range",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.range.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3529,7 +3529,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::range_mut",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.range_mut",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.range_mut.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3620,7 +3620,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::entry",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.entry",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.entry.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3682,7 +3682,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::extract_if",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.extract_if",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.extract_if.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3726,7 +3726,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::into_keys",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_keys",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.into_keys.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3773,7 +3773,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::into_values",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_values",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.into_values.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3820,7 +3820,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::bulk_build_from_sorted_iter",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.bulk_build_from_sorted_iter",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.bulk_build_from_sorted_iter.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3850,7 +3850,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::iter",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.iter.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3873,7 +3873,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::iter_mut",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter_mut",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.iter_mut.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3896,7 +3896,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::keys",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.keys",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.keys.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3919,7 +3919,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::values",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.values.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -3942,7 +3942,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::values_mut",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values_mut",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.values_mut.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4019,7 +4019,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::lower_bound",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.lower_bound.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4059,7 +4059,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::lower_bound_mut",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound_mut",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.lower_bound_mut.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4099,7 +4099,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::upper_bound",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.upper_bound.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4139,7 +4139,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::Tree::upper_bound_mut",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound_mut",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.upper_bound_mut.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4530,7 +4530,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::HashSet::iter",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.iter",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.iter.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4623,7 +4623,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::HashSet::drain",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.drain",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.drain.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4654,7 +4654,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::HashSet::extract_if",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.extract_if",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.extract_if.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -4677,7 +4677,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::HashSet::retain",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.retain",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.retain.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5023,7 +5023,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::HashSet::difference",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.difference",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.difference.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5070,7 +5070,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::HashSet::symmetric_difference",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.symmetric_difference",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.symmetric_difference.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5117,7 +5117,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::HashSet::intersection",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.intersection",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.intersection.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -5164,7 +5164,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "link_resolution_tests::HashSet::union",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.union",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.union.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -7146,7 +7146,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::new",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.new.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -7177,7 +7177,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::with_capacity",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.with_capacity.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -7239,7 +7239,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::from_raw_parts",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_raw_parts",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_raw_parts.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -7270,7 +7270,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::from_parts",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_parts",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_parts.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -7520,7 +7520,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::push",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.push.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -7636,7 +7636,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::from_raw_parts_in",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_raw_parts_in",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_raw_parts_in.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -7675,7 +7675,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::from_parts_in",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_parts_in",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_parts_in.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -7800,7 +7800,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::capacity",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.capacity",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.capacity.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -7831,7 +7831,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::reserve",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.reserve.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8018,7 +8018,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::try_reserve",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.try_reserve.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8225,7 +8225,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::shrink_to_fit",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to_fit",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to_fit.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8248,7 +8248,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::shrink_to",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8317,7 +8317,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::into_boxed_slice",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_boxed_slice",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_boxed_slice.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8406,7 +8406,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::truncate",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.truncate",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.truncate.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8491,7 +8491,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::as_ptr",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_ptr",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_ptr.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8522,7 +8522,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::as_mut_ptr",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_ptr",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_mut_ptr.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8553,7 +8553,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::as_non_null",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_non_null",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_non_null.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8618,7 +8618,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::set_len",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.set_len",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.set_len.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8649,7 +8649,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::swap_remove",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.swap_remove",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.swap_remove.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8672,7 +8672,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::insert",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.insert",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.insert.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8758,7 +8758,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::remove",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.remove",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.remove.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -8828,7 +8828,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "None",
                     "style": "InlineCode",
-                    "path": "alloc::None"
+                    "path": "core::option::Option::None"
                   },
                   {
                     "text": " if it does not",
@@ -8876,7 +8876,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::retain_mut",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain_mut",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.retain_mut.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9007,7 +9007,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "None",
                     "style": "InlineCode",
-                    "path": "alloc::None"
+                    "path": "core::option::Option::None"
                   },
                   {
                     "text": " if it",
@@ -9063,7 +9063,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   {
                     "text": "None",
                     "style": "InlineCode",
-                    "path": "alloc::None"
+                    "path": "core::option::Option::None"
                   },
                   {
                     "text": " if the predicate returns false or the vector",
@@ -9088,7 +9088,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::peek_mut",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.peek_mut",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.peek_mut.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9123,7 +9123,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::append",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.append.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9269,7 +9269,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::drain",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.drain",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.drain.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9300,7 +9300,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::clear",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.clear",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.clear.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9323,7 +9323,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::len",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.len",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.len.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9408,7 +9408,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::resize_with",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize_with",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.resize_with.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9498,7 +9498,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::spare_capacity_mut",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.spare_capacity_mut",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.spare_capacity_mut.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9745,7 +9745,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::resize",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.resize.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9792,7 +9792,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::extend_from_slice",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_slice",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extend_from_slice.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9823,7 +9823,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::extend_from_within",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_within",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extend_from_within.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9859,7 +9859,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::into_flattened",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_flattened.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9974,7 +9974,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::splice",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.splice.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -10033,7 +10033,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::extract_if",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extract_if.html",
         "docs": [
           {
             "type": "truncatedBlock",

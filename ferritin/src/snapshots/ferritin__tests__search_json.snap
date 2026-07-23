@@ -152,7 +152,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
     {
       "path": "alloc::io::buf_read::BufRead::read_line",
       "kind": "function",
-      "url": "https://doc.rust-lang.org/nightly/alloc/io/buf_read/trait.BufRead.html#method.read_line",
+      "url": "https://doc.rust-lang.org/nightly/alloc/io/buf_read/BufRead/fn.read_line.html",
       "score": 32.4,
       "docs": [
         {

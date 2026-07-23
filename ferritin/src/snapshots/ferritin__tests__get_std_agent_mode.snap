@@ -233,7 +233,6 @@ Non-exhaustive list of known limitations:
 - result — Error handling with the Result type. [+78 lines]
 - return_keyword — Returns a value from a function. [+8 lines]
 - rt — Runtime services [+1 lines]
-- sealed
 - self_keyword — The receiver of a method, or the current module. [+10 lines]
 - self_upper_keyword — The implementing type within a trait or impl block, or the current type within a type definition. [+8 lines]
 - simd — Portable SIMD module. [+14 lines]
@@ -296,7 +295,6 @@ Non-exhaustive list of known limitations:
 - format_args — Constructs parameters for the other string-formatting macros. [+9 lines]
 - format_args_nl — Same as format_args, but adds a newline in the end.
 - hash_map — Creates a HashMap containing the arguments. [+9 lines]
-- impl_sealed
 - include — Parses a file as an expression or an item according to the context. [+13 lines]
 - include_bytes — Includes a file as a reference to a byte array. [+9 lines]
 - include_str — Includes a UTF-8 encoded file as a string. [+9 lines]

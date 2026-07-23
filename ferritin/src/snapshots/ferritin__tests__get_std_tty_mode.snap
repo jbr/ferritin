@@ -604,8 +604,6 @@ Modules
   ◦ [rt](https://doc.rust-lang.org/nightly/std/rt/index.html) 
     Runtime services [...]
 
-  ◦ [sealed](https://doc.rust-lang.org/nightly/std/sealed/index.html) 
-
   ◦ [self_keyword](https://doc.rust-lang.org/nightly/std/self_keyword/index.html) 
     The receiver of a method, or the current module. [...]
 
@@ -786,8 +784,6 @@ Macros
 
   ◦ [hash_map](https://doc.rust-lang.org/nightly/std/macro.hash_map.html) 
     Creates a [HashMap](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html) containing the arguments. [...]
-
-  ◦ [impl_sealed](https://doc.rust-lang.org/nightly/std/macro.impl_sealed.html) 
 
   ◦ [include](https://doc.rust-lang.org/nightly/core/macro.include.html) 
     Parses a file as an expression or an item according to the context. [...]
