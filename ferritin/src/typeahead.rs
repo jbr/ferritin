@@ -25,6 +25,33 @@ impl From<CrateEntry> for TypeaheadEntry {
     }
 }
 
+/// What the resident crate namespace knows about one exact crate name.
+///
+/// The distinction between [`Unknown`](CrateLookup::Unknown) and
+/// [`Indeterminate`](CrateLookup::Indeterminate) is the whole point: only the
+/// former is evidence of absence, and only evidence of absence may be answered
+/// with a `404`.
+#[derive(Debug, Clone)]
+pub(crate) enum CrateLookup {
+    /// A crate this server can serve, as the artifact spells it.
+    ///
+    /// Deliberately carries no version. The artifact knows the crates.io
+    /// *default* version, which is not necessarily the one a path asks for
+    /// (`serde@0.9` resolves elsewhere) — and naming it in a preview would be
+    /// confidently wrong in exactly the case a reader consults a preview to
+    /// settle.
+    Known {
+        name: String,
+        /// `None` for std (not on crates.io) and for crates.io crates that
+        /// simply have no description.
+        description: Option<String>,
+    },
+    /// The artifact is loaded and does not contain this name.
+    Unknown,
+    /// No artifact is loaded, so absence proves nothing about this name.
+    Indeterminate,
+}
+
 /// The top-ranked matches plus the exact number of crates matching the
 /// query (any query token, so a multi-word query counts its union of
 /// per-term matches) — `entries.len() < total` means truncation occurred.
@@ -131,6 +158,43 @@ impl TypeaheadService {
             entries.truncate(limit);
         }
         Some(TypeaheadResults { entries, total })
+    }
+
+    /// What this server knows about one exact crate name, from resident data
+    /// only — no crate is loaded, no network is touched, nothing is downloaded.
+    ///
+    /// Names are folded the way the artifact folds them, so `serde_json` and
+    /// `serde-json` are the same lookup. std is checked first, since those
+    /// crates are absent from the artifact but servable here.
+    pub(crate) async fn lookup(&self, name: &str) -> CrateLookup {
+        let key = normalize(name);
+
+        if let Some(entry) = self
+            .std_crates
+            .iter()
+            .find(|entry| normalize(&entry.name) == key)
+        {
+            return CrateLookup::Known {
+                name: entry.name.clone(),
+                description: None,
+            };
+        }
+
+        let Some(index) = &self.index else {
+            return CrateLookup::Indeterminate;
+        };
+
+        match index.get(name).await {
+            Some(entry) => CrateLookup::Known {
+                name: entry.name,
+                description: entry.description,
+            },
+
+            // A miss against an artifact that never loaded is not absence. Only
+            // a loaded artifact can testify that a name is not a crate.
+            None if index.identity().is_none() => CrateLookup::Indeterminate,
+            None => CrateLookup::Unknown,
+        }
     }
 
     /// The identity of the artifact data backing every answer this service

@@ -25,10 +25,10 @@ pkg-fmt = "zip"
 [dependencies]
 ferritin-common = { path = "../ferritin-common", version = "0.16.1" }
 anyhow.workspace = true
-clap = { version = "4.6.2", features = ["derive"] }
+clap = { version = "4.6.4", features = ["derive"] }
 dirs = "6.0.0"
 env_logger = "0.11.11"
-fieldwork = "0.5.2"
+fieldwork = "0.5.3"
 log = "0.4.33"
 mcplease = "0.2.3"
 rustdoc-types.workspace = true

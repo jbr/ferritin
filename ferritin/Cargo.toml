@@ -22,6 +22,7 @@ include = [
     "src/**/*",
     "build.rs",
     "assets/**/*.tmTheme",
+    "assets/og/**/*",
     "/CHANGELOG.md",
     "client/dist/**/*",
 ]
@@ -41,10 +42,10 @@ pkg-fmt = "zip"
 [dependencies]
 ferritin-common = { path = "../ferritin-common", version = "0.16.1" }
 
-clap = { version = "4.6.2", features = ["derive", "cargo", "env"] }
+clap = { version = "4.6.4", features = ["derive", "cargo", "env"] }
 crossbeam-channel = "0.5"
 crossterm = "0.29"
-fieldwork = "0.5.2"
+fieldwork = "0.5.3"
 log = "0.4.33"
 env_logger = "0.11.11"
 pulldown-cmark = "0.13"
@@ -62,19 +63,23 @@ semver = "1.0.28"
 percent-encoding = "2.3"
 mimalloc = "0.1.52"
 schemars = { version = "1.2.1", optional = true }
-serde_json = { version = "1.0.145", optional = true }
+serde_json = { version = "1.0.151", optional = true }
 
 # `serve`-only. The HTTP server and its crate-name typeahead; see [features].
 anyhow = { workspace = true, optional = true }
 async-channel = { version = "2.5.0", optional = true }
 querystrong = { version = "0.4.0", optional = true }
 rayon = { version = "1.12.0", optional = true }
+# og:image rendering: parses the card SVG and rasterizes it to PNG. `text` (and
+# nothing else) because the card's fonts are embedded — no system font loading,
+# no raster image decoding.
+resvg = { version = "0.47.0", optional = true, default-features = false, features = ["text"] }
 trillium = { version = "1.3.0", optional = true }
 # `webpki-roots` is required for `AcmeConfig::new` (the ACME client needs roots
 # to trust Let's Encrypt's directory endpoint).
 trillium-acme = { version = "0.9.0", features = ["webpki-roots"], optional = true }
 trillium-caching-headers = { version = "0.4.2", optional = true }
-trillium-client = { version = "0.9.12", optional = true }
+trillium-client = { version = "0.9.13", optional = true }
 trillium-compression = { version = "0.3.3", features = ["client"], optional = true }
 trillium-frontend = { version = "0.4.2", optional = true }
 trillium-logger = { version = "0.5.4", features = ["client"], optional = true }
@@ -85,6 +90,7 @@ trillium-router = { version = "0.5.2", optional = true }
 trillium-rustls = { version = "0.11.3", optional = true }
 trillium-smol = { version = "0.7.0", optional = true }
 trillium-head = { version = "0.3.0", optional = true }
+trillium-html-rewriter = { version = "0.6.1", optional = true }
 
 [build-dependencies]
 syntect = { version = "5.3", default-features = false, features = ["parsing", "plist-load", "dump-load", "dump-create", "regex-onig"] }
@@ -109,12 +115,14 @@ serve = [
     "dep:async-channel",
     "dep:querystrong",
     "dep:rayon",
+    "dep:resvg",
     "dep:trillium",
     "dep:trillium-caching-headers",
     "dep:trillium-client",
     "dep:trillium-compression",
     "dep:trillium-frontend",
     "dep:trillium-head",
+    "dep:trillium-html-rewriter",
     "dep:trillium-logger",
     "dep:trillium-ratelimit",
     "dep:trillium-redirect",
