@@ -206,6 +206,52 @@ pub(crate) fn documentation(
     })
 }
 
+/// The entity tag for the SPA index as *rewritten* for one app route.
+///
+/// The frontend serves one file, so it sets one etag — the same bytes for
+/// `/serde`, for `/tokio`, and for a path naming no crate at all. Left alone,
+/// that etag makes two false statements: that those responses are the same
+/// representation, and that the representation has not changed when the metadata
+/// we inject into it has.
+///
+/// The second one is the dangerous half. `CachingHeaders` runs its comparison
+/// *after* this handler (it sits earlier in the tuple, and `before_send` runs in
+/// reverse), so a client presenting the file's etag would be answered `304` —
+/// discarding the `404` we set for an unknown crate, and with it the only signal
+/// that distinguishes a scanner from a reader.
+///
+/// Mixing the page's own metadata into the tag restores what an etag is for: it
+/// now changes exactly when the response body would, so a `304` means the client
+/// really does hold this page.
+pub(crate) fn app_page(file_etag: Option<&str>, identity: impl Hash) -> EntityTag {
+    let mut hasher = hasher();
+    BUILD.id.hash(&mut hasher);
+    file_etag.hash(&mut hasher);
+    identity.hash(&mut hasher);
+    etag(hasher.finish())
+}
+
+/// The validators for an og card image.
+///
+/// A card is a pure function of its text and the binary that draws it, and its
+/// text is right there in the identity — so unlike [`documentation`] there is
+/// nothing cheaper to name it by, and unlike [`typeahead`] the validators are
+/// derived *before* the work, because the render they short-circuit is real CPU.
+///
+/// No `Last-Modified`, for the same reason as [`typeahead`]: the artifact
+/// behind the text has no timestamp that moves when it does.
+pub(crate) fn og_image(identity: impl Hash) -> Validators {
+    let mut hasher = hasher();
+    BUILD.id.hash(&mut hasher);
+    "og".hash(&mut hasher);
+    identity.hash(&mut hasher);
+
+    Validators {
+        etag: etag(hasher.finish()),
+        last_modified: None,
+    }
+}
+
 /// The validators for a typeahead response.
 ///
 /// Typeahead has no expensive path to skip — a query is two binary searches over

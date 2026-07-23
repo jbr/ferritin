@@ -17,10 +17,12 @@
 //! per-query pinning is what lets the Store evict under memory pressure without
 //! invalidating any in-flight request.
 
+mod app_page;
 mod caching;
 mod crawlers;
 #[cfg(feature = "mcp")]
 mod mcp;
+mod og;
 mod spa_route;
 
 use crate::{
@@ -379,15 +381,25 @@ pub(crate) fn handler(typeahead: Arc<TypeaheadService>) -> impl Handler {
         caching_policy(),
         trillium::state(typeahead),
         router(),
+        app_page::AppPage,
         frontend(),
+        // Last, deliberately: `before_send` runs in reverse tuple order, so this
+        // rewrites the index before `CachingHeaders` validates it and before
+        // `Compression` encodes it. See [`app_page::rewriter`].
+        app_page::rewriter(),
     )
 }
 
-/// The route table: the `/api` tree, the crawler files, and — under the `mcp`
-/// feature — the MCP endpoint (`POST` for messages, `GET` answered `405`).
+/// The route table: the `/api` tree, the og card images, the crawler files, and
+/// — under the `mcp` feature — the MCP endpoint (`POST` for messages, `GET`
+/// answered `405`).
 fn router() -> Router {
     let router = Router::new()
-        .get("/api/*", (api_limiter(), api_router()))
+        .get("/api/*", (limiter("api"), api_router()))
+        .get(
+            format!("{}/*", og::PREFIX).as_str(),
+            (limiter("og"), og::handler),
+        )
         .get("/robots.txt", crawlers::robots)
         .get("/sitemap.xml", crawlers::sitemap);
 
@@ -416,21 +428,23 @@ fn api_router() -> Router {
         .get("/typeahead", typeahead)
 }
 
-/// The API rate limiter, or `None` when `FERRITIN_RATELIMIT` is unset.
+/// A rate limiter for one route tree, or `None` when `FERRITIN_RATELIMIT` is
+/// unset.
 ///
-/// One limiter for the whole `/api` tree rather than one per endpoint, so all
-/// three share a single bucket per client — which is also the only way to share
-/// one, since [`RateLimiter`] is not `Clone`. Keyed on the client's network
+/// One limiter per tree rather than one per endpoint, so a tree's endpoints
+/// share a single bucket per client — which is also the only way to share one,
+/// since [`RateLimiter`] is not `Clone`; distinct trees (`/api`, the og cards)
+/// get distinct buckets under the same quota. Keyed on the client's network
 /// (IPv4 address, IPv6 /64), which is available because the server terminates
 /// TLS itself and so sees the real peer.
-fn api_limiter() -> Option<RateLimiter<IpAddr>> {
+fn limiter(policy_name: &str) -> Option<RateLimiter<IpAddr>> {
     let per_minute = ratelimit_per_minute()?;
     Some(
         RateLimiter::by_network(
             Quota::per_minute(per_minute)
                 .allow_burst((per_minute / RATELIMIT_BURST_DIVISOR).max(1)),
         )
-        .with_policy_name("api"),
+        .with_policy_name(policy_name),
     )
 }
 
