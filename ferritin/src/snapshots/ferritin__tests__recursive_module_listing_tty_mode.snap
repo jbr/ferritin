@@ -198,7 +198,7 @@ Functions
   ◦ [Vec::allocator](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.allocator) 
     Returns a reference to the underlying allocator.
 
-  ◦ [Vec::append](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append) 
+  ◦ [Vec::append](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.append.html) 
     Moves all the elements of other into self, leaving other empty. [...]
 
   ◦ [Vec::append_elements](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append_elements) 
@@ -208,28 +208,28 @@ Functions
     Appends elements to self from other buffer without reserving additional
     capacity.
 
-  ◦ [Vec::as_mut_ptr](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_ptr) 
+  ◦ [Vec::as_mut_ptr](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_mut_ptr.html) 
     Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer
     valid for zero sized reads if the vector didn't allocate. [...]
 
   ◦ [Vec::as_mut_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_slice) 
     Extracts a mutable slice of the entire vector. [...]
 
-  ◦ [Vec::as_non_null](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_non_null) 
+  ◦ [Vec::as_non_null](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_non_null.html) 
     Returns a NonNull pointer to the vector's buffer, or a dangling NonNull pointer
     valid for zero sized reads if the vector didn't allocate. [...]
 
-  ◦ [Vec::as_ptr](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_ptr) 
+  ◦ [Vec::as_ptr](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_ptr.html) 
     Returns a raw pointer to the vector's buffer, or a dangling raw pointer valid
     for zero sized reads if the vector didn't allocate. [...]
 
   ◦ [Vec::as_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_slice) 
     Extracts a slice containing the entire vector. [...]
 
-  ◦ [Vec::capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.capacity) 
+  ◦ [Vec::capacity](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.capacity.html) 
     Returns the total number of elements the vector can hold without reallocating. [...]
 
-  ◦ [Vec::clear](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.clear) 
+  ◦ [Vec::clear](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.clear.html) 
     Clears the vector, removing all values. [...]
 
   ◦ [Vec::const_make_global](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.const_make_global) 
@@ -248,16 +248,16 @@ Functions
     Removes all but the first of consecutive elements in the vector that resolve to
     the same key. [...]
 
-  ◦ [Vec::drain](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.drain) 
+  ◦ [Vec::drain](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.drain.html) 
     Removes the subslice indicated by the given range from the vector, returning a
     double-ended iterator over the removed subslice. [...]
 
   ◦ [Vec::extend_desugared](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_desugared) 
 
-  ◦ [Vec::extend_from_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_slice) 
+  ◦ [Vec::extend_from_slice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extend_from_slice.html) 
     Clones and appends all elements in a slice to the Vec. [...]
 
-  ◦ [Vec::extend_from_within](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_from_within) 
+  ◦ [Vec::extend_from_within](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extend_from_within.html) 
     Given a range src, clones a slice of elements in that range and appends it to
     the end. [...]
 
@@ -266,7 +266,7 @@ Functions
   ◦ [Vec::extend_with](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_with) 
     Extend the vector by n clones of value.
 
-  ◦ [Vec::extract_if](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extract_if) 
+  ◦ [Vec::extract_if](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extract_if.html) 
     Creates an iterator which uses a closure to determine if an element in the
     range should be removed. [...]
 
@@ -274,21 +274,21 @@ Functions
     Creates a Vec<T> where each element is produced by calling f with that
     element's index while walking forward through the Vec<T>. [...]
 
-  ◦ [Vec::from_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_parts) 
+  ◦ [Vec::from_parts](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_parts.html) 
     Creates a Vec<T> directly from a NonNull pointer, a length, and a capacity. [...]
 
-  ◦ [Vec::from_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_parts_in) 
+  ◦ [Vec::from_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_parts_in.html) 
     Creates a Vec<T, A> directly from a NonNull pointer, a length, a capacity, and
     an allocator. [...]
 
-  ◦ [Vec::from_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_raw_parts) 
+  ◦ [Vec::from_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_raw_parts.html) 
     Creates a Vec<T> directly from a pointer, a length, and a capacity. [...]
 
-  ◦ [Vec::from_raw_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_raw_parts_in) 
+  ◦ [Vec::from_raw_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_raw_parts_in.html) 
     Creates a Vec<T, A> directly from a pointer, a length, a capacity, and an
     allocator. [...]
 
-  ◦ [Vec::insert](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.insert) 
+  ◦ [Vec::insert](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.insert.html) 
     Inserts an element at position index within the vector, shifting all elements
     after it to the right. [...]
 
@@ -298,17 +298,17 @@ Functions
 
   ◦ [Vec::into_array](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_array) 
     Converts the Vec into a boxed array. This conversion will discard any spare
-    capacity, if there is any, see [Vec::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to_fit). If you merely wish for a
+    capacity, if there is any, see [Vec::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to_fit.html). If you merely wish for a
     reference to an array, use [as_array](https://doc.rust-lang.org/stable/std/primitive.slice.html#method.as_array). [...]
 
-  ◦ [Vec::into_boxed_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_boxed_slice) 
+  ◦ [Vec::into_boxed_slice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_boxed_slice.html) 
     Converts the vector into [Box<[T]>](https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html). [...]
 
   ◦ [Vec::into_chunks](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_chunks) 
     Groups every N elements in the Vec<T> into chunks to produce a Vec<[T; N]>,
     dropping elements in the remainder. N must be greater than zero. [...]
 
-  ◦ [Vec::into_flattened](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_flattened) 
+  ◦ [Vec::into_flattened](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_flattened.html) 
     Takes a Vec<[T; N]> and flattens it into a Vec<T>. [...]
 
   ◦ [Vec::into_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts) 
@@ -333,28 +333,28 @@ Functions
     Consumes and leaks the Vec, returning a mutable reference to the contents, &'a
     mut [T]. [...]
 
-  ◦ [Vec::len](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.len) 
+  ◦ [Vec::len](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.len.html) 
     Returns the number of elements in the vector, also referred to as its 'length'. [...]
 
-  ◦ [Vec::new](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new) 
+  ◦ [Vec::new](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.new.html) 
     Constructs a new, empty Vec<T>. [...]
 
   ◦ [Vec::new_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new_in) 
     Constructs a new, empty Vec<T, A>. [...]
 
-  ◦ [Vec::peek_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.peek_mut) 
+  ◦ [Vec::peek_mut](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.peek_mut.html) 
     Returns a mutable reference to the last item in the vector, or None if it is
     empty. [...]
 
   ◦ [Vec::pop](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop) 
-    Removes the last element from a vector and returns it, or [None](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone) if it is empty. [...]
+    Removes the last element from a vector and returns it, or [None](https://doc.rust-lang.org/nightly/core/option/Option/index.html?search=core%3A%3Aoption%3A%3AOption%3A%3ANone) if it is empty. [...]
 
   ◦ [Vec::pop_if](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop_if) 
     Removes and returns the last element from a vector if the predicate returns true
-    , or [None](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone) if the predicate returns false or the vector is empty (the predicate
+    , or [None](https://doc.rust-lang.org/nightly/core/option/Option/index.html?search=core%3A%3Aoption%3A%3AOption%3A%3ANone) if the predicate returns false or the vector is empty (the predicate
     will not be called in that case). [...]
 
-  ◦ [Vec::push](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push) 
+  ◦ [Vec::push](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.push.html) 
     Appends an element to the back of a collection. [...]
 
   ◦ [Vec::push_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_mut) 
@@ -369,11 +369,11 @@ Functions
     type of the resulting Vec needs to have the same size and alignment as the item
     type of the original Vec. [...]
 
-  ◦ [Vec::remove](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.remove) 
+  ◦ [Vec::remove](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.remove.html) 
     Removes and returns the element at position index within the vector, shifting
     all elements after it to the left. [...]
 
-  ◦ [Vec::reserve](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve) 
+  ◦ [Vec::reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.reserve.html) 
     Reserves capacity for at least additional more elements to be inserted in the
     given Vec<T>. The collection may reserve more space to speculatively avoid
     frequent reallocations. After calling reserve, capacity will be greater than or
@@ -382,37 +382,37 @@ Functions
 
   ◦ [Vec::reserve_exact](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve_exact) 
     Reserves the minimum capacity for at least additional more elements to be
-    inserted in the given Vec<T>. Unlike [reserve](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve), this will not deliberately
+    inserted in the given Vec<T>. Unlike [reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.reserve.html), this will not deliberately
     over-allocate to speculatively avoid frequent allocations. After calling 
     reserve_exact, capacity will be greater than or equal to self.len() + additional
     . Does nothing if the capacity is already sufficient. [...]
 
-  ◦ [Vec::resize](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize) 
+  ◦ [Vec::resize](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.resize.html) 
     Resizes the Vec in-place so that len is equal to new_len. [...]
 
-  ◦ [Vec::resize_with](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.resize_with) 
+  ◦ [Vec::resize_with](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.resize_with.html) 
     Resizes the Vec in-place so that len is equal to new_len. [...]
 
   ◦ [Vec::retain](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain) 
     Retains only the elements specified by the predicate. [...]
 
-  ◦ [Vec::retain_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain_mut) 
+  ◦ [Vec::retain_mut](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.retain_mut.html) 
     Retains only the elements specified by the predicate, passing a mutable
     reference to it. [...]
 
-  ◦ [Vec::set_len](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.set_len) 
+  ◦ [Vec::set_len](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.set_len.html) 
     Forces the length of the vector to new_len. [...]
 
-  ◦ [Vec::shrink_to](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to) 
+  ◦ [Vec::shrink_to](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to.html) 
     Shrinks the capacity of the vector with a lower bound. [...]
 
-  ◦ [Vec::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.shrink_to_fit) 
+  ◦ [Vec::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to_fit.html) 
     Shrinks the capacity of the vector as much as possible. [...]
 
-  ◦ [Vec::spare_capacity_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.spare_capacity_mut) 
+  ◦ [Vec::spare_capacity_mut](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.spare_capacity_mut.html) 
     Returns the remaining spare capacity of the vector as a slice of MaybeUninit<T>. [...]
 
-  ◦ [Vec::splice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.splice) 
+  ◦ [Vec::splice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.splice.html) 
     Creates a splicing iterator that replaces the specified range in the vector with
     the given replace_with iterator and yields the removed items. replace_with does
     not need to be the same length as range. [...]
@@ -428,10 +428,10 @@ Functions
   ◦ [Vec::split_off](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_off) 
     Splits the collection into two at the given index. [...]
 
-  ◦ [Vec::swap_remove](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.swap_remove) 
+  ◦ [Vec::swap_remove](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.swap_remove.html) 
     Removes an element from the vector and returns it. [...]
 
-  ◦ [Vec::truncate](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.truncate) 
+  ◦ [Vec::truncate](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.truncate.html) 
     Shortens the vector, keeping the first len elements and dropping the rest. [...]
 
   ◦ [Vec::try_append_elements](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_append_elements) 
@@ -441,9 +441,9 @@ Functions
 
   ◦ [Vec::try_remove](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_remove) 
     Remove and return the element at position index within the vector, shifting all
-    elements after it to the left, or [None](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3ANone) if it does not exist. [...]
+    elements after it to the left, or [None](https://doc.rust-lang.org/nightly/core/option/Option/index.html?search=core%3A%3Aoption%3A%3AOption%3A%3ANone) if it does not exist. [...]
 
-  ◦ [Vec::try_reserve](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve) 
+  ◦ [Vec::try_reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.try_reserve.html) 
     Tries to reserve capacity for at least additional more elements to be inserted 
     in the given Vec<T>. The collection may reserve more space to speculatively
     avoid frequent reallocations. After calling try_reserve, capacity will be 
@@ -453,7 +453,7 @@ Functions
 
   ◦ [Vec::try_reserve_exact](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve_exact) 
     Tries to reserve the minimum capacity for at least additional elements to be
-    inserted in the given Vec<T>. Unlike [try_reserve](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve), this will not deliberately
+    inserted in the given Vec<T>. Unlike [try_reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.try_reserve.html), this will not deliberately
     over-allocate to speculatively avoid frequent allocations. After calling 
     try_reserve_exact, capacity will be greater than or equal to self.len() +
     additional if it returns Ok(()). Does nothing if the capacity is already
@@ -472,7 +472,7 @@ Functions
     Constructs a new, empty Vec<T, A> with at least the specified capacity with the
     provided allocator. [...]
 
-  ◦ [Vec::with_capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity) 
+  ◦ [Vec::with_capacity](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.with_capacity.html) 
     Constructs a new, empty Vec<T> with at least the specified capacity. [...]
 
   ◦ [Vec::with_capacity_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity_in) 
@@ -494,18 +494,18 @@ Functions
   ◦ [link_resolution_tests::HashSet::contains](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.contains) 
     Returns true if the set contains a value. [...]
 
-  ◦ [link_resolution_tests::HashSet::difference](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.difference) 
+  ◦ [link_resolution_tests::HashSet::difference](https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.difference.html) 
     Visits the values representing the difference, i.e., the values that are in self
      but not in other. [...]
 
-  ◦ [link_resolution_tests::HashSet::drain](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.drain) 
+  ◦ [link_resolution_tests::HashSet::drain](https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.drain.html) 
     Clears the set, returning all elements as an iterator. Keeps the allocated
     memory for reuse. [...]
 
   ◦ [link_resolution_tests::HashSet::entry](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.entry) 
     Gets the given value's corresponding entry in the set for in-place manipulation. [...]
 
-  ◦ [link_resolution_tests::HashSet::extract_if](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.extract_if) 
+  ◦ [link_resolution_tests::HashSet::extract_if](https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.extract_if.html) 
     Creates an iterator which uses a closure to determine if an element should be
     removed. [...]
 
@@ -527,7 +527,7 @@ Functions
   ◦ [link_resolution_tests::HashSet::insert](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.insert) 
     Adds a value to the set. [...]
 
-  ◦ [link_resolution_tests::HashSet::intersection](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.intersection) 
+  ◦ [link_resolution_tests::HashSet::intersection](https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.intersection.html) 
     Visits the values representing the intersection, i.e., the values that are both
     in self and other. [...]
 
@@ -546,7 +546,7 @@ Functions
     Returns true if the set is a superset of another, i.e., self contains at least
     all the values in other. [...]
 
-  ◦ [link_resolution_tests::HashSet::iter](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.iter) 
+  ◦ [link_resolution_tests::HashSet::iter](https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.iter.html) 
     An iterator visiting all elements in arbitrary order. The iterator element type
     is &'a T. [...]
 
@@ -572,7 +572,7 @@ Functions
     reallocations. After calling reserve, capacity will be greater than or equal to 
     self.len() + additional. Does nothing if capacity is already sufficient. [...]
 
-  ◦ [link_resolution_tests::HashSet::retain](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.retain) 
+  ◦ [link_resolution_tests::HashSet::retain](https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.retain.html) 
     Retains only the elements specified by the predicate. [...]
 
   ◦ [link_resolution_tests::HashSet::shrink_to](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.shrink_to) 
@@ -585,7 +585,7 @@ Functions
     as possible while maintaining the internal rules and possibly leaving some
     space in accordance with the resize policy. [...]
 
-  ◦ [link_resolution_tests::HashSet::symmetric_difference](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.symmetric_difference) 
+  ◦ [link_resolution_tests::HashSet::symmetric_difference](https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.symmetric_difference.html) 
     Visits the values representing the symmetric difference, i.e., the values that
     are in self or in other but not in both. [...]
 
@@ -600,7 +600,7 @@ Functions
     than or equal to self.len() + additional if it returns Ok(()). Does nothing if
     capacity is already sufficient. [...]
 
-  ◦ [link_resolution_tests::HashSet::union](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html#method.union) 
+  ◦ [link_resolution_tests::HashSet::union](https://doc.rust-lang.org/nightly/std/collections/hash/set/HashSet/fn.union.html) 
     Visits the values representing the union, i.e., all the values in self or other,
     without duplicates. [...]
 
@@ -640,10 +640,10 @@ Functions
   ◦ [link_resolution_tests::RenamedTestStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.new) 
     Create a new TestStruct
 
-  ◦ [link_resolution_tests::Tree::append](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.append) 
+  ◦ [link_resolution_tests::Tree::append](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.append.html) 
     Moves all elements from other into self, leaving other empty. [...]
 
-  ◦ [link_resolution_tests::Tree::bulk_build_from_sorted_iter](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.bulk_build_from_sorted_iter) 
+  ◦ [link_resolution_tests::Tree::bulk_build_from_sorted_iter](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.bulk_build_from_sorted_iter.html) 
     Makes a BTreeMap from a sorted iterator.
 
   ◦ [link_resolution_tests::Tree::clear](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.clear) 
@@ -652,10 +652,10 @@ Functions
   ◦ [link_resolution_tests::Tree::contains_key](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.contains_key) 
     Returns true if the map contains a value for the specified key. [...]
 
-  ◦ [link_resolution_tests::Tree::entry](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.entry) 
+  ◦ [link_resolution_tests::Tree::entry](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.entry.html) 
     Gets the given key's corresponding entry in the map for in-place manipulation. [...]
 
-  ◦ [link_resolution_tests::Tree::extract_if](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.extract_if) 
+  ◦ [link_resolution_tests::Tree::extract_if](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.extract_if.html) 
     Creates an iterator that visits elements (key-value pairs) in the specified
     range in ascending key order and uses a closure to determine if an element 
     should be removed. [...]
@@ -682,27 +682,27 @@ Functions
 
   ◦ [link_resolution_tests::Tree::get_or_insert_with](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get_or_insert_with) 
 
-  ◦ [link_resolution_tests::Tree::insert](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.insert) 
+  ◦ [link_resolution_tests::Tree::insert](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.insert.html) 
     Inserts a key-value pair into the map. [...]
 
-  ◦ [link_resolution_tests::Tree::into_keys](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_keys) 
+  ◦ [link_resolution_tests::Tree::into_keys](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.into_keys.html) 
     Creates a consuming iterator visiting all the keys, in sorted order. The map
     cannot be used after calling this. The iterator element type is K. [...]
 
-  ◦ [link_resolution_tests::Tree::into_values](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.into_values) 
+  ◦ [link_resolution_tests::Tree::into_values](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.into_values.html) 
     Creates a consuming iterator visiting all the values, in order by key. The map
     cannot be used after calling this. The iterator element type is V. [...]
 
   ◦ [link_resolution_tests::Tree::is_empty](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.is_empty) 
     Returns true if the map contains no elements. [...]
 
-  ◦ [link_resolution_tests::Tree::iter](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter) 
+  ◦ [link_resolution_tests::Tree::iter](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.iter.html) 
     Gets an iterator over the entries of the map, sorted by key. [...]
 
-  ◦ [link_resolution_tests::Tree::iter_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.iter_mut) 
+  ◦ [link_resolution_tests::Tree::iter_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.iter_mut.html) 
     Gets a mutable iterator over the entries of the map, sorted by key. [...]
 
-  ◦ [link_resolution_tests::Tree::keys](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.keys) 
+  ◦ [link_resolution_tests::Tree::keys](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.keys.html) 
     Gets an iterator over the keys of the map, in sorted order. [...]
 
   ◦ [link_resolution_tests::Tree::last_entry](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.last_entry) 
@@ -716,11 +716,11 @@ Functions
   ◦ [link_resolution_tests::Tree::len](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.len) 
     Returns the number of elements in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::lower_bound](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound) 
+  ◦ [link_resolution_tests::Tree::lower_bound](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.lower_bound.html) 
     Returns a [Cursor](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html) pointing at the gap before the smallest key greater than the
     given bound. [...]
 
-  ◦ [link_resolution_tests::Tree::lower_bound_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.lower_bound_mut) 
+  ◦ [link_resolution_tests::Tree::lower_bound_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.lower_bound_mut.html) 
     Returns a [CursorMut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html) pointing at the gap before the smallest key greater than
     the given bound. [...]
 
@@ -741,14 +741,14 @@ Functions
     Removes and returns the last element in the map. The key of this element is the
     maximum key that was in the map. [...]
 
-  ◦ [link_resolution_tests::Tree::range](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.range) 
+  ◦ [link_resolution_tests::Tree::range](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.range.html) 
     Constructs a double-ended iterator over a sub-range of elements in the map. The
     simplest way is to use the range syntax min..max, thus range(min..max) will 
     yield elements from min (inclusive) to max (exclusive). The range may also be
     entered as (Bound<T>, Bound<T>), so for example range((Excluded(4),
     Included(10))) will yield a left-exclusive, right-inclusive range from 4 to 10. [...]
 
-  ◦ [link_resolution_tests::Tree::range_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.range_mut) 
+  ◦ [link_resolution_tests::Tree::range_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.range_mut.html) 
     Constructs a mutable double-ended iterator over a sub-range of elements in the
     map. The simplest way is to use the range syntax min..max, thus range(min..max)
     will yield elements from min (inclusive) to max (exclusive). The range may also
@@ -765,7 +765,7 @@ Functions
 
   ◦ [link_resolution_tests::Tree::replace](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.replace) 
 
-  ◦ [link_resolution_tests::Tree::retain](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.retain) 
+  ◦ [link_resolution_tests::Tree::retain](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.retain.html) 
     Retains only the elements specified by the predicate. [...]
 
   ◦ [link_resolution_tests::Tree::split_off](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.split_off) 
@@ -773,22 +773,22 @@ Functions
     given key, including the key. If the key is not present, the split will occur
     at the nearest greater key, or return an empty map if no such key exists. [...]
 
-  ◦ [link_resolution_tests::Tree::try_insert](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.try_insert) 
+  ◦ [link_resolution_tests::Tree::try_insert](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.try_insert.html) 
     Tries to insert a key-value pair into the map, and returns a mutable reference
     to the value in the entry. [...]
 
-  ◦ [link_resolution_tests::Tree::upper_bound](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound) 
+  ◦ [link_resolution_tests::Tree::upper_bound](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.upper_bound.html) 
     Returns a [Cursor](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.Cursor.html) pointing at the gap after the greatest key smaller than the
     given bound. [...]
 
-  ◦ [link_resolution_tests::Tree::upper_bound_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.upper_bound_mut) 
+  ◦ [link_resolution_tests::Tree::upper_bound_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.upper_bound_mut.html) 
     Returns a [CursorMut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.CursorMut.html) pointing at the gap after the greatest key smaller than the
     given bound. [...]
 
-  ◦ [link_resolution_tests::Tree::values](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values) 
+  ◦ [link_resolution_tests::Tree::values](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.values.html) 
     Gets an iterator over the values of the map, in order by key. [...]
 
-  ◦ [link_resolution_tests::Tree::values_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.values_mut) 
+  ◦ [link_resolution_tests::Tree::values_mut](https://doc.rust-lang.org/nightly/alloc/collections/btree/map/BTreeMap/fn.values_mut.html) 
     Gets a mutable iterator over the values of the map, in order by key. [...]
 
   ◦ [link_resolution_tests::nested::NestedStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/nested/struct.NestedStruct.html#method.new) 
@@ -803,27 +803,27 @@ Functions
   ◦ [link_resolution_tests::nested::Str::as_mut_vec](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_mut_vec) 
     Returns a mutable reference to the contents of this String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::as_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.as_str) 
+  ◦ [link_resolution_tests::nested::Str::as_str](https://doc.rust-lang.org/nightly/alloc/string/String/fn.as_str.html) 
     Extracts a string slice containing the entire String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::capacity](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.capacity) 
+  ◦ [link_resolution_tests::nested::Str::capacity](https://doc.rust-lang.org/nightly/alloc/string/String/fn.capacity.html) 
     Returns this String's capacity, in bytes. [...]
 
-  ◦ [link_resolution_tests::nested::Str::clear](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.clear) 
+  ◦ [link_resolution_tests::nested::Str::clear](https://doc.rust-lang.org/nightly/alloc/string/String/fn.clear.html) 
     Truncates this String, removing all contents. [...]
 
-  ◦ [link_resolution_tests::nested::Str::drain](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.drain) 
+  ◦ [link_resolution_tests::nested::Str::drain](https://doc.rust-lang.org/nightly/alloc/string/String/fn.drain.html) 
     Removes the specified range from the string in bulk, returning all removed
     characters as an iterator. [...]
 
   ◦ [link_resolution_tests::nested::Str::extend_from_within](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.extend_from_within) 
     Copies elements from src range to the end of the string. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_raw_parts](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_raw_parts) 
+  ◦ [link_resolution_tests::nested::Str::from_raw_parts](https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_raw_parts.html) 
     Creates a new String from a pointer, a length and a capacity. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf16](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16) 
-    Decode a native endian UTF-16–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr)
+  ◦ [link_resolution_tests::nested::Str::from_utf16](https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf16.html) 
+    Decode a native endian UTF-16–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/core/result/Result/index.html?search=core%3A%3Aresult%3A%3AResult%3A%3AErr)
     if v contains any invalid data. [...]
 
   ◦ [link_resolution_tests::nested::Str::from_utf16_lossy](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16_lossy) 
@@ -831,7 +831,7 @@ Functions
     invalid data with [the replacement character (](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[U+FFFD](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[)](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER). [...]
 
   ◦ [link_resolution_tests::nested::Str::from_utf16be](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16be) 
-    Decode a UTF-16BE–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr) if v contains
+    Decode a UTF-16BE–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/core/result/Result/index.html?search=core%3A%3Aresult%3A%3AResult%3A%3AErr) if v contains
     any invalid data. [...]
 
   ◦ [link_resolution_tests::nested::Str::from_utf16be_lossy](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16be_lossy) 
@@ -839,24 +839,24 @@ Functions
     [the replacement character (](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[U+FFFD](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[)](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER). [...]
 
   ◦ [link_resolution_tests::nested::Str::from_utf16le](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16le) 
-    Decode a UTF-16LE–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3AErr) if v contains
+    Decode a UTF-16LE–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/core/result/Result/index.html?search=core%3A%3Aresult%3A%3AResult%3A%3AErr) if v contains
     any invalid data. [...]
 
   ◦ [link_resolution_tests::nested::Str::from_utf16le_lossy](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16le_lossy) 
     Decode a UTF-16LE–encoded slice v into a String, replacing invalid data with 
     [the replacement character (](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[U+FFFD](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[)](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER). [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf8](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8) 
+  ◦ [link_resolution_tests::nested::Str::from_utf8](https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf8.html) 
     Converts a vector of bytes to a String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf8_lossy](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_lossy) 
+  ◦ [link_resolution_tests::nested::Str::from_utf8_lossy](https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf8_lossy.html) 
     Converts a slice of bytes to a string, including invalid characters. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf8_lossy_owned](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_lossy_owned) 
+  ◦ [link_resolution_tests::nested::Str::from_utf8_lossy_owned](https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf8_lossy_owned.html) 
     Converts a [Vec<u8>](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html) to a String, substituting invalid UTF-8 sequences with
     replacement characters. [...]
 
-  ◦ [link_resolution_tests::nested::Str::from_utf8_unchecked](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf8_unchecked) 
+  ◦ [link_resolution_tests::nested::Str::from_utf8_unchecked](https://doc.rust-lang.org/nightly/alloc/string/String/fn.from_utf8_unchecked.html) 
     Converts a vector of bytes to a String without checking that the string
     contains valid UTF-8. [...]
 
@@ -866,13 +866,13 @@ Functions
   ◦ [link_resolution_tests::nested::Str::insert_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.insert_str) 
     Inserts a string slice into this String at byte position idx. [...]
 
-  ◦ [link_resolution_tests::nested::Str::into_boxed_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_boxed_str) 
+  ◦ [link_resolution_tests::nested::Str::into_boxed_str](https://doc.rust-lang.org/nightly/alloc/string/String/fn.into_boxed_str.html) 
     Converts this String into a [Box](https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html)<[str](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Astr)>. [...]
 
-  ◦ [link_resolution_tests::nested::Str::into_bytes](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_bytes) 
+  ◦ [link_resolution_tests::nested::Str::into_bytes](https://doc.rust-lang.org/nightly/alloc/string/String/fn.into_bytes.html) 
     Converts a String into a byte vector. [...]
 
-  ◦ [link_resolution_tests::nested::Str::into_chars](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_chars) 
+  ◦ [link_resolution_tests::nested::Str::into_chars](https://doc.rust-lang.org/nightly/alloc/string/String/fn.into_chars.html) 
     Converts a String into an iterator over the [char](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar)s of the string. [...]
 
   ◦ [link_resolution_tests::nested::Str::into_raw_parts](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.into_raw_parts) 
@@ -885,20 +885,20 @@ Functions
     Consumes and leaks the String, returning a mutable reference to the contents, 
     &'a mut str. [...]
 
-  ◦ [link_resolution_tests::nested::Str::len](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.len) 
+  ◦ [link_resolution_tests::nested::Str::len](https://doc.rust-lang.org/nightly/alloc/string/String/fn.len.html) 
     Returns the length of this String, in bytes, not [char](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar)s or graphemes. In other
     words, it might not be what a human considers the length of the string. [...]
 
-  ◦ [link_resolution_tests::nested::Str::new](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.new) 
+  ◦ [link_resolution_tests::nested::Str::new](https://doc.rust-lang.org/nightly/alloc/string/String/fn.new.html) 
     Creates a new empty String. [...]
 
   ◦ [link_resolution_tests::nested::Str::pop](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.pop) 
     Removes the last character from the string buffer and returns it. [...]
 
-  ◦ [link_resolution_tests::nested::Str::push](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push) 
+  ◦ [link_resolution_tests::nested::Str::push](https://doc.rust-lang.org/nightly/alloc/string/String/fn.push.html) 
     Appends the given [char](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Achar) to the end of this String. [...]
 
-  ◦ [link_resolution_tests::nested::Str::push_str](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push_str) 
+  ◦ [link_resolution_tests::nested::Str::push_str](https://doc.rust-lang.org/nightly/alloc/string/String/fn.push_str.html) 
     Appends a given string slice onto the end of this String. [...]
 
   ◦ [link_resolution_tests::nested::Str::push_str_slice](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.push_str_slice) 
@@ -919,7 +919,7 @@ Functions
     Removes the specified range in the string, and replaces it with the given
     string. The given string doesn't need to be the same length as the range. [...]
 
-  ◦ [link_resolution_tests::nested::Str::reserve](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve) 
+  ◦ [link_resolution_tests::nested::Str::reserve](https://doc.rust-lang.org/nightly/alloc/string/String/fn.reserve.html) 
     Reserves capacity for at least additional bytes more than the current length.
     The allocator may reserve more space to speculatively avoid frequent
     allocations. After calling reserve, capacity will be greater than or equal to 
@@ -927,7 +927,7 @@ Functions
 
   ◦ [link_resolution_tests::nested::Str::reserve_exact](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve_exact) 
     Reserves the minimum capacity for at least additional bytes more than the
-    current length. Unlike [reserve](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.reserve), this will not deliberately over-allocate to
+    current length. Unlike [reserve](https://doc.rust-lang.org/nightly/alloc/string/String/fn.reserve.html), this will not deliberately over-allocate to
     speculatively avoid frequent allocations. After calling reserve_exact, capacity
     will be greater than or equal to self.len() + additional. Does nothing if the
     capacity is already sufficient. [...]
@@ -938,7 +938,7 @@ Functions
   ◦ [link_resolution_tests::nested::Str::shrink_to](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.shrink_to) 
     Shrinks the capacity of this String with a lower bound. [...]
 
-  ◦ [link_resolution_tests::nested::Str::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.shrink_to_fit) 
+  ◦ [link_resolution_tests::nested::Str::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/string/String/fn.shrink_to_fit.html) 
     Shrinks the capacity of this String to match its length. [...]
 
   ◦ [link_resolution_tests::nested::Str::split_off](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.split_off) 
@@ -951,7 +951,7 @@ Functions
     Appends a given string slice onto the end of this String, returning [TryReserve](https://doc.rust-lang.org/nightly/alloc/collections/struct.TryReserveError.html)
     [Error](https://doc.rust-lang.org/nightly/alloc/collections/struct.TryReserveError.html) otherwise.
 
-  ◦ [link_resolution_tests::nested::Str::try_reserve](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve) 
+  ◦ [link_resolution_tests::nested::Str::try_reserve](https://doc.rust-lang.org/nightly/alloc/string/String/fn.try_reserve.html) 
     Tries to reserve capacity for at least additional bytes more than the current
     length. The allocator may reserve more space to speculatively avoid frequent
     allocations. After calling try_reserve, capacity will be greater than or equal
@@ -960,7 +960,7 @@ Functions
 
   ◦ [link_resolution_tests::nested::Str::try_reserve_exact](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve_exact) 
     Tries to reserve the minimum capacity for at least additional bytes more than
-    the current length. Unlike [try_reserve](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_reserve), this will not deliberately
+    the current length. Unlike [try_reserve](https://doc.rust-lang.org/nightly/alloc/string/String/fn.try_reserve.html), this will not deliberately
     over-allocate to speculatively avoid frequent allocations. After calling 
     try_reserve_exact, capacity will be greater than or equal to self.len() +
     additional if it returns Ok(()). Does nothing if the capacity is already
@@ -969,7 +969,7 @@ Functions
   ◦ [link_resolution_tests::nested::Str::try_with_capacity](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.try_with_capacity) 
     Creates a new empty String with at least the specified capacity. [...]
 
-  ◦ [link_resolution_tests::nested::Str::with_capacity](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.with_capacity) 
+  ◦ [link_resolution_tests::nested::Str::with_capacity](https://doc.rust-lang.org/nightly/alloc/string/String/fn.with_capacity.html) 
     Creates a new empty String with at least the specified capacity. [...]
 
   ◦ [namespace_collisions::both](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/fn.both.html) 

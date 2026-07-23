@@ -149,7 +149,6 @@ ref_keyword // Bind by reference during pattern matching. [+45 more lines]
 result // Error handling with the `Result` type. [+535 more lines]
 return_keyword // Returns a value from a function. [+59 more lines]
 rt // Runtime services [+6 more lines]
-sealed
 self_keyword // The receiver of a method, or the current module. [+88 more lines]
 self_upper_keyword // The implementing type within a [`trait`] or [`impl`] block, or the current type within a type [+62 more lines]
 simd // Portable SIMD module. [+38 more lines]
@@ -211,7 +210,6 @@ format // Creates a `String` using interpolation of runtime expressions. [+42 mo
 format_args // Constructs parameters for the other string-formatting macros. [+57 more lines]
 format_args_nl // Same as [`format_args`], but adds a newline in the end.
 hash_map // Creates a [`HashMap`] containing the arguments. [+46 more lines]
-impl_sealed
 include // Parses a file as an expression or an item according to the context. [+59 more lines]
 include_bytes // Includes a file as a reference to a byte array. [+31 more lines]
 include_str // Includes a UTF-8 encoded file as a string. [+31 more lines]

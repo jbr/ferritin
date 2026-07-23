@@ -891,9 +891,6 @@ Runtime services</p>
 The <inline-code>rt</inline-code> module provides a narrow set of runtime services, including the global heap (exported in <inline-code>heap</inline-code>) and unwinding and backtrace support. The APIs in this module are highly unstable, and should be considered as private implementation details for time being. <elided chars="198"/></truncated>
 </item>
   <item><p>
-<type-name>sealed</type-name> </p>
-</item>
-  <item><p>
 <type-name>self_keyword</type-name> </p>
 <truncated level="single-line"><p>
 The receiver of a method, or the current module.</p>
@@ -1245,9 +1242,6 @@ Same as <inline-code>format_args</inline-code>, but adds a newline in the end.</
 <truncated level="single-line"><p>
 Creates a <inline-code>HashMap</inline-code> containing the arguments.</p>
 <inline-code>hash_map!</inline-code> allows specifying the entries that up the <inline-code>HashMap</inline-code> where the key and value are<inline-code>=></inline-code>. <elided chars="818"/></truncated>
-</item>
-  <item><p>
-<type-name>impl_sealed</type-name> </p>
 </item>
   <item><p>
 <type-name>include</type-name> </p>

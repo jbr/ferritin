@@ -5167,11 +5167,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         "url": "https://doc.rust-lang.org/nightly/std/__restricted_std_workaround/index.html"
       },
       {
-        "path": "sealed",
-        "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/std/sealed/index.html"
-      },
-      {
         "path": "any",
         "kind": "module",
         "url": "https://doc.rust-lang.org/nightly/core/any/index.html",
@@ -7379,11 +7374,6 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             "truncated": true
           }
         ]
-      },
-      {
-        "path": "impl_sealed",
-        "kind": "macro",
-        "url": "https://doc.rust-lang.org/nightly/std/macro.impl_sealed.html"
       },
       {
         "path": "panic",

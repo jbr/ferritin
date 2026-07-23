@@ -512,8 +512,6 @@ Modules
   ◦ rt 
     Runtime services [...]
 
-  ◦ sealed 
-
   ◦ self_keyword 
     The receiver of a method, or the current module. [...]
 
@@ -690,8 +688,6 @@ Macros
 
   ◦ hash_map 
     Creates a HashMap containing the arguments. [...]
-
-  ◦ impl_sealed 
 
   ◦ include 
     Parses a file as an expression or an item according to the context. [...]
