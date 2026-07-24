@@ -54,12 +54,13 @@ pub(super) const PREFIX: &str = "/~og";
 pub(super) const WIDTH: u32 = 1200;
 pub(super) const HEIGHT: u32 = 630;
 
-/// The light ("Foundry") palette, converted from the oklch values in
-/// `client/src/styles/theme.css` — the card should read as a crop of the site.
-const BG: &str = "#fcf9f3"; // --bg
-const INK: &str = "#2e241d"; // --ink
-const MUTED: &str = "#6e6058"; // --muted
-const ACCENT: &str = "#b65c30"; // --accent
+/// The light ("cold iron, one spark") palette, converted from the oklch values
+/// in `client/src/styles/theme.css` — the card should read as a crop of the
+/// site.
+const BG: &str = "#ecf5fd"; // --bg
+const INK: &str = "#1d100e"; // --ink
+const MUTED: &str = "#555f69"; // --muted
+const ACCENT: &str = "#be4a1b"; // --accent
 
 /// JetBrains Mono's advance width, both weights: 600/1000 units. This constant
 /// is what makes layout arithmetic instead of font shaping.
