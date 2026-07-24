@@ -226,6 +226,7 @@ enum Outcome {
 fn handle_message(store: Arc<Store>, body: &str) -> Outcome {
     match serde_json::from_str::<McpMessage>(body) {
         Ok(McpMessage::Request(request)) => {
+            log::info!("{request:?}");
             let mut state = McpState { store };
             let response =
                 request.execute::<McpState, Tools>(&mut state, Some(INSTRUCTIONS), &server_info());
