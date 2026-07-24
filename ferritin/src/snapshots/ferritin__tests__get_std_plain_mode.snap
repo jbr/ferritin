@@ -329,6 +329,9 @@ Modules
   ◦ let_keyword 
     Bind a value to a variable. [...]
 
+  ◦ link_section_attribute 
+    Places a function or static in a specific object-file section. [...]
+
   ◦ loop_keyword 
     Loop indefinitely. [...]
 
