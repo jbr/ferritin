@@ -1,23 +1,33 @@
 /*
- * Theme palettes. Two semantic variable sets from the design directions:
- * light = "A · Foundry" (warm light), dark = "C · Lamp" (warm dark). The toggle
+ * Theme palettes. Two semantic variable sets:
+ * light = "Cold iron, one spark" (cool steel ground, iron-warm accents; see
+ * design_handoff_palette_system/), dark = "C · Lamp" (warm dark). The toggle
  * swaps `data-theme` on <html>; nothing else needs to know which theme is active.
  * Fonts are held constant across the pair (Hanken Grotesk / JetBrains Mono) so
  * only color flips — the two directions' own font pairings are not carried over.
  */
 
 :root {
-  /* light — A · Foundry (docs reading view) */
-  --bg: oklch(0.982 0.008 80);
-  --surface: oklch(0.967 0.012 78);
-  --sunken: oklch(0.945 0.014 76);
-  --border: oklch(0.885 0.014 76);
-  --ink: oklch(0.27 0.02 55);
-  --muted: oklch(0.5 0.022 55);
-  --faint: oklch(0.64 0.02 60);
-  --accent: oklch(0.575 0.13 45);
-  --accent2: oklch(0.7 0.1 78);
-  --link: oklch(0.5 0.12 250);
+  /* light — "Cold iron, one spark" (design_handoff_palette_system): a cool
+     steel-paper ground so warmth reads only in the iron accents. Rust is the
+     workhorse accent (links, buttons, focus); --raised is the light-rust wash
+     that stands in for white on inputs; --spark is a spot color with one job
+     at a time — never let it become common. */
+  --bg: oklch(0.965 0.014 247);
+  --surface: oklch(0.945 0.014 247);
+  /* In this theme "sunken" panels (code, the signature block) *lighten* off the
+     ground instead of darkening — steel paper catching the light rather than an
+     overcast recess. The name keeps its role, not its direction. */
+  --sunken: oklch(0.982 0.01 247);
+  --border: oklch(0.868 0.014 247);
+  --ink: oklch(0.19 0.022 32);
+  --muted: oklch(0.48 0.02 250);
+  --faint: oklch(0.62 0.018 250);
+  --accent: oklch(0.56 0.16 40);
+  --accent-deep: oklch(0.38 0.12 32);
+  --raised: oklch(0.972 0.011 50);
+  --spark: oklch(0.87 0.18 98);
+  --link: oklch(0.56 0.16 40);
   --kw: oklch(0.5 0.13 35);
   --ty: oklch(0.45 0.09 235);
   --fn: oklch(0.52 0.12 65);
@@ -49,7 +59,9 @@
   --muted: oklch(0.7 0.02 80);
   --faint: oklch(0.55 0.02 75);
   --accent: oklch(0.78 0.12 75);
-  --accent2: oklch(0.72 0.11 45);
+  --accent-deep: oklch(0.72 0.11 45);
+  --raised: oklch(0.26 0.016 65);
+  --spark: oklch(0.8 0.15 95);
   --link: oklch(0.8 0.1 200);
   --kw: oklch(0.8 0.11 70);
   --ty: oklch(0.82 0.08 205);
@@ -97,13 +109,25 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Keyboard focus indicator, themed to the brand accent and applied globally.
-   `:focus-visible` only, so pointer interaction never paints a ring. `outline`
-   (not box-shadow) so the ring survives forced-colors / high-contrast mode, and
-   `outline-offset` lifts it off the element for contrast against any background.
-   Individual controls may redirect it — e.g. the search box carries the ring on
-   its rounded shell rather than its overflow-clipped inner button. */
+/* The spark's one job, everywhere: marking the live thing — the focused
+   control, the selected text, the search result the keyboard is on. It is
+   always user-summoned and there is never more than one on screen, which is
+   what keeps it reading as special. Never yellow glyphs: the spark is always
+   the ground under ink, highlighter-style, so contrast never depends on it. */
+::selection {
+  background: var(--spark);
+  color: var(--ink);
+}
+
+/* Keyboard focus indicator: the spark, applied globally. `:focus-visible`
+   only, so pointer interaction never paints a ring. `outline` (not box-shadow)
+   so the ring survives forced-colors / high-contrast mode, and `outline-offset`
+   lifts it off the element for contrast against any background. 3px because
+   yellow needs more mass than a dark accent to hold an edge on the light
+   ground. Individual controls may redirect it — e.g. the search box carries
+   the ring on its rounded shell rather than its overflow-clipped inner
+   button. */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 3px solid var(--spark);
   outline-offset: 2px;
 }

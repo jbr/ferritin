@@ -72,7 +72,7 @@
   color: var(--faint);
 }
 .brand-crate {
-  color: var(--ty);
+  color: var(--accent);
   font-weight: 500;
 }
 /* The crate's version, riding just behind its name: smaller and quieter than the
@@ -151,7 +151,10 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--surface);
+  /* Neutral in both states: the warmth that says "interactive" lives in the
+     scope chip and the accent border ramp, not the field itself — a warm field
+     that cooled on expansion read as the affordance inverting. */
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 1px 2px color-mix(in oklch, var(--ink) 8%, transparent);
@@ -169,8 +172,12 @@
   width: var(--search-w-open);
   height: var(--search-h-open);
   background: var(--bg);
-  border-color: color-mix(in oklch, var(--accent) 55%, var(--border));
-  box-shadow: 0 24px 70px -12px color-mix(in oklch, var(--ink) 35%, transparent);
+  /* The open box holds focus for as long as it exists, so it wears the same
+     match-strike as the landing field: rust border, spark halo. */
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 3px var(--spark),
+    0 24px 70px -12px color-mix(in oklch, var(--ink) 35%, transparent);
 }
 /* Focus returns to the resting trigger when the panel closes. The trigger fills
    a box with `overflow: hidden`, which would clip an outline drawn on the button
@@ -182,7 +189,7 @@
   outline: none;
 }
 .search-box:has(.search-trigger:focus-visible) {
-  outline: 2px solid var(--accent);
+  outline: 3px solid var(--spark);
   outline-offset: 2px;
 }
 /* The panel's contents cross-fade in rather than sliding, so the box's growth is
@@ -235,12 +242,13 @@
   border-color: color-mix(in oklch, var(--accent) 50%, var(--border));
   box-shadow: 0 4px 16px -6px color-mix(in oklch, var(--ink) 24%, transparent);
 }
-/* Focused: the accent border goes full-strength and the glow ring appears — the
-   one place it does — so the jump from resting to focused is unmistakable. */
+/* Focused: the rust border goes full-strength and the spark ring appears —
+   the match strikes. The field autofocuses on arrival (fine pointers), so this
+   is also the landing page's greeting: the one lit thing on a cool page. */
 .search-slot.inline .search-box[data-focused] {
   border-color: var(--accent);
   box-shadow:
-    0 0 0 4px color-mix(in oklch, var(--accent) 22%, transparent),
+    0 0 0 3px var(--spark),
     0 18px 50px -20px color-mix(in oklch, var(--ink) 32%, transparent);
 }
 /* The icon is the field's one piece of colour at rest — it reads as "act here"
@@ -313,7 +321,9 @@
   font-family: var(--mono);
   font-size: 0.75rem;
   color: var(--accent);
-  background: color-mix(in oklch, var(--accent) 8%, transparent);
+  /* The light-rust surface from the palette: the chip is the warm element that
+     marks the neutral field as interactive. */
+  background: var(--raised);
   border: 1px solid color-mix(in oklch, var(--accent) 45%, transparent);
   border-radius: 6px;
   white-space: nowrap;
@@ -435,8 +445,15 @@
   text-align: left;
   cursor: pointer;
 }
+/* The live result is the page's one highlighted line — the same spark that
+   marks focus and selection, moved onto whichever row the keyboard is on. */
 .search-result.selected {
-  background: var(--surface);
+  background: var(--spark);
+}
+.search-result.selected .search-path,
+.search-result.selected .search-version,
+.search-result.selected .search-kind {
+  color: var(--ink);
 }
 .search-kind {
   font-family: var(--mono);
@@ -844,7 +861,7 @@
 .home-cycle-type {
   font-family: var(--mono);
   font-size: 1.05rem;
-  color: var(--ty);
+  color: var(--accent);
   text-decoration: none;
   transition: opacity 650ms ease;
 }
