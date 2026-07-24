@@ -58,7 +58,7 @@ jobs:
     # `packageManager` in client/package.json or pnpm self-switches into the bug.
     - uses: pnpm/action-setup@v6
       with:
-        version: 11.11.0
+        version: 11.15.1
     - uses: actions/setup-node@v7
       with:
         node-version: 24
@@ -103,7 +103,7 @@ jobs:
     # `packageManager` in client/package.json or pnpm self-switches into the bug.
     - uses: pnpm/action-setup@v6
       with:
-        version: 11.11.0
+        version: 11.15.1
     - uses: actions/setup-node@v7
       with:
         node-version: 24
