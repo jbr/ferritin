@@ -3274,6 +3274,29 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
+        "path": "link_section_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/link_section_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Places a function or static in a specific object-file section.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
         "path": "as_keyword",
         "kind": "module",
         "url": "https://doc.rust-lang.org/nightly/std/as_keyword/index.html",
