@@ -411,6 +411,9 @@ Modules
   ◦ [let_keyword](https://doc.rust-lang.org/nightly/std/let_keyword/index.html) 
     Bind a value to a variable. [...]
 
+  ◦ [link_section_attribute](https://doc.rust-lang.org/nightly/std/link_section_attribute/index.html) 
+    Places a function or static in a specific object-file section. [...]
+
   ◦ [loop_keyword](https://doc.rust-lang.org/nightly/std/loop_keyword/index.html) 
     Loop indefinitely. [...]
 

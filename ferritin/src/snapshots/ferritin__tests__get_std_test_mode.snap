@@ -538,6 +538,12 @@ Bind a value to a variable.</p>
 The primary use for the <inline-code>let</inline-code> keyword is in <inline-code>let</inline-code> statements, which are used to introduce a new set of variables into the current scope, as given by <elided chars="1875"/></truncated>
 </item>
   <item><p>
+<type-name>link_section_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Places a function or static in a specific object-file section.</p>
+The <inline-code>link_section</inline-code> attribute function or <elided chars="695"/></truncated>
+</item>
+  <item><p>
 <type-name>loop_keyword</type-name> </p>
 <truncated level="single-line"><p>
 Loop indefinitely.</p>

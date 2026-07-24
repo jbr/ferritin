@@ -88,6 +88,7 @@ io // Traits, helpers, and type definitions for core I/O functionality. [+292 mo
 isize // Redundant constants module for the [`isize` primitive type][isize]. [+2 more lines]
 iter // Composable external iteration. [+353 more lines]
 let_keyword // Bind a value to a variable. [+58 more lines]
+link_section_attribute // Places a function or static in a specific object-file section. [+21 more lines]
 loop_keyword // Loop indefinitely. [+45 more lines]
 macros // Standard library macros [+4 more lines]
 marker // Primitive traits and types representing basic properties of types. [+4 more lines]
