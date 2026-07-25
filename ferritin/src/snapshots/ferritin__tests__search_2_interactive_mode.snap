@@ -26,7 +26,7 @@ expression: "render_interactive_for_tests_rooted(Commands::search(\"generic stru
 "     │ immutable string.                                                        "
 "     ╰─[...]                                                                    "
 "                                                                                "
-"     ◦ fixture-crate::TestStruct  (Struct) - score: 66.1                        "
+"     ◦ fixture-crate::TestStruct  (Struct) - score: 66.2                        "
 "     │ A simple struct for testing basic functionality.                         "
 "     │                                                                          "
 "     │ This struct demonstrates basic usage patterns and should show completely "
