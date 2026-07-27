@@ -104,7 +104,7 @@ Non-exhaustive list of known limitations:
 ## Modules
 
 - __restricted_std_workaround
-- alloc — Memory allocation APIs. [+9 lines]
+- alloc — Memory allocation APIs. [+10 lines]
 - allow_attribute — The allow attribute suppresses lint diagnostics that would otherwise produce warnings or errors. It can be used on any lint or lint group (except those set to forbid). [+11 lines]
 - any — Utilities for dynamic typing or type reflection. [+9 lines]
 - arch — SIMD and vendor intrinsics module. [+39 lines]

@@ -143,7 +143,7 @@ under UNIX, before main, file descriptors 0, 1, and 2 may be unchanged (they are
 <type-name>alloc</type-name> </p>
 <truncated level="single-line"><p>
 Memory allocation APIs.</p>
-In a given program, the standard library has one that is used for example by <inline-code>Box<T></inline-code> and <inline-code>Vec<T></inline-code>. <elided chars="1530"/></truncated>
+In a given program, the standard library has one that is used for example by <inline-code>Box<T></inline-code> and <inline-code>Vec<T></inline-code>. <elided chars="1830"/></truncated>
 </item>
   <item><p>
 <type-name>allow_attribute</type-name> </p>
@@ -355,7 +355,7 @@ This module contains environment variables, other important <elided chars="323"/
 <truncated level="single-line"><p>
 Interfaces for working with Errors.</p>
 <title>Error Handling In Rust</title>
-The Rust language representing, These responsibilities components of the commonly used to components of the<inline-code>Result</inline-code>, the error traits, defined types, are your program. <elided chars="4878"/></truncated>
+The Rust language representing, These responsibilities components of the commonly used to components of the<inline-code>Result</inline-code>, the error traits, defined types, are your program. <elided chars="4877"/></truncated>
 </item>
   <item><p>
 <type-name>extern_keyword</type-name> </p>
@@ -1301,7 +1301,7 @@ If the named expand into an<inline-code>Option<&'static str></inline-code> whose
 <type-name>panic</type-name> </p>
 <truncated level="single-line"><p>
 Panics the current thread.</p>
-This allows a program to terminate immediately and to the caller of the program. <elided chars="3627"/></truncated>
+This allows a program to terminate immediately and to the caller of the program. <elided chars="3621"/></truncated>
 </item>
   <item><p>
 <type-name>print</type-name> </p>

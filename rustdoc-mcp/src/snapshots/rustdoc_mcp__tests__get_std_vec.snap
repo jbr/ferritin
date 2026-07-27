@@ -20,7 +20,7 @@ primitives](#primitives), [standard macros](#macros), [I/O] and
 
 Modules:
 __restricted_std_workaround
-alloc // Memory allocation APIs. [+60 more lines]
+alloc // Memory allocation APIs. [+65 more lines]
 allow_attribute // The `allow` attribute suppresses lint diagnostics that would otherwise produce [+57 more lines]
 any // Utilities for dynamic typing or type reflection. [+83 more lines]
 arch // SIMD and vendor intrinsics module. [+375 more lines]
