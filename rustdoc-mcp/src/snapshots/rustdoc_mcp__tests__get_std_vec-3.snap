@@ -227,13 +227,13 @@ where
     A: 'a
     Consumes and leaks the `Vec`, returning a mutable reference to the contents, [+27 more lines]
 
-• pub fn spare_capacity_mut(&mut self) -> &mut [MaybeUninit<T>]
+• pub const fn spare_capacity_mut(&mut self) -> &mut [MaybeUninit<T>]
     Returns the remaining spare capacity of the vector as a slice of [+27 more lines]
 
-• pub fn split_at_spare_mut(&mut self) -> (&mut [T], &mut [MaybeUninit<T>])
+• pub const fn split_at_spare_mut(&mut self) -> (&mut [T], &mut [MaybeUninit<T>])
     Returns vector content as a slice of `T`, along with the remaining spare [+50 more lines]
 
-• pub(::vec) unsafe fn split_at_spare_mut_with_len(&mut self) -> (&mut [T], &mut [MaybeUninit<T>], &mut usize)
+• pub(::vec) const unsafe fn split_at_spare_mut_with_len(&mut self) -> (&mut [T], &mut [MaybeUninit<T>], &mut usize)
     Safety: changing returned .2 (&mut usize) is considered the same as calling `.set_len(_)`. [+2 more lines]
 
 • pub fn into_chunks<const N: usize>(self) -> Vec<[T; N], A>
