@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.16.1...ferritin-common-v0.17.0) - 2026-07-28
+
+### Added
+
+- *(serve)* add og tags
+
 ## [0.16.1](https://github.com/jbr/ferritin/compare/ferritin-common-v0.16.0...ferritin-common-v0.16.1) - 2026-07-18
 
 ### Other

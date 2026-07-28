@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0](https://github.com/jbr/ferritin/compare/ferritin-v0.15.1...ferritin-v0.16.0) - 2026-07-28
+
+### Added
+
+- log the mcp tool call
+- *(design)* redesign web ui
+- *(serve)* add og tags
+- add /~mcp
+- MCP HTTP endpoint (/mcp) exposing get and search as tools
+
+### Other
+
+- update snaps to rustc 1.99.0-nightly (dc3f85158 2026-07-26)
+- *(deps)* update ferritin/assets/themes/solarized digest to 132a4db
+- update snaps to rustc 1.99.0-nightly (da86f4d07 2026-07-24)
+- update snaps to rustc 1.99.0-nightly (89c61a754 2026-07-23)
+- update snaps to rustc 1.99.0-nightly (6f72b5dd5 2026-07-22)
+- update snaps to rustc 1.99.0-nightly (0e29c21d9 2026-07-21)
+- update snaps to rustc 1.99.0-nightly (87e5904f5 2026-07-20)
+- update snaps to rustc 1.99.0-nightly (9f36de775 2026-07-19)
+
 ## [0.15.1](https://github.com/jbr/ferritin/compare/ferritin-v0.15.0...ferritin-v0.15.1) - 2026-07-18
 
 ### Other
