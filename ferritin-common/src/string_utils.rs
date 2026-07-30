@@ -1,3 +1,25 @@
+use rust_stemmers::{Algorithm, Stemmer};
+use std::{borrow::Cow, sync::OnceLock};
+
+/// Reduce an English word to its Snowball (Porter2) stem, so that
+/// morphological variants of the same word collide: `deserialize`,
+/// `deserializes`, `deserialization` and `deserializing` all become
+/// `deserializ`.
+///
+/// Stems are not words, and the mapping is not injective — that is the point.
+/// A stem is only ever compared against another stem, never shown to a user.
+/// Input must already be lowercased; the algorithm is case-sensitive and will
+/// leave `Deserialize` alone.
+///
+/// The stemmer itself is a function pointer plus a small table, so one
+/// process-wide instance is shared rather than constructed per call.
+pub(crate) fn stem(word: &str) -> Cow<'_, str> {
+    static STEMMER: OnceLock<Stemmer> = OnceLock::new();
+    STEMMER
+        .get_or_init(|| Stemmer::create(Algorithm::English))
+        .stem(word)
+}
+
 /// Jaro-Winkler similarity, but with case differences costing less than character differences
 ///
 /// Blends case-insensitive and case-sensitive comparisons, giving more weight to the
