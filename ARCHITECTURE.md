@@ -345,11 +345,13 @@ A survey of every consecutive `rustdoc-types` release finds exactly **three** no
 
 | Format | Change | Handling |
 |---|---|---|
-| 54 | `Item::attrs` retyped `Vec<String>` → `Vec<Attribute>` | `serde_json::Value` walk before the typed parse |
-| 57 | `ExternalCrate::path` added as a required `PathBuf` | `serde_json::Value` walk (a missing non-`Option` field is a hard error) |
-| 61 | `Stability::level` stopped being `#[serde(flatten)]`ed and internally tagged ([rust-lang/rust#160032]) | typed shim, `conversions::legacy` |
+| 54 | `Item::attrs` retyped `Vec<String>` → `Vec<Attribute>` | legacy strings become `Attribute::Other` |
+| 57 | `ExternalCrate::path` added as a required `PathBuf` | that one field is `#[serde(default)]` on the shim |
+| 61 | `Stability::level` stopped being `#[serde(flatten)]`ed and internally tagged ([rust-lang/rust#160032]) | legacy `Stability`/`StabilityLevel` mirror |
 
-The **typed shim** in `conversions::legacy` is the preferred pattern, and the one to reach for when the next breaking change lands. It mirrors only the structs lying on the path from `Crate` down to the changed field — currently `Crate`'s 8 fields and `Item`'s 12 — and reuses the canonical types for everything else, so `ItemEnum`, `Type`, `Generics`, `Span` and the rest of the tree deserialize straight into their final types. Old JSON is therefore parsed exactly once, streaming, with no intermediate `Value`: fields that did not change are never re-read or re-boxed. Each `From` impl destructures its legacy struct exhaustively with no `..` rest pattern, so a field added upstream breaks the build instead of silently vanishing from every older document.
+All three are handled by the **typed shims** in `conversions::legacy`, which is the pattern to reach for when the next breaking change lands. A shim mirrors only the structs lying on the path from `Crate` down to the changed field — currently `Crate`, `Item` and `ExternalCrate` — and reuses the canonical types for everything else, so `ItemEnum`, `Type`, `Generics`, `Span` and the rest of the tree deserialize straight into their final types. Every supported document is therefore parsed exactly once, streaming, with **no intermediate `Value` at any version**: fields that did not change are never re-read or re-boxed. Where a field's shape varies *between* legacy formats, the shim is generic over it rather than duplicated per era — `LegacyCrate<A>` is parameterized by its attribute representation, so the whole 48..=60 range needs just two monomorphized instantiations, selected from the already-known `format_version` rather than sniffed at runtime. Each `From` impl destructures its legacy struct exhaustively with no `..` rest pattern, so a field added upstream breaks the build instead of silently vanishing from every older document.
+
+Note the direction of the format-54 handling: legacy attribute strings are translated into `Attribute::Other`, the variant rustdoc itself uses for any attribute it does not model, so pre-54 crates keep their attributes. They were previously blanked to `[]` on the reasoning that ferritin did not render attributes — exactly the coupling the fidelity rule above forbids, and it would have surfaced as silent data loss for whoever added attribute rendering.
 
 Blanking a field to make it parse is **not** an acceptable handling — it silently degrades every older document and defers the cost to whoever next tries to use that field.
 
