@@ -4,6 +4,47 @@
  */
 
 export interface paths {
+    "/crates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Crate search: the top crates matching the query by name, description, or declared keyword, ranked by evidence tier and downloads. As-you-type semantics: tokens match as prefixes, and typos fall back to fuzzy matching. */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Search query: crate name or capability words. */
+                    q: string;
+                    /** @description Maximum results (default 10, capped at 100). */
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Crate-search results, best first. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["JsonCrateSearch"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/crates/{crate_name}": {
         parameters: {
             query?: never;
@@ -82,47 +123,6 @@ export interface paths {
                     };
                     content: {
                         "application/json": components["schemas"]["JsonSearch"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/typeahead": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Crate-name typeahead: the top crates (by download rank) whose names start with the query prefix. */
-        get: {
-            parameters: {
-                query: {
-                    /** @description Crate name prefix. */
-                    q: string;
-                    /** @description Maximum results (default 10, capped at 100). */
-                    limit?: number;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Typeahead results, in rank order. */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["JsonTypeahead"];
                     };
                 };
             };
@@ -219,6 +219,28 @@ export interface components {
             isWorkspace?: boolean;
             name: string;
             usedBy?: string[];
+            version: string;
+        };
+        /**
+         * @description Crate-search results: the highest-ranked crates whose names start
+         *     with the query prefix, in rank order.
+         */
+        JsonCrateSearch: {
+            query: string;
+            results: components["schemas"]["JsonCrateSearchEntry"][];
+            /**
+             * Format: uint
+             * @description Exact number of crates matching the prefix; `results.len() < total`
+             *     means the list was truncated to the requested limit.
+             */
+            total: number;
+        };
+        JsonCrateSearchEntry: {
+            name: string;
+            /**
+             * @description The crate's crates.io default version (typically the latest stable
+             *     non-yanked release), up to ~a day stale.
+             */
             version: string;
         };
         JsonEnum: {
@@ -561,28 +583,6 @@ export interface components {
         JsonTypeAlias: {
             aliased: components["schemas"]["JsonSpan"][];
             name: string;
-        };
-        /**
-         * @description Crate-name typeahead results: the highest-ranked crates whose names start
-         *     with the query prefix, in rank order.
-         */
-        JsonTypeahead: {
-            query: string;
-            results: components["schemas"]["JsonTypeaheadEntry"][];
-            /**
-             * Format: uint
-             * @description Exact number of crates matching the prefix; `results.len() < total`
-             *     means the list was truncated to the requested limit.
-             */
-            total: number;
-        };
-        JsonTypeaheadEntry: {
-            name: string;
-            /**
-             * @description The crate's crates.io default version (typically the latest stable
-             *     non-yanked release), up to ~a day stale.
-             */
-            version: string;
         };
         /**
          * @description A union body. Mirrors [`JsonStruct`] minus the `shape` (a union is always

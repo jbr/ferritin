@@ -12,7 +12,17 @@
 //! Two tools are exposed, mirroring the JSON API: [`Get`] (`GET /api/crates/…`)
 //! and [`Search`] (`GET /api/search/:crate`). Both return the **agent** render
 //! of the same `Document` the CLI produces — token-efficient Markdown, exactly
-//! what an LLM tool result wants.
+//! what an LLM tool result wants. Both search surfaces use **complete-word**
+//! semantics ([`QueryCompletion::Complete`](ferritin_common::search::QueryCompletion)):
+//! agent queries are whole words, so the as-you-type trailing-prefix expansion
+//! the interactive surfaces rely on is deliberately not inherited here.
+//!
+//! [`Search`] without a `crate` is the discovery mode: it answers from the
+//! resident crates.io namespace (names, descriptions, declared keywords — see
+//! [`CrateSearchService::search`]) rather than from any crate's documentation,
+//! returning crates instead of items. The two modes search different datasets,
+//! and the tool docs say so emphatically, because an agent that already knows
+//! the crate should always scope to it.
 //!
 //! The message is decoded and executed *inside* the big-stack [`run_blocking`]
 //! worker, for the same reason [`get_crate`](super::get_crate) and
@@ -25,7 +35,11 @@ mod protocol;
 
 use super::{context, run_blocking};
 use crate::{
-    commands::Commands, format_context::FormatContext, renderer, request::Request,
+    commands::Commands,
+    crate_search::{CrateSearchResults, CrateSearchService},
+    format_context::FormatContext,
+    renderer,
+    request::Request,
     serve::RATELIMIT_BURST_DIVISOR,
 };
 use ferritin_common::{Navigator, Store};
@@ -41,18 +55,23 @@ use trillium_ratelimit::{Quota, RateLimiter};
 const SEARCH_LIMIT: usize = super::SEARCH_LIMIT;
 
 /// Guidance handed to the client in the `initialize` response's `instructions`.
-const INSTRUCTIONS: &str = "Look up Rust documentation. `get` shows an item by path (e.g. \
-                            `serde::Deserialize`, `std::vec::Vec`, `tokio@1::runtime::Runtime`). \
-                            `search` finds items within a single crate by name or prose. The part \
-                            after `@` is a semver requirement, not an exact version — `tokio@1` \
-                            serves the newest 1.x; use `tokio@=1.40` to pin an exact release. \
-                            Output is token-efficient Markdown.";
+const INSTRUCTIONS: &str =
+    "Look up Rust documentation. `get` shows an item by path (e.g. `serde::Deserialize`, \
+     `std::vec::Vec`, `tokio@1::runtime::Runtime`). `search` with a `crate` finds items within \
+     that crate's documentation by name or prose. `search` without a `crate` searches a \
+     different, much shallower dataset — crates.io names, descriptions, and declared keywords — \
+     to discover which crate to use; it cannot see any crate's actual documentation, so when you \
+     already know the crate, always pass it. The part after `@` is a semver requirement, not an \
+     exact version — `tokio@1` serves the newest 1.x; use `tokio@=1.40` to pin an exact release. \
+     Output is token-efficient Markdown.";
 
-/// Per-request state for a tool call: the shared crate [`Store`]. Each tool
-/// builds its own short-lived [`Navigator`] over it, pinning only what the
-/// lookup touches, exactly as the JSON API handlers do.
+/// Per-request state for a tool call: the shared crate [`Store`], plus the
+/// crate-search service for crateless `search` calls. Each tool builds its own
+/// short-lived [`Navigator`] over the store, pinning only what the lookup
+/// touches, exactly as the JSON API handlers do.
 struct McpState {
     store: Arc<Store>,
+    crate_search: Option<Arc<CrateSearchService>>,
 }
 
 impl McpState {
@@ -61,11 +80,63 @@ impl McpState {
     fn render(&self, command: Commands) -> String {
         let navigator = Navigator::new(Arc::clone(&self.store));
         let mut request = Request::new(&navigator, FormatContext::new());
-        let (document, _is_error, _entry) = command.execute(&mut request);
+        let (document, is_error, _entry) = command.execute(&mut request);
+        if is_error {
+            // Pairs with the request log in `handle_message` to make misses —
+            // the demand signal for lookups this server couldn't answer —
+            // greppable without diffing response sizes.
+            log::info!("mcp tool call returned an error document");
+        }
         let mut output = String::new();
         // Agent rendering only ever fails if the writer fails; a `String` never
         // does, so the result is infallible here.
         let _ = renderer::render_agent(&document, &mut output);
+        output
+    }
+
+    /// Answer a crateless `search`: crate-level results from the resident
+    /// namespace index (see [`CrateSearchService::search`]), rendered as the
+    /// same token-efficient Markdown the documentation tools produce. Purely
+    /// resident data — no crate is loaded and nothing recurses, so this needs
+    /// neither the `Store` nor a big stack.
+    fn search_crates(&self, query: &str) -> String {
+        let results = self
+            .crate_search
+            .as_ref()
+            .and_then(|service| service.search(query, SEARCH_LIMIT));
+        let Some(CrateSearchResults { entries, total }) = results else {
+            log::info!("mcp crate search unavailable for {query:?}");
+            return "Crate search is unavailable right now (the crates.io namespace data has not \
+                    loaded yet). Retry shortly, or pass `crate` to search within a specific \
+                    crate."
+                .into();
+        };
+
+        log::info!("mcp crate search {query:?}: {total} matches");
+        if entries.is_empty() {
+            return format!(
+                "No crates matched `{query}`. This searched crates.io names, descriptions, and \
+                 declared keywords with exact words — try different or fewer capability words \
+                 (e.g. `mqtt` rather than `mqtt broker connection`)."
+            );
+        }
+
+        let mut output = format!("# Crates matching `{query}`\n\n");
+        for entry in &entries {
+            output.push_str(&format!("- {}@{}", entry.name, entry.version));
+            if let Some(description) = &entry.description {
+                output.push_str(" — ");
+                output.push_str(description);
+            }
+            output.push('\n');
+        }
+        let shown = entries.len();
+        if total > shown {
+            output.push_str(&format!("\n{shown} of {total} matching crates shown.\n"));
+        }
+        output.push_str(
+            "\nTo look inside one, call `search` again with `crate` set, or `get` an item path.\n",
+        );
         output
     }
 }
@@ -98,37 +169,62 @@ impl Tool<McpState> for Get {
     }
 }
 
-/// Search for items within a single crate by name or documentation.
+/// Search for items within a crate's documentation, or — without a crate —
+/// discover which crate to use.
 #[derive(Debug, Serialize, Deserialize, JsonSchema)]
 #[serde(rename = "search")]
 struct Search {
-    /// Crate to search, optionally with an `@`-suffixed semver requirement (not
-    /// an exact version): `serde`, `tokio@1` (newest 1.x), or `tokio@=1.40` to
-    /// pin an exact release.
-    #[serde(rename = "crate")]
-    crate_: String,
-    /// Search query — one or more words matched against item names and prose.
+    /// Crate to search within, optionally with an `@`-suffixed semver
+    /// requirement (not an exact version): `serde`, `tokio@1` (newest 1.x), or
+    /// `tokio@=1.40` to pin an exact release.
+    ///
+    /// **Omit only to discover which crate to use.** With `crate`, the search
+    /// runs over that crate's full documentation — item names and prose.
+    /// Without it, it searches a different, much shallower dataset: crates.io
+    /// crate names, descriptions, and declared keywords. It returns crates,
+    /// not items, and cannot see any crate's actual documentation. If you
+    /// already know the crate name, always pass it.
+    #[serde(rename = "crate", default, skip_serializing_if = "Option::is_none")]
+    crate_: Option<String>,
+    /// Search query — one or more complete words. With `crate`, matched
+    /// against item names and documentation prose; without it, against crate
+    /// names, descriptions, and declared keywords.
     query: String,
 }
 
 impl WithExamples for Search {
     fn examples() -> Vec<Example<Self>> {
-        vec![Example {
-            description: "Find deserialization items in serde",
-            item: Self {
-                crate_: "serde".into(),
-                query: "deserialize".into(),
+        vec![
+            Example {
+                description: "Find deserialization items in serde",
+                item: Self {
+                    crate_: Some("serde".into()),
+                    query: "deserialize".into(),
+                },
             },
-        }]
+            Example {
+                description: "Discover which crate to use for MQTT",
+                item: Self {
+                    crate_: None,
+                    query: "mqtt client".into(),
+                },
+            },
+        ]
     }
 }
 
 impl Tool<McpState> for Search {
     fn execute(self, state: &mut McpState) -> anyhow::Result<String> {
-        let command = Commands::search(self.query)
-            .in_crate(self.crate_)
-            .with_limit(SEARCH_LIMIT);
-        Ok(state.render(command))
+        match self.crate_ {
+            Some(crate_) => {
+                let command = Commands::search(self.query)
+                    .in_crate(crate_)
+                    .with_limit(SEARCH_LIMIT)
+                    .complete_words();
+                Ok(state.render(command))
+            }
+            None => Ok(state.search_crates(&self.query)),
+        }
     }
 }
 
@@ -223,11 +319,18 @@ enum Outcome {
 
 /// Decode one client message and, if it is a request, execute it. Runs on a
 /// big-stack worker (see the module docs).
-fn handle_message(store: Arc<Store>, body: &str) -> Outcome {
+fn handle_message(
+    store: Arc<Store>,
+    crate_search: Option<Arc<CrateSearchService>>,
+    body: &str,
+) -> Outcome {
     match serde_json::from_str::<McpMessage>(body) {
         Ok(McpMessage::Request(request)) => {
             log::info!("{request:?}");
-            let mut state = McpState { store };
+            let mut state = McpState {
+                store,
+                crate_search,
+            };
             let response =
                 request.execute::<McpState, Tools>(&mut state, Some(INSTRUCTIONS), &server_info());
             match serde_json::to_string(&response) {
@@ -253,13 +356,14 @@ pub(super) async fn post(mut conn: Conn) -> Conn {
     let Some((store, pool)) = context(&conn) else {
         return conn.with_status(Status::InternalServerError).halt();
     };
+    let crate_search = conn.state::<Arc<CrateSearchService>>().cloned();
 
     let body = match conn.request_body_string().await {
         Ok(body) => body,
         Err(_) => return conn.with_status(Status::BadRequest).halt(),
     };
 
-    let outcome = run_blocking(&pool, move || handle_message(store, &body)).await;
+    let outcome = run_blocking(&pool, move || handle_message(store, crate_search, &body)).await;
 
     // `halt()` so the trailing frontend handler doesn't overwrite the body with
     // the SPA index.

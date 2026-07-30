@@ -104,7 +104,7 @@ export function SearchBox({
   // it is a cleared search, so the results collapse with it rather than lingering.
   const results = crateMode || !debounced ? [] : (data?.results ?? []);
 
-  // Crate mode gets crate-name typeahead (the /api/typeahead endpoint, backed
+  // Crate mode gets crate-name typeahead (the /api/crates endpoint, backed
   // by the daily crate-names artifact) instead of item search.
   const { data: crateData, isFetching: crateFetching } = useTypeahead(
     crateMode ? debounced.trim() : "",

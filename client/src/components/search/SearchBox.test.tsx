@@ -25,7 +25,7 @@ function renderBox(crate?: string) {
   );
 }
 
-/** Stub `fetch` so typeahead and search return canned JSON keyed off the URL. */
+/** Stub `fetch` so crate search and item search return canned JSON keyed off the URL. */
 function stubApi(handler: (url: string) => unknown) {
   vi.stubGlobal(
     "fetch",
@@ -91,7 +91,7 @@ describe("SearchBox", () => {
    */
   it("promotes a highlighted crate to the chip on Tab", async () => {
     stubApi((url) =>
-      url.includes("/typeahead")
+      url.includes("/crates?")
         ? { results: [{ name: "serde", version: "1.0.0" }], total: 1 }
         : { results: [], total: 0 },
     );
@@ -120,7 +120,7 @@ describe("SearchBox", () => {
    */
   it("scopes into the crate when `::` is typed", async () => {
     stubApi((url) =>
-      url.includes("/typeahead")
+      url.includes("/crates?")
         ? { results: [{ name: "tokio", version: "1.0.0" }], total: 1 }
         : { results: [], total: 0 },
     );

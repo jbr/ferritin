@@ -73,13 +73,13 @@ pub(crate) fn search_to_string(doc: &SearchDoc<'_>) -> sonic_rs::Result<String> 
     sonic_rs::to_string(&JsonSearch::new(doc))
 }
 
-/// Serialize crate-name typeahead results to JSON.
+/// Serialize crate-search results to JSON.
 #[cfg(feature = "serve")]
-pub(crate) fn typeahead_to_string(
+pub(crate) fn crate_search_to_string(
     query: &str,
-    results: crate::typeahead::TypeaheadResults,
+    results: crate::crate_search::CrateSearchResults,
 ) -> sonic_rs::Result<String> {
-    sonic_rs::to_string(&JsonTypeahead::new(query, results))
+    sonic_rs::to_string(&JsonCrateSearch::new(query, results))
 }
 
 /// Pretty-printed variant of [`search_to_string`], for snapshot tests.
@@ -101,25 +101,25 @@ pub(crate) fn not_found_to_pretty_string(not_found: &NotFoundDoc<'_>) -> String 
     sonic_rs::to_string_pretty(&JsonNotFound::new(not_found)).unwrap()
 }
 
-/// Crate-name typeahead results: the highest-ranked crates whose names start
+/// Crate-search results: the highest-ranked crates whose names start
 /// with the query prefix, in rank order.
 #[cfg(feature = "serve")]
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub(crate) struct JsonTypeahead {
+pub(crate) struct JsonCrateSearch {
     query: String,
     /// Exact number of crates matching the prefix; `results.len() < total`
     /// means the list was truncated to the requested limit.
     total: usize,
-    results: Vec<JsonTypeaheadEntry>,
+    results: Vec<JsonCrateSearchEntry>,
 }
 
 #[cfg(feature = "serve")]
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-struct JsonTypeaheadEntry {
+struct JsonCrateSearchEntry {
     name: String,
     /// The crate's crates.io default version (typically the latest stable
     /// non-yanked release), up to ~a day stale.
@@ -127,15 +127,15 @@ struct JsonTypeaheadEntry {
 }
 
 #[cfg(feature = "serve")]
-impl JsonTypeahead {
-    pub(crate) fn new(query: &str, results: crate::typeahead::TypeaheadResults) -> Self {
+impl JsonCrateSearch {
+    pub(crate) fn new(query: &str, results: crate::crate_search::CrateSearchResults) -> Self {
         Self {
             query: query.to_owned(),
             total: results.total,
             results: results
                 .entries
                 .into_iter()
-                .map(|entry| JsonTypeaheadEntry {
+                .map(|entry| JsonCrateSearchEntry {
                     name: entry.name,
                     version: entry.version,
                 })

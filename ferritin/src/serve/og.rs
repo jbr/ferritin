@@ -32,7 +32,7 @@ use super::{
     app_page::{self, PageContent, SITE_DESCRIPTION, SITE_NAME, escape},
     caching,
 };
-use crate::typeahead::TypeaheadService;
+use crate::crate_search::CrateSearchService;
 use anyhow::Context;
 use ferritin_common::CratePath;
 use percent_encoding::percent_decode_str;
@@ -391,7 +391,7 @@ fn ellipsize(lines: &mut [String], columns: usize) {
 /// the etag is a hash of the card's text and the build, so a crawler (or the
 /// browser cache) revalidating costs a lookup and a hash, not a render.
 pub(super) async fn handler(conn: Conn) -> Conn {
-    let Some(service) = conn.state::<Arc<TypeaheadService>>().cloned() else {
+    let Some(service) = conn.state::<Arc<CrateSearchService>>().cloned() else {
         return conn.with_status(Status::InternalServerError).halt();
     };
     let Some(pool) = conn.shared_state::<Arc<ThreadPool>>().cloned() else {

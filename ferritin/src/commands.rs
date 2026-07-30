@@ -2,6 +2,7 @@ use crate::{
     format_context::DocLevel, kind::Kind, renderer::HistoryEntry, request::Request,
     styled_string::Document,
 };
+use ferritin_common::search::QueryCompletion;
 use std::fmt::Display;
 
 pub(crate) mod get;
@@ -48,6 +49,13 @@ pub(crate) enum Commands {
         /// Only return results of these kinds (comma-separated or repeated)
         #[arg(short, long, value_enum, value_delimiter = ',')]
         kind: Vec<Kind>,
+
+        /// Whether the query's final token may be mid-word (see
+        /// [`QueryCompletion`]). Not a CLI flag: interactive surfaces are
+        /// always as-you-type; the MCP server opts into `Complete` via
+        /// [`Commands::complete_words`] because agent queries are whole words.
+        #[arg(skip)]
+        completion: QueryCompletion,
 
         #[command(subcommand)]
         target: SearchTarget,
@@ -111,9 +119,29 @@ impl Commands {
         Self::Search {
             limit: 10,
             kind: vec![],
+            completion: QueryCompletion::default(),
             target: SearchTarget::All {
                 query: vec![query.to_string()],
             },
+        }
+    }
+
+    /// Mark the search query as whole words (no trailing-prefix expansion) —
+    /// the agent surfaces' semantics. See [`QueryCompletion::Complete`].
+    pub fn complete_words(self) -> Self {
+        match self {
+            Self::Search {
+                limit,
+                kind,
+                target,
+                ..
+            } => Self::Search {
+                limit,
+                kind,
+                completion: QueryCompletion::Complete,
+                target,
+            },
+            other => other,
         }
     }
 
@@ -145,6 +173,7 @@ impl Commands {
             Self::Search {
                 limit,
                 kind,
+                completion,
                 target,
             } => {
                 let query = match target {
@@ -157,6 +186,7 @@ impl Commands {
                 Self::Search {
                     limit,
                     kind,
+                    completion,
                     target: SearchTarget::Crate(parts),
                 }
             }
@@ -185,9 +215,15 @@ impl Commands {
 
     pub fn with_limit(self, limit: usize) -> Self {
         match self {
-            Self::Search { target, kind, .. } => Self::Search {
+            Self::Search {
+                target,
+                kind,
+                completion,
+                ..
+            } => Self::Search {
                 limit,
                 kind,
+                completion,
                 target,
             },
             other => other,
@@ -217,6 +253,7 @@ impl Commands {
             Commands::Search {
                 limit,
                 kind,
+                completion,
                 target,
             } => {
                 request
@@ -233,7 +270,8 @@ impl Commands {
                         ])]);
                     return (doc, true, None);
                 }
-                let (doc, is_error) = search::execute(request, &query, limit, crate_.as_deref());
+                let (doc, is_error) =
+                    search::execute(request, &query, limit, crate_.as_deref(), completion);
                 let history_entry = Some(HistoryEntry::Search {
                     query,
                     crate_name: crate_,

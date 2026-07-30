@@ -10,6 +10,7 @@ use crate::{
     styled_string::Document,
 };
 use crossbeam_channel::{Receiver, Sender};
+use ferritin_common::search::QueryCompletion;
 
 /// Request thread loop - processes commands from UI thread
 pub(super) fn request_thread_loop<'a>(
@@ -56,6 +57,7 @@ pub(super) fn request_thread_loop<'a>(
                     query.as_ref(),
                     limit,
                     crate_name.as_ref().map(|c| c.as_ref()),
+                    QueryCompletion::AsYouType,
                 );
 
                 let entry = HistoryEntry::Search {

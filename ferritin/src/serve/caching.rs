@@ -235,10 +235,10 @@ pub(crate) fn app_page(file_etag: Option<&str>, identity: impl Hash) -> EntityTa
 ///
 /// A card is a pure function of its text and the binary that draws it, and its
 /// text is right there in the identity — so unlike [`documentation`] there is
-/// nothing cheaper to name it by, and unlike [`typeahead`] the validators are
+/// nothing cheaper to name it by, and unlike [`crate_search`] the validators are
 /// derived *before* the work, because the render they short-circuit is real CPU.
 ///
-/// No `Last-Modified`, for the same reason as [`typeahead`]: the artifact
+/// No `Last-Modified`, for the same reason as [`crate_search`]: the artifact
 /// behind the text has no timestamp that moves when it does.
 pub(crate) fn og_image(identity: impl Hash) -> Validators {
     let mut hasher = hasher();
@@ -252,7 +252,7 @@ pub(crate) fn og_image(identity: impl Hash) -> Validators {
     }
 }
 
-/// The validators for a typeahead response.
+/// The validators for a crate-search (`/api/crates?q=`) response.
 ///
 /// Typeahead has no expensive path to skip — a query is two binary searches over
 /// an already-resident artifact — so unlike [`documentation`] this exists purely
@@ -270,7 +270,7 @@ pub(crate) fn og_image(identity: impl Hash) -> Validators {
 /// Deliberately **no `Last-Modified`**: we have no timestamp that moves when the
 /// artifact does, and a plausible-but-static one would let a client's
 /// `If-Modified-Since` win a 304 for data that had in fact changed.
-pub(crate) fn typeahead(
+pub(crate) fn crate_search(
     artifact_etag: Option<&str>,
     query: &str,
     limit: usize,

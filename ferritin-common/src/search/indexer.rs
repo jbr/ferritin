@@ -708,7 +708,7 @@ impl SearchableTerms {
         docs
     }
 
-    fn search<'a>(&self, query: &'a str) -> SearchResults<'a> {
+    fn search<'a>(&self, query: &'a str, completion: QueryCompletion) -> SearchResults<'a> {
         let tokens = tokenize(query, QUERY_MIN_CHARS);
 
         // Build lookup from hash to original token
@@ -752,7 +752,11 @@ impl SearchableTerms {
         // also match items whose name *begins* with it. Every expansion is
         // attributed to the typed token itself, so a prefix reaching few names
         // scores as a rare (high-IDF) term and one reaching many as common.
-        if let Some(&last) = tokens.last() {
+        // Skipped for a `Complete` query: an agent's final word is a whole
+        // word, and expanding it matches items the agent didn't name.
+        if completion == QueryCompletion::AsYouType
+            && let Some(&last) = tokens.last()
+        {
             let prefix_docs = self.name_docs_with_prefix(last);
             if !prefix_docs.is_empty() {
                 for doc in &prefix_docs {
@@ -933,9 +937,25 @@ impl SearchIndex {
 
     /// Search for items containing the given term
     /// Returns components needed for BM25 scoring across multiple crates
-    pub fn search<'a>(&self, query: &'a str) -> SearchResults<'a> {
-        self.terms.search(query)
+    pub fn search<'a>(&self, query: &'a str, completion: QueryCompletion) -> SearchResults<'a> {
+        self.terms.search(query, completion)
     }
+}
+
+/// Whether a query may end mid-word, which decides if the final token is
+/// prefix-expanded over the name dictionary.
+///
+/// Interactive surfaces (CLI, TUI, the web search box) are as-you-type: the
+/// last word is usually incomplete, and `vec` should already reach `Vec` and
+/// `VecDeque`. Agent surfaces (MCP) send complete words, where the same
+/// expansion matches items the agent didn't name.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum QueryCompletion {
+    /// The final token is treated as a prefix (interactive surfaces).
+    #[default]
+    AsYouType,
+    /// Every token is a whole word; no prefix expansion (agent surfaces).
+    Complete,
 }
 
 // Public API types for BM25 scoring

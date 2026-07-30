@@ -27,14 +27,15 @@ mod spa_route;
 
 use crate::{
     commands::{self, get::JsonOutcome},
+    crate_search::{CrateSearchEntry, CrateSearchService},
     format_context::FormatContext,
     json,
     request::Request,
     serve::caching::{CachingPolicy, Validators},
-    typeahead::{TypeaheadEntry, TypeaheadService},
 };
 use ferritin_common::{
     Navigator, Store,
+    search::QueryCompletion,
     sources::{DocsRsSource, StdSource},
 };
 use percent_encoding::percent_decode_str;
@@ -61,9 +62,9 @@ const WORKER_STACK_SIZE: usize = 16 * 1024 * 1024;
 /// Default number of results for the crate-scoped search endpoint.
 const SEARCH_LIMIT: usize = 10;
 
-/// Default and maximum result counts for the crate-name typeahead endpoint.
-const TYPEAHEAD_LIMIT: usize = 10;
-const TYPEAHEAD_MAX_LIMIT: usize = 100;
+/// Default and maximum result counts for the crate-search endpoint (`/api/crates?q=`).
+const CRATE_SEARCH_LIMIT: usize = 10;
+const CRATE_SEARCH_MAX_LIMIT: usize = 100;
 
 /// Default byte cap for the in-memory crate cache, overridable via
 /// `FERRITIN_CACHE_BYTES` (weight proxy: JSON file size at load).
@@ -114,23 +115,24 @@ fn rss_high_water_bytes() -> Option<u64> {
         .and_then(|value| value.parse().ok())
 }
 
-/// The standard library crates this server can serve, as typeahead entries at
-/// the toolchain's version.
+/// The standard library crates this server can serve, as crate-search entries
+/// at the toolchain's version.
 ///
 /// Skips any crate the source claims but has no JSON for (`std_detect`): the
-/// typeahead must only offer crates that will actually load. Without a rustup
+/// search must only offer crates that will actually load. Without a rustup
 /// toolchain there is no std to offer, and the list is empty.
-fn std_typeahead_entries(std_source: Option<&StdSource>) -> Vec<TypeaheadEntry> {
+fn std_crate_entries(std_source: Option<&StdSource>) -> Vec<CrateSearchEntry> {
     let Some(source) = std_source else {
         return Vec::new();
     };
-    let mut entries: Vec<TypeaheadEntry> = source
+    let mut entries: Vec<CrateSearchEntry> = source
         .crates()
         .values()
         .filter(|info| info.json_path().is_some())
-        .map(|info| TypeaheadEntry {
+        .map(|info| CrateSearchEntry {
             name: info.name().to_string(),
             version: info.version().to_string(),
+            description: None,
         })
         .collect();
     // The source stores them in a hash map; give the list a stable order.
@@ -141,7 +143,7 @@ fn std_typeahead_entries(std_source: Option<&StdSource>) -> Vec<TypeaheadEntry> 
 pub fn serve() {
     let cache_bytes = cache_bytes();
     let std_source = StdSource::from_rustup();
-    let std_crates = std_typeahead_entries(std_source.as_ref());
+    let std_crates = std_crate_entries(std_source.as_ref());
     let mut store = Store::default()
         .with_std_source(std_source)
         .with_docsrs_source(DocsRsSource::from_default_cache())
@@ -154,7 +156,7 @@ pub fn serve() {
     }
     let store = Arc::new(store);
 
-    // The typeahead reads the same crate-names artifact the docs.rs source
+    // Crate search reads the same crate-names artifact the docs.rs source
     // resolves versions from, so it shares that index rather than loading a
     // second copy of it.
     let crate_index = store
@@ -165,9 +167,9 @@ pub fn serve() {
     // and revalidates hourly, so no request ever pays to fetch or revalidate
     // the artifact — every lookup just reads what the task last loaded.
     if let Some(index) = crate_index.clone() {
-        // The typeahead matches descriptions as well as names, so this process
-        // — unlike the CLI — wants the description index built as part of each
-        // load rather than on whichever keystroke first needs it.
+        // Crate search matches descriptions and keywords as well as names, so
+        // this process — unlike the CLI — wants those indexes built as part of
+        // each load rather than on whichever keystroke first needs them.
         index.search_descriptions();
         trillium_smol::async_global_executor::spawn(async move {
             index.run_periodic_refresh().await;
@@ -175,7 +177,7 @@ pub fn serve() {
         .detach();
     }
 
-    let typeahead = Arc::new(TypeaheadService::new(crate_index, std_crates));
+    let crate_search = Arc::new(CrateSearchService::new(crate_index, std_crates));
 
     let pool = Arc::new(
         ThreadPoolBuilder::new()
@@ -187,13 +189,13 @@ pub fn serve() {
 
     #[cfg(feature = "acme")]
     if let Some(env) = acme::AcmeEnv::from_env() {
-        return acme::serve_tls(store, pool, env, typeahead);
+        return acme::serve_tls(store, pool, env, crate_search);
     }
 
     let server_handle = trillium_smol::config()
         .with_shared_state(store)
         .with_shared_state(pool)
-        .spawn(handler(typeahead));
+        .spawn(handler(crate_search));
 
     server_handle.block();
 }
@@ -220,7 +222,7 @@ pub fn serve() {
 /// cleartext exactly as it does without this feature.
 #[cfg(feature = "acme")]
 mod acme {
-    use crate::typeahead::TypeaheadService;
+    use crate::crate_search::CrateSearchService;
     use ferritin_common::Store;
     use rayon::ThreadPool;
     use std::{env, path::PathBuf, sync::Arc};
@@ -284,7 +286,7 @@ mod acme {
         store: Arc<Store>,
         pool: Arc<ThreadPool>,
         env: AcmeEnv,
-        typeahead: Arc<TypeaheadService>,
+        crate_search: Arc<CrateSearchService>,
     ) {
         let AcmeEnv {
             domains,
@@ -316,7 +318,7 @@ mod acme {
             .expect("failed to bind the TLS listener on tcp/443")
             .bind_quic((&*host, 443), quic)
             .expect("failed to bind the QUIC listener on udp/443")
-            .spawn((redirect_insecure(authority), super::handler(typeahead)));
+            .spawn((redirect_insecure(authority), super::handler(crate_search)));
 
         let acme_future = handle.swansong().interrupt(acme_future);
         handle.runtime().spawn(acme_future);
@@ -369,7 +371,7 @@ async fn reject_other_methods(conn: Conn) -> Conn {
     conn.with_status(Status::MethodNotAllowed).halt()
 }
 
-pub(crate) fn handler(typeahead: Arc<TypeaheadService>) -> impl Handler {
+pub(crate) fn handler(crate_search: Arc<CrateSearchService>) -> impl Handler {
     (
         // `{ip}` is what lets fail2ban attribute a request to a host; the line
         // carries no timestamp because journald stamps every line it ingests.
@@ -383,7 +385,7 @@ pub(crate) fn handler(typeahead: Arc<TypeaheadService>) -> impl Handler {
         Compression::new(),
         CachingHeaders::new(),
         caching_policy(),
-        trillium::state(typeahead),
+        trillium::state(crate_search),
         router(),
         app_page::AppPage,
         frontend(),
@@ -429,7 +431,7 @@ fn api_router() -> Router {
     Router::new()
         .get("/crates/:crate_name", get_crate)
         .get("/search/:crate_name", search_crate)
-        .get("/typeahead", typeahead)
+        .get("/crates", search_crates)
 }
 
 /// A rate limiter for one route tree, or `None` when `FERRITIN_RATELIMIT` is
@@ -626,12 +628,15 @@ async fn get_crate(conn: Conn) -> Conn {
     respond_json(conn, outcome)
 }
 
-/// Crate-name typeahead: the top crates (by download rank) whose names start
-/// with `q`. Unlike the documentation endpoints this never touches the Store
-/// or the worker pool — the query is a pair of binary searches over the
-/// in-memory artifact, so it runs inline on the async thread.
-async fn typeahead(conn: Conn) -> Conn {
-    let Some(service) = conn.state::<Arc<TypeaheadService>>().cloned() else {
+/// Crate search (`GET /crates?q=`): the top crates matching `q` by name,
+/// description, or declared keyword, ranked by evidence tier and downloads.
+/// As-you-type semantics — the web search box is this endpoint's consumer, so
+/// tokens match as prefixes and typos fall back to fuzzy matching; the MCP
+/// crate search is the complete-word sibling. Unlike the documentation
+/// endpoints this never touches the Store or the worker pool — the query runs
+/// over the in-memory artifact index, inline on the async thread.
+async fn search_crates(conn: Conn) -> Conn {
+    let Some(service) = conn.state::<Arc<CrateSearchService>>().cloned() else {
         return conn.with_status(Status::InternalServerError).halt();
     };
 
@@ -642,8 +647,8 @@ async fn typeahead(conn: Conn) -> Conn {
     let limit = query
         .get_str("limit")
         .and_then(|limit| limit.parse().ok())
-        .unwrap_or(TYPEAHEAD_LIMIT)
-        .min(TYPEAHEAD_MAX_LIMIT);
+        .unwrap_or(CRATE_SEARCH_LIMIT)
+        .min(CRATE_SEARCH_MAX_LIMIT);
 
     let Some(results) = service.typeahead(&q, limit).await else {
         return conn.with_status(Status::ServiceUnavailable).halt();
@@ -654,12 +659,12 @@ async fn typeahead(conn: Conn) -> Conn {
     // are derived *after* the answer, purely to keep repeat answers off the wire.
     // Setting the etag is enough: `CachingHeaders` honors one we set, so it
     // neither hashes the body nor needs us to compare anything ourselves.
-    let validators = caching::typeahead(service.artifact_etag().as_deref(), &q, limit);
+    let validators = caching::crate_search(service.artifact_etag().as_deref(), &q, limit);
 
     respond_json(
         conn,
         Some(
-            json::typeahead_to_string(&q, results).map(|body| Rendered::Json {
+            json::crate_search_to_string(&q, results).map(|body| Rendered::Json {
                 status: Status::Ok,
                 body,
                 validators,
@@ -698,7 +703,13 @@ async fn search_crate(conn: Conn) -> Conn {
         }
 
         let mut request = Request::new(&navigator, FormatContext::new());
-        let model = commands::search::model(&mut request, &q, SEARCH_LIMIT, Some(&crate_name));
+        let model = commands::search::model(
+            &mut request,
+            &q,
+            SEARCH_LIMIT,
+            Some(&crate_name),
+            QueryCompletion::AsYouType,
+        );
         json::search_to_string(&model).map(|body| Rendered::Json {
             status: Status::Ok,
             body,

@@ -13,7 +13,10 @@
 //! [`CrateIndex`]: super::CrateIndex
 
 use super::{CrateEntry, Loaded, entry};
-use crate::string_utils::{case_aware_jaro_winkler, stem};
+use crate::{
+    search::QueryCompletion,
+    string_utils::{case_aware_jaro_winkler, stem},
+};
 use crate_names::{CrateNames, Descriptions, Facets, normalize};
 use rustc_hash::FxHashMap;
 use std::{
@@ -116,7 +119,13 @@ pub(super) fn typeahead_scored(
     // finds serde, `mqtt` finds rumqttc.
     let description_index = (weights.description_match > 0.0).then(|| loaded.description_index());
     let keyword_index = (weights.keyword_match > 0.0).then(|| loaded.keyword_index());
-    let mut candidates = match_counts(&query_tokens, token_index, description_index, keyword_index);
+    let mut candidates = match_counts(
+        &query_tokens,
+        token_index,
+        description_index,
+        keyword_index,
+        QueryCompletion::AsYouType,
+    );
 
     // The crates where every query token matches a name token *exactly* — a
     // finished-typing signal worth a bonus over prefix-only full matches.
@@ -139,7 +148,7 @@ pub(super) fn typeahead_scored(
         matched.name = matched.name.max(query_tokens.len() as u32);
     }
 
-    let mut scored: Vec<(f32, u32)> = candidates
+    let scored: Vec<(f32, u32)> = candidates
         .iter()
         .filter_map(|(&crate_index, matched)| {
             let found = loaded.names.entry_at(crate_index as usize)?;
@@ -163,33 +172,7 @@ pub(super) fn typeahead_scored(
         })
         .collect();
     let total = scored.len();
-
-    // Descending by score, ties broken by name so the order is total and the
-    // page is deterministic.
-    let ranked = |a: &(f32, u32), b: &(f32, u32)| {
-        b.0.total_cmp(&a.0).then_with(|| {
-            let a_name = loaded.names.entry_at(a.1 as usize).map(|e| e.name);
-            let b_name = loaded.names.entry_at(b.1 as usize).map(|e| e.name);
-            a_name.cmp(&b_name)
-        })
-    };
-
-    // Select the page, then sort only it. Fully sorting is a real cost here,
-    // not a micro-optimization: description matching routinely produces tens
-    // of thousands of candidates, `rank` is a `u8` so they pile into 256 score
-    // buckets, and the name tie-break that separates them costs two artifact
-    // lookups per comparison. Sorting all 15k candidates of `random number
-    // generator` to show 8 of them was 18 of the query's 28ms.
-    if scored.len() > limit {
-        scored.select_nth_unstable_by(limit, ranked);
-        scored.truncate(limit);
-    }
-    scored.sort_by(ranked);
-
-    let mut entries: Vec<CrateEntry> = scored
-        .into_iter()
-        .filter_map(|(_, crate_index)| entry(loaded, loaded.names.entry_at(crate_index as usize)?))
-        .collect();
+    let mut entries = top_entries(loaded, scored, limit);
 
     // When prefix/token matching underfills the page, fill the remaining slots
     // with fuzzy matches — so a typo like `tokoi` still surfaces `tokio`. These
@@ -211,6 +194,81 @@ pub(super) fn typeahead_scored(
     }
 
     (entries, total)
+}
+
+/// Complete-word crate search — the agent sibling of [`typeahead_scored`].
+/// Same evidence tiers and weights, but tokens match *exactly* rather than as
+/// prefixes, and nothing pads the page:
+///
+/// - No prefix semantics: an agent's words are whole words, and prefix matching misleads there —
+///   `cli` prefix-matches every `client` crate and buries clap, while an exact `cli` reaches clap
+///   through its declared keyword.
+/// - No fuzzy fill and no whole-prefix/all-exact typing nudges: no results is a real answer for an
+///   agent, where a page of least-bad matches invites a confident wrong guess.
+pub(super) fn crate_search(loaded: &Loaded, query: &str, limit: usize) -> (Vec<CrateEntry>, usize) {
+    let weights = TypeaheadWeights::default();
+    let token_index = loaded
+        .token_index
+        .get_or_init(|| TokenIndex::build(&loaded.names));
+
+    let mut query_tokens: Vec<String> = name_tokens(query).collect();
+    query_tokens.sort_unstable();
+    query_tokens.dedup();
+    if query_tokens.is_empty() {
+        return (Vec::new(), 0);
+    }
+
+    let candidates = match_counts(
+        &query_tokens,
+        token_index,
+        Some(loaded.description_index()),
+        Some(loaded.keyword_index()),
+        QueryCompletion::Complete,
+    );
+
+    let scored: Vec<(f32, u32)> = candidates
+        .iter()
+        .filter_map(|(&crate_index, matched)| {
+            let found = loaded.names.entry_at(crate_index as usize)?;
+            let score = weights.term_match * matched.name as f32
+                + weights.description_match * matched.description as f32
+                + weights.keyword_match * matched.keyword as f32
+                + weights.rank * f32::from(found.rank);
+            Some((score, crate_index))
+        })
+        .collect();
+    let total = scored.len();
+    (top_entries(loaded, scored, limit), total)
+}
+
+/// Order candidates best-first and materialize the top `limit` as entries.
+/// Descending by score, ties broken by name so the order is total and the
+/// page is deterministic.
+///
+/// Selects the page, then sorts only it. Fully sorting is a real cost here,
+/// not a micro-optimization: description matching routinely produces tens
+/// of thousands of candidates, `rank` is a `u8` so they pile into 256 score
+/// buckets, and the name tie-break that separates them costs two artifact
+/// lookups per comparison. Sorting all 15k candidates of `random number
+/// generator` to show 8 of them was 18 of the query's 28ms.
+fn top_entries(loaded: &Loaded, mut scored: Vec<(f32, u32)>, limit: usize) -> Vec<CrateEntry> {
+    let ranked = |a: &(f32, u32), b: &(f32, u32)| {
+        b.0.total_cmp(&a.0).then_with(|| {
+            let a_name = loaded.names.entry_at(a.1 as usize).map(|e| e.name);
+            let b_name = loaded.names.entry_at(b.1 as usize).map(|e| e.name);
+            a_name.cmp(&b_name)
+        })
+    };
+    if scored.len() > limit {
+        scored.select_nth_unstable_by(limit, ranked);
+        scored.truncate(limit);
+    }
+    scored.sort_by(ranked);
+
+    scored
+        .into_iter()
+        .filter_map(|(_, crate_index)| entry(loaded, loaded.names.entry_at(crate_index as usize)?))
+        .collect()
 }
 
 /// Safety ceiling on how many trigram-overlap candidates are scored with
@@ -404,19 +462,25 @@ impl TokenIndex {
     /// The crate line-indices having exactly this token (already sorted and
     /// deduped at build time).
     fn indices_with_token(&self, token: &str) -> &[u32] {
-        let start = self
-            .postings
-            .partition_point(|(entry, _)| entry.as_str() < token);
-        match self.postings.get(start) {
-            Some((entry, indices)) if entry == token => indices,
-            _ => &[],
-        }
+        token_postings(&self.postings, token)
     }
 
     /// The distinct crate line-indices having a token that begins with `prefix`,
     /// sorted and deduped.
     fn indices_with_prefix(&self, prefix: &str) -> Vec<u32> {
         prefix_postings(&self.postings, prefix)
+    }
+}
+
+/// The posting list for exactly `term`, over a term-sorted postings table —
+/// already sorted and deduped at build time. The shared exact lookup of
+/// [`TokenIndex`], [`DescriptionIndex`], and [`KeywordIndex`], for
+/// complete-word queries.
+fn token_postings<'a>(postings: &'a [(String, Vec<u32>)], term: &str) -> &'a [u32] {
+    let start = postings.partition_point(|(entry, _)| entry.as_str() < term);
+    match postings.get(start) {
+        Some((entry, indices)) if entry == term => indices,
+        _ => &[],
     }
 }
 
@@ -546,6 +610,12 @@ impl DescriptionIndex {
     pub(super) fn indices_with_prefix(&self, prefix: &str) -> Vec<u32> {
         prefix_postings(&self.postings, prefix)
     }
+
+    /// The crate line-indices whose description contains exactly this stem
+    /// (already sorted and deduped at build time).
+    fn indices_with_token(&self, stem: &str) -> &[u32] {
+        token_postings(&self.postings, stem)
+    }
 }
 
 /// A lazily-built inverted index over the *stemmed* declared keywords of each
@@ -641,6 +711,12 @@ impl KeywordIndex {
     fn indices_with_prefix(&self, prefix: &str) -> Vec<u32> {
         prefix_postings(&self.postings, prefix)
     }
+
+    /// The crate line-indices declaring exactly this keyword stem (already
+    /// sorted and deduped at build time).
+    fn indices_with_token(&self, stem: &str) -> &[u32] {
+        token_postings(&self.postings, stem)
+    }
 }
 
 /// Order two crate names by the folded key the artifacts are sorted under —
@@ -687,19 +763,28 @@ pub(super) struct MatchCounts {
 /// yields no candidates.
 ///
 /// Description and keyword tokens are stemmed before lookup so they meet
-/// those indexes on their own terms, and then matched as prefixes so a word
-/// still being typed can match. The residual gap is a *partly*-typed word
-/// whose stem diverges from the whole word's (`deserializ` does not prefix
-/// `deseri`), which the name and fuzzy passes still cover.
+/// those indexes on their own terms. Under `AsYouType` every lookup then
+/// matches as a prefix, so a word still being typed can match — the residual
+/// gap is a *partly*-typed word whose stem diverges from the whole word's
+/// (`deserializ` does not prefix `deseri`), which the name and fuzzy passes
+/// still cover. Under `Complete` every lookup is exact: the tokens are whole
+/// words, and prefix matching would reach names the caller didn't say (`cli`
+/// prefixes `client`).
 pub(super) fn match_counts(
     query_tokens: &[String],
     names: &TokenIndex,
     descriptions: Option<&DescriptionIndex>,
     keywords: Option<&KeywordIndex>,
+    completion: QueryCompletion,
 ) -> HashMap<u32, MatchCounts> {
+    let prefix = completion == QueryCompletion::AsYouType;
     let mut counts: HashMap<u32, MatchCounts> = HashMap::new();
     for token in query_tokens {
-        let named = names.indices_with_prefix(token);
+        let named = if prefix {
+            names.indices_with_prefix(token)
+        } else {
+            names.indices_with_token(token).to_vec()
+        };
         for &crate_index in &named {
             counts.entry(crate_index).or_default().name += 1;
         }
@@ -711,7 +796,11 @@ pub(super) fn match_counts(
 
         let described = match descriptions {
             Some(descriptions) if token.chars().count() >= DESCRIPTION_MIN_CHARS => {
-                descriptions.indices_with_prefix(&stemmed)
+                if prefix {
+                    descriptions.indices_with_prefix(&stemmed)
+                } else {
+                    descriptions.indices_with_token(&stemmed).to_vec()
+                }
             }
             _ => Vec::new(),
         };
@@ -726,7 +815,12 @@ pub(super) fn match_counts(
         let Some(keywords) = keywords else {
             continue;
         };
-        for crate_index in keywords.indices_with_prefix(&stemmed) {
+        let keyworded = if prefix {
+            keywords.indices_with_prefix(&stemmed)
+        } else {
+            keywords.indices_with_token(&stemmed).to_vec()
+        };
+        for crate_index in keyworded {
             // The third rung of the same max rule: a token already credited
             // to the name or description is not credited again.
             if named.binary_search(&crate_index).is_err()

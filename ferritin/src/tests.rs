@@ -128,14 +128,20 @@ fn render_json_for_tests_rooted(command: Commands, project_root: &std::path::Pat
         Commands::Search {
             limit,
             kind,
+            completion,
             target,
         } => {
             request
                 .format_context()
                 .set_filter(crate::kind::predicate(&kind));
             let (crate_, query) = crate::commands::search::parse_target(target);
-            let model =
-                crate::commands::search::model(&mut request, &query, limit, crate_.as_deref());
+            let model = crate::commands::search::model(
+                &mut request,
+                &query,
+                limit,
+                crate_.as_deref(),
+                completion,
+            );
             crate::json::search_to_pretty_string(&model)
         }
         // Only `Serve`/`Schema` remain, and only when their features are on.

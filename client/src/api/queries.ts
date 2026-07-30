@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { fetchItem, search, typeahead } from "./client";
+import { fetchItem, search, searchCrates } from "./client";
 
 /**
  * Documentation model for an item path; disabled when the path is empty, or when
@@ -34,13 +34,14 @@ export function useSearch(crate: string, q: string) {
 }
 
 /**
- * Crate-name typeahead; disabled until a prefix is present. Same
- * keep-previous-data behavior as search, for the same reason.
+ * Crate-name typeahead (the as-you-type crate-search endpoint); disabled until
+ * a prefix is present. Same keep-previous-data behavior as search, for the
+ * same reason.
  */
 export function useTypeahead(q: string) {
   return useQuery({
-    queryKey: ["typeahead", q],
-    queryFn: () => typeahead(q),
+    queryKey: ["crate-search", q],
+    queryFn: () => searchCrates(q),
     enabled: q.length > 0,
     placeholderData: keepPreviousData,
   });

@@ -15,6 +15,7 @@ impl Navigator {
         &'nav self,
         query: &'query str,
         crate_names: &'query [&'query str],
+        completion: QueryCompletion,
     ) -> Result<Vec<ScoredResult<'query>>, Vec<Suggestion<'nav>>> {
         if crate_names.is_empty() {
             return Ok(vec![]);
@@ -26,7 +27,7 @@ impl Navigator {
             .map(|&crate_name| {
                 let bare_name = crate_name.split_once('@').map_or(crate_name, |(n, _)| n);
                 self.get_or_build_search_index(crate_name)
-                    .map(|index| (bare_name, index.search(query)))
+                    .map(|index| (bare_name, index.search(query, completion)))
             })
             .collect();
 

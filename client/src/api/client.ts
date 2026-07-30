@@ -7,8 +7,8 @@ export type Item = components["schemas"]["JsonItem"];
 export type SearchResponse = components["schemas"]["JsonSearch"];
 /** A failed lookup, carrying "did you mean" suggestions. */
 export type NotFound = components["schemas"]["JsonNotFound"];
-/** Crate-name typeahead: top matches by download rank, plus the total. */
-export type TypeaheadResponse = components["schemas"]["JsonTypeahead"];
+/** Crate search: top matches by evidence tier and download rank, plus the total. */
+export type CrateSearchResponse = components["schemas"]["JsonCrateSearch"];
 
 /**
  * Low-level typed transport, generated from the OpenAPI document. The app and the
@@ -95,16 +95,18 @@ export async function search(
 }
 
 /**
- * Crate-name typeahead. Like search, only a 2xx is declared; a 503 (the server
- * hasn't loaded the crate-names artifact yet) surfaces as a thrown ApiError,
- * which the UI treats the same as "no suggestions".
+ * Crate search (as-you-type: the server matches tokens as prefixes and falls
+ * back to fuzzy matching, so this doubles as typeahead). Like search, only a
+ * 2xx is declared; a 503 (the server hasn't loaded the crate-names artifact
+ * yet) surfaces as a thrown ApiError, which the UI treats the same as "no
+ * suggestions".
  */
-export async function typeahead(q: string): Promise<TypeaheadResponse> {
-  const { data, response } = await http.GET("/typeahead", {
+export async function searchCrates(q: string): Promise<CrateSearchResponse> {
+  const { data, response } = await http.GET("/crates", {
     params: { query: { q } },
   });
   if (!data) {
-    throw new ApiError("Typeahead failed", response.status);
+    throw new ApiError("Crate search failed", response.status);
   }
   return data;
 }

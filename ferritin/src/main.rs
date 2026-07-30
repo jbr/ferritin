@@ -19,6 +19,8 @@ use terminal_size::{Width, terminal_size};
 
 mod color_scheme;
 mod commands;
+#[cfg(feature = "serve")]
+mod crate_search;
 mod docsrs_url;
 mod format;
 mod format_context;
@@ -39,8 +41,6 @@ mod styled_string;
 #[cfg(test)]
 mod tests;
 mod traits;
-#[cfg(feature = "serve")]
-mod typeahead;
 mod verbosity;
 
 #[global_allocator]
@@ -340,13 +340,15 @@ fn run_json(request: &mut Request<'_>, command: Option<Commands>) -> ExitCode {
         Commands::Search {
             limit,
             kind,
+            completion,
             target,
         } => {
             request
                 .format_context()
                 .set_filter(crate::kind::predicate(&kind));
             let (crate_, query) = commands::search::parse_target(target);
-            let model = commands::search::model(request, &query, limit, crate_.as_deref());
+            let model =
+                commands::search::model(request, &query, limit, crate_.as_deref(), completion);
             (json::search_to_string(&model), model.is_error())
         }
 
