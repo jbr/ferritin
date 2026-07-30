@@ -57,7 +57,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "fixture-crate::TestStruct",
       "kind": "struct",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
-      "score": 66.2,
+      "score": 66.1,
       "docs": [
         {
           "type": "truncatedBlock",

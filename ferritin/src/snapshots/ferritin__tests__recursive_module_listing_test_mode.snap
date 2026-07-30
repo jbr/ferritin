@@ -402,7 +402,7 @@ Equivalent to <inline-code>&mut s[..]</inline-code>.</p>
 </item>
   <item><p>
 <type-name>Vec::as_non_null</type-name> </p>
-<truncated level="single-line">Returns a <inline-code>NonNull</inline-code> pointer to the vector's buffer, or a dangling <inline-code>NonNull</inline-code> pointer valid for zero sized reads if the vector didn't allocate. <elided chars="1478"/></truncated>
+<truncated level="single-line">Returns a <inline-code>NonNull</inline-code> pointer to the vector's buffer, or a dangling <inline-code>NonNull</inline-code> pointer valid for zero sized reads if the vector didn't allocate. <elided chars="1476"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::as_ptr</type-name> </p>
@@ -483,7 +483,7 @@ Extend the vector by <inline-code>n</inline-code> clones of value.</p>
 <type-name>Vec::from_parts</type-name> </p>
 <truncated level="single-line"><p>
 Creates a <inline-code>Vec<T></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, and a capacity.</p>
- <elided chars="2886"/></truncated>
+ <elided chars="2824"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_parts_in</type-name> </p>
@@ -531,7 +531,7 @@ Panics if the length of<inline-code>usize</inline-code>. <elided chars="393"/></
 </item>
   <item><p>
 <type-name>Vec::into_parts</type-name> </p>
-<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity)</inline-code>. <elided chars="862"/></truncated>
+<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity)</inline-code>. <elided chars="831"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::into_parts_with_alloc</type-name> </p>

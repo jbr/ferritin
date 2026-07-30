@@ -101,7 +101,7 @@ Vec::extend_trusted
 Vec::extend_with // Extend the vector by `n` clones of value.
 Vec::extract_if // Creates an iterator which uses a closure to determine if an element in the range should be removed. [+73 more lines]
 Vec::from_fn // Creates a `Vec<T>` where each element is produced by calling `f` with [+42 more lines]
-Vec::from_parts // Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+94 more lines]
+Vec::from_parts // Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+90 more lines]
 Vec::from_parts_in // Creates a `Vec<T, A>` directly from a `NonNull` pointer, a length, a capacity, [+96 more lines]
 Vec::from_raw_parts // Creates a `Vec<T>` directly from a pointer, a length, and a capacity. [+97 more lines]
 Vec::from_raw_parts_in // Creates a `Vec<T, A>` directly from a pointer, a length, a capacity, [+98 more lines]
@@ -111,7 +111,7 @@ Vec::into_array // Converts the Vec into a boxed array. This conversion will dis
 Vec::into_boxed_slice // Converts the vector into [`Box<[T]>`][owned slice]. [+24 more lines]
 Vec::into_chunks // Groups every `N` elements in the `Vec<T>` into chunks to produce a `Vec<[T; N]>`, dropping [+23 more lines]
 Vec::into_flattened // Takes a `Vec<[T; N]>` and flattens it into a `Vec<T>`. [+18 more lines]
-Vec::into_parts // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity)`. [+32 more lines]
+Vec::into_parts // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity)`. [+30 more lines]
 Vec::into_parts_with_alloc // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity, allocator)`. [+36 more lines]
 Vec::into_raw_parts // Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity)`. [+34 more lines]
 Vec::into_raw_parts_with_alloc // Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity, allocator)`. [+36 more lines]

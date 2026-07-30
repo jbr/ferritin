@@ -11,7 +11,7 @@ Search results for 'generic struct'
   ◦ alloc::borrow::Borrow  (Trait) - score: 67.3
     A trait for borrowing data. [...]
 
-  ◦ fixture-crate::TestStruct  (Struct) - score: 66.2
+  ◦ fixture-crate::TestStruct  (Struct) - score: 66.1
     A simple struct for testing basic functionality. [...]
 
   ◦ fixture-crate::GenericEnum  (Enum) - score: 65.4

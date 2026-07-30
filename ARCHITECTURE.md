@@ -291,7 +291,7 @@ root once emptied — its presence is the trigger, so a finished migration costs
 one `stat` thereafter. Unrecognized files are left behind and logged.
 
 **Multi-version support:**
-- Supports rustdoc JSON format versions 48-60 natively, plus newer additive formats (see below)
+- Supports rustdoc JSON format versions 48-61 natively, plus newer additive formats (see below)
 - Fetches zstd-compressed JSON from docs.rs via the suffix-less URL
   (`.../json`), which serves whatever format the release was built with; the
   actual `format_version` is read from the JSON itself. Formats older than the
@@ -299,7 +299,7 @@ one `stat` thereafter. Unrecognized files are left behind and logged.
   read exists for this release"). This replaced a historical probe of
   exact-format URLs in descending order — one request instead of up to seven.
 - Stores raw JSON indexed by source format version (not normalized)
-- On read, normalizes to current format version (v60) via conversions module
+- On read, normalizes to current format version (v61) via conversions module
 - docs.rs/crates.io requests are currently pinned to HTTP/1.1 as a workaround
   for a timing-sensitive stall in trillium-client's h2 path (see the comment on
   `DocsRsClient::get`); remove the pin when that race is fixed upstream
@@ -337,11 +337,27 @@ Results are scored `term_match · (tokens matched) + whole_prefix (for a whole-n
 
 The `conversions` module normalizes any supported rustdoc JSON format to the canonical `FORMAT_VERSION` on read. This lets us cache older-format JSON and avoid re-fetches when normalization logic changes.
 
-Most format bumps in the supported range (48..=current) are **read-compatible**: each adds a field or an enum variant without removing, renaming, or retyping anything we read. Because `rustdoc-types` does not `deny_unknown_fields`, an added `Option` field defaults to `None` when absent, and an added enum variant never appears in older data, such formats deserialize *directly* into the canonical types — no per-version `rustdoc-types` crate is needed. The two exceptions across 48..=60 are both handled by a single `serde_json::Value` walk before the typed parse: `ExternalCrate::path`, a required `PathBuf` added in format 57 (`load_and_normalize` injects an empty value into pre-57 JSON), and `Item::attrs`, retyped from `Vec<String>` to the structured `Vec<Attribute>` in format 54 (pre-54 JSON carries plain strings that can't deserialize into `Attribute`, so `load_and_normalize` blanks the field — which ferritin never reads — to `[]`). A third non-additive change, `Path::args` gaining an `Option` wrapper in format 51, needs no patch: serde reads a present value as `Some`, so pre-51 data parses unchanged. This same additive tolerance handles formats *newer* than the `rustdoc-types` we build against: `load_and_normalize` parses them directly and surfaces a clear "needs an update" error only if a genuinely breaking change prevents it, so ferritin can read crates built with a newer docs.rs toolchain before a matching `rustdoc-types` release exists.
+Fidelity is judged against the **format**, never against which fields ferritin currently renders. A document that survives normalization is one whose every field means what `rustdoc-types` says it means — so feature work can rely on "if `rustdoc-types` has the field, the data is there" without first checking which fields are secretly degraded.
 
-The 48 floor is *surveyed*, not intrinsic — every hop from 48 up is either additive or covered by those patches. Older formats are untriaged rather than known-broken; lowering the floor is a matter of diffing the intervening `rustdoc-types` releases for a read-breaking change to a field we actually consume (`attrs`, which we ignore, does not count).
+Most format bumps in the supported range (48..=current) are **read-compatible**: each adds a field or an enum variant without removing, renaming, or retyping. Because `rustdoc-types` does not `deny_unknown_fields`, an added enum variant never appears in older data, and an added `Option` field deserializes as `None` when absent — `Option` is the one field type serde permits a document to omit outright, which is why `Item::stability` (added in 58), `Item::const_stability` (59) and `default_unstable` (60) need no handling at all, and why `Path::args` gaining an `Option` wrapper in format 51 is a non-event.
 
-**If a future — or older — format makes a genuinely read-breaking change to a field we consume**, neither JSON-level shortcut applies for that hop. The fix is to pin a `rustdoc-types` crate for that format, parse with it, and translate to the canonical types in `conversions` — the chained-conversion pattern this module used before the formats turned out to be near-uniformly additive (preserved in git history).
+A survey of every consecutive `rustdoc-types` release finds exactly **three** non-read-compatible hops in range:
+
+| Format | Change | Handling |
+|---|---|---|
+| 54 | `Item::attrs` retyped `Vec<String>` → `Vec<Attribute>` | `serde_json::Value` walk before the typed parse |
+| 57 | `ExternalCrate::path` added as a required `PathBuf` | `serde_json::Value` walk (a missing non-`Option` field is a hard error) |
+| 61 | `Stability::level` stopped being `#[serde(flatten)]`ed and internally tagged ([rust-lang/rust#160032]) | typed shim, `conversions::legacy` |
+
+The **typed shim** in `conversions::legacy` is the preferred pattern, and the one to reach for when the next breaking change lands. It mirrors only the structs lying on the path from `Crate` down to the changed field — currently `Crate`'s 8 fields and `Item`'s 12 — and reuses the canonical types for everything else, so `ItemEnum`, `Type`, `Generics`, `Span` and the rest of the tree deserialize straight into their final types. Old JSON is therefore parsed exactly once, streaming, with no intermediate `Value`: fields that did not change are never re-read or re-boxed. Each `From` impl destructures its legacy struct exhaustively with no `..` rest pattern, so a field added upstream breaks the build instead of silently vanishing from every older document.
+
+Blanking a field to make it parse is **not** an acceptable handling — it silently degrades every older document and defers the cost to whoever next tries to use that field.
+
+This same additive tolerance handles formats *newer* than the `rustdoc-types` we build against: `load_and_normalize` parses them directly and surfaces a clear "needs an update" error only if a genuinely breaking change prevents it, so ferritin can read crates built with a newer docs.rs toolchain before a matching `rustdoc-types` release exists.
+
+The 48 floor is *surveyed*, not intrinsic — every hop from 48 up is either read-compatible or handled above. Older formats are untriaged rather than known-broken; lowering the floor is a matter of diffing the intervening `rustdoc-types` releases for a change to any field's wire shape.
+
+[rust-lang/rust#160032]: https://github.com/rust-lang/rust/pull/160032
 
 ### rkyv Sidecar Cache
 

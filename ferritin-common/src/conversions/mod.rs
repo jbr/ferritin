@@ -7,40 +7,57 @@
 //! to `None` when absent and an added enum variant simply never appears in older
 //! data.
 //!
-//! Across the whole supported range (48..=current) exactly two hops are *not*
-//! purely additive, and both are handled with a single `serde_json::Value` walk
-//! before the typed parse:
+//! Normalization is judged against the *format*, never against which fields
+//! ferritin happens to render today: a document that survives this module is one
+//! whose every field means what `rustdoc-types` says it means. Coupling fidelity
+//! to current feature coverage would make each new feature start by rediscovering
+//! which fields are trustworthy.
 //!
-//! - **`ExternalCrate::path`** became a required `PathBuf` in format 57. Pre-57 JSON omits it, so
-//!   we inject an empty value ([`add_external_crate_paths`]).
+//! Across the whole supported range (48..=current), a survey of every consecutive
+//! `rustdoc-types` release finds exactly three hops that are *not* read-compatible:
+//!
 //! - **`Item::attrs`** was retyped from `Vec<String>` to the structured `Vec<Attribute>` in format
 //!   54 (the "Structured Attributes" bump). Pre-54 JSON carries plain strings that will not
-//!   deserialize into `Attribute`. ferritin never reads `attrs`, so we blank every array to `[]`
-//!   ([`blank_attrs`]) — lossless for our purposes.
+//!   deserialize into `Attribute`.
+//! - **`ExternalCrate::path`** became a required `PathBuf` in format 57. Pre-57 JSON omits it, and
+//!   a missing non-`Option` field is a hard deserialization error.
+//! - **`Stability::level`** stopped being `#[serde(flatten)]`ed and internally tagged in format 61.
+//!   Handled by the typed shim in [`legacy`].
 //!
-//! (The one other non-additive change in range, `Path::args` gaining an `Option`
-//! wrapper in format 51, needs no patch: serde reads a present value as `Some`,
-//! so pre-51 data deserializes unchanged.)
+//! Everything else in range is additive, and additions land in one of two
+//! tolerant shapes: a new enum variant (which older data simply never contains),
+//! or a new `Option` field. The latter matters more than it looks — `Option` is
+//! the one field type serde permits a document to omit entirely, deserializing a
+//! missing one as `None`. That is why `Item::stability` (added in 58),
+//! `Item::const_stability` (59) and `default_unstable` (60) need no handling at
+//! all, and why `Path::args` gaining an `Option` wrapper in format 51 is a
+//! non-event: serde reads a present value as `Some`.
 //!
-//! **If a future — or older — format makes a genuinely read-breaking change to a
-//! field we consume** (unlike `attrs`, which we ignore), neither shortcut
-//! applies: pull in a pinned `rustdoc-types` crate for that format, parse with
-//! it, and translate to the canonical types here — the approach this module used
-//! before the formats turned out to be near-uniformly additive (see git history
-//! for the chained-conversion pattern).
+//! **A future read-breaking change** should be handled the same way as format 61:
+//! add a shim to [`legacy`] mirroring only the structs between `Crate` and the
+//! changed field, and translate to the canonical types. Blanking a field to make
+//! it parse is not an option — it silently degrades every older document.
+
+mod legacy;
 
 use anyhow::{Context, Result};
+use legacy::LegacyCrate;
 use rustdoc_types::{Crate, FORMAT_VERSION};
 use serde::Deserialize;
 
 /// Oldest rustdoc JSON format version we can normalize.
 ///
-/// 48 is the surveyed floor: every hop from 48 up is either additive or covered
-/// by the two JSON-level patches in this module (see the module docs). Older
-/// formats are untriaged, not known-broken — lowering this floor is a matter of
-/// diffing the intervening `rustdoc-types` releases for a read-breaking change
-/// to a field we actually consume.
+/// 48 is the surveyed floor: every hop from 48 up is either read-compatible or
+/// handled here (see the module docs). Older formats are untriaged, not
+/// known-broken — lowering this floor is a matter of diffing the intervening
+/// `rustdoc-types` releases for a change to any field's wire shape.
 const MIN_FORMAT_VERSION: u32 = 48;
+
+/// The format version at which [`rustdoc_types::Stability`] stopped flattening
+/// its `level` into the parent object. JSON older than this carries the
+/// flattened, internally tagged shape and must go through the typed shim in
+/// [`legacy`].
+const EXTERNAL_STABILITY_TAG_VERSION: u32 = 61;
 
 /// The format version at which [`ExternalCrate::path`] became a required field.
 /// JSON older than this must have the field injected before it will parse with
@@ -84,13 +101,22 @@ pub fn load_and_normalize(json: &[u8], format_version: Option<u32>) -> Result<Cr
         });
     }
 
-    if format_version >= EXTERNAL_CRATE_PATH_VERSION {
-        // Format 57..=current: the only fields the canonical types require are
-        // already present; anything newer than 57 added was optional. Parse
-        // directly with no intermediate `Value`.
+    if format_version >= EXTERNAL_STABILITY_TAG_VERSION {
+        // Format 61..=current: already canonical. Parse straight into `Crate`.
         return parse_crate(json).with_context(|| {
             format!("Failed to parse rustdoc JSON (format version {format_version})")
         });
+    }
+
+    if format_version >= EXTERNAL_CRATE_PATH_VERSION {
+        // Format 57..=60: every field the canonical types require is present and
+        // correctly shaped except `Stability`, so a single streaming parse
+        // through the typed shim suffices — no intermediate `Value`.
+        return parse_unbounded::<LegacyCrate>(json)
+            .map(Crate::from)
+            .with_context(|| {
+                format!("Failed to parse rustdoc JSON (format version {format_version})")
+            });
     }
 
     // Format 48..=56: JSON-level patching before the typed parse. Everything
@@ -102,9 +128,11 @@ pub fn load_and_normalize(json: &[u8], format_version: Option<u32>) -> Result<Cr
         blank_attrs(&mut value);
     }
     add_external_crate_paths(&mut value);
-    Crate::deserialize(serde_stacker::Deserializer::new(&value)).with_context(|| {
-        format!("Failed to parse normalized rustdoc JSON (was format version {format_version})")
-    })
+    LegacyCrate::deserialize(serde_stacker::Deserializer::new(&value))
+        .map(Crate::from)
+        .with_context(|| {
+            format!("Failed to parse normalized rustdoc JSON (was format version {format_version})")
+        })
 }
 
 /// Parse JSON into the canonical `Crate` with serde_json, recursion limit
@@ -371,6 +399,123 @@ mod tests {
         // ...and normalization must recover it.
         let normalized = load_and_normalize(&json, None).expect("pre-54 doc must normalize");
         assert!(normalized.index.contains_key(&Id(1)));
+    }
+
+    /// Format 60 and earlier flatten `Stability::level` into the parent object
+    /// and tag it internally; format 61 nests it as an external tag. The shapes
+    /// are mutually unparseable, so normalization must translate — and must
+    /// *preserve* the stability, not discard it to make the parse succeed.
+    #[test]
+    fn pre_61_flattened_stability_is_translated_not_dropped() {
+        use rustdoc_types::{Stability, StabilityLevel};
+
+        let mut stable = synth_item(
+            1,
+            Some("Stable"),
+            ItemEnum::Module(Module {
+                is_crate: false,
+                items: vec![],
+                is_stripped: false,
+            }),
+        );
+        stable.stability = Some(Box::new(Stability {
+            feature: "rust1".to_string(),
+            level: StabilityLevel::Stable {
+                since: Some("1.0.0".to_string()),
+            },
+        }));
+        let mut unstable = synth_item(
+            2,
+            Some("Unstable"),
+            ItemEnum::Module(Module {
+                is_crate: false,
+                items: vec![],
+                is_stripped: false,
+            }),
+        );
+        unstable.const_stability = Some(Box::new(Stability {
+            feature: "const_thing".to_string(),
+            level: StabilityLevel::Unstable,
+        }));
+
+        let mut index = rustc_hash::FxHashMap::default();
+        index.insert(
+            Id(0),
+            synth_item(
+                0,
+                Some("root"),
+                ItemEnum::Module(Module {
+                    is_crate: true,
+                    items: vec![Id(1), Id(2)],
+                    is_stripped: false,
+                }),
+            ),
+        );
+        index.insert(Id(1), stable);
+        index.insert(Id(2), unstable);
+        let krate = Crate {
+            root: Id(0),
+            crate_version: None,
+            includes_private: false,
+            index,
+            paths: Default::default(),
+            external_crates: Default::default(),
+            target: Target {
+                triple: String::new(),
+                target_features: vec![],
+            },
+            format_version: FORMAT_VERSION,
+        };
+
+        // Downgrade to the format-60 wire shape: hoist `level`'s payload into
+        // the `Stability` object and replace `level` with the bare tag.
+        let mut value: serde_json::Value =
+            serde_json::from_slice(&serde_json::to_vec(&krate).unwrap()).unwrap();
+        value["format_version"] = serde_json::json!(60);
+        for entry in value["index"].as_object_mut().unwrap().values_mut() {
+            for field in ["stability", "const_stability"] {
+                let Some(stability) = entry.get_mut(field).filter(|v| !v.is_null()) else {
+                    continue;
+                };
+                // A unit variant (`Unstable`) is already a bare tag in both
+                // shapes; only struct variants carry a payload to hoist.
+                let Some(level) = stability["level"].as_object().cloned() else {
+                    continue;
+                };
+                let (tag, payload) = level.into_iter().next().unwrap();
+                stability["level"] = serde_json::json!(tag);
+                for (k, v) in payload.as_object().into_iter().flatten() {
+                    stability[k.as_str()] = v.clone();
+                }
+            }
+        }
+        let json = serde_json::to_vec(&value).unwrap();
+
+        // As-is it must fail, proving the translation is load-bearing...
+        assert!(
+            parse_crate(&json).is_err(),
+            "format-60 flattened stability should not parse against the 61 types"
+        );
+
+        // ...and normalization must round-trip it back to the canonical shape.
+        let normalized = load_and_normalize(&json, None).expect("pre-61 doc must normalize");
+        assert_eq!(normalized.format_version, FORMAT_VERSION);
+        assert_eq!(
+            normalized.index[&Id(1)].stability.as_deref(),
+            Some(&Stability {
+                feature: "rust1".to_string(),
+                level: StabilityLevel::Stable {
+                    since: Some("1.0.0".to_string())
+                },
+            })
+        );
+        assert_eq!(
+            normalized.index[&Id(2)].const_stability.as_deref(),
+            Some(&Stability {
+                feature: "const_thing".to_string(),
+                level: StabilityLevel::Unstable,
+            })
+        );
     }
 
     /// A format below the floor is a definitive "cannot read", not a silent
