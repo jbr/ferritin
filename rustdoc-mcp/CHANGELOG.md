@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.8.2...rustdoc-mcp-v0.9.0) - 2026-07-30
+
+### Added
+
+- update format version to 61
+- *(serve)* add og tags
+
+### Other
+
+- update/upgrade deps
+- update snaps to rustc 1.99.0-nightly (09ee43b2d 2026-07-27)
+- update snaps to rustc 1.99.0-nightly (dc3f85158 2026-07-26)
+- update snaps to rustc 1.99.0-nightly (89c61a754 2026-07-23)
+- update snaps to rustc 1.99.0-nightly (6f72b5dd5 2026-07-22)
+- update snaps to rustc 1.99.0-nightly (87e5904f5 2026-07-20)
+- update snaps to rustc 1.99.0-nightly (9f36de775 2026-07-19)
+
 ## [0.8.2](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.8.1...rustdoc-mcp-v0.8.2) - 2026-07-18
 
 ### Other
