@@ -36,7 +36,7 @@ Associated Types:
     Creates a `Vec<T>` directly from a pointer, a length, and a capacity. [+97 more lines]
 
 • pub const unsafe fn from_parts(ptr: NonNull<T>, length: usize, capacity: usize) -> Self
-    Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+94 more lines]
+    Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+90 more lines]
 
 • pub fn from_fn<F>(length: usize, f: F) -> Self
 where
@@ -47,7 +47,7 @@ where
     Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity)`. [+34 more lines]
 
 • pub const fn into_parts(self) -> (NonNull<T>, usize, usize)
-    Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity)`. [+32 more lines]
+    Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity)`. [+30 more lines]
 
 • pub const fn const_make_global(self) -> &'static [T]
 where
