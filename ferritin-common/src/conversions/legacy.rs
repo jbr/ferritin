@@ -12,6 +12,28 @@
 //! streaming, and every field that did *not* change is never re-read, re-boxed,
 //! or routed through an intermediate [`serde_json::Value`].
 //!
+//! Where a field's shape differs *between* older formats, the shim is generic
+//! over that field rather than duplicated per era ([`LegacyCrate`] is
+//! parameterized by its attribute representation). The whole 48..=60 range
+//! therefore needs just two instantiations, both monomorphized — no runtime
+//! sniffing, because `format_version` is known before the parse begins.
+//!
+//! # Format 54: `Item::attrs`
+//!
+//! Attributes were plain source-form strings until format 54 retyped them as the
+//! structured [`Attribute`] enum. Legacy strings map onto [`Attribute::Other`],
+//! which is documented as carrying exactly that — "a HIR debug printing, like
+//! `#[attr = Optimize(Speed)]`, or the attribute as it appears in source form" —
+//! so pre-54 attributes survive normalization as the same variant a modern
+//! rustdoc emits for any attribute it does not model.
+//!
+//! # Format 57: `ExternalCrate::path`
+//!
+//! [`ExternalCrate::path`] became a required `PathBuf` in format 57. A missing
+//! non-`Option` field is a hard deserialization error, so [`LegacyExternalCrate`]
+//! marks it `#[serde(default)]` — the one field that needs it, rather than a
+//! pre-pass over the document.
+//!
 //! # Format 61: `Stability`
 //!
 //! Format 61 ([rust-lang/rust#160032]) made [`Stability::level`] externally
@@ -34,19 +56,51 @@ use rustdoc_types::{
     StabilityLevel, Target, Visibility,
 };
 use serde::Deserialize;
+use std::path::PathBuf;
 
-/// A [`Crate`] as serialized by formats 48..=60.
+/// The attribute representation of formats 48..=53: plain source-form strings.
+pub(super) type LegacyAttrs = Vec<String>;
+
+/// The attribute representation of formats 54..=current: already structured.
+pub(super) type ModernAttrs = Vec<Attribute>;
+
+/// Lifts whichever attribute representation a format used into the canonical
+/// [`Vec<Attribute>`].
 ///
-/// Only `index` differs from the canonical type — it carries [`LegacyItem`] —
-/// so every other field lands directly in its final type.
+/// A local trait rather than [`From`] because both `Vec<String>` and
+/// `Vec<Attribute>` are foreign types, which the orphan rule puts out of reach.
+pub(super) trait IntoAttributes {
+    fn into_attributes(self) -> Vec<Attribute>;
+}
+
+impl IntoAttributes for ModernAttrs {
+    fn into_attributes(self) -> Vec<Attribute> {
+        self
+    }
+}
+
+impl IntoAttributes for LegacyAttrs {
+    fn into_attributes(self) -> Vec<Attribute> {
+        // `Other` is rustdoc's own variant for an attribute it does not model,
+        // and holds the same source/HIR-form string pre-54 `attrs` carried.
+        self.into_iter().map(Attribute::Other).collect()
+    }
+}
+
+/// A [`Crate`] as serialized by formats 48..=60, generic over the attribute
+/// representation `A` ([`LegacyAttrs`] below format 54, [`ModernAttrs`] at or
+/// above it).
+///
+/// Only `index` and `external_crates` differ from the canonical type, so every
+/// other field lands directly in its final type.
 #[derive(Deserialize)]
-pub(super) struct LegacyCrate {
+pub(super) struct LegacyCrate<A> {
     root: Id,
     crate_version: Option<String>,
     includes_private: bool,
-    index: FxHashMap<Id, LegacyItem>,
+    index: FxHashMap<Id, LegacyItem<A>>,
     paths: FxHashMap<Id, ItemSummary>,
-    external_crates: FxHashMap<u32, ExternalCrate>,
+    external_crates: FxHashMap<u32, LegacyExternalCrate>,
     target: Target,
     /// Mirrored for completeness and discarded on conversion — the normalized
     /// `Crate` reports [`rustdoc_types::FORMAT_VERSION`], not the version the
@@ -58,14 +112,15 @@ pub(super) struct LegacyCrate {
 }
 
 /// An [`Item`] as serialized by formats 48..=60: identical to the canonical type
-/// apart from the two [`Stability`] fields, which carry the pre-61 wire shape.
+/// apart from `attrs` (whose representation is the parameter `A`) and the two
+/// [`Stability`] fields, which carry the pre-61 wire shape.
 ///
 /// `stability` and `const_stability` were added in formats 58 and 59
 /// respectively, and `Option` fields are the one kind serde lets a document omit
-/// (a missing one deserializes as `None`), so this single shim covers the whole
-/// 48..=60 range rather than needing a variant per era.
+/// (a missing one deserializes as `None`), so those two need no per-era
+/// treatment — only `attrs` genuinely varies within the range.
 #[derive(Deserialize)]
-struct LegacyItem {
+struct LegacyItem<A> {
     id: Id,
     crate_id: u32,
     name: Option<String>,
@@ -73,11 +128,23 @@ struct LegacyItem {
     visibility: Visibility,
     docs: Option<String>,
     links: FxHashMap<String, Id>,
-    attrs: Vec<Attribute>,
+    attrs: A,
     deprecation: Option<Deprecation>,
     stability: Option<Box<LegacyStability>>,
     const_stability: Option<Box<LegacyStability>>,
     inner: ItemEnum,
+}
+
+/// An [`ExternalCrate`] as serialized by formats 48..=current.
+///
+/// Identical to the canonical type except that `path` — required from format 57
+/// — is tolerated as absent, yielding the empty path for older documents.
+#[derive(Deserialize)]
+struct LegacyExternalCrate {
+    name: String,
+    html_root_url: Option<String>,
+    #[serde(default)]
+    path: PathBuf,
 }
 
 /// [`Stability`] as serialized by formats 58..=60, with `level` flattened into
@@ -97,8 +164,8 @@ enum LegacyStabilityLevel {
     Unstable,
 }
 
-impl From<LegacyCrate> for Crate {
-    fn from(legacy: LegacyCrate) -> Self {
+impl<A: IntoAttributes> From<LegacyCrate<A>> for Crate {
+    fn from(legacy: LegacyCrate<A>) -> Self {
         // Destructured exhaustively, with no `..` rest pattern: when
         // `rustdoc-types` adds a field to `Crate`, this stops compiling instead
         // of silently dropping the field from every pre-61 document.
@@ -122,7 +189,10 @@ impl From<LegacyCrate> for Crate {
                 .map(|(id, item)| (id, item.into()))
                 .collect(),
             paths,
-            external_crates,
+            external_crates: external_crates
+                .into_iter()
+                .map(|(id, ext)| (id, ext.into()))
+                .collect(),
             target,
             // Normalized: the document now matches the canonical types, so it
             // reports the canonical version rather than the one it arrived as.
@@ -131,8 +201,8 @@ impl From<LegacyCrate> for Crate {
     }
 }
 
-impl From<LegacyItem> for Item {
-    fn from(legacy: LegacyItem) -> Self {
+impl<A: IntoAttributes> From<LegacyItem<A>> for Item {
+    fn from(legacy: LegacyItem<A>) -> Self {
         // Exhaustive destructure — see the note in `From<LegacyCrate>`.
         let LegacyItem {
             id,
@@ -157,11 +227,28 @@ impl From<LegacyItem> for Item {
             visibility,
             docs,
             links,
-            attrs,
+            attrs: attrs.into_attributes(),
             deprecation,
             stability: stability.map(|s| Box::new((*s).into())),
             const_stability: const_stability.map(|s| Box::new((*s).into())),
             inner,
+        }
+    }
+}
+
+impl From<LegacyExternalCrate> for ExternalCrate {
+    fn from(legacy: LegacyExternalCrate) -> Self {
+        // Exhaustive destructure — see the note in `From<LegacyCrate>`.
+        let LegacyExternalCrate {
+            name,
+            html_root_url,
+            path,
+        } = legacy;
+
+        ExternalCrate {
+            name,
+            html_root_url,
+            path,
         }
     }
 }
