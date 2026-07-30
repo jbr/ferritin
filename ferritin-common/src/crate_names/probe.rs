@@ -7,6 +7,8 @@
 //! `cargo test -p ferritin-common --lib crate_names::probe -- --ignored --nocapture`
 
 use super::*;
+use crate::string_utils::stem;
+use std::collections::HashMap;
 
 /// Load the artifacts the CLI/server already cached on this machine. Panics
 /// with a hint if they are absent — the probe is only meaningful over real
@@ -27,6 +29,7 @@ fn load() -> Loaded {
     parse(
         &read(crate_names::NAMES_FILE_V2),
         &read(crate_names::DESCRIPTIONS_FILE_V2),
+        &read(crate_names::FACETS_FILE_V1),
         Etags::default(),
         None,
     )
@@ -48,7 +51,7 @@ fn show(loaded: &Loaded, query: &str, weights: &TypeaheadWeights, limit: usize) 
 
 /// Queries that name a *concept* rather than a crate — the case description
 /// matching exists for. None of these are answerable from crate names alone.
-const CONCEPT_QUERIES: [&str; 12] = [
+pub(super) const CONCEPT_QUERIES: [&str; 12] = [
     "deserialize",
     "deserialization",
     "terminal colors",
@@ -83,7 +86,7 @@ fn description_cost_probe() {
         query_tokens.dedup();
 
         let start = Instant::now();
-        let counts = match_counts(&query_tokens, token_index, Some(&index));
+        let counts = match_counts(&query_tokens, token_index, Some(&index), None);
         let counts_time = start.elapsed();
 
         let start = Instant::now();

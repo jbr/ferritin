@@ -40,7 +40,7 @@ trillium-redirect = { version = "0.3.0", features = ["client"] }
 trillium-logger = { version = "0.5.4", features = ["client"] }
 trillium-compression = { version = "0.3.3", features = ["client"] }
 trillium-client-retry = "0.0.1"
-crate-names = "0.2.1"
+crate-names = "0.3.0"
 async-lock = "3"
 httpdate = "1.0.3"
 rust-stemmers = "1.2.0"
