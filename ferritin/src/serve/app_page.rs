@@ -39,8 +39,8 @@
 //! artifact never loaded answers `200` for everything, as it did before.
 
 use crate::{
+    crate_search::{CrateLookup, CrateSearchService},
     serve::{caching, spa_route},
-    typeahead::{CrateLookup, TypeaheadService},
 };
 use ferritin_common::CratePath;
 use percent_encoding::percent_decode_str;
@@ -153,7 +153,7 @@ impl Handler for AppPage {
             return conn;
         }
 
-        let Some(service) = conn.state::<Arc<TypeaheadService>>().cloned() else {
+        let Some(service) = conn.state::<Arc<CrateSearchService>>().cloned() else {
             return conn;
         };
 
@@ -244,7 +244,7 @@ pub(super) enum PageContent {
 }
 
 /// Resolve one decoded app path (no leading `/`) against the resident artifact.
-pub(super) async fn content(service: &TypeaheadService, item_path: &str) -> PageContent {
+pub(super) async fn content(service: &CrateSearchService, item_path: &str) -> PageContent {
     // The root and the `~` pages name no crate, so there is nothing to look up
     // and nothing that could be missing.
     if item_path.is_empty() || item_path.starts_with('~') {
@@ -269,7 +269,7 @@ pub(super) async fn content(service: &TypeaheadService, item_path: &str) -> Page
 }
 
 /// Derive the metadata for one app route from resident data alone.
-async fn resolve(conn: &Conn, service: &TypeaheadService) -> PageMeta {
+async fn resolve(conn: &Conn, service: &CrateSearchService) -> PageMeta {
     let url = absolute_url(conn);
     let image = image_url(conn);
     let path = percent_decode_str(conn.path()).decode_utf8_lossy();

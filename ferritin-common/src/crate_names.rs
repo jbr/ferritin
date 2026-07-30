@@ -349,6 +349,22 @@ impl CrateIndex {
         Some(typeahead_scored(loaded, prefix, limit, &weights))
     }
 
+    /// Complete-word crate search — the agent sibling of [`Self::typeahead`].
+    /// Tokens match exactly rather than as prefixes (`cli` does not reach
+    /// `client` crates, but does reach clap through its declared `cli`
+    /// keyword), and there is no fuzzy fill: for an agent, no results is a
+    /// real answer, where a page of least-bad matches invites a confident
+    /// wrong guess. See [`search::crate_search`].
+    ///
+    /// Reads only what is already loaded — it never fetches, so it is
+    /// synchronous. `None` means nothing is loaded yet; the intended caller
+    /// is a server whose refresh task loads the artifacts out of band.
+    pub fn search_crates(&self, query: &str, limit: usize) -> Option<(Vec<CrateEntry>, usize)> {
+        let state = self.state.read().unwrap();
+        let loaded = state.loaded.as_ref()?;
+        Some(crate_search(loaded, query, limit))
+    }
+
     /// An opaque identity for the currently loaded data, for callers deriving
     /// cache validators from artifact-backed answers. It changes exactly when
     /// the artifacts do.

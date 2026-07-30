@@ -54,10 +54,16 @@ impl Tool<RustdocTools> for Search {
         let navigator = crate::request::build_navigator(manifest_path);
         let mut request = Request::new(&navigator);
 
-        // Perform search using Navigator's built-in search
+        // Perform search using Navigator's built-in search. Complete-word
+        // semantics: this is an agent surface, so the query's final token is a
+        // whole word, not an as-you-type prefix.
         let limit = self.limit.unwrap_or(10);
         let crate_names = [self.crate_name.as_str()];
-        let results = match request.navigator().search(&self.query, &crate_names) {
+        let results = match request.navigator().search(
+            &self.query,
+            &crate_names,
+            ferritin_common::search::QueryCompletion::Complete,
+        ) {
             Ok(results) => results,
             Err(mut suggestions) => {
                 let mut result = format!(

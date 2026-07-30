@@ -1,4 +1,4 @@
-//! Crate-name typeahead over the shared [`CrateIndex`].
+//! Crate search over the shared [`CrateIndex`].
 //!
 //! The index — the crates.io namespace as a local artifact, fetched and kept
 //! fresh by [`ferritin_common::crate_names`] — is the same one version
@@ -9,18 +9,23 @@
 use ferritin_common::crate_names::{CrateEntry, CrateIndex, normalize};
 use std::sync::Arc;
 
-/// An owned typeahead result.
+/// An owned crate-search result.
 #[derive(Debug, Clone)]
-pub(crate) struct TypeaheadEntry {
+pub(crate) struct CrateSearchEntry {
     pub(crate) name: String,
     pub(crate) version: String,
+    /// `None` for std (not on crates.io) and for crates without one. The
+    /// typeahead JSON omits it; the MCP crate search renders it — for an
+    /// agent, the description is the evidence a result can be judged by.
+    pub(crate) description: Option<String>,
 }
 
-impl From<CrateEntry> for TypeaheadEntry {
+impl From<CrateEntry> for CrateSearchEntry {
     fn from(entry: CrateEntry) -> Self {
         Self {
             name: entry.name,
             version: entry.version.to_string(),
+            description: entry.description,
         }
     }
 }
@@ -56,28 +61,28 @@ pub(crate) enum CrateLookup {
 /// query (any query token, so a multi-word query counts its union of
 /// per-term matches) — `entries.len() < total` means truncation occurred.
 #[derive(Debug)]
-pub(crate) struct TypeaheadResults {
-    pub(crate) entries: Vec<TypeaheadEntry>,
+pub(crate) struct CrateSearchResults {
+    pub(crate) entries: Vec<CrateSearchEntry>,
     pub(crate) total: usize,
 }
 
-/// Shared server state answering crate-name typeahead queries.
+/// Shared server state answering crate-search queries.
 #[derive(Debug)]
-pub(crate) struct TypeaheadService {
+pub(crate) struct CrateSearchService {
     /// `None` without a docs.rs source, which is also a server that could not
     /// serve a crates.io crate if it offered one — so it offers only std.
     index: Option<Arc<CrateIndex>>,
     /// The standard library crates, resolved once at startup. They are not on
     /// crates.io, so the artifact cannot know about them, but ferritin serves
     /// their documentation — see [`Self::std_matches`].
-    std_crates: Vec<TypeaheadEntry>,
+    std_crates: Vec<CrateSearchEntry>,
 }
 
-impl TypeaheadService {
+impl CrateSearchService {
     /// `std_crates` are the standard library crates this server can actually
     /// serve, with the toolchain's version — resolved at startup so that
     /// answering a query never has to reach for the [`Store`](ferritin_common::Store).
-    pub(crate) fn new(index: Option<Arc<CrateIndex>>, std_crates: Vec<TypeaheadEntry>) -> Self {
+    pub(crate) fn new(index: Option<Arc<CrateIndex>>, std_crates: Vec<CrateSearchEntry>) -> Self {
         Self { index, std_crates }
     }
 
@@ -87,7 +92,7 @@ impl TypeaheadService {
     /// These are prepended to the crates.io results rather than ranked among
     /// them: `std` has no download count to rank by, and someone typing `std`
     /// on a Rust documentation site does not mean `stdweb`.
-    fn std_matches(&self, prefix: &str) -> Vec<TypeaheadEntry> {
+    fn std_matches(&self, prefix: &str) -> Vec<CrateSearchEntry> {
         let key = normalize(prefix);
         self.std_crates
             .iter()
@@ -109,9 +114,9 @@ impl TypeaheadService {
     /// the whole-name prefix alone, ranked by downloads — `s` means serde. An
     /// *empty* query is still nothing, though: it prefixes every name, so the
     /// only thing it could rank is the whole namespace.
-    pub(crate) async fn typeahead(&self, prefix: &str, limit: usize) -> Option<TypeaheadResults> {
+    pub(crate) async fn typeahead(&self, prefix: &str, limit: usize) -> Option<CrateSearchResults> {
         if prefix.is_empty() {
-            return Some(TypeaheadResults {
+            return Some(CrateSearchResults {
                 entries: Vec::new(),
                 total: 0,
             });
@@ -121,7 +126,7 @@ impl TypeaheadService {
             Some(index) => {
                 let (entries, total) = index.typeahead(prefix, limit).await?;
                 (
-                    entries.into_iter().map(TypeaheadEntry::from).collect(),
+                    entries.into_iter().map(CrateSearchEntry::from).collect(),
                     total,
                 )
             }
@@ -157,7 +162,38 @@ impl TypeaheadService {
             entries.splice(0..0, std_matches);
             entries.truncate(limit);
         }
-        Some(TypeaheadResults { entries, total })
+        Some(CrateSearchResults { entries, total })
+    }
+
+    /// Complete-word crate search — the agent sibling of [`Self::typeahead`],
+    /// backed by [`CrateIndex::search_crates`]: exact token matching, no
+    /// fuzzy fill, no exact hoist (a whole-name match already earns full name
+    /// credit). std crates are prepended only on an exact folded-name match,
+    /// since a concept query never names them.
+    ///
+    /// `None` means no namespace data is loaded (yet); unlike
+    /// [`Self::typeahead`] this never waits on a fetch, so a cold server
+    /// answers unavailable rather than blocking an agent on the network.
+    pub(crate) fn search(&self, query: &str, limit: usize) -> Option<CrateSearchResults> {
+        let index = self.index.as_ref()?;
+        let (entries, total) = index.search_crates(query, limit)?;
+        let mut entries: Vec<CrateSearchEntry> =
+            entries.into_iter().map(CrateSearchEntry::from).collect();
+
+        let key = normalize(query);
+        let std_matches: Vec<CrateSearchEntry> = self
+            .std_crates
+            .iter()
+            .filter(|entry| normalize(&entry.name) == key)
+            .cloned()
+            .collect();
+        let mut total = total;
+        if !std_matches.is_empty() {
+            total += std_matches.len();
+            entries.splice(0..0, std_matches);
+            entries.truncate(limit);
+        }
+        Some(CrateSearchResults { entries, total })
     }
 
     /// What this server knows about one exact crate name, from resident data

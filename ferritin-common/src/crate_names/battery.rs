@@ -264,6 +264,36 @@ fn fuzzy_fill_catches_typos() {
     assert_top_contains("tokoi", 8, "tokio");
 }
 
+/// The complete-word agent path ([`crate_search`]) matches tokens exactly and
+/// pads nothing.
+#[test]
+fn agent_search_uses_exact_tokens() {
+    let names = |query: &str| {
+        let (entries, _) = crate_search(loaded(), query, 8);
+        entries.into_iter().map(|e| e.name).collect::<Vec<_>>()
+    };
+
+    // In typeahead, `cli` prefix-matches `client` and buries clap (see the
+    // known-gaps note above); an exact `cli` reaches clap through its
+    // declared keyword.
+    assert!(
+        names("cli").iter().any(|n| n == "clap"),
+        "{:?}",
+        names("cli")
+    );
+    assert!(
+        names("mqtt client").iter().any(|n| n == "rumqttc"),
+        "{:?}",
+        names("mqtt client")
+    );
+
+    // Gibberish stays a null answer: no fuzzy fill on the agent path, where
+    // a page of least-bad matches invites a confident wrong guess.
+    let (entries, total) = crate_search(loaded(), "zzqxv wfplk", 8);
+    assert!(entries.is_empty(), "{entries:?}");
+    assert_eq!(total, 0);
+}
+
 /// Not an assertion: prints the pinned-fixture page for the whole probe
 /// battery, for choosing which behaviors are settled enough to ratchet.
 /// The probe harness serves the same purpose against the *live* cache; this

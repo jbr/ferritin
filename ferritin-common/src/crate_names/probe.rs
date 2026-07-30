@@ -86,7 +86,13 @@ fn description_cost_probe() {
         query_tokens.dedup();
 
         let start = Instant::now();
-        let counts = match_counts(&query_tokens, token_index, Some(&index), None);
+        let counts = match_counts(
+            &query_tokens,
+            token_index,
+            Some(&index),
+            None,
+            crate::search::QueryCompletion::AsYouType,
+        );
         let counts_time = start.elapsed();
 
         let start = Instant::now();

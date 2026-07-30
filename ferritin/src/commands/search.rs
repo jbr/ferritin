@@ -3,7 +3,7 @@ use crate::{
     request::Request,
     styled_string::{Document, DocumentNode, HeadingLevel, ListItem, Span, TruncationLevel},
 };
-use ferritin_common::DocRef;
+use ferritin_common::{DocRef, search::QueryCompletion};
 use rustdoc_types::Item;
 
 /// Structural model of a search outcome. The terminal path lowers it back to a
@@ -69,6 +69,7 @@ pub(crate) fn model<'a>(
     query: &str,
     limit: usize,
     crate_: Option<&str>,
+    completion: QueryCompletion,
 ) -> SearchDoc<'a> {
     log::info!("Searching for {query}");
 
@@ -81,7 +82,7 @@ pub(crate) fn model<'a>(
             .collect(),
     };
 
-    let scored_results = match request.navigator().search(query, &crate_names) {
+    let scored_results = match request.navigator().search(query, &crate_names, completion) {
         Ok(results) => results,
         Err(suggestions) => {
             let suggestions = suggestions
@@ -157,8 +158,9 @@ pub(crate) fn execute<'a>(
     query: &str,
     limit: usize,
     crate_: Option<&str>,
+    completion: QueryCompletion,
 ) -> (Document<'a>, bool) {
-    let doc = model(request, query, limit, crate_);
+    let doc = model(request, query, limit, crate_, completion);
     let is_error = doc.is_error();
     (lower_search(doc), is_error)
 }

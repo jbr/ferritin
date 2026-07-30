@@ -41,7 +41,7 @@ const SCHEMA_VERSION: &str = "1.0.0";
 /// feature is a dev tool, never shipped in release binaries.
 pub(crate) const DEFAULT_OUTPUT_PATH: &str =
     concat!(env!("CARGO_MANIFEST_DIR"), "/assets/openapi.json");
-use crate::json::{JsonItem, JsonList, JsonNotFound, JsonSearch, JsonTypeahead};
+use crate::json::{JsonCrateSearch, JsonItem, JsonList, JsonNotFound, JsonSearch};
 use serde::Serialize;
 use std::collections::BTreeMap;
 
@@ -56,7 +56,7 @@ pub(crate) fn openapi_document() -> String {
     let item = generator.subschema_for::<JsonItem<'static>>();
     let search = generator.subschema_for::<JsonSearch<'static>>();
     let not_found = generator.subschema_for::<JsonNotFound>();
-    let typeahead = generator.subschema_for::<JsonTypeahead>();
+    let crate_search = generator.subschema_for::<JsonCrateSearch>();
     let _ = generator.subschema_for::<JsonList>();
 
     let schemas: Schema = generator.take_definitions(true).into();
@@ -117,13 +117,15 @@ pub(crate) fn openapi_document() -> String {
                 },
             ),
             (
-                "/typeahead",
+                "/crates",
                 PathItem {
                     get: Operation {
-                        summary: "Crate-name typeahead: the top crates (by download rank) whose \
-                                  names start with the query prefix.",
+                        summary: "Crate search: the top crates matching the query by name, \
+                                  description, or declared keyword, ranked by evidence tier and \
+                                  downloads. As-you-type semantics: tokens match as prefixes, and \
+                                  typos fall back to fuzzy matching.",
                         parameters: vec![
-                            Param::query("q", "Crate name prefix."),
+                            Param::query("q", "Search query: crate name or capability words."),
                             Param::optional_int_query(
                                 "limit",
                                 "Maximum results (default 10, capped at 100).",
@@ -131,7 +133,7 @@ pub(crate) fn openapi_document() -> String {
                         ],
                         responses: BTreeMap::from([(
                             "200",
-                            Response::json("Typeahead results, in rank order.", typeahead),
+                            Response::json("Crate-search results, best first.", crate_search),
                         )]),
                     },
                 },
