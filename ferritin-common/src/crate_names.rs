@@ -51,6 +51,8 @@
 //! costs a decompression rather than a request.
 
 #[cfg(test)]
+mod battery;
+#[cfg(test)]
 mod probe;
 mod search;
 

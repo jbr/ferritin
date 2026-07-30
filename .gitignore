@@ -3,3 +3,6 @@
 .envrc
 .claude
 CLAUDE.md
+
+# downloaded typeahead-battery fixtures (ferritin-common/src/crate_names/battery.rs)
+ferritin-common/tests/fixtures/
