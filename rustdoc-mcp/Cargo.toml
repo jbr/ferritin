@@ -32,7 +32,7 @@ fieldwork = "0.5.3"
 log = "0.4.33"
 mcplease = "0.2.3"
 rustdoc-types.workspace = true
-schemars = { version = "1.2.1", features = ["derive"] }
+schemars = { version = "1.2.2", features = ["derive"] }
 serde.workspace = true
 shellexpand.workspace = true
 strum = { version = "0.28.0", features = ["derive"] }
