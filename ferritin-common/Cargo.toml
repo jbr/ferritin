@@ -49,4 +49,4 @@ rust-stemmers = "1.2.0"
 env_logger = "0.11.11"
 pulldown-cmark = "0.13.4"
 # verifies the pinned typeahead-battery fixtures (crate_names::battery)
-sha2 = "0.10"
+sha2 = "0.11"
