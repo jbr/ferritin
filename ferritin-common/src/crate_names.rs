@@ -52,16 +52,20 @@
 #[cfg(test)]
 mod probe;
 
-use crate::string_utils::case_aware_jaro_winkler;
+use crate::string_utils::{case_aware_jaro_winkler, stem};
 use anyhow::{Context, Result, anyhow};
 pub use crate_names::normalize;
 use crate_names::{CrateNames, Descriptions};
+use rustc_hash::FxHashMap;
 use semver::Version;
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{BTreeMap, HashMap, HashSet},
     path::{Path, PathBuf},
-    sync::{OnceLock, RwLock},
+    sync::{
+        OnceLock, RwLock,
+        atomic::{AtomicBool, Ordering},
+    },
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 use trillium_client::{Client, KnownHeaderName, Status};
@@ -179,6 +183,22 @@ struct Loaded {
     /// because most typeahead queries are answered by prefix/token matching
     /// alone and never pay for it.
     trigram_index: OnceLock<TrigramIndex>,
+    /// Inverted index over the stemmed words of each crate's description
+    /// (see [`DescriptionIndex`]). Built eagerly by
+    /// [`CrateIndex::index_descriptions`] where descriptions are searched, and
+    /// on first use otherwise.
+    description_index: OnceLock<DescriptionIndex>,
+}
+
+impl Loaded {
+    /// The description index, building it if this is the first use. Costly
+    /// enough that a server should have built it off the request path already
+    /// (see [`CrateIndex::index_descriptions`]); this is the fallback, not the
+    /// intended path.
+    fn description_index(&self) -> &DescriptionIndex {
+        self.description_index
+            .get_or_init(|| DescriptionIndex::build(&self.names, &self.descriptions))
+    }
 }
 
 #[derive(Default)]
@@ -204,6 +224,9 @@ pub struct CrateIndex {
     /// download, and the background refresher takes it so its revalidation never
     /// races a cold start.
     fetch_lock: async_lock::Mutex<()>,
+    /// Whether this process searches crate descriptions, and so needs the
+    /// [`DescriptionIndex`] built eagerly. See [`Self::search_descriptions`].
+    search_descriptions: AtomicBool,
     state: RwLock<State>,
 }
 
@@ -241,8 +264,24 @@ impl CrateIndex {
                 .unwrap_or_else(|_| crate_names::DESCRIPTIONS_URL_V2.into()),
             dir: cache_dir.join("crate-names"),
             fetch_lock: async_lock::Mutex::new(()),
+            search_descriptions: AtomicBool::new(false),
             state: RwLock::new(State::default()),
         }
+    }
+
+    /// Declare that this process will search crate descriptions, so the
+    /// [`DescriptionIndex`] should be built as part of loading rather than on
+    /// the first query that needs it. Building it costs seconds of CPU over
+    /// the whole namespace, which is fine once at startup and once a day after
+    /// that, and not fine on a typeahead keystroke.
+    ///
+    /// Off by default because only the server searches descriptions: the CLI
+    /// uses this index solely to resolve versions ([`Self::get`]), and would
+    /// pay the whole cost for nothing. Set it *before* the first load — on an
+    /// index that has already loaded, it takes effect at the next refresh, and
+    /// queries until then fall back to building on demand.
+    pub fn search_descriptions(&self) {
+        self.search_descriptions.store(true, Ordering::Relaxed);
     }
 
     /// The crate spelled `name`, folding `-`/`_` and case the way crates.io
@@ -269,14 +308,23 @@ impl CrateIndex {
     /// disk, and the network unreachable.
     pub async fn typeahead(&self, prefix: &str, limit: usize) -> Option<(Vec<CrateEntry>, usize)> {
         self.ensure_fresh().await;
+
+        // Description matching is the server's; a process that hasn't declared
+        // it searches descriptions gets name matching alone rather than
+        // silently paying seconds to index the namespace. That is the CLI,
+        // which reaches this only for crate-name "did you mean".
+        let weights = TypeaheadWeights {
+            description_match: if self.search_descriptions.load(Ordering::Relaxed) {
+                TypeaheadWeights::default().description_match
+            } else {
+                0.0
+            },
+            ..TypeaheadWeights::default()
+        };
+
         let state = self.state.read().unwrap();
         let loaded = state.loaded.as_ref()?;
-        Some(typeahead_scored(
-            loaded,
-            prefix,
-            limit,
-            &TypeaheadWeights::default(),
-        ))
+        Some(typeahead_scored(loaded, prefix, limit, &weights))
     }
 
     /// An opaque identity for the currently loaded data, for callers deriving
@@ -399,6 +447,7 @@ impl CrateIndex {
             && let Some((loaded, meta)) = self.load_from_disk().await
         {
             let fresh = now_unix() < meta.due_at();
+            let loaded = self.indexed(loaded).await;
             let mut state = self.state.write().unwrap();
             state.loaded = Some(loaded);
             if fresh {
@@ -418,6 +467,15 @@ impl CrateIndex {
 
         let outcome = self.fetch(&etags, last_modified).await;
 
+        // Indexing before taking the write lock, not after: it is seconds of
+        // CPU, and holding the lock across it would stall every query on a
+        // refresh. The new data simply becomes visible a little later, fully
+        // built, and until then queries keep reading the previous copy.
+        let outcome = match outcome {
+            Ok(Some(loaded)) => Ok(Some(self.indexed(loaded).await)),
+            other => other,
+        };
+
         let mut state = self.state.write().unwrap();
         state.attempted_at = Some(Instant::now());
         match outcome {
@@ -433,6 +491,27 @@ impl CrateIndex {
             Ok(None) => log::debug!("crate-names artifacts unchanged (304)"),
             Err(error) => log::warn!("failed to refresh crate-names artifacts: {error:#}"),
         }
+    }
+
+    /// Build the description index into freshly loaded data, if this process
+    /// searches descriptions (see [`Self::search_descriptions`]).
+    ///
+    /// Indexing the whole namespace's prose is seconds of CPU — far too much
+    /// to put on a query, and too much to run on an async worker — so it goes
+    /// to a blocking thread, and it happens *here*, between loading and
+    /// publishing, so the data is never visible in a half-built state. A
+    /// process that never searches descriptions (the CLI) skips it entirely
+    /// and pays nothing.
+    async fn indexed(&self, loaded: Loaded) -> Loaded {
+        if !self.search_descriptions.load(Ordering::Relaxed) {
+            return loaded;
+        }
+        trillium_smol::async_global_executor::spawn_blocking(move || {
+            let index = DescriptionIndex::build(&loaded.names, &loaded.descriptions);
+            let _ = loaded.description_index.set(index);
+            loaded
+        })
+        .await
     }
 
     fn names_path(&self) -> PathBuf {
@@ -669,6 +748,7 @@ fn parse(
         last_modified,
         token_index: OnceLock::new(),
         trigram_index: OnceLock::new(),
+        description_index: OnceLock::new(),
     })
 }
 
@@ -699,6 +779,21 @@ struct TypeaheadWeights {
     /// case (`trillium tokio` ≡ `trillium-tokio`) is stronger still: the
     /// service layer hoists it to the front outright.
     all_exact: f32,
+    /// Per query token matched in the crate's *description* (see
+    /// [`DescriptionIndex`]) and **not** in its name. Credit per token is
+    /// `max(name, description)`, never the sum: a token found in both is one
+    /// piece of evidence seen twice, and summing it demotes the crate a query
+    /// actually names in favor of its neighbors. `serde`'s own description
+    /// says "serialization/deserialization framework", never "serde", so
+    /// under a summing rule the query `serde` ranked `serde_spanned` and
+    /// `serde_urlencoded` — which do say it — above `serde` itself.
+    ///
+    /// Deliberately a fraction of `term_match`: a description mention is
+    /// weaker evidence than a name match, and its job is to reach crates the
+    /// name index cannot see at all (`deserialization` → `serde`) rather than
+    /// to reorder the ones it can. Zero disables description matching
+    /// outright, including building the index.
+    description_match: f32,
     /// Per-unit contribution of the download rank.
     rank: f32,
 }
@@ -709,6 +804,7 @@ impl Default for TypeaheadWeights {
             term_match: 128.0,
             whole_prefix: 12.0,
             all_exact: 16.0,
+            description_match: 96.0,
             rank: 1.0,
         }
     }
@@ -731,10 +827,12 @@ fn typeahead_scored(
     query_tokens.sort_unstable();
     query_tokens.dedup();
 
-    // Name-token matches, with per-term credit: each crate is scored by how
-    // many distinct query tokens prefix one of its name tokens, so a full
-    // match ranks above a subset match but both are candidates.
-    let mut candidates = term_match_counts(&query_tokens, token_index);
+    // Per-term credit: each crate is scored by how many distinct query tokens
+    // it matched and how well, so a full match ranks above a subset match but
+    // both are candidates. Description matching (when enabled) adds candidates
+    // the name index cannot reach at all — `deserialization` finds serde.
+    let description_index = (weights.description_match > 0.0).then(|| loaded.description_index());
+    let mut candidates = match_counts(&query_tokens, token_index, description_index);
 
     // The crates where every query token matches a name token *exactly* — a
     // finished-typing signal worth a bonus over prefix-only full matches.
@@ -753,13 +851,13 @@ fn typeahead_scored(
         loaded.names.prefix_indices(&whole_key)
     };
     for crate_index in whole.clone() {
-        let matched = candidates.entry(crate_index as u32).or_insert(0);
-        *matched = (*matched).max(query_tokens.len() as u32);
+        let matched = candidates.entry(crate_index as u32).or_default();
+        matched.name = matched.name.max(query_tokens.len() as u32);
     }
 
     let mut scored: Vec<(f32, u32)> = candidates
         .iter()
-        .filter_map(|(&crate_index, &matched)| {
+        .filter_map(|(&crate_index, matched)| {
             let found = loaded.names.entry_at(crate_index as usize)?;
             let whole_bonus = if whole.contains(&(crate_index as usize)) {
                 weights.whole_prefix
@@ -771,7 +869,8 @@ fn typeahead_scored(
             } else {
                 0.0
             };
-            let score = weights.term_match * matched as f32
+            let score = weights.term_match * matched.name as f32
+                + weights.description_match * matched.description as f32
                 + whole_bonus
                 + exact_bonus
                 + weights.rank * f32::from(found.rank);
@@ -780,14 +879,27 @@ fn typeahead_scored(
         .collect();
     let total = scored.len();
 
-    scored.sort_by(|a, b| {
+    // Descending by score, ties broken by name so the order is total and the
+    // page is deterministic.
+    let ranked = |a: &(f32, u32), b: &(f32, u32)| {
         b.0.total_cmp(&a.0).then_with(|| {
             let a_name = loaded.names.entry_at(a.1 as usize).map(|e| e.name);
             let b_name = loaded.names.entry_at(b.1 as usize).map(|e| e.name);
             a_name.cmp(&b_name)
         })
-    });
-    scored.truncate(limit);
+    };
+
+    // Select the page, then sort only it. Fully sorting is a real cost here,
+    // not a micro-optimization: description matching routinely produces tens
+    // of thousands of candidates, `rank` is a `u8` so they pile into 256 score
+    // buckets, and the name tie-break that separates them costs two artifact
+    // lookups per comparison. Sorting all 15k candidates of `random number
+    // generator` to show 8 of them was 18 of the query's 28ms.
+    if scored.len() > limit {
+        scored.select_nth_unstable_by(limit, ranked);
+        scored.truncate(limit);
+    }
+    scored.sort_by(ranked);
 
     let mut entries: Vec<CrateEntry> = scored
         .into_iter()
@@ -1037,15 +1149,187 @@ impl TokenIndex {
     }
 }
 
-/// For each crate with a name token prefixed by at least one query token, how
-/// many distinct query tokens matched (the tokens are pre-deduped, and
-/// `indices_with_prefix` dedupes per token, so counting is exact). An empty
-/// query yields no candidates.
-fn term_match_counts(query_tokens: &[String], index: &TokenIndex) -> HashMap<u32, u32> {
-    let mut counts = HashMap::new();
+/// Words shorter than this are not indexed from a description. Two-letter
+/// words are almost entirely function words (`in`, `of`, `to`), and the
+/// meaningful exceptions people search for (`io`, `os`) are crate *names*,
+/// which the name index already covers.
+const DESCRIPTION_MIN_CHARS: usize = 3;
+
+/// A stem occurring in more than this fraction of all descriptions is dropped
+/// from the index rather than kept: `rust`, `librari`, `implement`, `use` and
+/// their kin match so much of the namespace that they only add noise and
+/// postings. A frequency cut is preferred to a hand-written stopword list
+/// because it adapts to what this corpus actually looks like — crates.io
+/// descriptions are not general English — and needs no maintenance.
+const DESCRIPTION_MAX_DOCUMENT_FREQUENCY: f32 = 0.05;
+
+/// A lazily-built inverted index over the *stemmed* words of each crate's
+/// crates.io description, mapping each stem to the [`CrateNames`] line indices
+/// whose description contains it — the same line-index values as
+/// [`TokenIndex`], so description matches and name matches score against one
+/// candidate map.
+///
+/// Stemming is what makes this worth having: descriptions are prose, so a
+/// query for `deserialize` must reach a description that says
+/// `deserialization`, which exact token matching cannot do. Names get no such
+/// treatment — a crate name is not an English word, and stemming would turn
+/// `serde` into `serd`.
+///
+/// Same build-once/drop-on-refresh lifecycle as the other side indexes: it is
+/// built on the first typeahead query and dropped with each artifact refresh,
+/// so it is never stale, and the CLI — which only calls [`CrateIndex::get`] —
+/// never pays to build it.
+#[derive(Debug, Default)]
+struct DescriptionIndex {
+    /// Sorted by stem, so a prefix range is a binary search.
+    postings: Vec<(String, Vec<u32>)>,
+}
+
+impl DescriptionIndex {
+    /// Both artifacts are sorted by the same folded name key and the
+    /// descriptions are a subset of the names, so one merge walk translates
+    /// each description into the names line index it belongs to without
+    /// building a 300k-entry name→index map.
+    ///
+    /// This walks the whole namespace, so it is written to allocate only when
+    /// it has to: names are compared folded in place, each word is lowercased
+    /// into one reusable buffer, and a stem is turned into a `String` only the
+    /// first time it is seen.
+    fn build(names: &CrateNames, descriptions: &Descriptions) -> Self {
+        let start = Instant::now();
+        let mut map: FxHashMap<String, Vec<u32>> = FxHashMap::default();
+        let mut word = String::new();
+
+        let mut cursor = 0;
+        let mut cursor_name = names.entry_at(0).map(|entry| entry.name);
+        for (name, description) in descriptions.iter() {
+            while cursor_name.is_some_and(|current| folded_cmp(current, name).is_lt()) {
+                cursor += 1;
+                cursor_name = names.entry_at(cursor).map(|entry| entry.name);
+            }
+            if !cursor_name.is_some_and(|current| folded_cmp(current, name).is_eq()) {
+                // A description for a crate the names artifact doesn't have.
+                // The two are published together so this shouldn't happen, but
+                // skipping is the only sane response and keeps the walk in step.
+                continue;
+            }
+            for raw in description.split(|c: char| !c.is_alphanumeric()) {
+                if raw.chars().count() < DESCRIPTION_MIN_CHARS {
+                    continue;
+                }
+                word.clear();
+                word.extend(raw.chars().flat_map(char::to_lowercase));
+                let stemmed = stem(&word);
+                match map.get_mut(stemmed.as_ref()) {
+                    Some(indices) => indices.push(cursor as u32),
+                    None => {
+                        map.insert(stemmed.into_owned(), vec![cursor as u32]);
+                    }
+                }
+            }
+        }
+
+        let ceiling = (names.len() as f32 * DESCRIPTION_MAX_DOCUMENT_FREQUENCY) as usize;
+        let indexed = map.len();
+        let mut postings: Vec<(String, Vec<u32>)> = map
+            .into_iter()
+            .filter_map(|(word, mut indices)| {
+                // A stem repeated within one description pushes its index twice
+                // adjacently; across crates indices ascend.
+                indices.dedup();
+                (indices.len() <= ceiling).then_some((word, indices))
+            })
+            .collect();
+        postings.sort_unstable_by(|(a, _), (b, _)| a.cmp(b));
+
+        log::debug!(
+            "⏱️ built description index ({} stems, {} dropped above df {ceiling}) in {:?}",
+            postings.len(),
+            indexed - postings.len(),
+            start.elapsed()
+        );
+        Self { postings }
+    }
+
+    /// The distinct crate line-indices whose description contains a stem
+    /// beginning with `prefix`, sorted and deduped.
+    fn indices_with_prefix(&self, prefix: &str) -> Vec<u32> {
+        let start = self
+            .postings
+            .partition_point(|(word, _)| word.as_str() < prefix);
+
+        let mut indices = Vec::new();
+        for (word, crate_indices) in &self.postings[start..] {
+            if !word.starts_with(prefix) {
+                break;
+            }
+            indices.extend_from_slice(crate_indices);
+        }
+        indices.sort_unstable();
+        indices.dedup();
+        indices
+    }
+}
+
+/// Order two crate names by the folded key the artifacts are sorted under —
+/// ASCII case, with `-` and `_` equivalent — without allocating. Mirrors
+/// [`crate_names::normalize`], of which the reader exposes only the allocating
+/// form; the merge walk in [`DescriptionIndex::build`] does this ~600k times,
+/// which is worth not allocating for.
+fn folded_cmp(left: &str, right: &str) -> std::cmp::Ordering {
+    fn fold(byte: u8) -> u8 {
+        match byte {
+            b'_' => b'-',
+            other => other.to_ascii_lowercase(),
+        }
+    }
+    left.bytes().map(fold).cmp(right.bytes().map(fold))
+}
+
+/// How many distinct query tokens a crate matched, split by where. A token is
+/// counted in exactly one of the two — the name if it matched there, the
+/// description otherwise — so a crate is never paid twice for one token.
+#[derive(Debug, Clone, Copy, Default)]
+struct MatchCounts {
+    /// Tokens prefixing one of the crate's *name* tokens.
+    name: u32,
+    /// Tokens found only in the crate's *description*.
+    description: u32,
+}
+
+/// Count each query token's best match per crate. The tokens are pre-deduped
+/// and each index dedupes per token, so counting is exact; an empty query
+/// yields no candidates.
+///
+/// Description tokens are stemmed before lookup so they meet the index on its
+/// own terms, and then matched as prefixes so a word still being typed can
+/// match. The residual gap is a *partly*-typed word whose stem diverges from
+/// the whole word's (`deserializ` does not prefix `deseri`), which the name
+/// and fuzzy passes still cover.
+fn match_counts(
+    query_tokens: &[String],
+    names: &TokenIndex,
+    descriptions: Option<&DescriptionIndex>,
+) -> HashMap<u32, MatchCounts> {
+    let mut counts: HashMap<u32, MatchCounts> = HashMap::new();
     for token in query_tokens {
-        for crate_index in index.indices_with_prefix(token) {
-            *counts.entry(crate_index).or_insert(0) += 1;
+        let named = names.indices_with_prefix(token);
+        for &crate_index in &named {
+            counts.entry(crate_index).or_default().name += 1;
+        }
+
+        let Some(descriptions) = descriptions else {
+            continue;
+        };
+        if token.chars().count() < DESCRIPTION_MIN_CHARS {
+            continue;
+        }
+        for crate_index in descriptions.indices_with_prefix(&stem(token)) {
+            // `named` is sorted and deduped, so this is the cheap half of the
+            // max: a token already credited to the name is not credited again.
+            if named.binary_search(&crate_index).is_err() {
+                counts.entry(crate_index).or_default().description += 1;
+            }
         }
     }
     counts

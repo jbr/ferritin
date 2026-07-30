@@ -165,6 +165,10 @@ pub fn serve() {
     // and revalidates hourly, so no request ever pays to fetch or revalidate
     // the artifact — every lookup just reads what the task last loaded.
     if let Some(index) = crate_index.clone() {
+        // The typeahead matches descriptions as well as names, so this process
+        // — unlike the CLI — wants the description index built as part of each
+        // load rather than on whichever keystroke first needs it.
+        index.search_descriptions();
         trillium_smol::async_global_executor::spawn(async move {
             index.run_periodic_refresh().await;
         })
