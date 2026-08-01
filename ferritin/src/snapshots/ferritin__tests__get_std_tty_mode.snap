@@ -586,7 +586,7 @@ Modules
     Make an item visible to others. [...]
 
   ◦ [random](https://doc.rust-lang.org/nightly/std/random/index.html) 
-    Random value generation.
+    Random value generation. [...]
 
   ◦ [range](https://doc.rust-lang.org/nightly/core/range/index.html) 
     Replacement range types [...]

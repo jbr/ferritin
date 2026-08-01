@@ -861,7 +861,7 @@ The keyword <inline-code>pub</inline-code> makes any module, function, or data s
 <type-name>random</type-name> </p>
 <truncated level="single-line"><p>
 Random value generation.</p>
-</truncated>
+This module provides two low-level interfaces for <elided chars="1624"/></truncated>
 </item>
   <item><p>
 <type-name>range</type-name> </p>
