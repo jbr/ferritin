@@ -227,7 +227,7 @@ Non-exhaustive list of known limitations:
 - process — A module for working with processes. [+20 lines]
 - ptr — Manually manage memory through raw pointers. [+66 lines]
 - pub_keyword — Make an item visible to others. [+2 lines]
-- random — Random value generation.
+- random — Random value generation. [+7 lines]
 - range — Replacement range types [+2 lines]
 - rc — Single-threaded reference-counting pointers. 'Rc' stands for 'Reference Counted'. [+20 lines]
 - ref_keyword — Bind by reference during pattern matching. [+8 lines]

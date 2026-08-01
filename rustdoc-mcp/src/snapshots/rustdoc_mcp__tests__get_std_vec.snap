@@ -143,7 +143,7 @@ proc_macro_attribute // Defines a function-like procedural macro. [+44 more line
 process // A module for working with processes. [+145 more lines]
 ptr // Manually manage memory through raw pointers. [+399 more lines]
 pub_keyword // Make an item visible to others. [+10 more lines]
-random // Random value generation.
+random // Random value generation. [+48 more lines]
 range // # Replacement range types [+15 more lines]
 rc // Single-threaded reference-counting pointers. 'Rc' stands for 'Reference [+239 more lines]
 ref_keyword // Bind by reference during pattern matching. [+45 more lines]

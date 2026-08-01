@@ -2573,7 +2573,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
                 ]
               }
             ],
-            "level": "SingleLine"
+            "level": "SingleLine",
+            "truncated": true
           }
         ]
       },
