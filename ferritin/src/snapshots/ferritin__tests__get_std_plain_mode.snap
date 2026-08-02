@@ -365,6 +365,9 @@ Modules
   ◦ no_std_attribute 
     Prevents automatically linking the standard library. [...]
 
+  ◦ non_exhaustive_attribute 
+    Indicates that a type might have more fields or variants added in the future. [...]
+
   ◦ num 
     Additional functionality for numerics. [...]
 

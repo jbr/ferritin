@@ -202,7 +202,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::prelude::v1::ambiguous_macros_only::core_arch::arch::x86::sse::_mm_prefetch",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.3,
+      "score": 30.2,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -242,7 +242,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::prelude::v1::ambiguous_macros_only::arch::x86::sse::_mm_prefetch",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.3,
+      "score": 30.2,
       "docs": [
         {
           "type": "truncatedBlock",
