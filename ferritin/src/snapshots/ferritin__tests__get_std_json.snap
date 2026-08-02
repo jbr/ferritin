@@ -3298,6 +3298,29 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
+        "path": "non_exhaustive_attribute",
+        "kind": "module",
+        "url": "https://doc.rust-lang.org/nightly/std/non_exhaustive_attribute/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Indicates that a type might have more fields or variants added in the future.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
         "path": "as_keyword",
         "kind": "module",
         "url": "https://doc.rust-lang.org/nightly/std/as_keyword/index.html",

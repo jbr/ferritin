@@ -11,14 +11,14 @@ Search results for 'generic struct'
   ◦ [alloc::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 67.3
     A trait for borrowing data. [...]
 
-  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html)  (Struct) - score: 66.2
+  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html)  (Struct) - score: 66.4
     A simple struct for testing basic functionality. [...]
 
-  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html)  (Enum) - score: 65.3
+  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html)  (Enum) - score: 65.2
     A generic enum for testing [...]
 
   ◦ [std::prelude::rust_2021::ambiguous_macros_only::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) -
-    score: 64.3
+    score: 64.4
     A trait for borrowing data. [...]
 
   ◦ [core::prelude::v1::ambiguous_macros_only::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score:
@@ -28,15 +28,14 @@ Search results for 'generic struct'
   ◦ [std::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.8
     A common trait that allows explicit creation of a duplicate value. [...]
 
+  ◦ [alloc::io::copy::generic](https://doc.rust-lang.org/nightly/alloc/io/copy/generic/index.html)  (Module) - score: 62.4
+
   ◦ [core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) -
-    score: 62.6
+    score: 62.4
     Compile-time type information about instantiated generics of structs, enum and
     union variants.
 
   ◦ [std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)
-    [mystd::mem::type_info::Generic](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 62.6
+    [mystd::mem::type_info::Generic](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 62.4
     Compile-time type information about instantiated generics of structs, enum and
     union variants.
-
-  ◦ [core::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.1
-    A common trait that allows explicit creation of a duplicate value. [...]

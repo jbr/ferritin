@@ -447,6 +447,9 @@ Modules
   ◦ [no_std_attribute](https://doc.rust-lang.org/nightly/std/no_std_attribute/index.html) 
     Prevents automatically linking the standard library. [...]
 
+  ◦ [non_exhaustive_attribute](https://doc.rust-lang.org/nightly/std/non_exhaustive_attribute/index.html) 
+    Indicates that a type might have more fields or variants added in the future. [...]
+
   ◦ [num](https://doc.rust-lang.org/nightly/std/num/index.html) 
     Additional functionality for numerics. [...]
 

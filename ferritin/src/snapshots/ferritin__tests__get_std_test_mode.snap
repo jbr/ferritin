@@ -610,6 +610,12 @@ Prevents automatically linking the standard library.</p>
 Written as an inner<inline-code>no_std</inline-code> attribute stops the compiler from linking <inline-code>std</inline-code> into the crate, and only<inline-code>core</inline-code>. <elided chars="1014"/></truncated>
 </item>
   <item><p>
+<type-name>non_exhaustive_attribute</type-name> </p>
+<truncated level="single-line"><p>
+Indicates that a type might have more fields or variants added in the future.</p>
+Pla<inline-code>#[n</inline-code> the exi <elided chars="1111"/></truncated>
+</item>
+  <item><p>
 <type-name>num</type-name> </p>
 <truncated level="single-line"><p>
 Additional functionality for numerics.</p>
@@ -749,7 +755,7 @@ The size of this primitive is how many location in memory. For example, on a 32 
 <type-name>prim_never</type-name> </p>
 <truncated level="single-line"><p>
 The <inline-code>!</inline-code> type, also called "never".</p>
-<inline-code>!</inline-code> represents the type of computations which the <inline-code>exit</inline-code> function <inline-code>fn exit(code: i32) -> !</inline-code> exits the process without ever returning, and so returns <inline-code>!</inline-code>. <elided chars="6668"/></truncated>
+<inline-code>!</inline-code> represents the type of computations which the <inline-code>exit</inline-code> function <inline-code>fn exit(code: i32) -> !</inline-code> exits the process without ever returning, and so returns <inline-code>!</inline-code>. <elided chars="6684"/></truncated>
 </item>
   <item><p>
 <type-name>prim_pointer</type-name> </p>
@@ -849,7 +855,7 @@ This module is mostly concerned with processes, but it also provides <inline-cod
 <type-name>ptr</type-name> </p>
 <truncated level="single-line"><p>
 Manually manage memory through raw pointers.</p>
-<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="20274"/></truncated>
+<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="20900"/></truncated>
 </item>
   <item><p>
 <type-name>pub_keyword</type-name> </p>
@@ -882,7 +888,7 @@ Bind by reference during pattern matching.</p>
 <type-name>result</type-name> </p>
 <truncated level="single-line"><p>
 Error handling with the <inline-code>Result</inline-code> type.</p>
-<inline-code>Result<T, E></inline-code> is the type used for returning and errors. It is an enum with the variants, <inline-code>Ok(T)</inline-code>, representing success and containing a value, and <inline-code>Err(E)</inline-code>, representing error and containing an error value. <elided chars="13755"/></truncated>
+<inline-code>Result<T, E></inline-code> is the type used for returning and errors. It is an enum with the variants, <inline-code>Ok(T)</inline-code>, representing success and containing a value, and <inline-code>Err(E)</inline-code>, representing error and containing an error value. <elided chars="13782"/></truncated>
 </item>
   <item><p>
 <type-name>return_keyword</type-name> </p>
@@ -1460,7 +1466,7 @@ The size of this primitive is how many location in memory. For example, on a 32 
 <type-name>never</type-name> </p>
 <truncated level="single-line"><p>
 The <inline-code>!</inline-code> type, also called "never".</p>
-<inline-code>!</inline-code> represents the type of computations which the <inline-code>exit</inline-code> function <inline-code>fn exit(code: i32) -> !</inline-code> exits the process without ever returning, and so returns <inline-code>!</inline-code>. <elided chars="6668"/></truncated>
+<inline-code>!</inline-code> represents the type of computations which the <inline-code>exit</inline-code> function <inline-code>fn exit(code: i32) -> !</inline-code> exits the process without ever returning, and so returns <inline-code>!</inline-code>. <elided chars="6684"/></truncated>
 </item>
   <item><p>
 <type-name>pointer</type-name> </p>
