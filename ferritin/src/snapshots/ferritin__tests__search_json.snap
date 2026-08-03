@@ -105,7 +105,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::prelude::v1::ambiguous_macros_only::panic::location::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 37.8,
+      "score": 37.7,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -129,7 +129,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::prelude::v1::ambiguous_macros_only::panic::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 37.8,
+      "score": 37.7,
       "docs": [
         {
           "type": "truncatedBlock",

@@ -18,11 +18,11 @@ Search results for 'trigger line-based truncation'
     The one-indexed line of the source file where the span starts. [...]
 
   ◦ [core::prelude::v1::ambiguous_macros_only::panic::location::Location::line](https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line) 
-    (Function) - score: 37.8
+    (Function) - score: 37.7
     Returns the line number from which the panic originated. [...]
 
   ◦ [std::prelude::v1::ambiguous_macros_only::panic::Location::line](https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function)
-    - score: 37.8
+    - score: 37.7
     Returns the line number from which the panic originated. [...]
 
   ◦ [alloc::io::buf_read::BufRead::read_line](https://doc.rust-lang.org/nightly/alloc/io/buf_read/BufRead/fn.read_line.html)  (Function) - score: 32.4
