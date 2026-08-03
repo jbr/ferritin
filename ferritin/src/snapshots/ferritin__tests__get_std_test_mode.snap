@@ -855,7 +855,7 @@ This module is mostly concerned with processes, but it also provides <inline-cod
 <type-name>ptr</type-name> </p>
 <truncated level="single-line"><p>
 Manually manage memory through raw pointers.</p>
-<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="20900"/></truncated>
+<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="21409"/></truncated>
 </item>
   <item><p>
 <type-name>pub_keyword</type-name> </p>
