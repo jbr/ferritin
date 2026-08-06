@@ -11,19 +11,19 @@ A trait for testing extremely long documentation that exceeds line limits.</p>
 This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
 </item>
   <item><p>
-core::line  (Macro) - score: 53.0</p>
+core::line  (Macro) - score: 52.9</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-std::prelude::v1::line  (Macro) - score: 53.0</p>
+std::prelude::v1::line  (Macro) - score: 52.9</p>
 <truncated level="single-line"><p>
 Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-proc_macro::Span::line  (Function) - score: 37.8</p>
+proc_macro::Span::line  (Function) - score: 37.9</p>
 <truncated level="single-line"><p>
 The one-indexed line of the source file where the span starts.</p>
 To obtain the<inline-code>span.end().line()</inline-code>. <elided chars="42"/></truncated>
