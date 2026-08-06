@@ -8,13 +8,13 @@ Search results for 'trigger line-based truncation'
   ◦ [fixture-crate::TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html)  (Trait) - score: 100.0
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
-  ◦ [core::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 53.0
+  ◦ [core::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 52.9
     Expands to the line number on which it was invoked. [...]
 
-  ◦ [std::prelude::v1::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 53.0
+  ◦ [std::prelude::v1::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 52.9
     Expands to the line number on which it was invoked. [...]
 
-  ◦ [proc_macro::Span::line](https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line)  (Function) - score: 37.8
+  ◦ [proc_macro::Span::line](https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line)  (Function) - score: 37.9
     The one-indexed line of the source file where the span starts. [...]
 
   ◦ [core::prelude::v1::ambiguous_macros_only::panic::location::Location::line](https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line) 
