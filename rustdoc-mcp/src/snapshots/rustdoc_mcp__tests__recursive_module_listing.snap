@@ -11,6 +11,7 @@ A minimal test crate for rustdoc JSON testing
 
 
 Modules:
+generics // Generic-syntax edge cases, gathered here so signature rendering has a [+7 more lines]
 link_resolution_tests // Module for testing intra-doc link resolution
 link_resolution_tests::nested // Nested module for testing scoped resolution
 link_resolution_tests::nested::deeply_nested // Another nested module
@@ -36,6 +37,9 @@ TestStruct // A simple struct for testing basic functionality. [+6 more lines]
 TupleStruct // A tuple struct for testing
 UnitStruct // A unit struct for testing
 Vec // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+257 more lines]
+generics::ConstGeneric // A const generic with a default, alongside a type parameter with a default.
+generics::ManyPredicates // A struct with a where clause that has several predicates, so the multi-line [+1 more lines]
+generics::TupleWithWhere // A tuple struct with a `where` clause, which Rust writes *after* the field [+1 more lines]
 link_resolution_tests::HashSet // A [hash set] implemented as a `HashMap` where the value is `()`. [+108 more lines]
 link_resolution_tests::LinkTestStruct // Struct in link test module
 link_resolution_tests::RenamedTestStruct // A simple struct for testing basic functionality. [+6 more lines]
@@ -63,6 +67,7 @@ submodule::SubStruct // A struct in a submodule
 Enums:
 GenericEnum // A generic enum for testing [+2 more lines]
 TestEnum // An enum for testing [+2 more lines]
+generics::EnumManyPredicates // An enum with a multi-predicate `where` clause, the enum counterpart to [+1 more lines]
 reexport_mod::TestEnum // An enum for testing [+2 more lines]
 submodule::TestEnum // An enum for testing [+2 more lines]
 
@@ -70,6 +75,7 @@ Traits:
 ComplexTrait // A more complex trait demonstrating various features
 Marker // A marker trait (no associated items) to exercise the compact implementors [+1 more lines]
 TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
+generics::ImplTraitMethods // A trait with a generic method taking `impl Trait`, so the synthetic [+1 more lines]
 link_resolution_tests::nested::TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 
 Unions:
@@ -157,6 +163,27 @@ Vec::with_capacity // Constructs a new, empty `Vec<T>` with at least the specifi
 Vec::with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+54 more lines]
 async_function // An async function
 generic_function // A generic function
+generics::ConstGeneric::filled // A method whose signature mentions the const parameter.
+generics::assoc_bound // An associated-item *bound* constraint (`Item: Clone`) inside generic [+1 more lines]
+generics::assoc_equality // An associated-item *equality* constraint inside generic arguments.
+generics::dyn_needs_parens // A multi-trait `dyn` object behind a reference: valid Rust only with the [+1 more lines]
+generics::dyn_parenthesized_args // A `dyn` trait whose generic arguments are parenthesized (`Fn` sugar) rather [+1 more lines]
+generics::dyn_with_lifetime // A `dyn` object carrying an explicit lifetime bound, which rustdoc stores in [+1 more lines]
+generics::hrtb_dyn // A higher-ranked bound on a `dyn` object. The `for<'a>` lives in [+1 more lines]
+generics::hrtb_fn_pointer // A higher-ranked bound on a bare function pointer.
+generics::hrtb_inline // A higher-ranked trait bound written inline in the parameter list.
+generics::hrtb_where // The same bound moved into a `where` clause, where rustdoc records the [+1 more lines]
+generics::impl_and_where // An `impl Trait` argument with several bounds, alongside a real parameter [+2 more lines]
+generics::impl_trait_outlives // Return-position `impl Trait` carrying a lifetime bound alongside a trait [+1 more lines]
+generics::lifetime_outlives // Lifetime parameters with an outlives relationship between them.
+generics::maybe_sized // A `?Sized` relaxed bound, one of the two `TraitBoundModifier`s.
+generics::mixed_params // A real parameter and a synthetic one in the same signature: the `<T>` list [+1 more lines]
+generics::nested_impl_trait // An `impl Trait` argument nested inside another type's generic arguments.
+generics::precise_capturing // Return-position `impl Trait` with a precise-capturing `use<..>` bound.
+generics::qualified_return // A qualified path (`<I as Iterator>::Item`) in return position.
+generics::returns_impl_trait // `impl Trait` in *return* position, which is a real `Type::ImplTrait` rather [+1 more lines]
+generics::set_data // `impl Trait` in argument position — the whole reason this module exists. [+6 more lines]
+generics::two_impls // Two synthetic parameters, so eliding them cannot leave a stray separator.
 link_resolution_tests::HashSet::capacity // Returns the number of elements the set can hold without reallocating. [+8 more lines]
 link_resolution_tests::HashSet::clear // Clears the set, removing all values. [+11 more lines]
 link_resolution_tests::HashSet::contains // Returns `true` if the set contains a value. [+14 more lines]
@@ -316,6 +343,8 @@ GenericEnum::WithData // Variant with generic data
 VariantA // Variant A (see also [`crate::GenericEnum`])
 VariantB // Variant B with data
 VariantC // Variant C with struct data (`name` and `value`)
+generics::EnumManyPredicates::First // Holds a `T`.
+generics::EnumManyPredicates::Second // Holds a `U`.
 reexport_mod::VariantA // Variant A (see also [`crate::GenericEnum`])
 reexport_mod::VariantB // Variant B with data
 reexport_mod::VariantC // Variant C with struct data (`name` and `value`)

@@ -14,6 +14,10 @@ A minimal test crate for rustdoc JSON testing</p>
 </truncated>
 <section><section-title>Modules</section-title><list>
   <item><p>
+<type-name>generics</type-name> </p>
+<truncated level="single-line">Generic-syntax edge cases, gathered here so signature rendering has a fixture for every shape rustdoc JSON can produce. <elided chars="395"/></truncated>
+</item>
+  <item><p>
 <type-name>link_resolution_tests</type-name> </p>
 <truncated level="single-line"><p>
 Module for testing intra-doc link resolution</p>
@@ -145,6 +149,20 @@ A unit struct for testing</p>
 A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.</p>
 <title>Examples</title>
  <elided chars="8583"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::ConstGeneric</type-name> </p>
+<truncated level="single-line"><p>
+A const generic with a default, alongside a type parameter with a default.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::ManyPredicates</type-name> </p>
+<truncated level="single-line">A struct with a where clause that has several predicates, so the multi-line <inline-code>where</inline-code> rendering is exercised alongside the single-predicate form. <elided chars="61"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::TupleWithWhere</type-name> </p>
+<truncated level="single-line">A tuple struct with a <inline-code>where</inline-code> clause, which Rust writes <emphasis>after</emphasis> the field list (<inline-code>struct T(..) where ..;</inline-code>) rather than before it. <elided chars="42"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::HashSet</type-name> </p>
@@ -303,6 +321,10 @@ This is like <inline-code>crate::GenericEnum</inline-code> but without the gener
 </truncated>
 </item>
   <item><p>
+<type-name>generics::EnumManyPredicates</type-name> </p>
+<truncated level="single-line">An enum with a multi-predicate <inline-code>where</inline-code> clause, the enum counterpart to <inline-code>ManyPredicates</inline-code>. <elided chars="4"/></truncated>
+</item>
+  <item><p>
 <type-name>reexport_mod::TestEnum</type-name> </p>
 <truncated level="single-line"><p>
 An enum for testing</p>
@@ -335,6 +357,10 @@ A more complex trait demonstrating various features</p>
 <truncated level="single-line"><p>
 A trait for testing extremely long documentation that exceeds line limits.</p>
 This It error flexib Each The error many doesn' goes This Line Line Line Line Line <elided chars="1259"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::ImplTraitMethods</type-name> </p>
+<truncated level="single-line">A trait with a generic method taking <inline-code>impl Trait</inline-code>, so the synthetic parameter also appears on an associated item rather than a free function. <elided chars="59"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::TestTrait</type-name> </p>
@@ -762,6 +788,112 @@ An async function</p>
 <type-name>generic_function</type-name> </p>
 <truncated level="single-line"><p>
 A generic function</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::ConstGeneric::filled</type-name> </p>
+<truncated level="single-line"><p>
+A method whose signature mentions the const parameter.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::assoc_bound</type-name> </p>
+<truncated level="single-line">An associated-item <emphasis>bound</emphasis> constraint (<inline-code>Item: Clone</inline-code>) inside generic arguments — the other <inline-code>AssocItemConstraintKind</inline-code>. <elided chars="33"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::assoc_equality</type-name> </p>
+<truncated level="single-line"><p>
+An associated-item <emphasis>equality</emphasis> constraint inside generic arguments.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::dyn_needs_parens</type-name> </p>
+<truncated level="single-line">A multi-trait <inline-code>dyn</inline-code> object behind a reference: valid Rust only with the parentheses, so the rendering has to supply them. <elided chars="39"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::dyn_parenthesized_args</type-name> </p>
+<truncated level="single-line">A <inline-code>dyn</inline-code> trait whose generic arguments are parenthesized (<inline-code>Fn</inline-code> sugar) rather than angle-bracketed. <elided chars="13"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::dyn_with_lifetime</type-name> </p>
+<truncated level="single-line">A <inline-code>dyn</inline-code> object carrying an explicit lifetime bound, which rustdoc stores in <inline-code>DynTrait::lifetime</inline-code> rather than among the traits. <elided chars="42"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::hrtb_dyn</type-name> </p>
+<truncated level="single-line">A higher-ranked bound on a <inline-code>dyn</inline-code> object. The <inline-code>for<'a></inline-code> lives in <inline-code>PolyTrait::generic_params</inline-code>, beside the trait path rather than inside it. <elided chars="51"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::hrtb_fn_pointer</type-name> </p>
+<truncated level="single-line"><p>
+A higher-ranked bound on a bare function pointer.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::hrtb_inline</type-name> </p>
+<truncated level="single-line"><p>
+A higher-ranked trait bound written inline in the parameter list.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::hrtb_where</type-name> </p>
+<truncated level="single-line">The same bound moved into a <inline-code>where</inline-code> clause, where rustdoc records the <inline-code>for<'a></inline-code> on the predicate instead of on the parameter. <elided chars="41"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::impl_and_where</type-name> </p>
+<truncated level="single-line">An <inline-code>impl Trait</inline-code> argument with several bounds, alongside a real parameter whose bound is in a <inline-code>where</inline-code> clause — so a synthetic parameter and a <inline-code>where</inline-code> clause coexist. <elided chars="80"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::impl_trait_outlives</type-name> </p>
+<truncated level="single-line">Return-position <inline-code>impl Trait</inline-code> carrying a lifetime bound alongside a trait bound, so <inline-code>GenericBound::Outlives</inline-code> appears among an <inline-code>impl</inline-code>'s bounds. <elided chars="55"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::lifetime_outlives</type-name> </p>
+<truncated level="single-line"><p>
+Lifetime parameters with an outlives relationship between them.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::maybe_sized</type-name> </p>
+<truncated level="single-line"><p>
+A <inline-code>?Sized</inline-code> relaxed bound, one of the two <inline-code>TraitBoundModifier</inline-code>s.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::mixed_params</type-name> </p>
+<truncated level="single-line">A real parameter and a synthetic one in the same signature: the <inline-code><T></inline-code> list must survive while the synthetic entry drops out. <elided chars="42"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::nested_impl_trait</type-name> </p>
+<truncated level="single-line"><p>
+An <inline-code>impl Trait</inline-code> argument nested inside another type's generic arguments.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::precise_capturing</type-name> </p>
+<truncated level="single-line"><p>
+Return-position <inline-code>impl Trait</inline-code> with a precise-capturing <inline-code>use<..></inline-code> bound.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::qualified_return</type-name> </p>
+<truncated level="single-line"><p>
+A qualified path (<inline-code><I as Iterator>::Item</inline-code>) in return position.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::returns_impl_trait</type-name> </p>
+<truncated level="single-line"><inline-code>impl Trait</inline-code> in <emphasis>return</emphasis> position, which is a real <inline-code>Type::ImplTrait</inline-code> rather than a synthetic parameter. <elided chars="17"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::set_data</type-name> </p>
+<truncated level="single-line"><p>
+<inline-code>impl Trait</inline-code> in argument position — the whole reason this module exists.</p>
+Rustdoc<emphasis>syntheti</emphasis><inline-code>is_synth</inline-code>) literall<inline-code>impl</inline-code>,<inline-code>impl</inline-code>'s own bounds. <inline-code>fn</inline-code>, which is not <elided chars="273"/></truncated>
+</item>
+  <item><p>
+<type-name>generics::two_impls</type-name> </p>
+<truncated level="single-line"><p>
+Two synthetic parameters, so eliding them cannot leave a stray separator.</p>
 </truncated>
 </item>
   <item><p>
@@ -1587,6 +1719,18 @@ Variant B with data</p>
 <type-name>VariantC</type-name> </p>
 <truncated level="single-line"><p>
 Variant C with struct data (<inline-code>name</inline-code> and <inline-code>value</inline-code>)</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::EnumManyPredicates::First</type-name> </p>
+<truncated level="single-line"><p>
+Holds a <inline-code>T</inline-code>.</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>generics::EnumManyPredicates::Second</type-name> </p>
+<truncated level="single-line"><p>
+Holds a <inline-code>U</inline-code>.</p>
 </truncated>
 </item>
   <item><p>

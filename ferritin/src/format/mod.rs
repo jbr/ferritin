@@ -23,6 +23,20 @@ pub(crate) fn display_path_name(path: &Path) -> &str {
     }
 }
 
+/// Push the `{` that opens an item body or a defaulted method's `{ ... }`,
+/// separated from what precedes it.
+///
+/// The separator depends on how the signature ended. A multi-predicate `where`
+/// clause is laid out one predicate per line and ends with a newline
+/// ([`Request::format_where_clause`]), so the brace already starts a fresh line
+/// and adding a space would indent it by one; anything else needs the space.
+pub(crate) fn push_body_brace<'a>(spans: &mut Vec<StyledSpan<'a>>) {
+    if !spans.last().is_some_and(|span| span.text.ends_with('\n')) {
+        spans.push(StyledSpan::plain(" "));
+    }
+    spans.push(StyledSpan::punctuation("{"));
+}
+
 mod documentation;
 mod r#enum;
 mod functions;

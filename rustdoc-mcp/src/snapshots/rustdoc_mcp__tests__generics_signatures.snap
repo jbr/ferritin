@@ -1,0 +1,218 @@
+---
+source: rustdoc-mcp/src/tests.rs
+expression: rendered
+---
+Item: set_data
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::set_data
+
+fn set_data(data: impl Into<std::borrow::Cow<'static, str>>) -> String
+Item: mixed_params
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::mixed_params
+
+fn mixed_params<T: Clone>(first: T, second: impl Into<String>) -> (T, String)
+Item: two_impls
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::two_impls
+
+fn two_impls(a: impl Debug, b: impl Display) -> String
+Item: nested_impl_trait
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::nested_impl_trait
+
+fn nested_impl_trait(items: Vec<impl Into<String>>) -> usize
+Item: impl_and_where
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::impl_and_where
+
+fn impl_and_where<T>(value: T, extra: impl Debug + Clone + Send) -> String
+where
+    T: Display
+Item: returns_impl_trait
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::returns_impl_trait
+
+fn returns_impl_trait() -> impl Iterator<Item = u32>
+Item: precise_capturing
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::precise_capturing
+
+fn precise_capturing<T: Clone>(value: &T) -> impl Clone + use<'_, T>
+Item: impl_trait_outlives
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::impl_trait_outlives
+
+fn impl_trait_outlives<'a>(text: &'a str) -> impl Iterator<Item = &'a str> + 'a
+Item: hrtb_inline
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::hrtb_inline
+
+fn hrtb_inline<F: for<'a> Fn(&'a str) -> &'a str>(f: F) -> usize
+Item: hrtb_where
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::hrtb_where
+
+fn hrtb_where<F>(f: F) -> usize
+where
+    F: for<'a> Fn(&'a str) -> &'a str
+Item: hrtb_dyn
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::hrtb_dyn
+
+fn hrtb_dyn(f: &dyn for<'a> Fn(&'a str) -> bool) -> bool
+Item: hrtb_fn_pointer
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::hrtb_fn_pointer
+
+fn hrtb_fn_pointer(f: for<'a> fn(&'a str) -> &'a str) -> usize
+Item: dyn_with_lifetime
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::dyn_with_lifetime
+
+fn dyn_with_lifetime(e: Box<dyn std::error::Error + Send + 'static>) -> String
+Item: dyn_needs_parens
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::dyn_needs_parens
+
+fn dyn_needs_parens(e: &(dyn std::error::Error + Send)) -> String
+Item: dyn_parenthesized_args
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::dyn_parenthesized_args
+
+fn dyn_parenthesized_args(f: Box<dyn Fn(u32, &str) -> String>) -> String
+Item: maybe_sized
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::maybe_sized
+
+fn maybe_sized<T: ?Sized + Debug>(value: &T) -> String
+Item: lifetime_outlives
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::lifetime_outlives
+
+fn lifetime_outlives<'long: 'short, 'short>(long: &'long str, short: &'short str) -> &'short str
+Item: assoc_equality
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::assoc_equality
+
+fn assoc_equality<I>(iter: I) -> usize
+where
+    I: Iterator<Item = u8>
+Item: assoc_bound
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::assoc_bound
+
+fn assoc_bound<I: Iterator<Item: Clone + Debug>>(iter: I) -> usize
+Item: qualified_return
+Kind: Function
+Visibility: Public
+Defined at: fixture_crate::generics::qualified_return
+
+fn qualified_return<I: Iterator>(iter: I) -> Option<<I as Iterator>::Item>
+Item: ConstGeneric
+Kind: Struct
+Visibility: Public
+Defined at: fixture_crate::generics::ConstGeneric
+
+```rust
+struct ConstGeneric<T = u8, const N: usize = 3> {
+    pub items: [T; N],
+}
+```
+
+
+Associated Types:
+
+• pub fn filled(value: T) -> Self
+
+
+Trait Implementations:
+ImplTraitMethods
+std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+
+Item: ManyPredicates
+Kind: Struct
+Visibility: Public
+Defined at: fixture_crate::generics::ManyPredicates
+
+```rust
+struct ManyPredicates<T, U, F>
+where
+    T: Clone + Send + 'static,
+    U: Display,
+    F: for<'a> Fn(&'a T) -> U
+{
+    pub value: T,
+    pub other: U,
+    pub callback: F,
+}
+```
+
+
+std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+
+Item: TupleWithWhere
+Kind: Struct
+Visibility: Public
+Defined at: fixture_crate::generics::TupleWithWhere
+
+```rust
+struct TupleWithWhere<T>(
+    pub T, // field 0
+)
+where
+    T: Display;
+```
+
+std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+
+Item: EnumManyPredicates
+Kind: Enum
+Visibility: Public
+Defined at: fixture_crate::generics::EnumManyPredicates
+
+```rust
+enum EnumManyPredicates<T, U>
+where
+    T: Clone + Send,
+    U: Display
+{
+    /// Holds a `T`.
+    First(T),
+    /// Holds a `U`.
+    Second(U),
+}
+```
+
+std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+
+Item: ImplTraitMethods
+Kind: Trait
+Visibility: Public
+Defined at: fixture_crate::generics::ImplTraitMethods
+
+```rust
+trait ImplTraitMethods {
+    fn accept(&self, value: impl Into<String>) -> String;
+    fn produce(&self) -> impl Debug;
+}
+```

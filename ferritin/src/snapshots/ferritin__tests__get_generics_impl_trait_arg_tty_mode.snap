@@ -1,0 +1,18 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::generics::set_data\"), OutputMode\n:: Tty, & get_fixture_crate_path ())"
+---
+Item: set_data
+Kind: Function
+Visibility: Public
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture_crate/index.html)::[generics](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/index.html)::[set_data](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.set_data.html)
+In crate: fixture-crate (0.1.0)
+
+impl Trait in argument position — the whole reason this module exists.
+
+Rustdoc lowers this to a synthetic generic parameter (is_synthetic) literally
+named impl Into<Cow<'static, str>>, bounded by the impl's own bounds. Rendering
+the parameter list verbatim produces fn set_data<impl Into<Cow<'static, str>>:
+Into<Cow<'static, str>>>, which is not Rust.
+
+fn [set_data](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.set_data.html)(data: impl [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<[std::borrow::Cow](https://doc.rust-lang.org/nightly/alloc/borrow/enum.Cow.html)<'static, str>>) -> [String](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html)

@@ -6,11 +6,11 @@ expression: "render_for_tests_rooted(Commands::search(\"generic struct\"), Outpu
 
 - fixture-crate::GenericStruct  (Struct) - score: 100.0 — A generic struct for testing multi-paragraph documentation. [+6 lines]
 - alloc::borrow::Borrow  (Trait) - score: 67.3 — A trait for borrowing data. [+19 lines]
-- fixture-crate::TestStruct  (Struct) - score: 66.5 — A simple struct for testing basic functionality. [+2 lines]
-- fixture-crate::GenericEnum  (Enum) - score: 65.1 — A generic enum for testing [+1 lines]
+- fixture-crate::TestStruct  (Struct) - score: 66.8 — A simple struct for testing basic functionality. [+2 lines]
+- fixture-crate::GenericEnum  (Enum) - score: 64.9 — A generic enum for testing [+1 lines]
 - std::prelude::rust_2021::ambiguous_macros_only::borrow::Borrow  (Trait) - score: 64.4 — A trait for borrowing data. [+19 lines]
 - core::prelude::v1::ambiguous_macros_only::borrow::Borrow  (Trait) - score: 64.1 — A trait for borrowing data. [+19 lines]
 - std::prelude::v1::Clone  (Trait) - score: 62.8 — A common trait that allows explicit creation of a duplicate value. [+28 lines]
-- alloc::io::copy::generic  (Module) - score: 62.3
-- core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic  (Enum) - score: 62.3 — Compile-time type information about instantiated generics of structs, enum and union variants.
-- std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::mystd::mem::type_info::Generic  (Enum) - score: 62.3 — Compile-time type information about instantiated generics of structs, enum and union variants.
+- alloc::io::copy::generic  (Module) - score: 62.1
+- core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic  (Enum) - score: 62.1 — Compile-time type information about instantiated generics of structs, enum and union variants.
+- std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::mystd::mem::type_info::Generic  (Enum) - score: 62.1 — Compile-time type information about instantiated generics of structs, enum and union variants.

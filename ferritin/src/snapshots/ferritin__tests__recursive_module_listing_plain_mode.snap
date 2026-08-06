@@ -12,6 +12,9 @@ A minimal test crate for rustdoc JSON testing
 
 Modules
 
+  ◦ generics 
+    Generic-syntax edge cases, gathered here so signature rendering has a fixture for every shape rustdoc JSON can produce. [...]
+
   ◦ link_resolution_tests 
     Module for testing intra-doc link resolution
 
@@ -81,6 +84,15 @@ Structs
 
   ◦ Vec 
     A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
+
+  ◦ generics::ConstGeneric 
+    A const generic with a default, alongside a type parameter with a default.
+
+  ◦ generics::ManyPredicates 
+    A struct with a where clause that has several predicates, so the multi-line where rendering is exercised alongside the single-predicate form.
+
+  ◦ generics::TupleWithWhere 
+    A tuple struct with a where clause, which Rust writes after the field list (struct T(..) where ..;) rather than before it.
 
   ◦ link_resolution_tests::HashSet 
     A hash set implemented as a HashMap where the value is (). [...]
@@ -159,6 +171,9 @@ Enums
   ◦ TestEnum 
     An enum for testing [...]
 
+  ◦ generics::EnumManyPredicates 
+    An enum with a multi-predicate where clause, the enum counterpart to ManyPredicates.
+
   ◦ reexport_mod::TestEnum 
     An enum for testing [...]
 
@@ -175,6 +190,9 @@ Traits
 
   ◦ TestTrait 
     A trait for testing extremely long documentation that exceeds line limits. [...]
+
+  ◦ generics::ImplTraitMethods 
+    A trait with a generic method taking impl Trait, so the synthetic parameter also appears on an associated item rather than a free function.
 
   ◦ link_resolution_tests::nested::TestTrait 
     A trait for testing extremely long documentation that exceeds line limits. [...]
@@ -425,6 +443,69 @@ Functions
 
   ◦ generic_function 
     A generic function
+
+  ◦ generics::ConstGeneric::filled 
+    A method whose signature mentions the const parameter.
+
+  ◦ generics::assoc_bound 
+    An associated-item bound constraint (Item: Clone) inside generic arguments — the other AssocItemConstraintKind.
+
+  ◦ generics::assoc_equality 
+    An associated-item equality constraint inside generic arguments.
+
+  ◦ generics::dyn_needs_parens 
+    A multi-trait dyn object behind a reference: valid Rust only with the parentheses, so the rendering has to supply them.
+
+  ◦ generics::dyn_parenthesized_args 
+    A dyn trait whose generic arguments are parenthesized (Fn sugar) rather than angle-bracketed.
+
+  ◦ generics::dyn_with_lifetime 
+    A dyn object carrying an explicit lifetime bound, which rustdoc stores in DynTrait::lifetime rather than among the traits.
+
+  ◦ generics::hrtb_dyn 
+    A higher-ranked bound on a dyn object. The for<'a> lives in PolyTrait::generic_params, beside the trait path rather than inside it.
+
+  ◦ generics::hrtb_fn_pointer 
+    A higher-ranked bound on a bare function pointer.
+
+  ◦ generics::hrtb_inline 
+    A higher-ranked trait bound written inline in the parameter list.
+
+  ◦ generics::hrtb_where 
+    The same bound moved into a where clause, where rustdoc records the for<'a> on the predicate instead of on the parameter.
+
+  ◦ generics::impl_and_where 
+    An impl Trait argument with several bounds, alongside a real parameter whose bound is in a where clause — so a synthetic parameter and a where clause coexist.
+
+  ◦ generics::impl_trait_outlives 
+    Return-position impl Trait carrying a lifetime bound alongside a trait bound, so GenericBound::Outlives appears among an impl's bounds.
+
+  ◦ generics::lifetime_outlives 
+    Lifetime parameters with an outlives relationship between them.
+
+  ◦ generics::maybe_sized 
+    A ?Sized relaxed bound, one of the two TraitBoundModifiers.
+
+  ◦ generics::mixed_params 
+    A real parameter and a synthetic one in the same signature: the <T> list must survive while the synthetic entry drops out.
+
+  ◦ generics::nested_impl_trait 
+    An impl Trait argument nested inside another type's generic arguments.
+
+  ◦ generics::precise_capturing 
+    Return-position impl Trait with a precise-capturing use<..> bound.
+
+  ◦ generics::qualified_return 
+    A qualified path (<I as Iterator>::Item) in return position.
+
+  ◦ generics::returns_impl_trait 
+    impl Trait in return position, which is a real Type::ImplTrait rather than a synthetic parameter.
+
+  ◦ generics::set_data 
+    impl Trait in argument position — the whole reason this module exists. [...]
+
+  ◦ generics::two_impls 
+    Two synthetic parameters, so eliding them cannot leave a stray separator.
 
   ◦ link_resolution_tests::HashSet::capacity 
     Returns the number of elements the set can hold without reallocating. [...]
@@ -886,6 +967,12 @@ Variants
 
   ◦ VariantC 
     Variant C with struct data (name and value)
+
+  ◦ generics::EnumManyPredicates::First 
+    Holds a T.
+
+  ◦ generics::EnumManyPredicates::Second 
+    Holds a U.
 
   ◦ reexport_mod::VariantA 
     Variant A (see also crate::GenericEnum)

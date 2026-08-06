@@ -1,0 +1,223 @@
+---
+source: ferritin/src/tests.rs
+expression: rendered
+---
+Function fixture_crate::generics::set_data — in fixture-crate (0.1.0)
+
+fn set_data(data: impl Into<std::borrow::Cow<'static, str>>) -> String
+
+Function fixture_crate::generics::mixed_params — in fixture-crate (0.1.0)
+
+fn mixed_params<T: Clone>(first: T, second: impl Into<String>) -> (T, String)
+
+Function fixture_crate::generics::two_impls — in fixture-crate (0.1.0)
+
+fn two_impls(a: impl Debug, b: impl Display) -> String
+
+Function fixture_crate::generics::nested_impl_trait — in fixture-crate (0.1.0)
+
+fn nested_impl_trait(items: Vec<impl Into<String>>) -> usize
+
+Function fixture_crate::generics::impl_and_where — in fixture-crate (0.1.0)
+
+fn impl_and_where<T>(value: T, extra: impl Debug + Clone + Send) -> String where T: Display
+
+Function fixture_crate::generics::returns_impl_trait — in fixture-crate (0.1.0)
+
+fn returns_impl_trait() -> impl Iterator<Item = u32>
+
+Function fixture_crate::generics::precise_capturing — in fixture-crate (0.1.0)
+
+fn precise_capturing<T: Clone>(value: &T) -> impl Clone + use<'_, T>
+
+Function fixture_crate::generics::impl_trait_outlives — in fixture-crate (0.1.0)
+
+fn impl_trait_outlives<'a>(text: &'a str) -> impl Iterator<Item = &'a str> + 'a
+
+Function fixture_crate::generics::hrtb_inline — in fixture-crate (0.1.0)
+
+fn hrtb_inline<F: for<'a> Fn(&'a str) -> &'a str>(f: F) -> usize
+
+Function fixture_crate::generics::hrtb_where — in fixture-crate (0.1.0)
+
+fn hrtb_where<F>(f: F) -> usize where F: for<'a> Fn(&'a str) -> &'a str
+
+Function fixture_crate::generics::hrtb_dyn — in fixture-crate (0.1.0)
+
+fn hrtb_dyn(f: &dyn for<'a> Fn(&'a str) -> bool) -> bool
+
+Function fixture_crate::generics::hrtb_fn_pointer — in fixture-crate (0.1.0)
+
+fn hrtb_fn_pointer(f: for<'a> fn(&'a str) -> &'a str) -> usize
+
+Function fixture_crate::generics::dyn_with_lifetime — in fixture-crate (0.1.0)
+
+fn dyn_with_lifetime(e: Box<dyn std::error::Error + Send + 'static>) -> String
+
+Function fixture_crate::generics::dyn_needs_parens — in fixture-crate (0.1.0)
+
+fn dyn_needs_parens(e: &(dyn std::error::Error + Send)) -> String
+
+Function fixture_crate::generics::dyn_parenthesized_args — in fixture-crate (0.1.0)
+
+fn dyn_parenthesized_args(f: Box<dyn Fn(u32, &str) -> String>) -> String
+
+Function fixture_crate::generics::maybe_sized — in fixture-crate (0.1.0)
+
+fn maybe_sized<T: ?Sized + Debug>(value: &T) -> String
+
+Function fixture_crate::generics::lifetime_outlives — in fixture-crate (0.1.0)
+
+fn lifetime_outlives<'long: 'short, 'short>(long: &'long str, short: &'short str) -> &'short str
+
+Function fixture_crate::generics::assoc_equality — in fixture-crate (0.1.0)
+
+fn assoc_equality<I>(iter: I) -> usize where I: Iterator<Item = u8>
+
+Function fixture_crate::generics::assoc_bound — in fixture-crate (0.1.0)
+
+fn assoc_bound<I: Iterator<Item: Clone + Debug>>(iter: I) -> usize
+
+Function fixture_crate::generics::qualified_return — in fixture-crate (0.1.0)
+
+fn qualified_return<I: Iterator>(iter: I) -> Option<<I as Iterator>::Item>
+
+Struct fixture_crate::generics::ConstGeneric — in fixture-crate (0.1.0)
+
+struct ConstGeneric<T = u8, const N: usize = 3> {
+    pub items: [T; N],
+}
+
+## Fields
+
+- items: [T; N] — The backing array.
+
+## Methods
+
+- pub fn filled(value: T) -> Self — A method whose signature mentions the const parameter.
+
+## Trait Implementations
+
+ImplTraitMethods
+
+std: From<T>
+
+- impl<T: 'static + ?Sized> Any
+- impl<T: ?Sized> Borrow<T>
+- impl<T: ?Sized> BorrowMut<T>
+- impl<T: Freeze, const N: usize> Freeze
+- impl<T, U: From<T>> Into<U>
+- impl<T: RefUnwindSafe, const N: usize> RefUnwindSafe
+- impl<T: Send, const N: usize> Send
+- impl<T: Sync, const N: usize> Sync
+- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
+- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl<T: Unpin, const N: usize> Unpin
+- impl<T: UnsafeUnpin, const N: usize> UnsafeUnpin
+- impl<T: UnwindSafe, const N: usize> UnwindSafe
+
+Struct fixture_crate::generics::ManyPredicates — in fixture-crate (0.1.0)
+
+struct ManyPredicates<T, U, F>
+where
+    T: Clone + Send + 'static,
+    U: Display,
+    F: for<'a> Fn(&'a T) -> U,
+{
+    pub value: T,
+    pub other: U,
+    pub callback: F,
+}
+
+## Fields
+
+- value: T — A value.
+- other: U — Another value.
+- callback: F — A callback.
+
+## Trait Implementations
+
+std: From<T>
+
+- impl<T: 'static + ?Sized> Any
+- impl<T: ?Sized> Borrow<T>
+- impl<T: ?Sized> BorrowMut<T>
+- impl<T: Freeze, U: Freeze, F: Freeze> Freeze
+- impl<T, U: From<T>> Into<U>
+- impl<T: RefUnwindSafe, U: RefUnwindSafe, F: RefUnwindSafe> RefUnwindSafe
+- impl<T, U: Send, F: Send> Send
+- impl<T: Sync, U: Sync, F: Sync> Sync
+- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
+- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl<T: Unpin, U: Unpin, F: Unpin> Unpin
+- impl<T: UnsafeUnpin, U: UnsafeUnpin, F: UnsafeUnpin> UnsafeUnpin
+- impl<T: UnwindSafe, U: UnwindSafe, F: UnwindSafe> UnwindSafe
+
+Struct fixture_crate::generics::TupleWithWhere — in fixture-crate (0.1.0)
+
+struct TupleWithWhere<T>(
+    pub T, // field 0
+) where T: Display;
+
+## Trait Implementations
+
+std: From<T>
+
+- impl<T: 'static + ?Sized> Any
+- impl<T: ?Sized> Borrow<T>
+- impl<T: ?Sized> BorrowMut<T>
+- impl<T: Freeze> Freeze
+- impl<T, U: From<T>> Into<U>
+- impl<T: RefUnwindSafe> RefUnwindSafe
+- impl<T: Send> Send
+- impl<T: Sync> Sync
+- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
+- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl<T: Unpin> Unpin
+- impl<T: UnsafeUnpin> UnsafeUnpin
+- impl<T: UnwindSafe> UnwindSafe
+
+Enum fixture_crate::generics::EnumManyPredicates — in fixture-crate (0.1.0)
+
+enum EnumManyPredicates<T, U>
+where
+    T: Clone + Send,
+    U: Display,
+{
+    First(T),
+    Second(U),
+}
+
+## Variants
+
+- First — Holds a T.
+- Second — Holds a U.
+
+## Trait Implementations
+
+std: From<T>
+
+- impl<T: 'static + ?Sized> Any
+- impl<T: ?Sized> Borrow<T>
+- impl<T: ?Sized> BorrowMut<T>
+- impl<T: Freeze, U: Freeze> Freeze
+- impl<T, U: From<T>> Into<U>
+- impl<T: RefUnwindSafe, U: RefUnwindSafe> RefUnwindSafe
+- impl<T, U: Send> Send
+- impl<T: Sync, U: Sync> Sync
+- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
+- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl<T: Unpin, U: Unpin> Unpin
+- impl<T: UnsafeUnpin, U: UnsafeUnpin> UnsafeUnpin
+- impl<T: UnwindSafe, U: UnwindSafe> UnwindSafe
+
+Trait fixture_crate::generics::ImplTraitMethods — in fixture-crate (0.1.0)
+
+trait ImplTraitMethods { ... }
+
+- fn accept(&self, value: impl Into<String>) -> String; — Takes impl Trait in argument position.
+- fn produce(&self) -> impl Debug; — Returns impl Trait from a trait method (RPITIT).
+
+## Implementors (this crate)
+
+ConstGeneric<u8, 1>

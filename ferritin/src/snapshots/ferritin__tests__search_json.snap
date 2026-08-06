@@ -81,7 +81,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "proc_macro::Span::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line",
-      "score": 37.9,
+      "score": 37.8,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -153,7 +153,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "alloc::io::buf_read::BufRead::read_line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/alloc/io/buf_read/BufRead/fn.read_line.html",
-      "score": 32.4,
+      "score": 32.3,
       "docs": [
         {
           "type": "truncatedBlock",

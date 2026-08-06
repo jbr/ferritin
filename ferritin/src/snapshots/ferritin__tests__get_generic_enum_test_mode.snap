@@ -18,7 +18,8 @@ See also <inline-code>crate::TestEnum</inline-code></p>
 <keyword>enum</keyword> <type-name>GenericEnum</type-name><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic> <operator>=</operator> <type-name>String</type-name><punctuation>></punctuation>
 <keyword>where</keyword>
     <generic>T</generic><punctuation>:</punctuation> <type-name>Clone</type-name> + <type-name>Send</type-name><punctuation>,</punctuation>
-    <generic>U</generic><punctuation>:</punctuation> <type-name>std::fmt::Display</type-name> <punctuation>{</punctuation>
+    <generic>U</generic><punctuation>:</punctuation> <type-name>std::fmt::Display</type-name><punctuation>,</punctuation>
+<punctuation>{</punctuation>
     <type-name>Simple</type-name><punctuation>,</punctuation>
     <type-name>WithData</type-name><punctuation>(</punctuation><generic>T</generic><punctuation>)</punctuation><punctuation>,</punctuation>
     <type-name>Mixed</type-name> <punctuation>{</punctuation>

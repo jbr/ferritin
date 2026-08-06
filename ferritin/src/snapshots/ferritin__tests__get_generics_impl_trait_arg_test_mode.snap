@@ -1,0 +1,18 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::generics::set_data\"), OutputMode\n:: TestMode, & get_fixture_crate_path ())"
+---
+<metadata>
+  <field name="Item">set_data</field>
+  <field name="Kind">Function</field>
+  <field name="Visibility">Public</field>
+  <field name="Defined at"><type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>generics</type-name><punctuation>::</punctuation><type-name>set_data</type-name></field>
+  <field name="In crate">fixture-crate (0.1.0)</field>
+</metadata>
+<truncated level="full"><p>
+<inline-code>impl Trait</inline-code> in argument position — the whole reason this module exists.</p>
+<p>
+Rustdoc lowers this to a <emphasis>synthetic</emphasis> generic parameter (<inline-code>is_synthetic</inline-code>) literally named <inline-code>impl Into<Cow<'static, str>></inline-code>, bounded by the <inline-code>impl</inline-code>'s own bounds. Rendering the parameter list verbatim produces <inline-code>fn set_data<impl Into<Cow<'static, str>>: Into<Cow<'static, str>>></inline-code>, which is not Rust.</p>
+</truncated>
+<generated-code>
+<keyword>fn</keyword> set_data<punctuation>(</punctuation>data<punctuation>:</punctuation> <keyword>impl</keyword> <type-name>Into</type-name><punctuation><</punctuation><type-name>std::borrow::Cow</type-name><punctuation><</punctuation><lifetime>'static</lifetime><punctuation>,</punctuation> <type-name>str</type-name><punctuation>></punctuation><punctuation>></punctuation><punctuation>)</punctuation> <operator>-></operator> <type-name>String</type-name></generated-code>

@@ -20,9 +20,10 @@ impl<'a> Request<'a> {
         } else {
             String::new()
         };
+        let brace = super::functions::body_brace_separator(&where_clause);
 
         result.push_str(&format!(
-            "\n```rust\nenum {enum_name}{generics_str}{where_clause} {{\n"
+            "\n```rust\nenum {enum_name}{generics_str}{where_clause}{brace}{{\n"
         ));
 
         for variant in self.ids(item, &enum_data.item().variants) {

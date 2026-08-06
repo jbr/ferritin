@@ -15,7 +15,8 @@ See also [crate::TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/sub
 enum GenericEnum<T, U = [String](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html)>
 where
     T: [Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html) + [Send](https://doc.rust-lang.org/nightly/core/marker/trait.Send.html),
-    U: [std::fmt::Display](https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html) {
+    U: [std::fmt::Display](https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html),
+{
     Simple,
     WithData(T),
     Mixed {

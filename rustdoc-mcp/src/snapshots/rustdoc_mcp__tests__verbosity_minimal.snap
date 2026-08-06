@@ -8,6 +8,7 @@ Visibility: Public
 Defined at: fixture_crate
 
 Modules:
+generics
 link_resolution_tests
 markdown_test
 namespace_collisions

@@ -63,8 +63,9 @@ impl<'a> Request<'a> {
         } else {
             String::new()
         };
+        let brace = super::functions::body_brace_separator(&where_clause);
         result.write_fmt(format_args!(
-            "\n```rust\nstruct {struct_name}{generics_str}{where_clause} {{\n"
+            "\n```rust\nstruct {struct_name}{generics_str}{where_clause}{brace}{{\n"
         ));
         for field in &visible_fields {
             let field_name = field.name.as_deref().unwrap_or("<unnamed>");
@@ -145,8 +146,10 @@ impl<'a> Request<'a> {
         } else {
             String::new()
         };
+        // A tuple struct's `where` clause follows its field list
+        // (`struct Foo<T>(T) where T: Clone;`), unlike every other item shape's.
         result.write_fmt(format_args!(
-            "\n```rust\nstruct {struct_name}{generics_str}{where_clause}(\n"
+            "\n```rust\nstruct {struct_name}{generics_str}(\n"
         ));
         for (i, field) in &visible_fields {
             if let ItemEnum::StructField(field_type) = &field.inner {
@@ -165,7 +168,7 @@ impl<'a> Request<'a> {
                 if hidden_count == 1 { "" } else { "s" }
             ));
         }
-        result.push_str(");\n```\n");
+        result.write_fmt(format_args!("){where_clause};\n```\n"));
 
         let fields_to_show = visible_fields
             .iter()
