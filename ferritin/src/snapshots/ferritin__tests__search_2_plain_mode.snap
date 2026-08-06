@@ -11,10 +11,10 @@ Search results for 'generic struct'
   ◦ alloc::borrow::Borrow  (Trait) - score: 67.3
     A trait for borrowing data. [...]
 
-  ◦ fixture-crate::TestStruct  (Struct) - score: 66.8
+  ◦ fixture-crate::TestStruct  (Struct) - score: 66.9
     A simple struct for testing basic functionality. [...]
 
-  ◦ fixture-crate::GenericEnum  (Enum) - score: 64.9
+  ◦ fixture-crate::GenericEnum  (Enum) - score: 64.8
     A generic enum for testing [...]
 
   ◦ std::prelude::rust_2021::ambiguous_macros_only::borrow::Borrow  (Trait) - score: 64.4
@@ -26,10 +26,10 @@ Search results for 'generic struct'
   ◦ std::prelude::v1::Clone  (Trait) - score: 62.8
     A common trait that allows explicit creation of a duplicate value. [...]
 
+  ◦ core::prelude::v1::Clone  (Trait) - score: 62.1
+    A common trait that allows explicit creation of a duplicate value. [...]
+
   ◦ alloc::io::copy::generic  (Module) - score: 62.1
 
   ◦ core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic  (Enum) - score: 62.1
-    Compile-time type information about instantiated generics of structs, enum and union variants.
-
-  ◦ std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::mystd::mem::type_info::Generic  (Enum) - score: 62.1
     Compile-time type information about instantiated generics of structs, enum and union variants.
