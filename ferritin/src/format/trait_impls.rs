@@ -104,10 +104,10 @@ impl<'a> Request<'a> {
         let trait_url = self
             .get_path(impl_block, trait_path.id)
             .map(generate_docsrs_url);
-        let trait_args = self.trait_arg_spans(impl_block, trait_path);
+        let mut trait_args = self.trait_arg_spans(impl_block, trait_path);
         let is_std = self.is_std_trait(impl_block, trait_path);
 
-        let (methods, assoc_types) = self.model_impl_items(impl_block, impl_item);
+        let (methods, mut assoc_types) = self.model_impl_items(impl_block, impl_item);
 
         let blanket = impl_item
             .blanket_impl
@@ -115,7 +115,19 @@ impl<'a> Request<'a> {
             .map(|ty| self.format_type(impl_block, ty));
         let docs = self.docs_to_show(impl_block, TruncationLevel::SingleLine);
 
-        let leaf = if is_compact_impl(impl_item) {
+        // On this type's page the blanket impl's source param *is* Self:
+        // `impl<T> From<T> for T` reaching this page means `T` = this type, so
+        // rendering the param as `Self` (and dropping it from the param list)
+        // is what stops `From<T>` reading as "from any T". Only claimed when
+        // the param is a bare generic and every predicate is simple enough for
+        // the header's inline merge — otherwise the param would still appear
+        // in a `format_generics` param list, which cannot skip it.
+        let blanket_self: Option<&'a str> = match &impl_item.blanket_impl {
+            Some(Type::Generic(name)) if simple_impl_preds(impl_item) => Some(name.as_str()),
+            _ => None,
+        };
+
+        let mut leaf = if is_compact_impl(impl_item) {
             ImplLeaf::Compact(self.build_compact_ref(
                 impl_block,
                 impl_item,
@@ -128,8 +140,18 @@ impl<'a> Request<'a> {
                 impl_item,
                 trait_path,
                 impl_item.is_negative,
+                blanket_self,
             ))
         };
+
+        if let Some(name) = blanket_self {
+            let (ImplLeaf::Compact(spans) | ImplLeaf::Full(spans)) = &mut leaf;
+            substitute_self(spans, name);
+            substitute_self(&mut trait_args, name);
+            for assoc in &mut assoc_types {
+                substitute_self(&mut assoc.type_spans, name);
+            }
+        }
 
         TraitImplDoc {
             trait_name,
@@ -341,98 +363,150 @@ impl<'a> Request<'a> {
     /// If all where predicates are simple type-param bounds (no HRTBs, no
     /// qualified paths), merges them into the inline generic params so the
     /// signature fits on one line. Complex predicates fall back to a where clause.
+    ///
+    /// When `blanket_self` names the impl's Self param (see
+    /// [`model_trait_impl`](Request::model_trait_impl)), that param is dropped
+    /// from the list and its bounds — the conditions this page's type must meet
+    /// for the blanket to apply — trail as `where Self: …`.
     fn build_impl_header(
         &mut self,
         impl_block: DocRef<'a, Item>,
         impl_item: &'a Impl,
         trait_path: &'a Path,
         negative: bool,
+        blanket_self: Option<&str>,
     ) -> Vec<Span<'a>> {
         let mut spans = vec![Span::keyword("impl")];
 
-        if !impl_item.generics.params.is_empty() {
-            let all_simple = impl_item.generics.where_predicates.iter().all(|pred| {
-                matches!(pred, WherePredicate::BoundPredicate {
-                    type_: Type::Generic(_),
-                    generic_params,
-                    ..
-                } if generic_params.is_empty())
-            });
-
-            if all_simple && !impl_item.generics.where_predicates.is_empty() {
-                let extra_bounds: Vec<(&str, &'a [GenericBound])> = impl_item
-                    .generics
-                    .where_predicates
-                    .iter()
-                    .filter_map(|pred| {
-                        if let WherePredicate::BoundPredicate {
-                            type_: Type::Generic(name),
-                            bounds,
-                            ..
-                        } = pred
-                        {
-                            Some((name.as_str(), bounds.as_slice()))
-                        } else {
-                            None
-                        }
-                    })
-                    .collect();
-
-                spans.push(Span::punctuation("<"));
-                for (i, param) in impl_item.generics.params.iter().enumerate() {
-                    if i > 0 {
-                        spans.push(Span::punctuation(","));
-                        spans.push(Span::plain(" "));
-                    }
-                    spans.extend(self.format_generic_param(impl_block, param));
-
-                    if let GenericParamDefKind::Type {
-                        bounds: inline_bounds,
+        if simple_impl_preds(impl_item) {
+            let extra_bounds: Vec<(&str, &'a [GenericBound])> = impl_item
+                .generics
+                .where_predicates
+                .iter()
+                .filter_map(|pred| {
+                    if let WherePredicate::BoundPredicate {
+                        type_: Type::Generic(name),
+                        bounds,
                         ..
-                    } = &param.kind
+                    } = pred
                     {
-                        for (pred_name, where_bounds) in &extra_bounds {
-                            if *pred_name == param.name.as_str() {
-                                for (j, bound) in where_bounds.iter().enumerate() {
-                                    if j == 0 && inline_bounds.is_empty() {
-                                        spans.push(Span::punctuation(":"));
-                                        spans.push(Span::plain(" "));
-                                    } else {
-                                        spans.push(Span::plain(" + "));
-                                    }
-                                    spans.extend(self.format_generic_bound(impl_block, bound));
-                                }
-                                break;
+                        Some((name.as_str(), bounds.as_slice()))
+                    } else {
+                        None
+                    }
+                })
+                .collect();
+
+            let mut inner: Vec<Span<'a>> = vec![];
+            let mut self_bounds: Vec<Span<'a>> = vec![];
+            for param in &impl_item.generics.params {
+                let inline_bounds = match &param.kind {
+                    GenericParamDefKind::Type { bounds, .. } => bounds.as_slice(),
+                    _ => &[],
+                };
+
+                if Some(param.name.as_str()) == blanket_self {
+                    let where_bounds = extra_bounds
+                        .iter()
+                        .filter(|(name, _)| *name == param.name.as_str())
+                        .flat_map(|(_, bounds)| bounds.iter());
+                    for (i, bound) in inline_bounds.iter().chain(where_bounds).enumerate() {
+                        if i > 0 {
+                            self_bounds.push(Span::plain(" + "));
+                        }
+                        self_bounds.extend(self.format_generic_bound(impl_block, bound));
+                    }
+                    continue;
+                }
+
+                if !inner.is_empty() {
+                    inner.push(Span::punctuation(","));
+                    inner.push(Span::plain(" "));
+                }
+                inner.extend(self.format_generic_param(impl_block, param));
+
+                let mut bounds_started = !inline_bounds.is_empty();
+                for (pred_name, where_bounds) in &extra_bounds {
+                    if *pred_name == param.name.as_str() {
+                        for bound in where_bounds.iter() {
+                            if bounds_started {
+                                inner.push(Span::plain(" + "));
+                            } else {
+                                inner.push(Span::punctuation(":"));
+                                inner.push(Span::plain(" "));
+                                bounds_started = true;
                             }
+                            inner.extend(self.format_generic_bound(impl_block, bound));
                         }
                     }
                 }
+            }
+
+            if !inner.is_empty() {
+                spans.push(Span::punctuation("<"));
+                spans.extend(inner);
                 spans.push(Span::punctuation(">"));
-            } else {
-                // Complex predicates: generics + trait on the header line, then
-                // where clause below.
-                spans.extend(self.format_generics(impl_block, &impl_item.generics));
+            }
+
+            spans.push(Span::plain(" "));
+            if negative {
+                spans.push(Span::operator("!"));
+            }
+            spans.extend(self.format_path(impl_block, trait_path));
+
+            if !self_bounds.is_empty() {
                 spans.push(Span::plain(" "));
-                if negative {
-                    spans.push(Span::operator("!"));
-                }
-                spans.extend(self.format_path(impl_block, trait_path));
-                if !impl_item.generics.where_predicates.is_empty() {
-                    spans.extend(
-                        self.format_where_clause(impl_block, &impl_item.generics.where_predicates),
-                    );
-                }
-                return spans;
+                spans.push(Span::keyword("where"));
+                spans.push(Span::plain(" "));
+                spans.push(Span::generic("Self"));
+                spans.push(Span::punctuation(":"));
+                spans.push(Span::plain(" "));
+                spans.extend(self_bounds);
+            }
+        } else {
+            // Complex predicates: generics + trait on the header line, then
+            // where clause below.
+            spans.extend(self.format_generics(impl_block, &impl_item.generics));
+            spans.push(Span::plain(" "));
+            if negative {
+                spans.push(Span::operator("!"));
+            }
+            spans.extend(self.format_path(impl_block, trait_path));
+            if !impl_item.generics.where_predicates.is_empty() {
+                spans.extend(
+                    self.format_where_clause(impl_block, &impl_item.generics.where_predicates),
+                );
             }
         }
 
-        spans.push(Span::plain(" "));
-        if negative {
-            spans.push(Span::operator("!"));
-        }
-        spans.extend(self.format_path(impl_block, trait_path));
-
         spans
+    }
+}
+
+/// Whether every where predicate is a simple bound on one of the impl's own
+/// bare type params — the shape [`build_impl_header`](Request::build_impl_header)
+/// can merge inline. Anything else (HRTBs, predicates on non-param types,
+/// lifetime/equality predicates) needs a real where clause.
+fn simple_impl_preds(impl_item: &Impl) -> bool {
+    impl_item.generics.where_predicates.iter().all(|pred| {
+        matches!(pred, WherePredicate::BoundPredicate {
+            type_: Type::Generic(name),
+            generic_params,
+            ..
+        } if generic_params.is_empty()
+            && impl_item.generics.params.iter().any(|param| param.name == *name))
+    })
+}
+
+/// Rewrite occurrences of the blanket impl's Self param to `Self` in rendered
+/// spans. Text-matching on [`SpanStyle::Generic`] spans is sound here: within
+/// one impl's rendering, every generic span bearing the param's name denotes
+/// that param.
+fn substitute_self(spans: &mut [Span<'_>], param: &str) {
+    for span in spans {
+        if span.style == crate::styled_string::SpanStyle::Generic && span.text == param {
+            span.text = "Self".into();
+        }
     }
 }
 

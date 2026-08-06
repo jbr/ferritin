@@ -12,6 +12,7 @@ A minimal test crate for rustdoc JSON testing
 
 Modules:
 generics // Generic-syntax edge cases, gathered here so signature rendering has a [+7 more lines]
+implementors // Implementor shapes for the trait-page "Implementors" section, mirroring the [+5 more lines]
 link_resolution_tests // Module for testing intra-doc link resolution
 link_resolution_tests::nested // Nested module for testing scoped resolution
 link_resolution_tests::nested::deeply_nested // Another nested module
@@ -40,6 +41,8 @@ Vec // A contiguous growable array type, written as `Vec<T>`, short for 'vector'
 generics::ConstGeneric // A const generic with a default, alongside a type parameter with a default.
 generics::ManyPredicates // A struct with a where clause that has several predicates, so the multi-line [+1 more lines]
 generics::TupleWithWhere // A tuple struct with a `where` clause, which Rust writes *after* the field [+1 more lines]
+implementors::Nested // A wrapper whose `Reactor` impls place a bounded param one level down [+2 more lines]
+implementors::Simple // A concrete implementor, for the compact comma list.
 link_resolution_tests::HashSet // A [hash set] implemented as a `HashMap` where the value is `()`. [+108 more lines]
 link_resolution_tests::LinkTestStruct // Struct in link test module
 link_resolution_tests::RenamedTestStruct // A simple struct for testing basic functionality. [+6 more lines]
@@ -76,6 +79,7 @@ ComplexTrait // A more complex trait demonstrating various features
 Marker // A marker trait (no associated items) to exercise the compact implementors [+1 more lines]
 TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 generics::ImplTraitMethods // A trait with a generic method taking `impl Trait`, so the synthetic [+1 more lines]
+implementors::Reactor // The trait whose implementors exercise bound display.
 link_resolution_tests::nested::TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
 
 Unions:

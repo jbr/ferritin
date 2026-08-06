@@ -16,11 +16,11 @@ struct NotThreadSafe {
 
 ## Trait Implementations
 
-std: Freeze, From<T>, RefUnwindSafe, !Send, !Sync, Unpin, UnsafeUnpin, UnwindSafe
+std: Freeze, From<Self>, RefUnwindSafe, !Send, !Sync, Unpin, UnsafeUnpin, UnwindSafe
 
-- impl<T: 'static + ?Sized> Any
-- impl<T: ?Sized> Borrow<T>
-- impl<T: ?Sized> BorrowMut<T>
-- impl<T, U: From<T>> Into<U>
-- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
-- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl Any where Self: 'static + ?Sized
+- impl Borrow<Self> where Self: ?Sized
+- impl BorrowMut<Self> where Self: ?Sized
+- impl<U: From<Self>> Into<U>
+- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error

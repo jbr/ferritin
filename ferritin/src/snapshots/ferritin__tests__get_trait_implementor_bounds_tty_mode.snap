@@ -1,0 +1,27 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::implementors::Reactor\"),\nOutputMode :: Tty, & get_fixture_crate_path ())"
+---
+Item: Reactor
+Kind: Trait
+Visibility: Public
+Defined at: [fixture_crate](https://docs.rs/fixture-crate/0.1.0/fixture_crate/index.html)::[implementors](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/index.html)::[Reactor](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/trait.Reactor.html)
+In crate: fixture-crate (0.1.0)
+
+The trait whose implementors exercise bound display.
+
+trait Reactor { ... }
+
+Implementors (this crate)
+
+&'static str, (), [Simple](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/struct.Simple.html)
+
+  ◦ &'static [Nested](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/struct.Nested.html)<T> where T: [Reactor](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/trait.Reactor.html)
+
+  ◦ (A: [Reactor](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/trait.Reactor.html), B: [Reactor](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/trait.Reactor.html))
+
+  ◦ F: [Fn](https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html)(u32) -> Out + [Send](https://doc.rust-lang.org/nightly/core/marker/trait.Send.html) + [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html) + 'static where Out: [Reactor](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/trait.Reactor.html)
+
+  ◦ [Nested](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/struct.Nested.html)<[Vec](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html)<T: [Reactor](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/trait.Reactor.html)>>
+
+  ◦ [R: [Reactor](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/trait.Reactor.html); const N: usize]

@@ -1,0 +1,36 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::implementors::Reactor\"),\nOutputMode :: TestMode, & get_fixture_crate_path ())"
+---
+<metadata>
+  <field name="Item">Reactor</field>
+  <field name="Kind">Trait</field>
+  <field name="Visibility">Public</field>
+  <field name="Defined at"><type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>implementors</type-name><punctuation>::</punctuation><type-name>Reactor</type-name></field>
+  <field name="In crate">fixture-crate (0.1.0)</field>
+</metadata>
+<truncated level="full"><p>
+The trait whose implementors exercise bound display.</p>
+</truncated>
+<generated-code>
+<keyword>trait</keyword> <type-name>Reactor</type-name> <punctuation>{</punctuation> ... <punctuation>}</punctuation></generated-code>
+<section><section-title>Implementors (this crate)</section-title><p>
+<operator>&</operator><lifetime>'static</lifetime> <type-name>str</type-name><punctuation>,</punctuation> <punctuation>(</punctuation><punctuation>)</punctuation><punctuation>,</punctuation> <type-name>Simple</type-name></p>
+<list>
+  <item><generated-code>
+<operator>&</operator><lifetime>'static</lifetime> <type-name>Nested</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation> <keyword>where</keyword> <generic>T</generic><punctuation>:</punctuation> <type-name>Reactor</type-name></generated-code>
+</item>
+  <item><generated-code>
+<punctuation>(</punctuation><generic>A</generic><punctuation>:</punctuation> <type-name>Reactor</type-name><punctuation>,</punctuation> <generic>B</generic><punctuation>:</punctuation> <type-name>Reactor</type-name><punctuation>)</punctuation></generated-code>
+</item>
+  <item><generated-code>
+<generic>F</generic><punctuation>:</punctuation> <type-name>Fn</type-name><punctuation>(</punctuation><type-name>u32</type-name><punctuation>)</punctuation> <operator>-></operator> <generic>Out</generic> + <type-name>Send</type-name> + <type-name>Sync</type-name> + <lifetime>'static</lifetime> <keyword>where</keyword> <generic>Out</generic><punctuation>:</punctuation> <type-name>Reactor</type-name></generated-code>
+</item>
+  <item><generated-code>
+<type-name>Nested</type-name><punctuation><</punctuation><type-name>Vec</type-name><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Reactor</type-name><punctuation>></punctuation><punctuation>></punctuation></generated-code>
+</item>
+  <item><generated-code>
+<punctuation>[</punctuation><generic>R</generic><punctuation>:</punctuation> <type-name>Reactor</type-name><punctuation>;</punctuation> <keyword>const</keyword> N<punctuation>:</punctuation> <type-name>usize</type-name><punctuation>]</punctuation></generated-code>
+</item>
+</list>
+</section>

@@ -65,37 +65,37 @@ Update the count</p>
 </section><section><section-title>Trait Implementations</section-title><p>
 <type-name>TestTrait</type-name><punctuation><</punctuation><type-name>T</type-name> <operator>=</operator> <type-name>String</type-name><punctuation>></punctuation></p>
 <p>
-std: <type-name>Clone</type-name><punctuation>,</punctuation> <type-name>Debug</type-name><punctuation>,</punctuation> <type-name>Freeze</type-name><punctuation>,</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>,</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>,</punctuation> <type-name>Send</type-name><punctuation>,</punctuation> <type-name>Sync</type-name><punctuation>,</punctuation> <type-name>Unpin</type-name><punctuation>,</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <type-name>UnwindSafe</type-name></p>
+std: <type-name>Clone</type-name><punctuation>,</punctuation> <type-name>Debug</type-name><punctuation>,</punctuation> <type-name>Freeze</type-name><punctuation>,</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>,</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>,</punctuation> <type-name>Send</type-name><punctuation>,</punctuation> <type-name>Sync</type-name><punctuation>,</punctuation> <type-name>Unpin</type-name><punctuation>,</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <type-name>UnwindSafe</type-name></p>
 <list>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <lifetime>'static</lifetime> + <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Any</type-name></generated-code>
+<keyword>impl</keyword> <type-name>Any</type-name> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <lifetime>'static</lifetime> + <operator>?</operator><type-name>Sized</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Borrow</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword> <type-name>Borrow</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>BorrowMut</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword> <type-name>BorrowMut</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Clone</type-name><punctuation>></punctuation> <type-name>CloneToUninit</type-name></generated-code>
+<keyword>impl</keyword> <type-name>CloneToUninit</type-name> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <type-name>Clone</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Clone</type-name><punctuation>></punctuation> <type-name>ToOwned</type-name></generated-code>
+<keyword>impl</keyword> <type-name>ToOwned</type-name> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <type-name>Clone</type-name></generated-code>
 <generated-code>
-    <keyword>type</keyword> <type-name>Owned</type-name> <operator>=</operator> <generic>T</generic></generated-code>
+    <keyword>type</keyword> <type-name>Owned</type-name> <operator>=</operator> <generic>Self</generic></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
 <generated-code>
     <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <type-name>Infallible</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryInto</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryInto</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
 <generated-code>
-    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <punctuation><</punctuation><generic>U</generic> <keyword>as</keyword> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation><punctuation>::</punctuation>Error</generated-code>
+    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <punctuation><</punctuation><generic>U</generic> <keyword>as</keyword> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation><punctuation>::</punctuation>Error</generated-code>
 </item>
 </list>
 </section>

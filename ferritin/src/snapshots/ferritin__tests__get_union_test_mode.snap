@@ -49,22 +49,22 @@ Construct a <inline-code>TestUnion</inline-code> from its integer view.</p>
 </item>
 </list>
 </section><section><section-title>Trait Implementations</section-title><p>
-std: <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></p>
+std: <type-name>From</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation></p>
 <list>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <lifetime>'static</lifetime> + <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Any</type-name></generated-code>
+<keyword>impl</keyword> <type-name>Any</type-name> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <lifetime>'static</lifetime> + <operator>?</operator><type-name>Sized</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Borrow</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword> <type-name>Borrow</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>BorrowMut</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword> <type-name>BorrowMut</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name></generated-code>
 </item>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Freeze</type-name><punctuation>></punctuation> <type-name>Freeze</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
 </item>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>></punctuation> <type-name>RefUnwindSafe</type-name></generated-code>
@@ -76,14 +76,14 @@ std: <type-name>From</type-name><punctuation><</punctuation><generic>T</generic>
 <keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Sync</type-name><punctuation>></punctuation> <type-name>Sync</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
 <generated-code>
     <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <type-name>Infallible</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryInto</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryInto</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
 <generated-code>
-    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <punctuation><</punctuation><generic>U</generic> <keyword>as</keyword> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation><punctuation>::</punctuation>Error</generated-code>
+    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <punctuation><</punctuation><generic>U</generic> <keyword>as</keyword> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation><punctuation>::</punctuation>Error</generated-code>
 </item>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Unpin</type-name><punctuation>></punctuation> <type-name>Unpin</type-name></generated-code>

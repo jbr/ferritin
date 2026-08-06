@@ -1090,6 +1090,178 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "implementors",
+        "kind": "module",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Implementor shapes for the trait-page \"Implementors\" section, mirroring the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "trillium::Handler",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " family of impls: bounds must surface in the rendering",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "whether they're declared inline or in ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "where",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " predicates, and wherever the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "implementing type puts the param — a tuple element, an array element with a",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "const-generic length, a bare function-like generic, or nested too deep for",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "inline display.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "implementors::Reactor",
+        "kind": "trait",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/trait.Reactor.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The trait whose implementors exercise bound display.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "implementors::Simple",
+        "kind": "struct",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/struct.Simple.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A concrete implementor, for the compact comma list.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "implementors::Nested",
+        "kind": "struct",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/struct.Nested.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A wrapper whose ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Reactor",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " impls place a bounded param one level down",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "(inside ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", where inline merging follows it) and behind a reference",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "(where it can't merge and falls to the trailing where clause).",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "submodule",
         "kind": "module",
         "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html",
