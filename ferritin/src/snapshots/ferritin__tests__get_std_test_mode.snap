@@ -702,7 +702,7 @@ The <inline-code>char</inline-code> type represents a single character. More spe
 </item>
   <item><p>
 <type-name>prim_f32</type-name> </p>
-<truncated level="single-line">A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE <elided chars="9241"/></truncated>
+<truncated level="single-line">A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE <elided chars="9717"/></truncated>
 </item>
   <item><p>
 <type-name>prim_f64</type-name> </p>
@@ -1413,7 +1413,7 @@ The <inline-code>char</inline-code> type represents a single character. More spe
 </item>
   <item><p>
 <type-name>f32</type-name> </p>
-<truncated level="single-line">A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE <elided chars="9241"/></truncated>
+<truncated level="single-line">A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE <elided chars="9717"/></truncated>
 </item>
   <item><p>
 <type-name>f64</type-name> </p>
