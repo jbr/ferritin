@@ -148,25 +148,29 @@ impl<'a> Request<'a> {
     /// Resolve every type implementing this trait in the current crate into
     /// structured [`ImplementorDoc`]s.
     ///
-    /// Sorted by the implementing type's name, because
+    /// Sorted by the implementing type's *rendered* form, because
     /// [`implementors()`](DocRef::implementors) yields `FxHashMap` iteration
     /// order — so without sorting, the order (and, once the terminal caps the
     /// list, *which* implementors survive) would be nondeterministic w.r.t. the
-    /// crate's item set.
+    /// crate's item set. The rendered text is the key (rather than the type's
+    /// name) so non-path implementors — tuples, arrays, bare generics — get a
+    /// deterministic order too instead of all sorting as equal.
     fn model_implementors(&mut self, trait_item: DocRef<'a, Item>) -> Vec<ImplementorDoc<'a>> {
-        let mut blocks: Vec<(DocRef<'a, Item>, &'a Impl)> = vec![];
+        let mut docs: Vec<ImplementorDoc<'a>> = vec![];
         for impl_block in trait_item.implementors() {
             if let ItemEnum::Impl(impl_item) = impl_block.inner() {
-                blocks.push((impl_block, impl_item));
+                docs.push(self.model_implementor(impl_block, impl_item));
             }
         }
 
-        blocks.sort_by(|a, b| implementor_sort_key(a.1).cmp(implementor_sort_key(b.1)));
+        docs.sort_by_cached_key(|doc| {
+            doc.for_type
+                .iter()
+                .map(|span| span.text.as_ref())
+                .collect::<String>()
+        });
 
-        blocks
-            .into_iter()
-            .map(|(impl_block, impl_item)| self.model_implementor(impl_block, impl_item))
-            .collect()
+        docs
     }
 
     fn model_implementor(
@@ -228,64 +232,118 @@ impl<'a> Request<'a> {
         no_bounds && no_assoc_types
     }
 
-    /// Render the implementing type with bounds merged inline: `BufReader<R: Read>`.
+    /// Render the implementing type with bounds merged inline wherever a bare
+    /// generic param appears in it: `BufReader<R: Read>`, `(A: Handler, B:
+    /// Handler)`, `[H: Handler; const L: usize]`, `Fun: Fn(Conn) -> Fut`.
     ///
-    /// For boring implementors this is just the `for_` type. For non-boring ones,
-    /// bounds from where predicates are merged into the type's generic args display.
+    /// Bounds that cannot be attributed to such a position — a bounded param
+    /// nested inside another type's args, a predicate on a non-param type, an
+    /// HRTB predicate, a second param that never appears in the type (the `Fut`
+    /// of the `Fn` shape) — trail in a `where` clause, so no bound is ever
+    /// silently dropped.
     fn format_implementor_type(
         &mut self,
         impl_block: DocRef<'a, Item>,
         impl_item: &'a Impl,
     ) -> Vec<Span<'a>> {
-        // Build a map of simple where-predicate bounds to merge into type args
-        let all_simple = impl_item.generics.where_predicates.iter().all(|pred| {
-            matches!(pred, WherePredicate::BoundPredicate {
-                type_: Type::Generic(_),
-                generic_params,
-                ..
-            } if generic_params.is_empty())
-        });
+        let mut bounds = ImplementorBounds::collect(&impl_item.generics);
+        let mut spans = self.format_implementor_component(impl_block, &impl_item.for_, &mut bounds);
+        spans.extend(self.implementor_where_clause(impl_block, bounds));
+        spans
+    }
 
-        let extra_bounds: Vec<(&str, &'a [GenericBound])> = if all_simple {
-            impl_item
-                .generics
-                .where_predicates
-                .iter()
-                .filter_map(|pred| {
-                    if let WherePredicate::BoundPredicate {
-                        type_: Type::Generic(name),
-                        bounds,
-                        ..
-                    } = pred
-                    {
-                        Some((name.as_str(), bounds.as_slice()))
+    /// Render one structural component of the implementing type, merging a bare
+    /// generic param's bounds inline when the position allows it: the whole
+    /// type, a tuple element, an array/slice element, or a path's generic arg.
+    ///
+    /// References deliberately do *not* merge (`&'a T: Reactor` would be
+    /// ambiguous about what carries the bound), and neither does anything else
+    /// unrecognized — those params keep their bounds for the where clause.
+    fn format_implementor_component(
+        &mut self,
+        impl_block: DocRef<'a, Item>,
+        type_: &'a Type,
+        bounds: &mut ImplementorBounds<'a>,
+    ) -> Vec<Span<'a>> {
+        match type_ {
+            Type::Generic(name) => {
+                let mut spans = vec![Span::generic(name)];
+                let taken = bounds.take(name);
+                for (i, bound) in taken.iter().enumerate() {
+                    if i == 0 {
+                        spans.push(Span::punctuation(":"));
+                        spans.push(Span::plain(" "));
                     } else {
-                        None
+                        spans.push(Span::plain(" + "));
                     }
-                })
-                .collect()
-        } else {
-            vec![]
-        };
-
-        match &impl_item.for_ {
-            Type::ResolvedPath(path) => {
-                self.format_implementor_path(impl_block, impl_item, path, &extra_bounds)
+                    spans.extend(self.format_generic_bound(impl_block, bound));
+                }
+                spans
             }
-            other => {
-                // Primitive, slice, tuple, etc. — just format the type directly
-                self.format_type(impl_block, other)
+            Type::Tuple(types) => {
+                let mut spans = vec![Span::punctuation("(")];
+                for (i, elem) in types.iter().enumerate() {
+                    if i > 0 {
+                        spans.push(Span::punctuation(","));
+                        spans.push(Span::plain(" "));
+                    }
+                    spans.extend(self.format_implementor_component(impl_block, elem, bounds));
+                }
+                spans.push(Span::punctuation(")"));
+                spans
             }
+            Type::Array { type_, len } => {
+                let mut spans = vec![Span::punctuation("[")];
+                spans.extend(self.format_implementor_component(impl_block, type_, bounds));
+                spans.push(Span::punctuation(";"));
+                spans.push(Span::plain(" "));
+                spans.extend(self.format_implementor_array_len(impl_block, len, bounds));
+                spans.push(Span::punctuation("]"));
+                spans
+            }
+            Type::Slice(type_) => {
+                let mut spans = vec![Span::punctuation("[")];
+                spans.extend(self.format_implementor_component(impl_block, type_, bounds));
+                spans.push(Span::punctuation("]"));
+                spans
+            }
+            Type::ResolvedPath(path) => self.format_implementor_path(impl_block, path, bounds),
+            other => self.format_type(impl_block, other),
         }
     }
 
-    /// Format a `ResolvedPath` for_ type, merging extra bounds into the generic args.
+    /// An array length in an implementing type: when it names one of the impl's
+    /// const params, annotate it as its declaration (`const L: usize`) so it
+    /// reads as "generic over length" rather than as a named constant.
+    fn format_implementor_array_len(
+        &mut self,
+        impl_block: DocRef<'a, Item>,
+        len: &'a str,
+        bounds: &ImplementorBounds<'a>,
+    ) -> Vec<Span<'a>> {
+        match bounds.const_param(len) {
+            Some(type_) => {
+                let mut spans = vec![
+                    Span::keyword("const"),
+                    Span::plain(" "),
+                    Span::plain(len),
+                    Span::punctuation(":"),
+                    Span::plain(" "),
+                ];
+                spans.extend(self.format_type(impl_block, type_));
+                spans
+            }
+            None => vec![Span::plain(len)],
+        }
+    }
+
+    /// Format a `ResolvedPath` component of the implementing type, merging
+    /// bounds into generic args that are bare params.
     fn format_implementor_path(
         &mut self,
         impl_block: DocRef<'a, Item>,
-        impl_item: &'a Impl,
         path: &'a rustdoc_types::Path,
-        extra_bounds: &[(&str, &'a [GenericBound])],
+        bounds: &mut ImplementorBounds<'a>,
     ) -> Vec<Span<'a>> {
         let name_span = Span::type_name(super::display_path_name(path))
             .with_target(self.get_path(impl_block, path.id));
@@ -303,49 +361,22 @@ impl<'a> Request<'a> {
                             inner.push(Span::plain(" "));
                         }
 
-                        // If this arg is a generic param that has extra bounds, render inline
-                        if let GenericArg::Type(Type::Generic(name)) = arg
-                            && let Some(param_def) =
-                                impl_item.generics.params.iter().find(|p| p.name == *name)
-                        {
-                            inner.push(Span::generic(&param_def.name));
-
-                            // Inline bounds from the param definition
-                            let mut bounds_started = false;
-                            if let GenericParamDefKind::Type { bounds, .. } = &param_def.kind
-                                && !bounds.is_empty()
-                            {
-                                inner.push(Span::punctuation(":"));
-                                inner.push(Span::plain(" "));
-                                inner.extend(self.format_generic_bounds(impl_block, bounds));
-                                bounds_started = true;
-                            }
-
-                            // Append extra bounds from where predicates
-                            for (pred_name, where_bounds) in extra_bounds {
-                                if *pred_name == name.as_str() {
-                                    for (j, bound) in where_bounds.iter().enumerate() {
-                                        if j == 0 && !bounds_started {
-                                            inner.push(Span::punctuation(":"));
-                                            inner.push(Span::plain(" "));
-                                        } else {
-                                            inner.push(Span::plain(" + "));
-                                        }
-                                        inner.extend(self.format_generic_bound(impl_block, bound));
-                                    }
-                                    break;
-                                }
-                            }
-                            continue;
-                        }
-
-                        // Non-generic arg (concrete type, lifetime, etc.) — render normally
                         match arg {
                             GenericArg::Lifetime(lt) => inner.push(Span::lifetime(lt)),
                             GenericArg::Type(ty) => {
-                                inner.extend(self.format_type(impl_block, ty));
+                                inner.extend(
+                                    self.format_implementor_component(impl_block, ty, bounds),
+                                );
                             }
-                            GenericArg::Const(c) => inner.push(Span::inline_code(&c.expr)),
+                            GenericArg::Const(c) => {
+                                if bounds.const_param(&c.expr).is_some() {
+                                    inner.extend(self.format_implementor_array_len(
+                                        impl_block, &c.expr, bounds,
+                                    ));
+                                } else {
+                                    inner.push(Span::inline_code(&c.expr));
+                                }
+                            }
                             GenericArg::Infer => inner.push(Span::plain("_")),
                         }
                     }
@@ -384,6 +415,72 @@ impl<'a> Request<'a> {
             spans.push(Span::punctuation("<"));
             spans.extend(inner);
             spans.push(Span::punctuation(">"));
+        }
+        spans
+    }
+
+    /// The trailing `where` clause for everything [`ImplementorBounds`] still
+    /// holds after inline merging: params whose bounds found no inline
+    /// position, plus the complex predicates. Mirrors
+    /// [`format_where_clause`](Request::format_where_clause)'s shapes — inline
+    /// for one entry, one indented entry per line for several — without the
+    /// trailing comma/newline, since nothing follows it here.
+    fn implementor_where_clause(
+        &mut self,
+        impl_block: DocRef<'a, Item>,
+        bounds: ImplementorBounds<'a>,
+    ) -> Vec<Span<'a>> {
+        let ImplementorBounds {
+            params, complex, ..
+        } = bounds;
+
+        let mut entries: Vec<Vec<Span<'a>>> = vec![];
+        for (name, param_bounds) in params {
+            if param_bounds.is_empty() {
+                continue;
+            }
+            let mut entry = vec![
+                Span::generic(name),
+                Span::punctuation(":"),
+                Span::plain(" "),
+            ];
+            for (i, bound) in param_bounds.iter().enumerate() {
+                if i > 0 {
+                    entry.push(Span::plain(" + "));
+                }
+                entry.extend(self.format_generic_bound(impl_block, bound));
+            }
+            entries.push(entry);
+        }
+        for pred in complex {
+            entries.push(self.format_where_predicate(impl_block, pred));
+        }
+
+        if entries.is_empty() {
+            return vec![];
+        }
+
+        if entries.len() == 1 {
+            let mut spans = vec![
+                Span::plain(" "),
+                Span::keyword("where"),
+                Span::plain(" "),
+            ];
+            spans.extend(entries.pop().unwrap());
+            return spans;
+        }
+
+        let mut spans = vec![
+            Span::plain("\n"),
+            Span::keyword("where"),
+            Span::plain("\n    "),
+        ];
+        for (i, entry) in entries.into_iter().enumerate() {
+            if i > 0 {
+                spans.push(Span::punctuation(","));
+                spans.push(Span::plain("\n    "));
+            }
+            spans.extend(entry);
         }
         spans
     }
@@ -521,13 +618,82 @@ pub(super) fn lower_trait(model: TraitDoc<'_>) -> Vec<DocumentNode<'_>> {
     nodes
 }
 
-/// Sort key for a trait implementor — the implementing type's display name.
-/// `implementors()` order is otherwise `FxHashMap` iteration order.
-fn implementor_sort_key(impl_item: &Impl) -> &str {
-    match &impl_item.for_ {
-        Type::ResolvedPath(path) => super::display_path_name(path),
-        Type::Primitive(name) => name,
-        _ => "",
+/// The bounds an impl places on its generic params, gathered for the
+/// implementor rendering: each type param's combined bounds (inline
+/// declaration bounds first, then simple where-predicate bounds, preserving
+/// order), the const params (for the `const L: usize` annotation), and the
+/// predicates too complex to attribute to a single bare param.
+///
+/// Inline rendering consumes entries via [`take`](Self::take); whatever
+/// remains afterwards feeds the trailing where clause, so every bound is
+/// rendered exactly once.
+struct ImplementorBounds<'a> {
+    /// Type params in declaration order, each with its not-yet-rendered bounds.
+    params: Vec<(&'a str, Vec<&'a GenericBound>)>,
+    /// Const params, name → declared type.
+    consts: Vec<(&'a str, &'a Type)>,
+    /// Where predicates that aren't a simple bound on a bare type param:
+    /// HRTBs, predicates on non-param types, lifetime and equality predicates.
+    complex: Vec<&'a WherePredicate>,
+}
+
+impl<'a> ImplementorBounds<'a> {
+    fn collect(generics: &'a Generics) -> Self {
+        let mut params: Vec<(&'a str, Vec<&'a GenericBound>)> = vec![];
+        let mut consts = vec![];
+        for param in &generics.params {
+            match &param.kind {
+                GenericParamDefKind::Type { bounds, .. } => {
+                    params.push((param.name.as_str(), bounds.iter().collect()));
+                }
+                GenericParamDefKind::Const { type_, .. } => {
+                    consts.push((param.name.as_str(), type_));
+                }
+                GenericParamDefKind::Lifetime { .. } => {}
+            }
+        }
+
+        let mut complex = vec![];
+        for pred in &generics.where_predicates {
+            match pred {
+                WherePredicate::BoundPredicate {
+                    type_: Type::Generic(name),
+                    bounds,
+                    generic_params,
+                } if generic_params.is_empty()
+                    && let Some((_, param_bounds)) =
+                        params.iter_mut().find(|(param, _)| param == name) =>
+                {
+                    param_bounds.extend(bounds);
+                }
+                other => complex.push(other),
+            }
+        }
+
+        Self {
+            params,
+            consts,
+            complex,
+        }
+    }
+
+    /// Take `name`'s pending bounds for inline rendering. Empty when `name`
+    /// isn't a type param of this impl or its bounds were already rendered (a
+    /// param appearing twice in the type shows its bounds only once).
+    fn take(&mut self, name: &str) -> Vec<&'a GenericBound> {
+        self.params
+            .iter_mut()
+            .find(|(param, _)| *param == name)
+            .map(|(_, bounds)| std::mem::take(bounds))
+            .unwrap_or_default()
+    }
+
+    /// The declared type of const param `name`, if `name` is one.
+    fn const_param(&self, name: &str) -> Option<&'a Type> {
+        self.consts
+            .iter()
+            .find(|(param, _)| *param == name)
+            .map(|(_, type_)| *type_)
     }
 }
 

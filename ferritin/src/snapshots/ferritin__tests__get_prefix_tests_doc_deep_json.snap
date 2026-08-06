@@ -131,7 +131,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
             "style": "Punctuation"
           },
           {
-            "text": "T",
+            "text": "Self",
             "style": "Generic"
           },
           {
@@ -156,7 +156,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
             "style": "Punctuation"
           },
           {
-            "text": "T",
+            "text": "Self",
             "style": "Generic"
           },
           {
@@ -187,7 +187,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
             "style": "Punctuation"
           },
           {
-            "text": "T",
+            "text": "Self",
             "style": "Generic"
           },
           {
@@ -334,7 +334,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::prefix_tests::d
                 "style": "Punctuation"
               },
               {
-                "text": "T",
+                "text": "Self",
                 "style": "Generic"
               },
               {

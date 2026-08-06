@@ -22,18 +22,19 @@ struct DocDeep;
 
 Trait Implementations
 
-std: [Freeze](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AFreeze), [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom)<T>, [RefUnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3ARefUnwindSafe), [Send](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASend), [Sync](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASync), [Unpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnpin), [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnsafeUnpin), [UnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3AUnwindSafe)
+std: [Freeze](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AFreeze), [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom)<Self>, [RefUnwindSafe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3ARefUnwindSafe), [Send](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASend), [Sync](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3ASync), [Unpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnpin), [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AUnsafeUnpin), [Unwind](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3AUnwindSafe)
+[Safe](https://doc.rust-lang.org/nightly/core/panic/unwind_safe/index.html?search=core%3A%3Apanic%3A%3Aunwind%5Fsafe%3A%3AUnwindSafe)
 
-  ◦ impl<T: 'static + ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Any](https://doc.rust-lang.org/nightly/core/any/trait.Any.html)
+  ◦ impl [Any](https://doc.rust-lang.org/nightly/core/any/trait.Any.html) where Self: 'static + ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)
 
-  ◦ impl<T: ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)> [Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)<T>
+  ◦ impl [Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)<Self> where Self: ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)
 
-  ◦ impl<T: ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)> [BorrowMut](https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html)<T>
+  ◦ impl [BorrowMut](https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html)<Self> where Self: ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)
 
-  ◦ impl<T, U: [From](https://doc.rust-lang.org/nightly/core/convert/trait.From.html)<T>> [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<U>
+  ◦ impl<U: [From](https://doc.rust-lang.org/nightly/core/convert/trait.From.html)<Self>> [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<U>
 
-  ◦ impl<T, U: [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<T>> [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<U>
+  ◦ impl<U: [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<Self>> [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<U>
         type Error = [Infallible](https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html)
 
-  ◦ impl<T, U: [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>> [TryInto](https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html)<U>
-        type Error = <U as [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<T>>::Error
+  ◦ impl<U: [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<Self>> [TryInto](https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html)<U>
+        type Error = <U as [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<Self>>::Error

@@ -18,6 +18,10 @@ A minimal test crate for rustdoc JSON testing</p>
 <truncated level="single-line">Generic-syntax edge cases, gathered here so signature rendering has a fixture for every shape rustdoc JSON can produce. <elided chars="395"/></truncated>
 </item>
   <item><p>
+<type-name>implementors</type-name> </p>
+<truncated level="single-line">Implementor shapes for the trait-page "Implementors" section, mirroring the <inline-code>trillium::Handler</inline-code> family of impls: bounds must surface in the rendering whether they're declared inline or in <inline-code>where</inline-code> predicates, and wherever the implementing type puts the param — a tuple element, an array element with a const-generic length, a bare function-like generic, or nested too deep for inline display. <elided chars="309"/></truncated>
+</item>
+  <item><p>
 <type-name>link_resolution_tests</type-name> </p>
 <truncated level="single-line"><p>
 Module for testing intra-doc link resolution</p>
@@ -163,6 +167,16 @@ A const generic with a default, alongside a type parameter with a default.</p>
   <item><p>
 <type-name>generics::TupleWithWhere</type-name> </p>
 <truncated level="single-line">A tuple struct with a <inline-code>where</inline-code> clause, which Rust writes <emphasis>after</emphasis> the field list (<inline-code>struct T(..) where ..;</inline-code>) rather than before it. <elided chars="42"/></truncated>
+</item>
+  <item><p>
+<type-name>implementors::Nested</type-name> </p>
+<truncated level="single-line">A wrapper whose <inline-code>Reactor</inline-code> impls place a bounded param one level down (inside <inline-code>Vec</inline-code>, where inline merging follows it) and behind a reference (where it can't merge and falls to the trailing where clause). <elided chars="118"/></truncated>
+</item>
+  <item><p>
+<type-name>implementors::Simple</type-name> </p>
+<truncated level="single-line"><p>
+A concrete implementor, for the compact comma list.</p>
+</truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::HashSet</type-name> </p>
@@ -361,6 +375,12 @@ This It error flexib Each The error many doesn' goes This Line Line Line Line Li
   <item><p>
 <type-name>generics::ImplTraitMethods</type-name> </p>
 <truncated level="single-line">A trait with a generic method taking <inline-code>impl Trait</inline-code>, so the synthetic parameter also appears on an associated item rather than a free function. <elided chars="59"/></truncated>
+</item>
+  <item><p>
+<type-name>implementors::Reactor</type-name> </p>
+<truncated level="single-line"><p>
+The trait whose implementors exercise bound display.</p>
+</truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::TestTrait</type-name> </p>

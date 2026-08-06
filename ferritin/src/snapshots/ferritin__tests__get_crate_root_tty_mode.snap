@@ -16,6 +16,13 @@ Modules
     Generic-syntax edge cases, gathered here so signature rendering has a fixture
     for every shape rustdoc JSON can produce. [...]
 
+  ◦ [implementors](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/index.html) 
+    Implementor shapes for the trait-page "Implementors" section, mirroring the 
+    trillium::Handler family of impls: bounds must surface in the rendering whether
+    they're declared inline or in where predicates, and wherever the implementing
+    type puts the param — a tuple element, an array element with a const-generic
+    length, a bare function-like generic, or nested too deep for inline display.
+
   ◦ [link_resolution_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/index.html) 
     Module for testing intra-doc link resolution
 

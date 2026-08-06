@@ -100,18 +100,18 @@ struct ConstGeneric<T = u8, const N: usize = 3> {
 
 ImplTraitMethods
 
-std: From<T>
+std: From<Self>
 
-- impl<T: 'static + ?Sized> Any
-- impl<T: ?Sized> Borrow<T>
-- impl<T: ?Sized> BorrowMut<T>
+- impl Any where Self: 'static + ?Sized
+- impl Borrow<Self> where Self: ?Sized
+- impl BorrowMut<Self> where Self: ?Sized
 - impl<T: Freeze, const N: usize> Freeze
-- impl<T, U: From<T>> Into<U>
+- impl<U: From<Self>> Into<U>
 - impl<T: RefUnwindSafe, const N: usize> RefUnwindSafe
 - impl<T: Send, const N: usize> Send
 - impl<T: Sync, const N: usize> Sync
-- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
-- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
 - impl<T: Unpin, const N: usize> Unpin
 - impl<T: UnsafeUnpin, const N: usize> UnsafeUnpin
 - impl<T: UnwindSafe, const N: usize> UnwindSafe
@@ -137,18 +137,18 @@ where
 
 ## Trait Implementations
 
-std: From<T>
+std: From<Self>
 
-- impl<T: 'static + ?Sized> Any
-- impl<T: ?Sized> Borrow<T>
-- impl<T: ?Sized> BorrowMut<T>
+- impl Any where Self: 'static + ?Sized
+- impl Borrow<Self> where Self: ?Sized
+- impl BorrowMut<Self> where Self: ?Sized
 - impl<T: Freeze, U: Freeze, F: Freeze> Freeze
-- impl<T, U: From<T>> Into<U>
+- impl<U: From<Self>> Into<U>
 - impl<T: RefUnwindSafe, U: RefUnwindSafe, F: RefUnwindSafe> RefUnwindSafe
 - impl<T, U: Send, F: Send> Send
 - impl<T: Sync, U: Sync, F: Sync> Sync
-- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
-- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
 - impl<T: Unpin, U: Unpin, F: Unpin> Unpin
 - impl<T: UnsafeUnpin, U: UnsafeUnpin, F: UnsafeUnpin> UnsafeUnpin
 - impl<T: UnwindSafe, U: UnwindSafe, F: UnwindSafe> UnwindSafe
@@ -161,18 +161,18 @@ struct TupleWithWhere<T>(
 
 ## Trait Implementations
 
-std: From<T>
+std: From<Self>
 
-- impl<T: 'static + ?Sized> Any
-- impl<T: ?Sized> Borrow<T>
-- impl<T: ?Sized> BorrowMut<T>
+- impl Any where Self: 'static + ?Sized
+- impl Borrow<Self> where Self: ?Sized
+- impl BorrowMut<Self> where Self: ?Sized
 - impl<T: Freeze> Freeze
-- impl<T, U: From<T>> Into<U>
+- impl<U: From<Self>> Into<U>
 - impl<T: RefUnwindSafe> RefUnwindSafe
 - impl<T: Send> Send
 - impl<T: Sync> Sync
-- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
-- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
 - impl<T: Unpin> Unpin
 - impl<T: UnsafeUnpin> UnsafeUnpin
 - impl<T: UnwindSafe> UnwindSafe
@@ -195,18 +195,18 @@ where
 
 ## Trait Implementations
 
-std: From<T>
+std: From<Self>
 
-- impl<T: 'static + ?Sized> Any
-- impl<T: ?Sized> Borrow<T>
-- impl<T: ?Sized> BorrowMut<T>
+- impl Any where Self: 'static + ?Sized
+- impl Borrow<Self> where Self: ?Sized
+- impl BorrowMut<Self> where Self: ?Sized
 - impl<T: Freeze, U: Freeze> Freeze
-- impl<T, U: From<T>> Into<U>
+- impl<U: From<Self>> Into<U>
 - impl<T: RefUnwindSafe, U: RefUnwindSafe> RefUnwindSafe
 - impl<T, U: Send> Send
 - impl<T: Sync, U: Sync> Sync
-- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
-- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error
+- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
 - impl<T: Unpin, U: Unpin> Unpin
 - impl<T: UnsafeUnpin, U: UnsafeUnpin> UnsafeUnpin
 - impl<T: UnwindSafe, U: UnwindSafe> UnwindSafe

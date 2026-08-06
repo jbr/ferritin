@@ -16,6 +16,13 @@ Modules
     Generic-syntax edge cases, gathered here so signature rendering has a fixture
     for every shape rustdoc JSON can produce. [...]
 
+  ◦ [implementors](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/index.html) 
+    Implementor shapes for the trait-page "Implementors" section, mirroring the 
+    trillium::Handler family of impls: bounds must surface in the rendering whether
+    they're declared inline or in where predicates, and wherever the implementing
+    type puts the param — a tuple element, an array element with a const-generic
+    length, a bare function-like generic, or nested too deep for inline display.
+
   ◦ [link_resolution_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/index.html) 
     Module for testing intra-doc link resolution
 
@@ -98,6 +105,14 @@ Structs
   ◦ [generics::TupleWithWhere](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/struct.TupleWithWhere.html) 
     A tuple struct with a where clause, which Rust writes after the field list (
     struct T(..) where ..;) rather than before it.
+
+  ◦ [implementors::Nested](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/struct.Nested.html) 
+    A wrapper whose Reactor impls place a bounded param one level down (inside Vec,
+    where inline merging follows it) and behind a reference (where it can't merge
+    and falls to the trailing where clause).
+
+  ◦ [implementors::Simple](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/struct.Simple.html) 
+    A concrete implementor, for the compact comma list.
 
   ◦ [link_resolution_tests::HashSet](https://doc.rust-lang.org/nightly/std/collections/hash/set/struct.HashSet.html) 
     A [hash set](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3Acollections) implemented as a HashMap where the value is (). [...]
@@ -201,6 +216,9 @@ Traits
   ◦ [generics::ImplTraitMethods](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/trait.ImplTraitMethods.html) 
     A trait with a generic method taking impl Trait, so the synthetic parameter
     also appears on an associated item rather than a free function.
+
+  ◦ [implementors::Reactor](https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/trait.Reactor.html) 
+    The trait whose implementors exercise bound display.
 
   ◦ [link_resolution_tests::nested::TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html) 
     A trait for testing extremely long documentation that exceeds line limits. [...]

@@ -18,6 +18,10 @@ A minimal test crate for rustdoc JSON testing</p>
 <truncated level="single-line">Generic-syntax edge cases, gathered here so signature rendering has a fixture for every shape rustdoc JSON can produce. <elided chars="395"/></truncated>
 </item>
   <item><p>
+<type-name>implementors</type-name> </p>
+<truncated level="single-line">Implementor shapes for the trait-page "Implementors" section, mirroring the <inline-code>trillium::Handler</inline-code> family of impls: bounds must surface in the rendering whether they're declared inline or in <inline-code>where</inline-code> predicates, and wherever the implementing type puts the param — a tuple element, an array element with a const-generic length, a bare function-like generic, or nested too deep for inline display. <elided chars="309"/></truncated>
+</item>
+  <item><p>
 <type-name>link_resolution_tests</type-name> </p>
 <truncated level="single-line"><p>
 Module for testing intra-doc link resolution</p>

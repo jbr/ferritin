@@ -420,6 +420,14 @@ test_all_modes!(
 // (comma-separated) implementors list.
 test_all_modes!(get_trait_marker, Commands::get("crate::Marker"));
 
+// A trait with generic implementors in the trillium::Handler shapes — bounds
+// merged inline into tuples/arrays/bare generics, const-generic array lengths
+// annotated, and a trailing where clause for what can't merge inline.
+test_all_modes!(
+    get_trait_implementor_bounds,
+    Commands::get("crate::implementors::Reactor")
+);
+
 test_all_modes!(get_trait_assoc_type, Commands::get("crate::TestTrait::T"));
 
 test_all_modes!(
