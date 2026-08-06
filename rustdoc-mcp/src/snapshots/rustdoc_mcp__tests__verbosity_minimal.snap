@@ -9,6 +9,7 @@ Defined at: fixture_crate
 
 Modules:
 generics
+implementors
 link_resolution_tests
 markdown_test
 namespace_collisions

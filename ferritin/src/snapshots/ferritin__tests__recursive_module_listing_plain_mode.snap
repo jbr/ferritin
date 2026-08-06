@@ -15,6 +15,9 @@ Modules
   ◦ generics 
     Generic-syntax edge cases, gathered here so signature rendering has a fixture for every shape rustdoc JSON can produce. [...]
 
+  ◦ implementors 
+    Implementor shapes for the trait-page "Implementors" section, mirroring the trillium::Handler family of impls: bounds must surface in the rendering whether they're declared inline or in where predicates, and wherever the implementing type puts the param — a tuple element, an array element with a const-generic length, a bare function-like generic, or nested too deep for inline display.
+
   ◦ link_resolution_tests 
     Module for testing intra-doc link resolution
 
@@ -93,6 +96,12 @@ Structs
 
   ◦ generics::TupleWithWhere 
     A tuple struct with a where clause, which Rust writes after the field list (struct T(..) where ..;) rather than before it.
+
+  ◦ implementors::Nested 
+    A wrapper whose Reactor impls place a bounded param one level down (inside Vec, where inline merging follows it) and behind a reference (where it can't merge and falls to the trailing where clause).
+
+  ◦ implementors::Simple 
+    A concrete implementor, for the compact comma list.
 
   ◦ link_resolution_tests::HashSet 
     A hash set implemented as a HashMap where the value is (). [...]
@@ -193,6 +202,9 @@ Traits
 
   ◦ generics::ImplTraitMethods 
     A trait with a generic method taking impl Trait, so the synthetic parameter also appears on an associated item rather than a free function.
+
+  ◦ implementors::Reactor 
+    The trait whose implementors exercise bound display.
 
   ◦ link_resolution_tests::nested::TestTrait 
     A trait for testing extremely long documentation that exceeds line limits. [...]

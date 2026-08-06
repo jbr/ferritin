@@ -1,6 +1,7 @@
 //! A minimal test crate for rustdoc JSON testing
 
 pub mod generics;
+pub mod implementors;
 
 // Use statements for testing intra-doc link resolution
 use std::collections::HashMap;

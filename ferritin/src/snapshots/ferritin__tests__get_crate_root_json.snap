@@ -64,6 +64,80 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
         ]
       },
       {
+        "path": "implementors",
+        "kind": "module",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/implementors/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Implementor shapes for the trait-page \"Implementors\" section, mirroring the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "trillium::Handler",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " family of impls: bounds must surface in the rendering",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "whether they're declared inline or in ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "where",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " predicates, and wherever the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "implementing type puts the param — a tuple element, an array element with a",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "const-generic length, a bare function-like generic, or nested too deep for",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "inline display.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "submodule",
         "kind": "module",
         "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html",

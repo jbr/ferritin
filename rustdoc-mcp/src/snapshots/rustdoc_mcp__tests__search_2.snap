@@ -16,9 +16,9 @@ Search results for 'generic struct' in crate 'crate':
     A generic function
 • fixture-crate::TupleStruct (Struct) - score: 41
     A tuple struct for testing
-• fixture-crate::submodule::SubStruct (Struct) - score: 40
+• fixture-crate::submodule::SubStruct (Struct) - score: 41
     A struct in a submodule
-• fixture-crate::link_resolution_tests::nested::deeply_nested::DeepStruct (Struct) - score: 40
+• fixture-crate::link_resolution_tests::nested::deeply_nested::DeepStruct (Struct) - score: 41
     Struct in deeply nested module
-• fixture-crate::link_resolution_tests::nested::NestedStruct (Struct) - score: 40
+• fixture-crate::link_resolution_tests::nested::NestedStruct (Struct) - score: 41
     Struct in nested module

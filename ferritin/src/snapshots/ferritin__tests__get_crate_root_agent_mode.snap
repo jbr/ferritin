@@ -9,6 +9,7 @@ A minimal test crate for rustdoc JSON testing
 ## Modules
 
 - generics — Generic-syntax edge cases, gathered here so signature rendering has a fixture for every shape rustdoc JSON can produce. [+1 lines]
+- implementors — Implementor shapes for the trait-page "Implementors" section, mirroring the trillium::Handler family of impls: bounds must surface in the rendering whether they're declared inline or in where predicates, and wherever the implementing type puts the param — a tuple element, an array element with a const-generic length, a bare function-like generic, or nested too deep for inline display.
 - link_resolution_tests — Module for testing intra-doc link resolution
 - markdown_test — Markdown: Syntax [+90 lines]
 - namespace_collisions — Module for testing namespace disambiguation with kind discriminators. [+1 lines]
