@@ -33,6 +33,37 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
     "kind": "module",
     "items": [
       {
+        "path": "generics",
+        "kind": "module",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Generic-syntax edge cases, gathered here so signature rendering has a",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "fixture for every shape rustdoc JSON can produce.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
         "path": "submodule",
         "kind": "module",
         "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html",

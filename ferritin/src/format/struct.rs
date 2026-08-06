@@ -70,11 +70,7 @@ impl<'a> Request<'a> {
     ) -> StructDoc<'a> {
         let name = item.name().unwrap_or("<unnamed>");
 
-        let generics = if !struct_data.generics.params.is_empty() {
-            self.format_generics(item, &struct_data.item().generics)
-        } else {
-            vec![]
-        };
+        let generics = self.format_generics(item, &struct_data.item().generics);
         let where_clause = if !struct_data.generics.where_predicates.is_empty() {
             self.format_where_clause(item, &struct_data.item().generics.where_predicates)
         } else {
@@ -220,22 +216,28 @@ pub(super) fn lower_struct(model: StructDoc<'_>) -> Vec<DocumentNode<'_>> {
         Span::type_name(name),
     ];
     code_spans.extend(generics);
-    code_spans.extend(where_clause);
 
+    // A tuple struct's `where` clause follows its field list
+    // (`struct Foo<T>(T) where T: Clone;`); every other shape's precedes the
+    // body it introduces.
     let mut doc_nodes = match shape {
         StructShape::Unit => {
+            code_spans.extend(where_clause);
             code_spans.push(Span::punctuation(";"));
             vec![DocumentNode::generated_code(code_spans)]
         }
         StructShape::Tuple {
             fields,
             hidden_count,
-        } => lower_tuple(code_spans, fields, hidden_count),
+        } => lower_tuple(code_spans, where_clause, fields, hidden_count),
         StructShape::Plain {
             fields,
             hidden_count,
             has_stripped_fields,
-        } => lower_plain(code_spans, fields, hidden_count, has_stripped_fields),
+        } => {
+            code_spans.extend(where_clause);
+            lower_plain(code_spans, fields, hidden_count, has_stripped_fields)
+        }
     };
 
     doc_nodes.extend(super::impls::lower_inherent_methods(methods));
@@ -252,8 +254,7 @@ pub(super) fn lower_plain<'a>(
     hidden_count: usize,
     has_stripped_fields: bool,
 ) -> Vec<DocumentNode<'a>> {
-    code_spans.push(Span::plain(" "));
-    code_spans.push(Span::punctuation("{"));
+    super::push_body_brace(&mut code_spans);
     code_spans.push(Span::plain("\n"));
 
     for field in &fields {
@@ -320,6 +321,7 @@ pub(super) fn lower_plain<'a>(
 
 fn lower_tuple<'a>(
     mut code_spans: Vec<Span<'a>>,
+    where_clause: Vec<Span<'a>>,
     fields: Vec<TupleField<'a>>,
     hidden_count: usize,
 ) -> Vec<DocumentNode<'a>> {
@@ -350,6 +352,8 @@ fn lower_tuple<'a>(
     }
 
     code_spans.push(Span::punctuation(")"));
+    code_spans.extend(where_clause);
+    code_spans.push(Span::punctuation(";"));
 
     let mut doc_nodes = vec![DocumentNode::generated_code(code_spans)];
 

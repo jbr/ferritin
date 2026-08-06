@@ -69,11 +69,7 @@ impl<'a> Request<'a> {
     ) -> TraitDoc<'a> {
         let name = item.name().unwrap_or("<unnamed>");
 
-        let generics = if !trait_data.generics.params.is_empty() {
-            self.format_generics(item, &trait_data.item().generics)
-        } else {
-            vec![]
-        };
+        let generics = self.format_generics(item, &trait_data.item().generics);
         let supertraits = if !trait_data.bounds.is_empty() {
             self.format_generic_bounds(item, &trait_data.item().bounds)
         } else {
@@ -434,9 +430,7 @@ impl<'a> Request<'a> {
             Span::type_name(type_name),
         ];
 
-        if !generics.params.is_empty() {
-            spans.extend(self.format_generics(item, generics));
-        }
+        spans.extend(self.format_generics(item, generics));
 
         if !bounds.is_empty() {
             spans.push(Span::punctuation(":"));
@@ -466,8 +460,7 @@ impl<'a> Request<'a> {
         let mut spans = self.format_function_signature(item, method_name, f);
 
         if has_default {
-            spans.push(Span::plain(" "));
-            spans.push(Span::punctuation("{"));
+            super::push_body_brace(&mut spans);
             spans.push(Span::plain(" ... "));
             spans.push(Span::punctuation("}"));
         } else {
@@ -502,8 +495,7 @@ pub(super) fn lower_trait(model: TraitDoc<'_>) -> Vec<DocumentNode<'_>> {
         signature_spans.extend(supertraits);
     }
     signature_spans.extend(where_clause);
-    signature_spans.push(Span::plain(" "));
-    signature_spans.push(Span::punctuation("{"));
+    super::push_body_brace(&mut signature_spans);
     signature_spans.push(Span::plain(" ... "));
     signature_spans.push(Span::punctuation("}"));
 

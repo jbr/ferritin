@@ -567,3 +567,55 @@ fn search_2() {
     .unwrap();
     insta::assert_snapshot!(result);
 }
+
+/// The generics fixture module (`tests/fixture-crate/src/generics.rs`) rendered
+/// signature-only into one snapshot, mirroring `ferritin`'s `generics_signatures`.
+/// This crate carries its own string-based copy of the signature formatters, so
+/// the shapes rustdoc records indirectly — synthetic `impl Trait` parameters,
+/// higher-ranked binders, a `dyn` object's own lifetime — have to be fixed and
+/// pinned here separately.
+#[test]
+fn generics_signatures() {
+    let mut state = create_test_state();
+    let rendered = [
+        "crate::generics::set_data",
+        "crate::generics::mixed_params",
+        "crate::generics::two_impls",
+        "crate::generics::nested_impl_trait",
+        "crate::generics::impl_and_where",
+        "crate::generics::returns_impl_trait",
+        "crate::generics::precise_capturing",
+        "crate::generics::impl_trait_outlives",
+        "crate::generics::hrtb_inline",
+        "crate::generics::hrtb_where",
+        "crate::generics::hrtb_dyn",
+        "crate::generics::hrtb_fn_pointer",
+        "crate::generics::dyn_with_lifetime",
+        "crate::generics::dyn_needs_parens",
+        "crate::generics::dyn_parenthesized_args",
+        "crate::generics::maybe_sized",
+        "crate::generics::lifetime_outlives",
+        "crate::generics::assoc_equality",
+        "crate::generics::assoc_bound",
+        "crate::generics::qualified_return",
+        "crate::generics::ConstGeneric",
+        "crate::generics::ManyPredicates",
+        "crate::generics::TupleWithWhere",
+        "crate::generics::EnumManyPredicates",
+        "crate::generics::ImplTraitMethods",
+    ]
+    .into_iter()
+    .map(|name| {
+        GetItem {
+            name: name.to_string(),
+            verbosity: Some(Verbosity::Minimal),
+            ..Default::default()
+        }
+        .execute(&mut state)
+        .expect("Tool execution failed")
+    })
+    .collect::<Vec<_>>()
+    .join("\n");
+
+    insta::assert_snapshot!(rendered);
+}

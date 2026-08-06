@@ -31,11 +31,7 @@ impl<'a> Request<'a> {
     ) -> UnionDoc<'a> {
         let name = item.name().unwrap_or("<unnamed>");
 
-        let generics = if !union.generics.params.is_empty() {
-            self.format_generics(item, &union.item().generics)
-        } else {
-            vec![]
-        };
+        let generics = self.format_generics(item, &union.item().generics);
         let where_clause = if !union.generics.where_predicates.is_empty() {
             self.format_where_clause(item, &union.item().generics.where_predicates)
         } else {

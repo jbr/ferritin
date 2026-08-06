@@ -46,11 +46,7 @@ impl<'a> Request<'a> {
     ) -> EnumDoc<'a> {
         let name = item.name().unwrap_or("<unnamed>");
 
-        let generics = if !enum_data.generics.params.is_empty() {
-            self.format_generics(item, &enum_data.item().generics)
-        } else {
-            vec![]
-        };
+        let generics = self.format_generics(item, &enum_data.item().generics);
         let where_clause = if !enum_data.generics.where_predicates.is_empty() {
             self.format_where_clause(item, &enum_data.item().generics.where_predicates)
         } else {
@@ -136,8 +132,7 @@ pub(super) fn lower_enum(model: EnumDoc<'_>) -> Vec<DocumentNode<'_>> {
     ];
     code_spans.extend(generics);
     code_spans.extend(where_clause);
-    code_spans.push(Span::plain(" "));
-    code_spans.push(Span::punctuation("{"));
+    super::push_body_brace(&mut code_spans);
     code_spans.push(Span::plain("\n"));
 
     for variant in &variants {

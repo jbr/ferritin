@@ -18,7 +18,8 @@ and provides a comprehensive example of the generic system in Rust.
 struct GenericStruct<T, U = String>
 where
     T: Clone + Send,
-    U: std::fmt::Display {
+    U: std::fmt::Display
+{
     pub data: T,
     pub metadata: U,
     inner: Vec<T>,

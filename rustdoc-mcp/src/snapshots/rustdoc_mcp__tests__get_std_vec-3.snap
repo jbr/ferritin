@@ -180,7 +180,7 @@ where
 • pub fn pop(&mut self) -> Option<T>
     Removes the last element from a vector and returns it, or [`None`] if it [+18 more lines]
 
-• pub fn pop_if<impl FnOnce(&mut T) -> bool: FnOnce(&mut T) -> bool>(&mut self, predicate: impl FnOnce(&mut T) -> bool) -> Option<T>
+• pub fn pop_if(&mut self, predicate: impl FnOnce(&mut T) -> bool) -> Option<T>
     Removes and returns the last element from a vector if the predicate [+13 more lines]
 
 • pub fn peek_mut(&mut self) -> Option<PeekMut<'_, T, A>>
@@ -268,7 +268,7 @@ where
 
 • pub(::vec) fn extend_desugared<I: Iterator<Item = T>>(&mut self, iterator: I)
 
-• pub(::vec) fn extend_trusted<impl iter::TrustedLen<Item = T>: iter::TrustedLen<Item = T>>(&mut self, iterator: impl iter::TrustedLen<Item = T>)
+• pub(::vec) fn extend_trusted(&mut self, iterator: impl iter::TrustedLen<Item = T>)
 
 • pub fn splice<R, I>(&mut self, range: R, replace_with: I) -> Splice<'_, <I as >::IntoIter, A>
 where

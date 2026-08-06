@@ -1,21 +1,13 @@
 use super::*;
 use crate::styled_string::Span;
+use rustdoc_types::DynTrait;
 
 impl<'a> Request<'a> {
     /// Enhanced type formatting for signatures
     pub(crate) fn format_type(&mut self, item: DocRef<'a, Item>, type_: &'a Type) -> Vec<Span<'a>> {
         match type_ {
             Type::ResolvedPath(path) => self.format_path(item, path),
-            Type::DynTrait(dyn_trait) => {
-                let mut spans = vec![Span::keyword("dyn"), Span::plain(" ")];
-                for (i, t) in dyn_trait.traits.iter().enumerate() {
-                    if i > 0 {
-                        spans.push(Span::plain(" + "));
-                    }
-                    spans.extend(self.format_path(item, &t.trait_));
-                }
-                spans
-            }
+            Type::DynTrait(dyn_trait) => self.format_dyn_trait(item, dyn_trait),
             Type::Generic(name) => vec![Span::generic(name)],
             Type::Primitive(prim) => vec![Span::type_name(prim)],
             Type::Array { type_, len } => {
@@ -48,7 +40,7 @@ impl<'a> Request<'a> {
                     spans.push(Span::keyword("mut"));
                     spans.push(Span::plain(" "));
                 }
-                spans.extend(self.format_type(item, type_));
+                spans.extend(self.format_pointee(item, type_));
                 spans
             }
             Type::RawPointer { is_mutable, type_ } => {
@@ -57,7 +49,7 @@ impl<'a> Request<'a> {
                     Span::keyword(if *is_mutable { "mut" } else { "const" }),
                     Span::plain(" "),
                 ];
-                spans.extend(self.format_type(item, type_));
+                spans.extend(self.format_pointee(item, type_));
                 spans
             }
             Type::FunctionPointer(fp) => self.format_function_pointer(item, fp),
@@ -76,6 +68,63 @@ impl<'a> Request<'a> {
             } => self.format_qualified_path(item, name, args.as_deref(), self_type, trait_),
             Type::Pat { .. } => vec![Span::plain("pattern")],
         }
+    }
+
+    /// Format a `dyn` trait object.
+    ///
+    /// Two pieces live outside the trait paths and are easy to lose: each
+    /// trait's higher-ranked binder is a `generic_params` list beside its path
+    /// (so `dyn for<'a> Fn(&'a str)` renders as a dangling `dyn Fn(&'a str)`
+    /// without it), and the object's own lifetime bound is a field of the
+    /// `DynTrait` rather than one of its traits.
+    fn format_dyn_trait(
+        &mut self,
+        item: DocRef<'a, Item>,
+        dyn_trait: &'a DynTrait,
+    ) -> Vec<Span<'a>> {
+        let mut spans = vec![Span::keyword("dyn"), Span::plain(" ")];
+
+        for (i, poly_trait) in dyn_trait.traits.iter().enumerate() {
+            if i > 0 {
+                spans.push(Span::plain(" + "));
+            }
+            spans.extend(self.format_hrtb(item, &poly_trait.generic_params));
+            spans.extend(self.format_path(item, &poly_trait.trait_));
+        }
+
+        if let Some(lifetime) = &dyn_trait.lifetime {
+            spans.push(Span::plain(" + "));
+            spans.push(Span::lifetime(lifetime));
+        }
+
+        spans
+    }
+
+    /// Format the type behind a `&`/`&mut`/`*const`/`*mut`, parenthesizing it
+    /// when it is a `+`-joined trait object or `impl Trait`.
+    ///
+    /// `&dyn Error + Send` does not parse — the `+` is ambiguous between
+    /// extending the trait object and bounding the reference — so Rust requires
+    /// `&(dyn Error + Send)`. A single bound needs no parentheses, and
+    /// `Box<dyn Error + Send>` needs none either, since the angle brackets
+    /// already delimit it.
+    fn format_pointee(&mut self, item: DocRef<'a, Item>, type_: &'a Type) -> Vec<Span<'a>> {
+        let bounds = match type_ {
+            Type::DynTrait(dyn_trait) => {
+                dyn_trait.traits.len() + usize::from(dyn_trait.lifetime.is_some())
+            }
+            Type::ImplTrait(bounds) => bounds.len(),
+            _ => 1,
+        };
+
+        if bounds < 2 {
+            return self.format_type(item, type_);
+        }
+
+        let mut spans = vec![Span::punctuation("(")];
+        spans.extend(self.format_type(item, type_));
+        spans.push(Span::punctuation(")"));
+        spans
     }
 
     pub(crate) fn format_tuple(
@@ -102,21 +151,7 @@ impl<'a> Request<'a> {
         item: DocRef<'a, Item>,
         fp: &'a FunctionPointer,
     ) -> Vec<Span<'a>> {
-        let mut spans = vec![];
-
-        if !fp.generic_params.is_empty() {
-            spans.push(Span::keyword("for"));
-            spans.push(Span::punctuation("<"));
-            for (i, p) in fp.generic_params.iter().enumerate() {
-                if i > 0 {
-                    spans.push(Span::punctuation(","));
-                    spans.push(Span::plain(" "));
-                }
-                spans.extend(self.format_generic_param(item, p));
-            }
-            spans.push(Span::punctuation(">"));
-            spans.push(Span::plain(" "));
-        }
+        let mut spans = self.format_hrtb(item, &fp.generic_params);
 
         spans.push(Span::keyword("fn"));
         spans.push(Span::punctuation("("));

@@ -1,0 +1,54 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::TupleStruct\"), OutputMode ::\nTestMode, & get_fixture_crate_path ())"
+---
+<metadata>
+  <field name="Item">TupleStruct</field>
+  <field name="Kind">Struct</field>
+  <field name="Visibility">Public</field>
+  <field name="Defined at"><type-name>fixture_crate</type-name><punctuation>::</punctuation><type-name>TupleStruct</type-name></field>
+  <field name="In crate">fixture-crate (0.1.0)</field>
+</metadata>
+<truncated level="full"><p>
+A tuple struct for testing</p>
+</truncated>
+<generated-code>
+<keyword>struct</keyword> <type-name>TupleStruct</type-name><punctuation>(</punctuation>
+    <keyword>pub</keyword> <type-name>String</type-name><punctuation>,</punctuation> <comment>// field 0</comment>
+    <type-name>u32</type-name><punctuation>,</punctuation> <comment>// field 1</comment>
+<punctuation>)</punctuation><punctuation>;</punctuation></generated-code>
+<section><section-title>Fields:</section-title><list>
+  <item><generated-code>
+Field 0: <type-name>String</type-name></generated-code>
+<truncated level="single-line"><p>
+It's probably uncommon to add documentation for a tuple struct field</p>
+</truncated>
+</item>
+</list>
+</section><section><section-title>Trait Implementations</section-title><p>
+std: <type-name>Freeze</type-name><punctuation>,</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>,</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>,</punctuation> <type-name>Send</type-name><punctuation>,</punctuation> <type-name>Sync</type-name><punctuation>,</punctuation> <type-name>Unpin</type-name><punctuation>,</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <type-name>UnwindSafe</type-name></p>
+<list>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <lifetime>'static</lifetime> + <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Any</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>Borrow</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name><punctuation>></punctuation> <type-name>BorrowMut</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<generated-code>
+    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <type-name>Infallible</type-name></generated-code>
+</item>
+  <item><generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryInto</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
+<generated-code>
+    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <punctuation><</punctuation><generic>U</generic> <keyword>as</keyword> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>T</generic><punctuation>></punctuation><punctuation>></punctuation><punctuation>::</punctuation>Error</generated-code>
+</item>
+</list>
+</section>

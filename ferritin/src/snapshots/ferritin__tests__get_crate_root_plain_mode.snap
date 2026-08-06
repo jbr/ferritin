@@ -12,6 +12,9 @@ A minimal test crate for rustdoc JSON testing
 
 Modules
 
+  ◦ generics 
+    Generic-syntax edge cases, gathered here so signature rendering has a fixture for every shape rustdoc JSON can produce. [...]
+
   ◦ link_resolution_tests 
     Module for testing intra-doc link resolution
 

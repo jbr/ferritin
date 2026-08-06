@@ -279,6 +279,11 @@ test_all_modes!(
 
 test_all_modes!(get_union, Commands::get("crate::TestUnion"));
 
+// A tuple struct, whose declaration ends in `;` and whose `where` clause (if it
+// had one) would follow the field list rather than precede it — see
+// `get_generics_*` and `TupleWithWhere` for the latter.
+test_all_modes!(get_tuple_struct, Commands::get("crate::TupleStruct"));
+
 test_all_modes!(get_negative_impls, Commands::get("crate::NotThreadSafe"));
 
 test_all_modes!(get_submodule, Commands::get("crate::submodule"));
@@ -289,6 +294,74 @@ test_all_modes!(
 );
 
 test_all_modes!(get_generic_enum, Commands::get("crate::GenericEnum"));
+
+/// Every path in the generics fixture module
+/// (`tests/fixture-crate/src/generics.rs`), rendered signature-only into one
+/// snapshot.
+///
+/// Signature text is the same in every output mode — the modes differ in
+/// styling, not in what the spans say — so these run in one mode, and gathering
+/// them into a single snapshot keeps all the shapes visible side by side. The
+/// fixture's own docs explain each case and are suppressed here
+/// ([`DocLevel::None`]) so the snapshot is signatures and nothing else.
+const GENERICS_FIXTURE_PATHS: &[&str] = &[
+    // `impl Trait` in argument position, which rustdoc lowers to a *synthetic*
+    // generic parameter named after the whole `impl` type.
+    "crate::generics::set_data",
+    "crate::generics::mixed_params",
+    "crate::generics::two_impls",
+    "crate::generics::nested_impl_trait",
+    "crate::generics::impl_and_where",
+    // Real `Type::ImplTrait`, in return position.
+    "crate::generics::returns_impl_trait",
+    "crate::generics::precise_capturing",
+    "crate::generics::impl_trait_outlives",
+    // Higher-ranked bounds, in each of the four places rustdoc records them.
+    "crate::generics::hrtb_inline",
+    "crate::generics::hrtb_where",
+    "crate::generics::hrtb_dyn",
+    "crate::generics::hrtb_fn_pointer",
+    // `dyn` object details: its own lifetime, parenthesization, `Fn` sugar.
+    "crate::generics::dyn_with_lifetime",
+    "crate::generics::dyn_needs_parens",
+    "crate::generics::dyn_parenthesized_args",
+    // Bound and parameter shapes.
+    "crate::generics::maybe_sized",
+    "crate::generics::lifetime_outlives",
+    "crate::generics::assoc_equality",
+    "crate::generics::assoc_bound",
+    "crate::generics::qualified_return",
+    // Const generics, multi-predicate where clauses, and the synthetic-parameter
+    // case on associated items rather than free functions.
+    "crate::generics::ConstGeneric",
+    "crate::generics::ManyPredicates",
+    "crate::generics::TupleWithWhere",
+    "crate::generics::EnumManyPredicates",
+    "crate::generics::ImplTraitMethods",
+];
+
+#[test]
+fn generics_signatures() {
+    let rendered = GENERICS_FIXTURE_PATHS
+        .iter()
+        .map(|path| {
+            render_for_tests(
+                Commands::get(path).with_docs(crate::format_context::DocLevel::None),
+                OutputMode::Agent,
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+    insta::assert_snapshot!(rendered);
+}
+
+// The flagship case — `impl Trait` in argument position — across every output
+// mode, so the elision of the synthetic parameter is pinned in each renderer
+// and in the JSON model, not just in the combined signature snapshot above.
+test_all_modes!(
+    get_generics_impl_trait_arg,
+    Commands::get("crate::generics::set_data")
+);
 
 test_all_modes!(nonexistent_item, Commands::get("crate::DoesNotExist"));
 

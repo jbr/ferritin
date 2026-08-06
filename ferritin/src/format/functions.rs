@@ -1,6 +1,27 @@
 use super::*;
 use crate::styled_string::{DocumentNode, Span as StyledSpan};
-use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModifier};
+use rustdoc_types::{
+    AssocItemConstraint, AssocItemConstraintKind, PreciseCapturingArg, TraitBoundModifier,
+};
+
+/// Is this generic parameter one rustdoc synthesized for an `impl Trait`
+/// argument rather than one the author wrote?
+///
+/// `fn set_data(data: impl Into<String>)` is lowered to a parameter *named*
+/// `impl Into<String>`, bounded by the `impl`'s own bounds and flagged
+/// `is_synthetic`. Rendering it in the parameter list produces
+/// `fn set_data<impl Into<String>: Into<String>>(data: impl Into<String>)`,
+/// which is not Rust — and the bounds are already spelled out at the parameter
+/// that introduced them, so nothing is lost by eliding it.
+fn is_synthetic(param: &GenericParamDef) -> bool {
+    matches!(
+        param.kind,
+        GenericParamDefKind::Type {
+            is_synthetic: true,
+            ..
+        }
+    )
+}
 
 /// Semantic model of a free `function` item. A function is the same fn-shape as
 /// an inherent [`MethodDoc`], minus the assoc-item `kind`/`visibility` (a free
@@ -158,9 +179,7 @@ impl<'a> Request<'a> {
         spans.push(StyledSpan::keyword("fn"));
         spans.push(StyledSpan::plain(" "));
         spans.push(StyledSpan::plain(name).with_target(Some(item)));
-        if !func.generics.params.is_empty() {
-            spans.extend(self.format_generics(item, &func.generics));
-        }
+        spans.extend(self.format_generics(item, &func.generics));
         spans.push(StyledSpan::punctuation("("));
 
         // Add parameters
@@ -277,27 +296,61 @@ impl<'a> Request<'a> {
         }
     }
 
-    /// Format generics for signatures
+    /// Format a generic parameter list (`<T, 'a, const N: usize>`) for a
+    /// signature, eliding the parameters rustdoc synthesized for `impl Trait`
+    /// arguments (see [`is_synthetic`]). Returns no spans at all — not an empty
+    /// `<>` — when every parameter is elided or there were none to begin with.
     pub(super) fn format_generics(
         &mut self,
         item: DocRef<'a, Item>,
         generics: &'a Generics,
     ) -> Vec<StyledSpan<'a>> {
-        if generics.params.is_empty() {
-            return vec![];
-        }
+        self.format_generic_param_list(item, &generics.params)
+    }
 
-        let mut spans = vec![StyledSpan::punctuation("<")];
+    /// The shared `<..>` rendering behind [`format_generics`] and every
+    /// higher-ranked `for<..>` binder.
+    fn format_generic_param_list(
+        &mut self,
+        item: DocRef<'a, Item>,
+        params: &'a [GenericParamDef],
+    ) -> Vec<StyledSpan<'a>> {
+        let mut spans = vec![];
 
-        for (i, param) in generics.params.iter().enumerate() {
-            if i > 0 {
+        for param in params.iter().filter(|param| !is_synthetic(param)) {
+            if spans.is_empty() {
+                spans.push(StyledSpan::punctuation("<"));
+            } else {
                 spans.push(StyledSpan::punctuation(","));
                 spans.push(StyledSpan::plain(" "));
             }
             spans.extend(self.format_generic_param(item, param));
         }
 
-        spans.push(StyledSpan::punctuation(">"));
+        if !spans.is_empty() {
+            spans.push(StyledSpan::punctuation(">"));
+        }
+        spans
+    }
+
+    /// Format a higher-ranked binder — the `for<'a>` of an HRTB — followed by a
+    /// trailing space, or nothing when the binder is empty. Rustdoc records
+    /// these in a `generic_params` list *beside* the thing they bind (a trait
+    /// bound, a `dyn` object's trait, a `where` predicate, a function pointer),
+    /// so every one of those has to reassemble the `for<..>` itself.
+    pub(super) fn format_hrtb(
+        &mut self,
+        item: DocRef<'a, Item>,
+        generic_params: &'a [GenericParamDef],
+    ) -> Vec<StyledSpan<'a>> {
+        let params = self.format_generic_param_list(item, generic_params);
+        if params.is_empty() {
+            return vec![];
+        }
+
+        let mut spans = vec![StyledSpan::keyword("for")];
+        spans.extend(params);
+        spans.push(StyledSpan::plain(" "));
         spans
     }
 
@@ -387,21 +440,7 @@ impl<'a> Request<'a> {
                 generic_params,
                 modifier,
             } => {
-                let mut spans = vec![];
-
-                if !generic_params.is_empty() {
-                    spans.push(StyledSpan::keyword("for"));
-                    spans.push(StyledSpan::punctuation("<"));
-                    for (i, p) in generic_params.iter().enumerate() {
-                        if i > 0 {
-                            spans.push(StyledSpan::punctuation(","));
-                            spans.push(StyledSpan::plain(" "));
-                        }
-                        spans.extend(self.format_generic_param(item, p));
-                    }
-                    spans.push(StyledSpan::punctuation(">"));
-                    spans.push(StyledSpan::plain(" "));
-                }
+                let mut spans = self.format_hrtb(item, generic_params);
 
                 match modifier {
                     TraitBoundModifier::None => {}
@@ -416,11 +455,32 @@ impl<'a> Request<'a> {
                 spans
             }
             GenericBound::Outlives(lifetime) => vec![StyledSpan::lifetime(lifetime)],
-            GenericBound::Use(_) => vec![StyledSpan::plain("use<...>")], // Handle new bound type
+            GenericBound::Use(args) => {
+                let mut spans = vec![StyledSpan::keyword("use"), StyledSpan::punctuation("<")];
+                for (i, arg) in args.iter().enumerate() {
+                    if i > 0 {
+                        spans.push(StyledSpan::punctuation(","));
+                        spans.push(StyledSpan::plain(" "));
+                    }
+                    spans.push(match arg {
+                        PreciseCapturingArg::Lifetime(lifetime) => StyledSpan::lifetime(lifetime),
+                        PreciseCapturingArg::Param(param) => StyledSpan::generic(param),
+                    });
+                }
+                spans.push(StyledSpan::punctuation(">"));
+                spans
+            }
         }
     }
 
-    /// Format where clause
+    /// Format a `where` clause: inline after the signature for a single
+    /// predicate, and one indented predicate per line for several.
+    ///
+    /// The multi-predicate form ends with a trailing comma and newline, so
+    /// whatever follows — an item body's `{`, a signature's end — starts on its
+    /// own line, the way rustfmt writes it. Callers that append a brace should
+    /// go through [`push_body_brace`](super::push_body_brace) rather than
+    /// unconditionally pushing a space first.
     pub(super) fn format_where_clause(
         &mut self,
         item: DocRef<'a, Item>,
@@ -454,6 +514,8 @@ impl<'a> Request<'a> {
             spans.extend(self.format_where_predicate(item, pred));
         }
 
+        spans.push(StyledSpan::punctuation(","));
+        spans.push(StyledSpan::plain("\n"));
         spans
     }
 
@@ -501,21 +563,7 @@ impl<'a> Request<'a> {
         bounds: &'a [GenericBound],
         generic_params: &'a [GenericParamDef],
     ) -> Vec<StyledSpan<'a>> {
-        let mut spans = vec![];
-
-        if !generic_params.is_empty() {
-            spans.push(StyledSpan::keyword("for"));
-            spans.push(StyledSpan::punctuation("<"));
-            for (i, p) in generic_params.iter().enumerate() {
-                if i > 0 {
-                    spans.push(StyledSpan::punctuation(","));
-                    spans.push(StyledSpan::plain(" "));
-                }
-                spans.extend(self.format_generic_param(item, p));
-            }
-            spans.push(StyledSpan::punctuation(">"));
-            spans.push(StyledSpan::plain(" "));
-        }
+        let mut spans = self.format_hrtb(item, generic_params);
 
         spans.extend(self.format_type(item, type_));
         spans.push(StyledSpan::punctuation(":"));

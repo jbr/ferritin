@@ -1,0 +1,27 @@
+---
+source: ferritin/src/tests.rs
+expression: "render_for_tests_rooted(Commands::get(\"crate::TupleStruct\"), OutputMode ::\nAgent, & get_fixture_crate_path ())"
+---
+Struct fixture_crate::TupleStruct — in fixture-crate (0.1.0)
+
+A tuple struct for testing
+
+struct TupleStruct(
+    pub String, // field 0
+    u32, // field 1
+);
+
+## Fields
+
+- Field 0: String — It's probably uncommon to add documentation for a tuple struct field
+
+## Trait Implementations
+
+std: Freeze, From<T>, RefUnwindSafe, Send, Sync, Unpin, UnsafeUnpin, UnwindSafe
+
+- impl<T: 'static + ?Sized> Any
+- impl<T: ?Sized> Borrow<T>
+- impl<T: ?Sized> BorrowMut<T>
+- impl<T, U: From<T>> Into<U>
+- impl<T, U: Into<T>> TryFrom<U> — type Error = Infallible
+- impl<T, U: TryFrom<T>> TryInto<U> — type Error = <U as TryFrom<T>>::Error

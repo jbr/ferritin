@@ -1,5 +1,5 @@
 ---
-source: src/tests.rs
+source: rustdoc-mcp/src/tests.rs
 expression: result
 ---
 Item: ComplexTrait
@@ -13,7 +13,8 @@ A more complex trait demonstrating various features
 ```rust
 trait ComplexTrait<T>
 where
-    T: Clone + Send {
+    T: Clone + Send
+{
     /// An associated type
     type Output: std::fmt::Display;
     /// An associated constant

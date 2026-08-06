@@ -33,6 +33,1063 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
     "kind": "module",
     "items": [
       {
+        "path": "generics",
+        "kind": "module",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/index.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Generic-syntax edge cases, gathered here so signature rendering has a",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "fixture for every shape rustdoc JSON can produce.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "generics::set_data",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.set_data.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "impl Trait",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " in argument position — the whole reason this module exists.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "generics::mixed_params",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.mixed_params.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A real parameter and a synthetic one in the same signature: the ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "<T>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " list",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "must survive while the synthetic entry drops out.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::two_impls",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.two_impls.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Two synthetic parameters, so eliding them cannot leave a stray separator.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::nested_impl_trait",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.nested_impl_trait.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "An ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "impl Trait",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " argument nested inside another type's generic arguments.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::impl_and_where",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.impl_and_where.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "An ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "impl Trait",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " argument with several bounds, alongside a real parameter",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "whose bound is in a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "where",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " clause — so a synthetic parameter and a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "where",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "clause coexist.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::returns_impl_trait",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.returns_impl_trait.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "impl Trait",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " in ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "return",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": " position, which is a real ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Type::ImplTrait",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " rather",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "than a synthetic parameter.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::precise_capturing",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.precise_capturing.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Return-position ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "impl Trait",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " with a precise-capturing ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "use<..>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " bound.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::impl_trait_outlives",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.impl_trait_outlives.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Return-position ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "impl Trait",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " carrying a lifetime bound alongside a trait",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bound, so ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "GenericBound::Outlives",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " appears among an ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "impl",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": "'s bounds.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::hrtb_inline",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.hrtb_inline.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A higher-ranked trait bound written inline in the parameter list.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::hrtb_where",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.hrtb_where.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "The same bound moved into a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "where",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " clause, where rustdoc records the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "for<'a>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " on the predicate instead of on the parameter.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::hrtb_dyn",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.hrtb_dyn.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A higher-ranked bound on a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "dyn",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " object. The ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "for<'a>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " lives in",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "PolyTrait::generic_params",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", beside the trait path rather than inside it.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::hrtb_fn_pointer",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.hrtb_fn_pointer.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A higher-ranked bound on a bare function pointer.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::dyn_with_lifetime",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.dyn_with_lifetime.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "dyn",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " object carrying an explicit lifetime bound, which rustdoc stores in",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "DynTrait::lifetime",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " rather than among the traits.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::dyn_needs_parens",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.dyn_needs_parens.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A multi-trait ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "dyn",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " object behind a reference: valid Rust only with the",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "parentheses, so the rendering has to supply them.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::dyn_parenthesized_args",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.dyn_parenthesized_args.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "dyn",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " trait whose generic arguments are parenthesized (",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Fn",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " sugar) rather",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "than angle-bracketed.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::maybe_sized",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.maybe_sized.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "?Sized",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " relaxed bound, one of the two ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "TraitBoundModifier",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": "s.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::lifetime_outlives",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.lifetime_outlives.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Lifetime parameters with an outlives relationship between them.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::assoc_equality",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.assoc_equality.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "An associated-item ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "equality",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": " constraint inside generic arguments.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::assoc_bound",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.assoc_bound.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "An associated-item ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "bound",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": " constraint (",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Item: Clone",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ") inside generic",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "arguments — the other ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "AssocItemConstraintKind",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::qualified_return",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.qualified_return.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A qualified path (",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "<I as Iterator>::Item",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ") in return position.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::ConstGeneric",
+        "kind": "struct",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/struct.ConstGeneric.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A const generic with a default, alongside a type parameter with a default.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::ConstGeneric::filled",
+        "kind": "function",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/struct.ConstGeneric.html#method.filled",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A method whose signature mentions the const parameter.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::ManyPredicates",
+        "kind": "struct",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/struct.ManyPredicates.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A struct with a where clause that has several predicates, so the multi-line",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "where",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " rendering is exercised alongside the single-predicate form.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::TupleWithWhere",
+        "kind": "struct",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/struct.TupleWithWhere.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A tuple struct with a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "where",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " clause, which Rust writes ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "after",
+                    "style": "Emphasis"
+                  },
+                  {
+                    "text": " the field",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "list (",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "struct T(..) where ..;",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ") rather than before it.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::EnumManyPredicates",
+        "kind": "enum",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/enum.EnumManyPredicates.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "An enum with a multi-predicate ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "where",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " clause, the enum counterpart to",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "ManyPredicates",
+                    "style": "InlineCode",
+                    "path": "fixture_crate::generics::ManyPredicates"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::EnumManyPredicates::First",
+        "kind": "variant",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Holds a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "T",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::EnumManyPredicates::Second",
+        "kind": "variant",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Holds a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "U",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
+        "path": "generics::ImplTraitMethods",
+        "kind": "trait",
+        "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/trait.ImplTraitMethods.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A trait with a generic method taking ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "impl Trait",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", so the synthetic",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "parameter also appears on an associated item rather than a free function.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "submodule",
         "kind": "module",
         "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/index.html",

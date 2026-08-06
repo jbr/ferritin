@@ -20,9 +20,10 @@ impl<'a> Request<'a> {
         } else {
             String::new()
         };
+        let brace = super::functions::body_brace_separator(&where_clause);
 
         result.push_str(&format!(
-            "\n```rust\ntrait {trait_name}{generics_str}{where_clause} {{\n"
+            "\n```rust\ntrait {trait_name}{generics_str}{where_clause}{brace}{{\n"
         ));
 
         for trait_item in self.ids(item, &trait_data.item().items) {

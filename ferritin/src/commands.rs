@@ -194,6 +194,26 @@ impl Commands {
         }
     }
 
+    /// Override the documentation-verbosity level (the `--docs` flag).
+    pub fn with_docs(self, docs: DocLevel) -> Self {
+        match self {
+            Self::Get {
+                path,
+                source,
+                recursive,
+                kind,
+                ..
+            } => Self::Get {
+                path,
+                source,
+                recursive,
+                kind,
+                docs,
+            },
+            other => other,
+        }
+    }
+
     pub fn recursive(self) -> Self {
         match self {
             Self::Get {

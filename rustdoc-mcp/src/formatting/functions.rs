@@ -1,5 +1,34 @@
 use super::*;
-use rustdoc_types::{AssocItemConstraint, AssocItemConstraintKind, TraitBoundModifier};
+use rustdoc_types::{
+    AssocItemConstraint, AssocItemConstraintKind, PreciseCapturingArg, TraitBoundModifier,
+};
+
+/// Is this generic parameter one rustdoc synthesized for an `impl Trait`
+/// argument rather than one the author wrote?
+///
+/// `fn set_data(data: impl Into<String>)` is lowered to a parameter *named*
+/// `impl Into<String>`, bounded by the `impl`'s own bounds and flagged
+/// `is_synthetic`. Rendering it in the parameter list produces
+/// `fn set_data<impl Into<String>: Into<String>>(data: impl Into<String>)`,
+/// which is not Rust — and the bounds are already spelled out at the parameter
+/// that introduced them, so nothing is lost by eliding it.
+/// The separator between an item's signature and the `{` that opens its body.
+///
+/// A `where` clause is laid out one predicate per line, so a brace following one
+/// belongs on a fresh line rather than a space away from the last predicate.
+pub(super) fn body_brace_separator(where_clause: &str) -> &'static str {
+    if where_clause.is_empty() { " " } else { "\n" }
+}
+
+fn is_synthetic(param: &GenericParamDef) -> bool {
+    matches!(
+        param.kind,
+        GenericParamDefKind::Type {
+            is_synthetic: true,
+            ..
+        }
+    )
+}
 
 impl<'a> Request<'a> {
     /// Format a function signature
@@ -177,19 +206,39 @@ impl<'a> Request<'a> {
         }
     }
 
-    /// Format generics for signatures
+    /// Format a generic parameter list (`<T, 'a, const N: usize>`), eliding the
+    /// parameters rustdoc synthesized for `impl Trait` arguments (see
+    /// [`is_synthetic`]). Empty — not `<>` — when everything is elided.
     pub(super) fn format_generics(&self, generics: &Generics) -> String {
-        if generics.params.is_empty() {
-            return String::new();
-        }
+        self.format_generic_param_list(&generics.params)
+    }
 
-        let params: Vec<String> = generics
-            .params
+    /// The shared `<..>` rendering behind [`format_generics`] and every
+    /// higher-ranked `for<..>` binder.
+    fn format_generic_param_list(&self, params: &[GenericParamDef]) -> String {
+        let params: Vec<String> = params
             .iter()
+            .filter(|param| !is_synthetic(param))
             .map(|param| self.format_generic_param(param))
             .collect();
 
-        format!("<{}>", params.join(", "))
+        if params.is_empty() {
+            String::new()
+        } else {
+            format!("<{}>", params.join(", "))
+        }
+    }
+
+    /// Format a higher-ranked binder — an HRTB's `for<'a>` — with a trailing
+    /// space, or nothing when it is empty. Rustdoc records these in a
+    /// `generic_params` list *beside* the thing they bind (a trait bound, a `dyn`
+    /// object's trait, a `where` predicate, a function pointer), so each of those
+    /// has to reassemble the `for<..>` itself.
+    pub(super) fn format_hrtb(&self, generic_params: &[GenericParamDef]) -> String {
+        match self.format_generic_param_list(generic_params) {
+            params if params.is_empty() => params,
+            params => format!("for{params} "),
+        }
     }
 
     /// Format a single generic parameter
@@ -245,18 +294,7 @@ impl<'a> Request<'a> {
                 generic_params,
                 modifier,
             } => {
-                let mut result = String::new();
-                if !generic_params.is_empty() {
-                    result.push_str("for<");
-                    result.push_str(
-                        &generic_params
-                            .iter()
-                            .map(|p| self.format_generic_param(p))
-                            .collect::<Vec<_>>()
-                            .join(", "),
-                    );
-                    result.push_str("> ");
-                }
+                let mut result = self.format_hrtb(generic_params);
 
                 match modifier {
                     TraitBoundModifier::None => {}
@@ -268,11 +306,22 @@ impl<'a> Request<'a> {
                 result
             }
             GenericBound::Outlives(lifetime) => lifetime.clone(),
-            GenericBound::Use(_) => "use<...>".to_string(), // Handle new bound type,
+            GenericBound::Use(args) => {
+                let args: Vec<&str> = args
+                    .iter()
+                    .map(|arg| match arg {
+                        PreciseCapturingArg::Lifetime(lifetime) => lifetime.as_str(),
+                        PreciseCapturingArg::Param(param) => param.as_str(),
+                    })
+                    .collect();
+                format!("use<{}>", args.join(", "))
+            }
         }
     }
 
-    /// Format where clause
+    /// Format a `where` clause, one indented predicate per line. Callers that
+    /// follow it with an item body's `{` should separate the two with
+    /// [`body_brace_separator`].
     pub(super) fn format_where_clause(&self, predicates: &[WherePredicate]) -> String {
         if predicates.is_empty() {
             return String::new();
@@ -310,18 +359,7 @@ impl<'a> Request<'a> {
         bounds: &[GenericBound],
         generic_params: &[GenericParamDef],
     ) -> String {
-        let mut result = String::new();
-        if !generic_params.is_empty() {
-            result.push_str("for<");
-            result.push_str(
-                &generic_params
-                    .iter()
-                    .map(|p| self.format_generic_param(p))
-                    .collect::<Vec<_>>()
-                    .join(", "),
-            );
-            result.push_str("> ");
-        }
+        let mut result = self.format_hrtb(generic_params);
         result.push_str(&self.format_type(type_));
         result.push_str(": ");
         result.push_str(&self.format_generic_bounds(bounds));

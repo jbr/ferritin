@@ -1,18 +1,12 @@
 use super::*;
+use rustdoc_types::DynTrait;
 
 impl<'a> Request<'a> {
     /// Enhanced type formatting for signatures
     pub(crate) fn format_type(&self, type_: &Type) -> String {
         match type_ {
             Type::ResolvedPath(path) => self.format_path(path),
-            Type::DynTrait(dyn_trait) => {
-                let traits: Vec<String> = dyn_trait
-                    .traits
-                    .iter()
-                    .map(|t| self.format_path(&t.trait_))
-                    .collect();
-                format!("dyn {}", traits.join(" + "))
-            }
+            Type::DynTrait(dyn_trait) => self.format_dyn_trait(dyn_trait),
             Type::Generic(name) => name.clone(),
             Type::Primitive(prim) => prim.clone(),
             Type::Array { type_, len } => {
@@ -32,14 +26,14 @@ impl<'a> Request<'a> {
                 if *is_mutable {
                     result.push_str("mut ");
                 }
-                result.push_str(&self.format_type(type_));
+                result.push_str(&self.format_pointee(type_));
                 result
             }
             Type::RawPointer { is_mutable, type_ } => {
                 format!(
                     "*{} {}",
                     if *is_mutable { "mut" } else { "const" },
-                    self.format_type(type_)
+                    self.format_pointee(type_)
                 )
             }
             Type::FunctionPointer(fp) => self.format_function_pointer(fp),
@@ -58,6 +52,45 @@ impl<'a> Request<'a> {
         }
     }
 
+    /// Format a `dyn` trait object, including the two pieces stored outside the
+    /// trait paths: each trait's higher-ranked binder (`generic_params`, without
+    /// which `dyn for<'a> Fn(&'a str)` renders with a dangling `'a`) and the
+    /// object's own lifetime bound.
+    fn format_dyn_trait(&self, dyn_trait: &DynTrait) -> String {
+        let mut bounds: Vec<String> = dyn_trait
+            .traits
+            .iter()
+            .map(|poly_trait| {
+                format!(
+                    "{}{}",
+                    self.format_hrtb(&poly_trait.generic_params),
+                    self.format_path(&poly_trait.trait_)
+                )
+            })
+            .collect();
+        bounds.extend(dyn_trait.lifetime.clone());
+        format!("dyn {}", bounds.join(" + "))
+    }
+
+    /// Format the type behind a `&`/`&mut`/`*const`/`*mut`, parenthesizing a
+    /// `+`-joined trait object or `impl Trait`: `&dyn Error + Send` does not
+    /// parse, so Rust requires `&(dyn Error + Send)`.
+    fn format_pointee(&self, type_: &Type) -> String {
+        let bounds = match type_ {
+            Type::DynTrait(dyn_trait) => {
+                dyn_trait.traits.len() + usize::from(dyn_trait.lifetime.is_some())
+            }
+            Type::ImplTrait(bounds) => bounds.len(),
+            _ => 1,
+        };
+
+        if bounds < 2 {
+            self.format_type(type_)
+        } else {
+            format!("({})", self.format_type(type_))
+        }
+    }
+
     pub(crate) fn format_tuple(&self, types: &[Type]) -> String {
         format!(
             "({})",
@@ -70,18 +103,7 @@ impl<'a> Request<'a> {
     }
 
     pub(crate) fn format_function_pointer(&self, fp: &FunctionPointer) -> String {
-        let mut result = String::new();
-        if !fp.generic_params.is_empty() {
-            result.push_str("for<");
-            result.push_str(
-                &fp.generic_params
-                    .iter()
-                    .map(|p| self.format_generic_param(p))
-                    .collect::<Vec<_>>()
-                    .join(", "),
-            );
-            result.push_str("> ");
-        }
+        let mut result = self.format_hrtb(&fp.generic_params);
         result.push_str("fn(");
         result.push_str(
             &fp.sig
