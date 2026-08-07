@@ -11,10 +11,10 @@ Search results for 'generic struct'
   ◦ [alloc::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 67.3
     A trait for borrowing data. [...]
 
-  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html)  (Struct) - score: 66.9
+  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html)  (Struct) - score: 66.8
     A simple struct for testing basic functionality. [...]
 
-  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html)  (Enum) - score: 64.8
+  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html)  (Enum) - score: 64.9
     A generic enum for testing [...]
 
   ◦ [std::prelude::rust_2021::ambiguous_macros_only::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) -
