@@ -1,6 +1,6 @@
 [package]
 name = "ferritin"
-version = "0.16.0"
+version = "0.17.0"
 edition.workspace = true
 description = "Friendly CLI for browsing Rust documentation"
 readme = "../README.md"
@@ -40,7 +40,7 @@ bin-dir = "{ name }-{ target }/{ bin }{ binary-ext }"
 pkg-fmt = "zip"
 
 [dependencies]
-ferritin-common = { path = "../ferritin-common", version = "0.17.0" }
+ferritin-common = { path = "../ferritin-common", version = "0.18.0" }
 
 clap = { version = "4.6.4", features = ["derive", "cargo", "env"] }
 crossbeam-channel = "0.5"
