@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.1](https://github.com/jbr/ferritin/compare/ferritin-v0.17.0...ferritin-v0.17.1) - 2026-08-07
+
+### Other
+
+- update snaps to rustc 1.99.0-nightly (84b36a78a 2026-08-06)
+
 ## [0.17.0](https://github.com/jbr/ferritin/compare/ferritin-v0.16.0...ferritin-v0.17.0) - 2026-08-07
 
 ### Added
