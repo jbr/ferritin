@@ -57,7 +57,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "fixture-crate::TestStruct",
       "kind": "struct",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
-      "score": 66.9,
+      "score": 66.8,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -81,7 +81,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "fixture-crate::GenericEnum",
       "kind": "enum",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
-      "score": 64.8,
+      "score": 64.9,
       "docs": [
         {
           "type": "truncatedBlock",
