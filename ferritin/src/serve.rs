@@ -197,7 +197,16 @@ pub fn serve() {
         .with_shared_state(pool)
         .spawn(handler(crate_search));
 
+    let swansong = server_handle.swansong();
+
+    swansong.shutting_down().block();
+
+    log::info!("{}", swansong.guard_report());
+
     server_handle.block();
+
+    log::info!("{}", swansong.guard_report());
+    log::logger().flush();
 }
 
 /// Automatic HTTPS (Let's Encrypt via tls-alpn-01) plus HTTP/3, behind the
@@ -319,10 +328,19 @@ mod acme {
             .bind_quic((&*host, 443), quic)
             .expect("failed to bind the QUIC listener on udp/443")
             .spawn((redirect_insecure(authority), super::handler(crate_search)));
+        let swansong = handle.swansong();
 
-        let acme_future = handle.swansong().interrupt(acme_future);
+        let acme_future = swansong.interrupt(acme_future);
         handle.runtime().spawn(acme_future);
+
+        swansong.shutting_down().block();
+
+        log::info!("{}", swansong.guard_report());
+
         handle.block();
+
+        log::info!("{}", swansong.guard_report());
+        log::logger().flush();
     }
 
     /// Redirect any request arriving over a non-TLS transport (the tcp/80
