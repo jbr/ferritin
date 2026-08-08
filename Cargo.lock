@@ -4480,9 +4480,9 @@ dependencies = [
 
 [[package]]
 name = "swansong"
-version = "0.3.4"
+version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "59e547d6edfcd09568f663d6340c48478cec8cac1403db95e8072c9a7e513253"
+checksum = "352b70a1455c4d66f8cbbcc69b6232de637ebab5e6d3d004f2a7babd4f3a98ad"
 dependencies = [
  "event-listener",
  "futures-core",
