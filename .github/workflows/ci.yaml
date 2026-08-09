@@ -29,7 +29,7 @@ jobs:
         override: true
 
     - name: Rust Cache
-      uses: Swatinem/rust-cache@v2.9.1
+      uses: Swatinem/rust-cache@v2.9.2
 
     - name: Run tests
       uses: actions-rs/cargo@v1
@@ -65,7 +65,7 @@ jobs:
         cache: pnpm
         cache-dependency-path: client/pnpm-lock.yaml
 
-    - uses: Swatinem/rust-cache@v2.9.1
+    - uses: Swatinem/rust-cache@v2.9.2
 
     # `serve` alone first: `acme` implies it, so only this step proves the server
     # still compiles without the ACME/HTTP-3 stack that deployment adds.
