@@ -7,8 +7,8 @@ use crate::verbosity::Verbosity;
 use anyhow::Result;
 use clap::{ArgAction, Args};
 use mcplease::{
-    traits::{Tool, WithExamples},
-    types::Example,
+    traits::{Tool, ToolMeta},
+    types::{Example, RequestContext, ToolAnnotations},
 };
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -77,7 +77,7 @@ impl GetItem {
     }
 }
 
-impl WithExamples for GetItem {
+impl ToolMeta for GetItem {
     fn examples() -> Vec<Example<Self>> {
         vec![
             Example {
@@ -153,10 +153,16 @@ impl WithExamples for GetItem {
             },
         ]
     }
+
+    fn annotations() -> Option<ToolAnnotations> {
+        Some(crate::tools::READ_ONLY_LOCAL)
+    }
 }
 
 impl Tool<RustdocTools> for GetItem {
-    fn execute(self, tools: &mut RustdocTools) -> Result<String> {
+    type Output = String;
+
+    fn execute(self, tools: &mut RustdocTools, _context: &RequestContext) -> Result<Self::Output> {
         let manifest_path = tools.resolve_path("Cargo.toml", None)?;
         let navigator = crate::request::build_navigator(manifest_path);
         let mut request = Request::new(&navigator);

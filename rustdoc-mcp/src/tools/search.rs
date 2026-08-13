@@ -4,8 +4,8 @@ use crate::request::Request;
 use crate::state::RustdocTools;
 use crate::traits::WriteFmt;
 use anyhow::Result;
-use mcplease::traits::{Tool, WithExamples};
-use mcplease::types::Example;
+use mcplease::traits::{Tool, ToolMeta};
+use mcplease::types::{Example, RequestContext, ToolAnnotations};
 use serde::{Deserialize, Serialize};
 
 /// Search for items within a specific crate
@@ -24,7 +24,7 @@ pub struct Search {
     pub limit: Option<usize>,
 }
 
-impl WithExamples for Search {
+impl ToolMeta for Search {
     fn examples() -> Vec<Example<Self>> {
         vec![
             Example {
@@ -45,10 +45,16 @@ impl WithExamples for Search {
             },
         ]
     }
+
+    fn annotations() -> Option<ToolAnnotations> {
+        Some(crate::tools::READ_ONLY_LOCAL)
+    }
 }
 
 impl Tool<RustdocTools> for Search {
-    fn execute(self, state: &mut RustdocTools) -> Result<String> {
+    type Output = String;
+
+    fn execute(self, state: &mut RustdocTools, _context: &RequestContext) -> Result<Self::Output> {
         let manifest_path = state.resolve_path("Cargo.toml", None)?;
 
         let navigator = crate::request::build_navigator(manifest_path);

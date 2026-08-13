@@ -9,7 +9,7 @@ mod traits;
 mod verbosity;
 
 use anyhow::Result;
-use mcplease::server_info;
+use mcplease::{ServerConfig, server_info};
 use state::RustdocTools;
 use std::{env, path::PathBuf};
 use tools::Tools;
@@ -26,7 +26,11 @@ fn main() -> Result<()> {
 
     let mut state = RustdocTools::new(storage_path)?;
 
-    mcplease::run::<Tools, _>(&mut state, server_info!(), Some(INSTRUCTIONS))
+    // The tool list is fixed at compile time, so mcplease's hour-long default
+    // `tools/list` ttl is right as-is.
+    let config = ServerConfig::new(server_info!()).with_instructions(INSTRUCTIONS);
+
+    mcplease::run::<Tools, _>(&mut state, config)
 }
 
 #[cfg(test)]

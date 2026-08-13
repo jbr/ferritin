@@ -2,8 +2,8 @@ use crate::request::Request;
 use crate::{state::RustdocTools, traits::WriteFmt};
 use anyhow::Result;
 use clap::Args;
-use mcplease::traits::{Tool, WithExamples};
-use mcplease::types::Example;
+use mcplease::traits::{Tool, ToolMeta};
+use mcplease::types::{Example, RequestContext, ToolAnnotations};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -18,17 +18,23 @@ pub struct ListCrates {
     pub for_schemars: (),
 }
 
-impl WithExamples for ListCrates {
+impl ToolMeta for ListCrates {
     fn examples() -> Vec<Example<Self>> {
         vec![Example {
             description: "listing crates",
             item: Self::default(),
         }]
     }
+
+    fn annotations() -> Option<ToolAnnotations> {
+        Some(crate::tools::READ_ONLY_LOCAL)
+    }
 }
 
 impl Tool<RustdocTools> for ListCrates {
-    fn execute(self, state: &mut RustdocTools) -> Result<String> {
+    type Output = String;
+
+    fn execute(self, state: &mut RustdocTools, _context: &RequestContext) -> Result<Self::Output> {
         let manifest_path = state.working_directory(None)?;
         let navigator = crate::request::build_navigator(manifest_path);
         let request = Request::new(&navigator);
