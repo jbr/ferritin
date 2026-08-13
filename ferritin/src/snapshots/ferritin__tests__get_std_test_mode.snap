@@ -1377,7 +1377,7 @@ Creates a <inline-code>Vec</inline-code> containing the arguments.</p>
 <type-name>write</type-name> </p>
 <truncated level="single-line"><p>
 Writes formatted data into a buffer.</p>
-This macro accepts a 'writer', a format formatted according to the specified format The writer may be any value with a <inline-code>write_fmt</inline-code> method; generally this comes from an implementation of either the <inline-code>fmt::Write</inline-code> or the <inline-code>io::Write</inline-code> trait. The macro returns whatever the <inline-code>write_fmt</inline-code> method returns; commonly a <inline-code>fmt::Result</inline-code>, or an <inline-code>io::Result</inline-code>. <elided chars="2053"/></truncated>
+This macro accepts a 'writer', a format formatted according to the specified format The writer may be any value with a <inline-code>write_fmt</inline-code> method; generally this comes from an implementation of either the <inline-code>fmt::Write</inline-code> or the <inline-code>io::Write</inline-code> trait. The macro returns whatever the <inline-code>write_fmt</inline-code> method returns; commonly a <inline-code>fmt::Result</inline-code>, or an <inline-code>io::Result</inline-code>. <elided chars="2077"/></truncated>
 </item>
   <item><p>
 <type-name>writeln</type-name> </p>

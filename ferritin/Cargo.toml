@@ -64,6 +64,12 @@ percent-encoding = "2.3"
 mimalloc = "0.1.52"
 schemars = { version = "1.2.2", optional = true }
 serde_json = { version = "1.0.151", optional = true }
+# `mcp`-only. `server` alone: the protocol types, the tool-authoring traits, and
+# the transport-agnostic `handle_request` — no clap, no stdio serve loop, no
+# session store, so this adds no dependency ferritin does not already have.
+mcplease = { version = "0.4.0", default-features = false, features = [
+    "server",
+], optional = true }
 
 # `serve`-only. The HTTP server and its crate-name typeahead; see [features].
 anyhow = { workspace = true, optional = true }
@@ -136,7 +142,7 @@ serve = [
 # agent-format documentation text. Off by default. Implies `serve` — it rides
 # the same shared `Store` and big-stack worker pool — and adds the JSON-RPC/MCP
 # protocol types (serde_json) and their input schemas (schemars).
-mcp = ["serve", "dep:serde_json", "dep:schemars"]
+mcp = ["serve", "dep:mcplease", "dep:serde_json", "dep:schemars"]
 
 # Deployment-only: automatic HTTPS via Let's Encrypt (tls-alpn-01) plus HTTP/3,
 # activated at runtime by `FERRITIN_ACME_DOMAIN` (absent it, `serve` runs

@@ -9,6 +9,14 @@
 //! `Mcp-Session-Id` sessions are optional, and a documentation lookup needs
 //! neither.
 //!
+//! The protocol itself comes from [`mcplease`], taken with `default-features =
+//! false, features = ["server"]`: the message types, the tool-authoring traits,
+//! and [`handle_request`], which maps a decoded request to a response without
+//! doing any I/O. That last part is what lets this module be only the HTTP
+//! framing around it. Everything here was once a trimmed copy of those types
+//! carried in-tree; the copy is gone, along with the protocol revision it had
+//! frozen at.
+//!
 //! Two tools are exposed, mirroring the JSON API: [`Get`] (`GET /api/crates/…`)
 //! and [`Search`] (`GET /api/search/:crate`). Both return the **agent** render
 //! of the same `Document` the CLI produces — token-efficient Markdown, exactly
@@ -31,8 +39,6 @@
 //! borrowed from the per-request `Navigator` crosses the `.await` — the response
 //! is serialized to an owned `String` in the worker.
 
-mod protocol;
-
 use super::{context, run_blocking};
 use crate::{
     commands::Commands,
@@ -43,16 +49,31 @@ use crate::{
     serve::RATELIMIT_BURST_DIVISOR,
 };
 use ferritin_common::{Navigator, Store};
-use protocol::{AsToolSchema, Example, Info, McpMessage, Tool, ToolSchema, WithExamples};
-use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
+use mcplease::{
+    ServerConfig, handle_request, server_info,
+    types::{JsonRpcMessage, ToolAnnotations},
+};
 use std::{env, net::IpAddr, sync::Arc};
 use trillium::{Conn, KnownHeaderName, Status};
 use trillium_ratelimit::{Quota, RateLimiter};
 
+mcplease::tools!(McpState, (Get, get, "get"), (Search, search, "search"));
+
 /// Default result count for the `search` tool — matches the JSON API's
 /// [`SEARCH_LIMIT`](super::SEARCH_LIMIT).
 const SEARCH_LIMIT: usize = super::SEARCH_LIMIT;
+
+/// The behavior hints both tools carry. The spec's defaults are pessimistic —
+/// an undeclared tool is presumed destructive and open-world — and neither of
+/// these does anything but read. `open_world_hint` stays true: the corpus is
+/// every crate published to crates.io, not a bounded set this server owns.
+const READ_ONLY_LOOKUP: ToolAnnotations = ToolAnnotations {
+    title: None,
+    read_only_hint: Some(true),
+    destructive_hint: Some(false),
+    idempotent_hint: Some(true),
+    open_world_hint: Some(true),
+};
 
 /// Guidance handed to the client in the `initialize` response's `instructions`.
 const INSTRUCTIONS: &str =
@@ -69,7 +90,7 @@ const INSTRUCTIONS: &str =
 /// crate-search service for crateless `search` calls. Each tool builds its own
 /// short-lived [`Navigator`] over the store, pinning only what the lookup
 /// touches, exactly as the JSON API handlers do.
-struct McpState {
+pub struct McpState {
     store: Arc<Store>,
     crate_search: Option<Arc<CrateSearchService>>,
 }
@@ -141,170 +162,13 @@ impl McpState {
     }
 }
 
-/// Show documentation for a Rust item by path.
-#[derive(Debug, Serialize, Deserialize, JsonSchema)]
-#[serde(rename = "get")]
-struct Get {
-    /// Item path, e.g. `serde::Deserialize` or `std::vec::Vec`. A crate segment
-    /// may carry an `@`-suffixed semver requirement (not an exact version):
-    /// `tokio@1::runtime::Runtime` serves the newest 1.x, while `tokio@=1.40`
-    /// pins an exact release.
-    path: String,
-}
-
-impl WithExamples for Get {
-    fn examples() -> Vec<Example<Self>> {
-        vec![Example {
-            description: "Look up a trait",
-            item: Self {
-                path: "serde::Deserialize".into(),
-            },
-        }]
-    }
-}
-
-impl Tool<McpState> for Get {
-    fn execute(self, state: &mut McpState) -> anyhow::Result<String> {
-        Ok(state.render(Commands::get(self.path)))
-    }
-}
-
-/// Search for items within a crate's documentation, or — without a crate —
-/// discover which crate to use.
-#[derive(Debug, Serialize, Deserialize, JsonSchema)]
-#[serde(rename = "search")]
-struct Search {
-    /// Crate to search within, optionally with an `@`-suffixed semver
-    /// requirement (not an exact version): `serde`, `tokio@1` (newest 1.x), or
-    /// `tokio@=1.40` to pin an exact release.
-    ///
-    /// **Omit only to discover which crate to use.** With `crate`, the search
-    /// runs over that crate's full documentation — item names and prose.
-    /// Without it, it searches a different, much shallower dataset: crates.io
-    /// crate names, descriptions, and declared keywords. It returns crates,
-    /// not items, and cannot see any crate's actual documentation. If you
-    /// already know the crate name, always pass it.
-    #[serde(rename = "crate", default, skip_serializing_if = "Option::is_none")]
-    crate_: Option<String>,
-    /// Search query — one or more complete words. With `crate`, matched
-    /// against item names and documentation prose; without it, against crate
-    /// names, descriptions, and declared keywords.
-    query: String,
-}
-
-impl WithExamples for Search {
-    fn examples() -> Vec<Example<Self>> {
-        vec![
-            Example {
-                description: "Find deserialization items in serde",
-                item: Self {
-                    crate_: Some("serde".into()),
-                    query: "deserialize".into(),
-                },
-            },
-            Example {
-                description: "Discover which crate to use for MQTT",
-                item: Self {
-                    crate_: None,
-                    query: "mqtt client".into(),
-                },
-            },
-        ]
-    }
-}
-
-impl Tool<McpState> for Search {
-    fn execute(self, state: &mut McpState) -> anyhow::Result<String> {
-        match self.crate_ {
-            Some(crate_) => {
-                let command = Commands::search(self.query)
-                    .in_crate(crate_)
-                    .with_limit(SEARCH_LIMIT)
-                    .complete_words();
-                Ok(state.render(command))
-            }
-            None => Ok(state.search_crates(&self.query)),
-        }
-    }
-}
-
-/// The set of tools this server exposes, decoded from a `tools/call` params
-/// object (`{ "name": …, "arguments": { … } }`).
-#[derive(Debug)]
-enum Tools {
-    Get(Get),
-    Search(Search),
-}
-
-impl<'de> Deserialize<'de> for Tools {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        use serde::de::Error;
-        let value = serde_json::Value::deserialize(deserializer)?;
-        let name = value
-            .get("name")
-            .and_then(serde_json::Value::as_str)
-            .ok_or_else(|| D::Error::missing_field("name"))?;
-        let arguments = value
-            .get("arguments")
-            .cloned()
-            .unwrap_or(serde_json::Value::Null);
-        match name {
-            "get" => serde_json::from_value(arguments)
-                .map(Tools::Get)
-                .map_err(D::Error::custom),
-            "search" => serde_json::from_value(arguments)
-                .map(Tools::Search)
-                .map_err(D::Error::custom),
-            other => Err(D::Error::unknown_variant(other, &["get", "search"])),
-        }
-    }
-}
-
-impl Serialize for Tools {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut state = serializer.serialize_struct("Tools", 2)?;
-        match self {
-            Tools::Get(tool) => {
-                state.serialize_field("name", "get")?;
-                state.serialize_field("arguments", tool)?;
-            }
-            Tools::Search(tool) => {
-                state.serialize_field("name", "search")?;
-                state.serialize_field("arguments", tool)?;
-            }
-        }
-        state.end()
-    }
-}
-
-impl Tool<McpState> for Tools {
-    fn execute(self, state: &mut McpState) -> anyhow::Result<String> {
-        match self {
-            Tools::Get(tool) => tool.execute(state),
-            Tools::Search(tool) => tool.execute(state),
-        }
-    }
-}
-
-impl protocol::AsToolsList for Tools {
-    fn tools_list() -> Vec<ToolSchema> {
-        vec![Get::schema(), Search::schema()]
-    }
-}
-
-/// This server's identity, reported in the `initialize` response.
-fn server_info() -> Info {
-    Info {
-        name: "ferritin".into(),
-        version: env!("CARGO_PKG_VERSION").into(),
-    }
+/// This server's identity and guidance, reported in `initialize`,
+/// `server/discover`, and every result's `_meta`.
+fn config() -> ServerConfig {
+    // The tool list is fixed at compile time, so mcplease's hour-long default
+    // `ttlMs` is right as-is; the `serverInfo` stamped into every result carries
+    // the version a client would invalidate on.
+    ServerConfig::new(server_info!()).with_instructions(INSTRUCTIONS)
 }
 
 /// What decoding-and-executing one client message produced.
@@ -324,15 +188,14 @@ fn handle_message(
     crate_search: Option<Arc<CrateSearchService>>,
     body: &str,
 ) -> Outcome {
-    match serde_json::from_str::<McpMessage>(body) {
-        Ok(McpMessage::Request(request)) => {
+    match serde_json::from_str::<JsonRpcMessage>(body) {
+        Ok(JsonRpcMessage::Request(request)) => {
             log::info!("{request:?}");
             let mut state = McpState {
                 store,
                 crate_search,
             };
-            let response =
-                request.execute::<McpState, Tools>(&mut state, Some(INSTRUCTIONS), &server_info());
+            let response = handle_request::<Tools, McpState>(request, &mut state, &config());
             match serde_json::to_string(&response) {
                 Ok(json) => Outcome::Response(json),
                 Err(error) => {
@@ -341,8 +204,10 @@ fn handle_message(
                 }
             }
         }
-        // A notification (no `id`) expects no reply.
-        Ok(McpMessage::Notification(_)) => Outcome::Accepted,
+        // A notification (no `id`) expects no reply. A *response* is a client
+        // answering a request this server never makes, but it equally needs no
+        // reply, so it takes the same path.
+        Ok(_) => Outcome::Accepted,
         Err(error) => {
             log::debug!("unparseable MCP message: {error}");
             Outcome::BadRequest

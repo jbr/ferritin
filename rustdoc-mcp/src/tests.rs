@@ -4,7 +4,7 @@ use crate::{
     tools::{GetItem, ListCrates, Search, SetWorkingDirectory},
     verbosity::Verbosity,
 };
-use mcplease::traits::Tool;
+use mcplease::{traits::Tool, types::RequestContext};
 use std::path::PathBuf;
 
 /// Get the path to our test crate (fast to build, minimal dependencies)
@@ -21,7 +21,7 @@ fn create_test_state() -> RustdocTools {
     SetWorkingDirectory {
         path: get_fixture_crate_path().to_string_lossy().to_string(),
     }
-    .execute(&mut state)
+    .execute(&mut state, &RequestContext::default())
     .unwrap();
 
     state
@@ -37,7 +37,9 @@ fn test_get_crate_root() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -53,7 +55,7 @@ fn test_show_docs_vs_hide_docs_comparison() {
     };
 
     let result_with_docs = tool_with_docs
-        .execute(&mut state)
+        .execute(&mut state, &RequestContext::default())
         .expect("Tool execution failed");
 
     // Then get TestStruct with docs hidden
@@ -64,7 +66,7 @@ fn test_show_docs_vs_hide_docs_comparison() {
     };
 
     let result_no_docs = tool_no_docs
-        .execute(&mut state)
+        .execute(&mut state, &RequestContext::default())
         .expect("Tool execution failed");
 
     // Verify the difference
@@ -91,7 +93,9 @@ fn test_verbosity_minimal() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     // The result should not contain documentation text
     assert!(!result.contains("Documentation:"));
@@ -115,7 +119,9 @@ fn test_fuzzy_matching_tool_execute() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -130,7 +136,9 @@ fn test_fuzzy_matching_trait_methods() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     // Should contain suggestions from trait implementations
     assert!(result.contains("Did you mean"));
@@ -150,7 +158,9 @@ fn test_get_struct_details() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -166,7 +176,9 @@ fn test_get_struct_with_source() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
     let fixture_crate_dir = state.get_context(None).unwrap().unwrap();
 
     // Normalize project path in source output
@@ -188,7 +200,9 @@ fn test_get_function_details() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
     let fixture_crate_dir = state.get_context(None).unwrap().unwrap();
 
     // Normalize project path in source output
@@ -210,7 +224,9 @@ fn test_get_submodule() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -225,7 +241,9 @@ fn test_get_enum_details() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -240,7 +258,9 @@ fn test_get_generic_struct() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -255,7 +275,9 @@ fn test_get_generic_function() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -270,7 +292,9 @@ fn test_get_constants() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -285,7 +309,9 @@ fn test_get_struct_with_private_fields() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -300,7 +326,9 @@ fn test_fuzzy_matching_suggestions() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     // Should contain suggestions
     assert!(result.contains("Did you mean"));
@@ -319,7 +347,9 @@ fn test_nonexistent_item() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -334,7 +364,9 @@ fn test_get_unit_struct() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -349,7 +381,9 @@ fn test_get_tuple_struct() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -364,7 +398,9 @@ fn test_get_generic_enum() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -379,7 +415,9 @@ fn test_get_trait_details() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -395,7 +433,9 @@ fn test_recursive_module_listing() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -411,7 +451,9 @@ fn test_recursive_submodule_listing() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -428,7 +470,9 @@ fn test_recursive_filtering() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -443,7 +487,9 @@ fn test_non_recursive_filtering() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -460,7 +506,9 @@ fn test_recursive_multiple_filters() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -475,7 +523,7 @@ fn test_get_std_vec() {
         ..Default::default()
     };
     let result_std_root = tool_std_root
-        .execute(&mut state)
+        .execute(&mut state, &RequestContext::default())
         .expect("Tool execution failed for std root");
     insta::assert_snapshot!(result_std_root);
 
@@ -485,7 +533,7 @@ fn test_get_std_vec() {
         ..Default::default()
     };
     let result_std_collections_hashmap = tool_std_collections_hashmap
-        .execute(&mut state)
+        .execute(&mut state, &RequestContext::default())
         .expect("Tool execution failed for std::collections::HashMap");
     insta::assert_snapshot!(result_std_collections_hashmap);
 
@@ -495,7 +543,7 @@ fn test_get_std_vec() {
         ..Default::default()
     };
     let result_std_vec_vec = tool_std_vec_vec
-        .execute(&mut state)
+        .execute(&mut state, &RequestContext::default())
         .expect("Tool execution failed for std::vec::Vec");
     insta::assert_snapshot!(result_std_vec_vec);
 }
@@ -509,7 +557,9 @@ fn test_get_item_with_normalized_crate_name() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -523,7 +573,9 @@ fn test_get_complex_trait_details() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -538,7 +590,9 @@ fn tools_doesnt_panic() {
 #[test]
 fn list_crates() {
     let mut state = create_test_state();
-    let result = ListCrates::default().execute(&mut state).unwrap();
+    let result = ListCrates::default()
+        .execute(&mut state, &RequestContext::default())
+        .unwrap();
     insta::assert_snapshot!(result);
 }
 
@@ -550,7 +604,7 @@ fn search() {
         query: "trigger line-based truncation".into(),
         limit: None,
     }
-    .execute(&mut state)
+    .execute(&mut state, &RequestContext::default())
     .unwrap();
     insta::assert_snapshot!(result);
 }
@@ -563,7 +617,7 @@ fn search_2() {
         query: "generic struct".into(),
         limit: None,
     }
-    .execute(&mut state)
+    .execute(&mut state, &RequestContext::default())
     .unwrap();
     insta::assert_snapshot!(result);
 }
@@ -611,7 +665,7 @@ fn generics_signatures() {
             verbosity: Some(Verbosity::Minimal),
             ..Default::default()
         }
-        .execute(&mut state)
+        .execute(&mut state, &RequestContext::default())
         .expect("Tool execution failed")
     })
     .collect::<Vec<_>>()

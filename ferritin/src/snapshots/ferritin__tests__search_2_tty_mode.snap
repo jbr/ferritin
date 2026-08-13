@@ -28,12 +28,14 @@ Search results for 'generic struct'
   ◦ [std::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.8
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [core::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.1
-    A common trait that allows explicit creation of a duplicate value. [...]
-
   ◦ [alloc::io::copy::generic](https://doc.rust-lang.org/nightly/alloc/io/copy/generic/index.html)  (Module) - score: 62.1
 
   ◦ [core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) -
     score: 62.1
+    Compile-time type information about instantiated generics of structs, enum and
+    union variants.
+
+  ◦ [std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)
+    [mystd::mem::type_info::Generic](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 62.1
     Compile-time type information about instantiated generics of structs, enum and
     union variants.

@@ -2,7 +2,7 @@ use crate::{
     state::RustdocTools,
     tools::{GetItem, ListCrates, SetWorkingDirectory},
 };
-use mcplease::traits::Tool;
+use mcplease::{traits::Tool, types::RequestContext};
 use std::path::PathBuf;
 
 /// Get the path to our test workspace
@@ -19,7 +19,7 @@ fn create_workspace_test_state() -> RustdocTools {
     SetWorkingDirectory {
         path: get_test_workspace_path().to_string_lossy().to_string(),
     }
-    .execute(&mut state)
+    .execute(&mut state, &RequestContext::default())
     .unwrap();
 
     state
@@ -29,7 +29,9 @@ fn create_workspace_test_state() -> RustdocTools {
 fn test_workspace_list_crates_with_dependencies() {
     let mut state = create_workspace_test_state();
 
-    let result = ListCrates::default().execute(&mut state).unwrap();
+    let result = ListCrates::default()
+        .execute(&mut state, &RequestContext::default())
+        .unwrap();
 
     // Should include workspace members (no longer aliased in workspaces)
     assert!(result.contains("• crate-a (workspace-local)"));
@@ -59,7 +61,7 @@ fn test_workspace_member_parameter_crate_a() {
         workspace_member: Some("crate-a".to_string()),
         for_schemars: (),
     }
-    .execute(&mut state)
+    .execute(&mut state, &RequestContext::default())
     .unwrap();
 
     insta::assert_snapshot!(result);
@@ -73,7 +75,7 @@ fn test_workspace_member_parameter_crate_b() {
         workspace_member: Some("crate-b".to_string()),
         for_schemars: (),
     }
-    .execute(&mut state)
+    .execute(&mut state, &RequestContext::default())
     .unwrap();
 
     insta::assert_snapshot!(result);
@@ -88,7 +90,7 @@ fn test_workspace_member_parameter_vs_working_directory() {
         workspace_member: Some("crate-b".to_string()), // But request crate-b scope
         for_schemars: (),
     }
-    .execute(&mut state)
+    .execute(&mut state, &RequestContext::default())
     .unwrap();
 
     insta::assert_snapshot!(result);
@@ -105,7 +107,7 @@ fn create_subcrate_b_test_state() -> RustdocTools {
             .to_string_lossy()
             .to_string(),
     }
-    .execute(&mut state)
+    .execute(&mut state, &RequestContext::default())
     .unwrap();
 
     state
@@ -114,7 +116,9 @@ fn create_subcrate_b_test_state() -> RustdocTools {
 #[test]
 fn test_subcrate_b_scoped_dependencies() {
     let mut state = create_subcrate_b_test_state();
-    let result = ListCrates::default().execute(&mut state).unwrap();
+    let result = ListCrates::default()
+        .execute(&mut state, &RequestContext::default())
+        .unwrap();
     insta::assert_snapshot!(result);
 }
 
@@ -127,7 +131,9 @@ fn test_subcrate_b_crate_alias_resolution() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     // When in crate-b directory, "crate" should refer to crate-b, not crate-a
 
@@ -145,7 +151,7 @@ fn create_subcrate_test_state() -> RustdocTools {
             .to_string_lossy()
             .to_string(),
     }
-    .execute(&mut state)
+    .execute(&mut state, &RequestContext::default())
     .unwrap();
 
     state
@@ -154,7 +160,11 @@ fn create_subcrate_test_state() -> RustdocTools {
 #[test]
 fn test_subcrate_scoped_dependencies() {
     let mut state = create_subcrate_test_state();
-    insta::assert_snapshot!(ListCrates::default().execute(&mut state).unwrap());
+    insta::assert_snapshot!(
+        ListCrates::default()
+            .execute(&mut state, &RequestContext::default())
+            .unwrap()
+    );
 }
 
 #[test]
@@ -166,7 +176,9 @@ fn test_subcrate_crate_alias_resolution() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     // Note: Currently "crate" alias resolution has some limitations in subcrate context
     // This test documents the current behavior - the alias is set correctly in list_crates
@@ -184,7 +196,9 @@ fn test_workspace_get_crate_a() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
     insta::assert_snapshot!(result);
 }
 
@@ -197,7 +211,9 @@ fn test_workspace_get_crate_b() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -212,7 +228,9 @@ fn test_workspace_access_dependency() {
         ..Default::default()
     };
 
-    let result = tool.execute(&mut state).expect("Tool execution failed");
+    let result = tool
+        .execute(&mut state, &RequestContext::default())
+        .expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
