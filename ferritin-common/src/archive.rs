@@ -31,7 +31,7 @@ use std::{
 };
 
 /// Bumped whenever the on-disk archive layout could change incompatibly in a way
-/// not already captured by [`FORMAT_VERSION`], [`RKYV_VERSION`], or the target
+/// not already captured by [`FORMAT_VERSION`], [`RKYV_SERIES`], or the target
 /// tag — i.e. a change to which fields we archive.
 ///
 /// It must also be bumped when the archived *contents* change meaning while the
@@ -43,14 +43,22 @@ use std::{
 /// 4: `DerivedIndexes::parents` peels references (`impl T for &File` → `File`)
 const ARCHIVE_SCHEMA: u32 = 4;
 
-/// The exact rkyv version this build serializes with, pinned into the schema
+/// The rkyv release series this build serializes with, pinned into the schema
 /// tag: the warm path reads archives via `access_unchecked` (no validation),
-/// so any change to rkyv's archived representations must invalidate old
-/// sidecars *by construction*, not by semver trust — rkyv documents which
-/// features are format-breaking but makes no written stability promise
-/// between releases. A unit test asserts this matches Cargo.lock, so a rkyv
-/// bump fails tests until the constant (and therefore the tag) is updated.
-const RKYV_VERSION: &str = "0.8.17";
+/// so a change to rkyv's archived representations must invalidate old sidecars
+/// *by construction*. rkyv promises format stability only within a minor
+/// series — the 0.8.0 release notes state "Any data you serialize in 0.8 is
+/// guaranteed to be compatible for the lifetime of the 0.8 releases", while
+/// 0.7 data is explicitly incompatible with 0.8 — so the series, not the patch
+/// level, is the unit that has to appear in the tag. A unit test asserts this
+/// matches Cargo.lock, so a minor bump fails tests until the constant (and
+/// therefore the tag) is updated.
+///
+/// Layout also depends on rkyv's format-control features (`unaligned`,
+/// endianness, pointer width); those are our own Cargo configuration, so a
+/// change to them is a change to which bytes we write and must bump
+/// [`ARCHIVE_SCHEMA`].
+const RKYV_SERIES: &str = "0.8";
 
 /// The archive root: the crate plus the derived reverse indexes, so the warm
 /// path can resolve impl lookups directly in the mapped bytes instead of
@@ -72,14 +80,14 @@ struct Sidecar<'a> {
 /// archive simply isn't found by name and is regenerated from JSON.
 fn schema_tag() -> String {
     format!(
-        "rkyv{ARCHIVE_SCHEMA}.{RKYV_VERSION}-fmt{FORMAT_VERSION}-{}-{}",
+        "rkyv{ARCHIVE_SCHEMA}.{RKYV_SERIES}-fmt{FORMAT_VERSION}-{}-{}",
         std::env::consts::ARCH,
         usize::BITS,
     )
 }
 
 /// The rkyv sidecar path for a cached JSON file, e.g.
-/// `…/1.40.0.json` → `…/1.40.0.json.rkyv2.0.8.17-fmt60-x86_64-64.rkyv`.
+/// `…/1.40.0.json` → `…/1.40.0.json.rkyv4.0.8-fmt60-x86_64-64.rkyv`.
 pub(crate) fn sidecar_path(json_path: &Path) -> PathBuf {
     let mut name = json_path.as_os_str().to_owned();
     name.push(format!(".{}.rkyv", schema_tag()));
@@ -203,6 +211,9 @@ impl Archive {
     /// JSON. Returns `None` on any problem, so the caller falls back to JSON.
     pub(crate) fn open(json_path: &Path) -> Option<Archive> {
         let sidecar = sidecar_path(json_path);
+        if !sidecar.exists() {
+            adopt_patch_tagged_sidecar(json_path, &sidecar);
+        }
         if !is_fresh(&sidecar, json_path) {
             return None;
         }
@@ -293,6 +304,52 @@ fn archived_ids(
         .unwrap_or_default()
 }
 
+/// One-time migration for sidecars written when the schema tag carried rkyv's
+/// full `x.y.z` version instead of the `x.y` series (see [`RKYV_SERIES`]).
+///
+/// Those files' bytes are identical to what this build writes — everything else
+/// in the tag matches exactly, and rkyv guarantees format compatibility across
+/// a minor series — so the old generation is adopted by rename rather than
+/// thrown away and re-derived from tens of megabytes of JSON per crate.
+///
+/// Deletable once deployed caches have rolled over; until then it is the
+/// difference between a warm restart and re-parsing the whole cache.
+fn adopt_patch_tagged_sidecar(json_path: &Path, current: &Path) {
+    let (Some(dir), Some(json_name)) = (
+        json_path.parent(),
+        json_path.file_name().and_then(|name| name.to_str()),
+    ) else {
+        return;
+    };
+    // The current tag with an extra `.{patch}` spliced in after the series:
+    // "{json}.rkyv{SCHEMA}.{SERIES}." + "{patch}" + "-fmt{FORMAT}-{arch}-{bits}.rkyv".
+    let prefix = format!("{json_name}.rkyv{ARCHIVE_SCHEMA}.{RKYV_SERIES}.");
+    let suffix = format!(
+        "-fmt{FORMAT_VERSION}-{}-{}.rkyv",
+        std::env::consts::ARCH,
+        usize::BITS,
+    );
+    let Ok(entries) = fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let name = entry.file_name();
+        let Some(name) = name.to_str() else { continue };
+        let is_patch_tagged = name
+            .strip_prefix(&prefix)
+            .and_then(|rest| rest.strip_suffix(&suffix))
+            .is_some_and(|patch| !patch.is_empty() && patch.bytes().all(|b| b.is_ascii_digit()));
+        if !is_patch_tagged {
+            continue;
+        }
+        log::debug!("adopting patch-tagged sidecar {name}");
+        // A concurrent process may have won the race; either way the current
+        // name now exists, and a failure just means a cold load.
+        let _ = fs::rename(entry.path(), current);
+        return;
+    }
+}
+
 fn is_fresh(sidecar: &Path, json_path: &Path) -> bool {
     let mtime = |p: &Path| fs::metadata(p).and_then(|m| m.modified()).ok();
     match (mtime(sidecar), mtime(json_path)) {
@@ -305,7 +362,45 @@ fn is_fresh(sidecar: &Path, json_path: &Path) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{RKYV_VERSION, remove_stale_siblings, sidecar_path};
+    use super::{RKYV_SERIES, adopt_patch_tagged_sidecar, remove_stale_siblings, sidecar_path};
+
+    /// A sidecar tagged with rkyv's full patch version is renamed to the
+    /// series-tagged name (same bytes, compatible format); differently-tagged
+    /// siblings are left alone.
+    #[test]
+    fn patch_tagged_sidecar_adoption() {
+        let dir = std::env::temp_dir().join(format!(
+            "ferritin-archive-adopt-test-{}",
+            std::process::id()
+        ));
+        std::fs::create_dir_all(&dir).unwrap();
+
+        let json = dir.join("1.40.0.json");
+        let current = sidecar_path(&json);
+        let patch_tagged = {
+            let name = current.file_name().unwrap().to_str().unwrap();
+            let (head, tail) = name.split_once("-fmt").unwrap();
+            dir.join(format!("{head}.17-fmt{tail}"))
+        };
+        let foreign = dir.join("1.40.0.json.rkyv4.0.7.42-fmt60-x86_64-64.rkyv");
+        std::fs::write(&json, b"x").unwrap();
+        std::fs::write(&patch_tagged, b"archive").unwrap();
+        std::fs::write(&foreign, b"x").unwrap();
+
+        adopt_patch_tagged_sidecar(&json, &current);
+
+        assert!(
+            !patch_tagged.exists(),
+            "patch-tagged sidecar should be renamed"
+        );
+        assert_eq!(std::fs::read(&current).unwrap(), b"archive");
+        assert!(
+            foreign.exists(),
+            "a sidecar from another tag must be left alone"
+        );
+
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
 
     /// Stale-tag sidecars and old temp files are removed; the current sidecar,
     /// the JSON itself, fresh temp files, and unrelated siblings (search
@@ -347,13 +442,15 @@ mod tests {
         std::fs::remove_dir_all(&dir).unwrap();
     }
 
-    /// [`RKYV_VERSION`] must track Cargo.lock exactly. If this fails, rkyv was
-    /// bumped: update the constant so the schema tag invalidates sidecars
-    /// written with the previous version's layout. Shipping without the bump
-    /// would let `access_unchecked` reinterpret old archives with the new
-    /// layout — undefined behavior, not a clean cache miss.
+    /// [`RKYV_SERIES`] must track Cargo.lock's rkyv minor series. Patch bumps
+    /// are format-compatible by rkyv's own guarantee and deliberately don't
+    /// trip this; a minor bump does. If this fails, update the constant so the
+    /// schema tag invalidates sidecars written with the previous series'
+    /// layout. Shipping without the bump would let `access_unchecked`
+    /// reinterpret old archives with the new layout — undefined behavior, not
+    /// a clean cache miss.
     #[test]
-    fn rkyv_version_constant_matches_cargo_lock() {
+    fn rkyv_series_constant_matches_cargo_lock() {
         let lock_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../Cargo.lock");
         let lock = std::fs::read_to_string(&lock_path).expect("read workspace Cargo.lock");
         let mut lines = lock.lines();
@@ -370,9 +467,14 @@ mod tests {
                 None => panic!("no rkyv package in {}", lock_path.display()),
             }
         };
+        let locked_series = locked_version
+            .match_indices('.')
+            .nth(1)
+            .map_or(locked_version, |(dot, _)| &locked_version[..dot]);
         assert_eq!(
-            RKYV_VERSION, locked_version,
-            "rkyv was bumped in Cargo.lock; update archive::RKYV_VERSION to match"
+            RKYV_SERIES, locked_series,
+            "rkyv {locked_version} in Cargo.lock is a new minor series; update \
+             archive::RKYV_SERIES to match"
         );
     }
 }
