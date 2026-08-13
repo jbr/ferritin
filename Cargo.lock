@@ -1396,7 +1396,7 @@ dependencies = [
  "fieldwork",
  "insta",
  "log",
- "mcplease 0.4.0",
+ "mcplease",
  "mimalloc",
  "paste",
  "percent-encoding",
@@ -2446,9 +2446,9 @@ dependencies = [
 
 [[package]]
 name = "mcplease"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f2100d2ce5acf40d10933314d33dddd7e01818c0a3bcfcef253ad5ed0920a80f"
+checksum = "ca3e3fe1b2802d5c932fc801650d5b8ffd0def79b9615cc8b12677ca0eb4bc4e"
 dependencies = [
  "anyhow",
  "clap",
@@ -2461,20 +2461,6 @@ dependencies = [
  "serde",
  "serde_json",
  "shellexpand",
-]
-
-[[package]]
-name = "mcplease"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca3e3fe1b2802d5c932fc801650d5b8ffd0def79b9615cc8b12677ca0eb4bc4e"
-dependencies = [
- "anyhow",
- "fieldwork",
- "log",
- "schemars",
- "serde",
- "serde_json",
 ]
 
 [[package]]
@@ -3783,7 +3769,7 @@ dependencies = [
  "fieldwork",
  "insta",
  "log",
- "mcplease 0.3.0",
+ "mcplease",
  "rustdoc-types",
  "schemars",
  "semver",
