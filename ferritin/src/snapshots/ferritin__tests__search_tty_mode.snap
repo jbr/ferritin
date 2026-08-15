@@ -8,35 +8,35 @@ Search results for 'trigger line-based truncation'
   ◦ [fixture-crate::TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html)  (Trait) - score: 100.0
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
-  ◦ [core::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 52.9
+  ◦ [core::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 53.4
     Expands to the line number on which it was invoked. [...]
 
-  ◦ [std::prelude::v1::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 52.9
+  ◦ [std::prelude::v1::line](https://doc.rust-lang.org/nightly/core/macro.line.html)  (Macro) - score: 53.4
     Expands to the line number on which it was invoked. [...]
 
-  ◦ [proc_macro::Span::line](https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line)  (Function) - score: 37.9
+  ◦ [proc_macro::Span::line](https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line)  (Function) - score: 38.3
     The one-indexed line of the source file where the span starts. [...]
 
   ◦ [core::prelude::v1::ambiguous_macros_only::panic::location::Location::line](https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line) 
-    (Function) - score: 37.7
+    (Function) - score: 38.1
     Returns the line number from which the panic originated. [...]
 
   ◦ [std::prelude::v1::ambiguous_macros_only::panic::Location::line](https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function)
-    - score: 37.7
+    - score: 38.1
     Returns the line number from which the panic originated. [...]
 
-  ◦ [alloc::io::buf_read::BufRead::read_line](https://doc.rust-lang.org/nightly/alloc/io/buf_read/BufRead/fn.read_line.html)  (Function) - score: 32.3
+  ◦ [alloc::io::buf_read::BufRead::read_line](https://doc.rust-lang.org/nightly/alloc/io/buf_read/BufRead/fn.read_line.html)  (Function) - score: 32.7
     Reads all bytes until a newline (the 0xA byte) is reached, and append them to
     the provided [String](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html) buffer. [...]
 
   ◦ [core::prelude::v1::ambiguous_macros_only::core_arch::arch::x86::sse::](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)
-    [_mm_prefetch](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.2
+    [_mm_prefetch](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.4
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
   ◦ [std::prelude::v1::ambiguous_macros_only::arch::x86::sse::_mm_prefetch](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html) 
-    (Function) - score: 30.2
+    (Function) - score: 30.4
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ [alloc::io::LineWriter](https://doc.rust-lang.org/nightly/alloc/io/buffered/linewriter/struct.LineWriter.html)  (Struct) - score: 29.6
+  ◦ [alloc::io::LineWriter](https://doc.rust-lang.org/nightly/alloc/io/buffered/linewriter/struct.LineWriter.html)  (Struct) - score: 29.9
     Wraps a writer and buffers output to it, flushing whenever a newline (0x0a, '\n'
     ) is detected. [...]
