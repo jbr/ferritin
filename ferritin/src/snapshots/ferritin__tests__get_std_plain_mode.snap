@@ -128,9 +128,6 @@ Modules
   ◦ alloc 
     Memory allocation APIs. [...]
 
-  ◦ allow_attribute 
-    The allow attribute suppresses lint diagnostics that would otherwise produce warnings or errors. It can be used on any lint or lint group (except those set to forbid). [...]
-
   ◦ any 
     Utilities for dynamic typing or type reflection. [...]
 
@@ -140,23 +137,14 @@ Modules
   ◦ array 
     Utilities for the array primitive type. [...]
 
-  ◦ as_keyword 
-    Cast between types, rename an import, or qualify paths to associated items. [...]
-
   ◦ ascii 
     Operations on ASCII strings and characters. [...]
 
   ◦ async_iter 
     Composable asynchronous iteration. [...]
 
-  ◦ async_keyword 
-    Returns a Future instead of blocking the current thread. [...]
-
   ◦ autodiff 
     This module provides support for automatic differentiation. For precise information on differences between the autodiff_forward and autodiff_reverse macros and how to use them, see their respective documentation. [...]
-
-  ◦ await_keyword 
-    Suspend execution until the result of a Future is ready. [...]
 
   ◦ backtrace 
     Support for capturing a stack backtrace of an OS thread [...]
@@ -164,26 +152,17 @@ Modules
   ◦ backtrace_rs 
     A library for acquiring a backtrace at runtime [...]
 
-  ◦ become_keyword 
-    Perform a tail-call of a function. [...]
-
   ◦ borrow 
     A module for working with borrowed data.
 
   ◦ boxed 
     The Box<T> type for heap allocation. [...]
 
-  ◦ break_keyword 
-    Exit early from a loop or labelled block. [...]
-
   ◦ bstr 
     The ByteStr and ByteString types and trait implementations.
 
   ◦ cell 
     Shareable mutable containers. [...]
-
-  ◦ cfg_attribute 
-    Used for conditional compilation. [...]
 
   ◦ char 
     Utilities for the char primitive type. [...]
@@ -194,50 +173,20 @@ Modules
   ◦ cmp 
     Utilities for comparing and ordering values. [...]
 
-  ◦ cold_attribute 
-    Hint to the compiler that a function is unlikely to be called. [...]
-
   ◦ collections 
     Collection types. [...]
-
-  ◦ const_keyword 
-    Compile-time constants, compile-time blocks, compile-time evaluable functions, and raw pointers. [...]
-
-  ◦ continue_keyword 
-    Skip to the next iteration of a loop. [...]
 
   ◦ convert 
     Traits for conversions between types. [...]
 
-  ◦ crate_keyword 
-    A Rust binary or library. [...]
-
   ◦ default 
     The Default trait for types with a default value.
-
-  ◦ deny_attribute 
-    Emits an error, preventing the compilation from finishing, when a lint check has failed. This is useful for enforcing rules or preventing certain patterns: [...]
-
-  ◦ deprecated_attribute 
-    Emits a warning during compilation when an item with this attribute is used. since and note are optional fields giving more detail about why the item is deprecated. [...]
-
-  ◦ dyn_keyword 
-    dyn is a prefix of a trait object's type. [...]
-
-  ◦ else_keyword 
-    What expression to evaluate when an if condition evaluates to false. [...]
-
-  ◦ enum_keyword 
-    A type that can be any one of several variants. [...]
 
   ◦ env 
     Inspection and manipulation of the process's environment. [...]
 
   ◦ error 
     Interfaces for working with Errors. [...]
-
-  ◦ extern_keyword 
-    Link to or import external code. [...]
 
   ◦ f128 
     Constants for the f128 quadruple-precision floating point type. [...]
@@ -251,9 +200,6 @@ Modules
   ◦ f64 
     Constants for the f64 double-precision floating point type. [...]
 
-  ◦ false_keyword 
-    A value of type prim@bool representing logical false. [...]
-
   ◦ ffi 
     Utilities related to FFI bindings. [...]
 
@@ -262,15 +208,6 @@ Modules
 
   ◦ fmt 
     Utilities for formatting and printing Strings. [...]
-
-  ◦ fn_keyword 
-    A function or function pointer. [...]
-
-  ◦ for_keyword 
-    Iteration with in, trait implementation with impl, or higher-ranked trait bounds (for<'a>). [...]
-
-  ◦ forbid_attribute 
-    Emits an error, preventing the compilation from finishing, when a lint check has failed. [...]
 
   ◦ from 
     Unstable module containing the unstable From derive macro.
@@ -302,18 +239,6 @@ Modules
   ◦ i8 
     Redundant constants module for the i8 primitive type. [...]
 
-  ◦ if_keyword 
-    Evaluate a block if a condition holds. [...]
-
-  ◦ impl_keyword 
-    Implementations of functionality for a type, or a type implementing some functionality. [...]
-
-  ◦ in_keyword 
-    Iterate over a series of values with for. [...]
-
-  ◦ inline_attribute 
-    Suggest that the compiler inline a function at its call sites. [...]
-
   ◦ intrinsics 
     Compiler intrinsics. [...]
 
@@ -326,53 +251,23 @@ Modules
   ◦ iter 
     Composable external iteration. [...]
 
-  ◦ let_keyword 
-    Bind a value to a variable. [...]
-
-  ◦ link_section_attribute 
-    Places a function or static in a specific object-file section. [...]
-
-  ◦ loop_keyword 
-    Loop indefinitely. [...]
-
   ◦ macros 
     Standard library macros [...]
 
   ◦ marker 
     Primitive traits and types representing basic properties of types. [...]
 
-  ◦ match_keyword 
-    Control flow based on pattern matching. [...]
-
   ◦ mem 
     Basic functions for dealing with memory, values, and types. [...]
 
-  ◦ mod_keyword 
-    Organize code into modules. [...]
-
-  ◦ move_keyword 
-    Capture a closure's environment by value. [...]
-
-  ◦ must_use_attribute 
-    Warn when a value is ignored. [...]
-
-  ◦ mut_keyword 
-    A mutable variable, reference, or pointer. [...]
-
   ◦ net 
     Networking primitives for TCP/UDP communication. [...]
-
-  ◦ no_std_attribute 
-    Prevents automatically linking the standard library. [...]
-
-  ◦ non_exhaustive_attribute 
-    Indicates that a type might have more fields or variants added in the future. [...]
 
   ◦ num 
     Additional functionality for numerics. [...]
 
   ◦ offload 
-    This module provides support for gpu offloading. For technical details regarding the offload_kernel and how to use it, see their respective documentation. [...]
+    This module provides support for gpu offloading. For technical details regarding the offload_kernel and offload! macros, see their respective documentation. [...]
 
   ◦ ops 
     Overloadable operators. [...]
@@ -401,101 +296,14 @@ Modules
   ◦ prelude 
     The Rust Prelude [...]
 
-  ◦ prim_array 
-    A fixed-size array, denoted [T; N], for the element type, T, and the non-negative compile-time constant size, N. [...]
-
-  ◦ prim_bool 
-    The boolean type. [...]
-
-  ◦ prim_char 
-    A character type. [...]
-
-  ◦ prim_f128 
-    A 128-bit floating-point type (specifically, the "binary128" type defined in IEEE 754-2008). [...]
-
-  ◦ prim_f16 
-    A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE 754-2008). [...]
-
-  ◦ prim_f32 
-    A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE 754-2008). [...]
-
-  ◦ prim_f64 
-    A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE 754-2008). [...]
-
-  ◦ prim_fn 
-    Function pointers, like fn(usize) -> bool. [...]
-
-  ◦ prim_i128 
-    The 128-bit signed integer type. [...]
-
-  ◦ prim_i16 
-    The 16-bit signed integer type.
-
-  ◦ prim_i32 
-    The 32-bit signed integer type.
-
-  ◦ prim_i64 
-    The 64-bit signed integer type.
-
-  ◦ prim_i8 
-    The 8-bit signed integer type.
-
-  ◦ prim_isize 
-    The pointer-sized signed integer type. [...]
-
-  ◦ prim_never 
-    The ! type, also called "never". [...]
-
-  ◦ prim_pointer 
-    Raw, unsafe pointers, *const T, and *mut T. [...]
-
-  ◦ prim_ref 
-    References, &T and &mut T. [...]
-
-  ◦ prim_slice 
-    A dynamically-sized view into a contiguous sequence, [T]. [...]
-
-  ◦ prim_str 
-    String slices. [...]
-
-  ◦ prim_tuple 
-    A finite heterogeneous sequence, (T, U, ..). [...]
-
-  ◦ prim_u128 
-    The 128-bit unsigned integer type. [...]
-
-  ◦ prim_u16 
-    The 16-bit unsigned integer type.
-
-  ◦ prim_u32 
-    The 32-bit unsigned integer type.
-
-  ◦ prim_u64 
-    The 64-bit unsigned integer type.
-
-  ◦ prim_u8 
-    The 8-bit unsigned integer type.
-
-  ◦ prim_unit 
-    The () type, also called "unit". [...]
-
-  ◦ prim_usize 
-    The pointer-sized unsigned integer type. [...]
-
   ◦ primitive 
     This module reexports the primitive types to allow usage that is not possibly shadowed by other declared types. [...]
-
-  ◦ proc_macro_attribute 
-    Defines a function-like procedural macro. [...]
 
   ◦ process 
     A module for working with processes. [...]
 
   ◦ ptr 
     Manually manage memory through raw pointers. [...]
-
-  ◦ pub_keyword 
-    Make an item visible to others. [...]
 
   ◦ random 
     Random value generation. [...]
@@ -506,32 +314,17 @@ Modules
   ◦ rc 
     Single-threaded reference-counting pointers. 'Rc' stands for 'Reference Counted'. [...]
 
-  ◦ ref_keyword 
-    Bind by reference during pattern matching. [...]
-
   ◦ result 
     Error handling with the Result type. [...]
 
-  ◦ return_keyword 
-    Returns a value from a function. [...]
-
   ◦ rt 
     Runtime services [...]
-
-  ◦ self_keyword 
-    The receiver of a method, or the current module. [...]
-
-  ◦ self_upper_keyword 
-    The implementing type within a trait or impl block, or the current type within a type definition. [...]
 
   ◦ simd 
     Portable SIMD module. [...]
 
   ◦ slice 
     Utilities for the slice primitive type. [...]
-
-  ◦ static_keyword 
-    A static item is a value which is valid for the entire duration of your program (a 'static lifetime). [...]
 
   ◦ std_float 
 
@@ -540,12 +333,6 @@ Modules
 
   ◦ string 
     A UTF-8–encoded, growable string. [...]
-
-  ◦ struct_keyword 
-    A type that is composed of other types. [...]
-
-  ◦ super_keyword 
-    The parent of the current module. [...]
 
   ◦ sync 
     Useful synchronization primitives. [...]
@@ -560,18 +347,6 @@ Modules
 
   ◦ time 
     Temporal quantification. [...]
-
-  ◦ track_caller_attribute 
-    Make a function report the location of its caller instead of its own. [...]
-
-  ◦ trait_keyword 
-    A common interface for a group of types. [...]
-
-  ◦ true_keyword 
-    A value of type prim@bool representing logical true. [...]
-
-  ◦ type_keyword 
-    Define an alias for an existing type. [...]
 
   ◦ u128 
     Redundant constants module for the u128 primitive type. [...]
@@ -588,17 +363,8 @@ Modules
   ◦ u8 
     Redundant constants module for the u8 primitive type. [...]
 
-  ◦ union_keyword 
-    The Rust equivalent of a C-style union. [...]
-
   ◦ unsafe_binder 
     Operators used to turn types into unsafe binders and back.
-
-  ◦ unsafe_keyword 
-    Code or interfaces whose memory safety cannot be verified by the type system. [...]
-
-  ◦ use_keyword 
-    Import or rename items from other crates or modules, use values under ergonomic clones semantic, or specify precise capturing with use<..>. [...]
 
   ◦ usize 
     Redundant constants module for the usize primitive type. [...]
@@ -608,15 +374,6 @@ Modules
 
   ◦ view 
     Helper module for exporting the view_types macro.
-
-  ◦ warn_attribute 
-    Emits a warning during compilation when a lint check failed. [...]
-
-  ◦ where_keyword 
-    Add constraints that must be upheld to use an item. [...]
-
-  ◦ while_keyword 
-    Loop while a condition is upheld. [...]
 
 Macros
 
