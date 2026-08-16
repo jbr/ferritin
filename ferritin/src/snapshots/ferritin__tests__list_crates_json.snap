@@ -6,12 +6,12 @@ expression: "render_json_for_tests_rooted(Commands::list(), & get_fixture_crate_
   "crates": [
     {
       "name": "alloc",
-      "version": "1.99.0-nightly",
+      "version": "1.100.0-nightly",
       "description": "The Rust core allocation and collections library"
     },
     {
       "name": "core",
-      "version": "1.99.0-nightly",
+      "version": "1.100.0-nightly",
       "description": "The Rust Core Library"
     },
     {
@@ -23,17 +23,17 @@ expression: "render_json_for_tests_rooted(Commands::list(), & get_fixture_crate_
     },
     {
       "name": "proc_macro",
-      "version": "1.99.0-nightly",
+      "version": "1.100.0-nightly",
       "description": "A support library for macro authors when defining new macros"
     },
     {
       "name": "std",
-      "version": "1.99.0-nightly",
+      "version": "1.100.0-nightly",
       "description": "The Rust Standard Library"
     },
     {
       "name": "test",
-      "version": "1.99.0-nightly",
+      "version": "1.100.0-nightly",
       "description": "Support code for rustc's built in unit-test and micro-benchmarking framework"
     }
   ]
