@@ -529,22 +529,22 @@ Extend the vector by <inline-code>n</inline-code> clones of value.</p>
 <type-name>Vec::from_parts</type-name> </p>
 <truncated level="single-line"><p>
 Creates a <inline-code>Vec<T></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, and a capacity.</p>
- <elided chars="2824"/></truncated>
+ <elided chars="2849"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_parts_in</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2833"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2858"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_raw_parts</type-name> </p>
 <truncated level="single-line"><p>
 Creates a <inline-code>Vec<T></inline-code> directly from a pointer, a length, and a capacity.</p>
 <title>Safety</title>
-This checked <elided chars="3068"/></truncated>
+This checked <elided chars="3093"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_raw_parts_in</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator. <elided chars="2867"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator. <elided chars="2892"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::insert</type-name> </p>
@@ -770,13 +770,13 @@ Appends elements to <inline-code>self</inline-code> from other buffer, returning
 <type-name>Vec::try_shrink_to</type-name> </p>
 <truncated level="single-line"><p>
 Shrinks the capacity of the vector with a lower bound.</p>
-The capacity will remain and the supplied value. <elided chars="687"/></truncated>
+The capacity will remain and the supplied value. <elided chars="670"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::try_shrink_to_fit</type-name> </p>
 <truncated level="single-line"><p>
 Tries to shrink the capacity of the vector as much as possible</p>
-The behavior of in-place or is the case for <inline-code>with_capacity</inline-code>. See <inline-code>Allocator::shrink</inline-code> for more details. <elided chars="677"/></truncated>
+The behavior of in-place or is the case for <inline-code>with_capacity</inline-code>. See <inline-code>Allocator::shrink</inline-code> for more details. <elided chars="660"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::try_with_capacity</type-name> </p>

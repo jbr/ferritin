@@ -6,7 +6,7 @@ expression: "render_interactive_for_tests_rooted(Commands::get(\"std\"), &\nget_
 "   Kind: Module                                                                ┃"
 "   Visibility: Public                                                          ┃"
 "   Defined at: std                                                             ┃"
-"   In crate: std (RUST_VERSION)                       ┃"
+"   In crate: std (RUST_VERSION)                      ┃"
 "                                                                               ┃"
 "   The Rust Standard Library                                                   ┃"
 "   ════════════════════════════════════════════════════════════════════════════┃"
