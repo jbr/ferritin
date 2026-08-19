@@ -17,6 +17,7 @@ use ferritin_common::{
 use std::{path::PathBuf, process::ExitCode, sync::Arc};
 use terminal_size::{Width, terminal_size};
 
+mod allocwatch;
 mod color_scheme;
 mod commands;
 #[cfg(feature = "serve")]
@@ -43,8 +44,10 @@ mod tests;
 mod traits;
 mod verbosity;
 
+// Temporary: AllocWatch wraps mimalloc to trace the production OOM burst.
+// Remove `allocwatch` and restore the bare `mimalloc::MiMalloc` once resolved.
 #[global_allocator]
-static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+static GLOBAL: allocwatch::AllocWatch = allocwatch::AllocWatch;
 
 /// A friendly CLI for browsing Rust documentation
 #[derive(Parser, Debug)]
