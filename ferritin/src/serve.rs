@@ -50,6 +50,7 @@ use std::{
 use trillium::{Conn, Handler, KnownHeaderName, Method, Status};
 use trillium_caching_headers::{CachingHeaders, CachingHeadersExt};
 use trillium_compression::Compression;
+use trillium_conn_id::ConnId;
 use trillium_head::Head;
 use trillium_logger::{Logger, formatters, log_format};
 use trillium_ratelimit::{Quota, RateLimiter};
@@ -378,7 +379,7 @@ mod acme {
 /// fallback is consulted. That is how `POST /?%ADd+allow_url_include%3d1` (a PHP
 /// RCE probe) currently gets a success in the log.
 async fn reject_other_methods(conn: Conn) -> Conn {
-    if matches!(conn.method(), Method::Get | Method::Head) {
+    if matches!(conn.method(), Method::Get | Method::Head | Method::Options) {
         return conn;
     }
     // The MCP endpoint is the one route that legitimately takes a `POST`.
@@ -391,13 +392,18 @@ async fn reject_other_methods(conn: Conn) -> Conn {
 
 pub(crate) fn handler(crate_search: Arc<CrateSearchService>) -> impl Handler {
     (
-        // `{ip}` is what lets fail2ban attribute a request to a host; the line
-        // carries no timestamp because journald stamps every line it ingests.
-        Logger::new().with_formatter(log_format!(
-            "<- {ip} {version} {method} {url} {response_time} {status} {body_len_human} \
-             {content_encoding} {user_agent} {referer}",
-            content_encoding = formatters::response_header(KnownHeaderName::ContentEncoding),
-        )),
+        ConnId::new().without_request_header(),
+        Logger::new()
+            .with_formatter(log_format!(
+                "[{conn_id}] <- {ip} {version} {method} {host}{url} {response_time} {status} \
+                 {body_len_human} {content_encoding} {user_agent} {referer}",
+                conn_id = trillium_conn_id::log_formatter::conn_id,
+                content_encoding = formatters::response_header(KnownHeaderName::ContentEncoding),
+            ))
+            .with_start_formatter(log_format!(
+                "[{conn_id}] <~ {ip} {version} {method} {host}{url}",
+                conn_id = trillium_conn_id::log_formatter::conn_id
+            )),
         reject_other_methods,
         Head::new(),
         Compression::new(),
