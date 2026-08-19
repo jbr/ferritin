@@ -29,3 +29,7 @@ walkdir = "2.5.0"
 inherits = "release"
 lto = true
 codegen-units = 1
+# Temporary (OOM investigation): line-table debuginfo so the allocwatch
+# backtraces symbolize on the server. Revert to no debuginfo — and restore the
+# `strip` step in .github/workflows/server-binary.yml — once resolved.
+debug = "line-tables-only"

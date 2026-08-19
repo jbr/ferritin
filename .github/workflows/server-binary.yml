@@ -62,8 +62,10 @@ jobs:
       - name: Build
         run: cargo build --locked --profile dist -p ferritin --features serve,acme,mcp
 
-      - name: Strip
-        run: strip target/dist/ferritin
+      # Temporarily disabled for the OOM investigation: stripping removes the
+      # symbols the allocwatch backtraces need. Restore once resolved.
+      # - name: Strip
+      #   run: strip target/dist/ferritin
 
       - uses: actions/upload-artifact@v7
         with:
