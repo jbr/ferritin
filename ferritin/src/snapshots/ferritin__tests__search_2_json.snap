@@ -57,7 +57,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "fixture-crate::TestStruct",
       "kind": "struct",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
-      "score": 66.3,
+      "score": 66.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -81,7 +81,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "fixture-crate::GenericEnum",
       "kind": "enum",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
-      "score": 65.3,
+      "score": 65.2,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -153,13 +153,13 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "alloc::io::copy::generic",
       "kind": "module",
       "url": "https://doc.rust-lang.org/nightly/alloc/io/copy/generic/index.html",
-      "score": 62.5
+      "score": 62.4
     },
     {
       "path": "core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic",
       "kind": "enum",
       "url": "https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html",
-      "score": 62.5,
+      "score": 62.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -182,7 +182,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       "path": "std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::mystd::mem::type_info::Generic",
       "kind": "enum",
       "url": "https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html",
-      "score": 62.5,
+      "score": 62.4,
       "docs": [
         {
           "type": "truncatedBlock",

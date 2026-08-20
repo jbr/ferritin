@@ -124,7 +124,7 @@ Vec::into_flattened // Takes a `Vec<[T; N]>` and flattens it into a `Vec<T>`. [+
 Vec::into_parts // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity)`. [+30 more lines]
 Vec::into_parts_with_alloc // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity, allocator)`. [+36 more lines]
 Vec::into_raw_parts // Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity)`. [+34 more lines]
-Vec::into_raw_parts_with_alloc // Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity, allocator)`. [+36 more lines]
+Vec::into_raw_parts_with_allocator // Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity, allocator)`. [+36 more lines]
 Vec::is_empty // Returns `true` if the vector contains no elements. [+10 more lines]
 Vec::leak // Consumes and leaks the `Vec`, returning a mutable reference to the contents, [+27 more lines]
 Vec::len // Returns the number of elements in the vector, also referred to [+8 more lines]

@@ -8949,9 +8949,9 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
-        "path": "Vec::into_raw_parts_with_alloc",
+        "path": "Vec::into_raw_parts_with_allocator",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts_with_alloc",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts_with_allocator",
         "docs": [
           {
             "type": "truncatedBlock",
