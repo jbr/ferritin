@@ -544,7 +544,7 @@ This checked <elided chars="3093"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_raw_parts_in</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator. <elided chars="2892"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator. <elided chars="2896"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::insert</type-name> </p>
@@ -590,8 +590,8 @@ Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-
 Returns the data order<inline-code>from_ra</inline-code>. <elided chars="1010"/></truncated>
 </item>
   <item><p>
-<type-name>Vec::into_raw_parts_with_alloc</type-name> </p>
-<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(pointer, length, capacity, allocator)</inline-code>. <elided chars="993"/></truncated>
+<type-name>Vec::into_raw_parts_with_allocator</type-name> </p>
+<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(pointer, length, capacity, allocator)</inline-code>. <elided chars="997"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::is_empty</type-name> </p>
