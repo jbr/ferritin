@@ -51,7 +51,7 @@ use crate::{
 use ferritin_common::{Navigator, Store};
 use mcplease::{
     ServerConfig, handle_request, server_info,
-    types::{JsonRpcMessage, ToolAnnotations},
+    types::{JsonRpcMessage, JsonRpcResponse, ToolAnnotations},
 };
 use std::{env, net::IpAddr, sync::Arc};
 use trillium::{Conn, KnownHeaderName, Status};
@@ -186,17 +186,17 @@ enum Outcome {
 fn handle_message(
     store: Arc<Store>,
     crate_search: Option<Arc<CrateSearchService>>,
-    body: &str,
+    message: JsonRpcMessage,
 ) -> Outcome {
-    match serde_json::from_str::<JsonRpcMessage>(body) {
-        Ok(JsonRpcMessage::Request(request)) => {
+    match message {
+        JsonRpcMessage::Request(request) => {
             log::info!("{request:?}");
             let mut state = McpState {
                 store,
                 crate_search,
             };
             let response = handle_request::<Tools, McpState>(request, &mut state, &config());
-            match serde_json::to_string(&response) {
+            match sonic_rs::to_string(&response) {
                 Ok(json) => Outcome::Response(json),
                 Err(error) => {
                     log::error!("failed to serialize MCP response: {error}");
@@ -204,14 +204,11 @@ fn handle_message(
                 }
             }
         }
+
         // A notification (no `id`) expects no reply. A *response* is a client
         // answering a request this server never makes, but it equally needs no
         // reply, so it takes the same path.
-        Ok(_) => Outcome::Accepted,
-        Err(error) => {
-            log::debug!("unparseable MCP message: {error}");
-            Outcome::BadRequest
-        }
+        _ => Outcome::Accepted,
     }
 }
 
@@ -228,7 +225,34 @@ pub(super) async fn post(mut conn: Conn) -> Conn {
         Err(_) => return conn.with_status(Status::BadRequest).halt(),
     };
 
-    let outcome = run_blocking(&pool, move || handle_message(store, crate_search, &body)).await;
+    let message = match sonic_rs::from_str::<JsonRpcMessage>(&body) {
+        Ok(message) => message,
+        Err(error) => {
+            log::error!("unparseable MCP message: {error}");
+            return conn.with_status(Status::BadRequest).halt();
+        }
+    };
+
+    // SEP-2243: the standard headers must agree with the body. Here rather than in
+    // `handle_message` because only the transport sees headers.
+    if let Err(error) =
+        mcplease::headers::validate(&message, |name| conn.request_headers().get_str(name))
+    {
+        let id = match &message {
+            JsonRpcMessage::Request(request) => Some(request.id.clone()),
+            _ => None,
+        };
+
+        let response = sonic_rs::to_string(&JsonRpcResponse::error(id, error)).unwrap_or_default();
+
+        return conn
+            .with_status(Status::BadRequest)
+            .with_response_header(KnownHeaderName::ContentType, "application/json")
+            .with_body(response)
+            .halt();
+    }
+
+    let outcome = run_blocking(&pool, move || handle_message(store, crate_search, message)).await;
 
     // `halt()` so the trailing frontend handler doesn't overwrite the body with
     // the SPA index.

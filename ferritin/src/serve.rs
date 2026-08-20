@@ -369,6 +369,33 @@ mod acme {
     }
 }
 
+/// Reject any request that does not name this server: `FERRITIN_HOST`, when
+/// set, is the only `Host` this server answers; everything else gets a `421
+/// Misdirected Request`. Unset means no gate.
+///
+/// This is the Host/Origin validation the MCP Streamable HTTP transport
+/// requires as DNS-rebinding protection: a malicious page resolving its own
+/// domain to 127.0.0.1 can make a browser deliver requests to a localhost
+/// server, but it cannot forge the `Host` header. Comparison is
+/// case-insensitive per RFC 9110; a request with no `Host` at all is equally
+/// misdirected.
+fn host_gate() -> Option<impl Handler> {
+    let expected: Arc<str> = env::var("FERRITIN_HOST").ok()?.into();
+    Some(move |conn: Conn| {
+        let expected = expected.clone();
+        async move {
+            if conn
+                .host()
+                .is_some_and(|host| host.eq_ignore_ascii_case(&expected))
+            {
+                conn
+            } else {
+                conn.with_status(Status::MisdirectedRequest).halt()
+            }
+        }
+    })
+}
+
 /// Reject any method the server has no endpoint for.
 ///
 /// Every route here is a `GET`, and the frontend only ever serves files, so a
@@ -404,6 +431,7 @@ pub(crate) fn handler(crate_search: Arc<CrateSearchService>) -> impl Handler {
                 "[{conn_id}] <~ {ip} {version} {method} {host}{url}",
                 conn_id = trillium_conn_id::log_formatter::conn_id
             )),
+        host_gate(),
         reject_other_methods,
         Head::new(),
         Compression::new(),
