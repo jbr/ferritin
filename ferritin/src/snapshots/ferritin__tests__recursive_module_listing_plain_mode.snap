@@ -322,7 +322,7 @@ Functions
   ◦ Vec::into_parts 
     Decomposes a Vec<T> into its raw components: (NonNull pointer, length, capacity). [...]
 
-  ◦ Vec::into_parts_with_alloc 
+  ◦ Vec::into_parts_with_allocator 
     Decomposes a Vec<T> into its raw components: (NonNull pointer, length, capacity, allocator). [...]
 
   ◦ Vec::into_raw_parts 
