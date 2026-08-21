@@ -356,7 +356,7 @@ Functions
     Decomposes a Vec<T> into its raw components: (NonNull pointer, length, capacity)
     . [...]
 
-  ◦ [Vec::into_parts_with_alloc](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts_with_alloc) 
+  ◦ [Vec::into_parts_with_allocator](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts_with_allocator) 
     Decomposes a Vec<T> into its raw components: (NonNull pointer, length,
     capacity, allocator). [...]
 

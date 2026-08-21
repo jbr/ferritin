@@ -533,7 +533,7 @@ Creates a <inline-code>Vec<T></inline-code> directly from a <inline-code>NonNull
 </item>
   <item><p>
 <type-name>Vec::from_parts_in</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2858"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2862"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_raw_parts</type-name> </p>
@@ -580,8 +580,8 @@ Panics if the length of<inline-code>usize</inline-code>. <elided chars="393"/></
 <truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity)</inline-code>. <elided chars="831"/></truncated>
 </item>
   <item><p>
-<type-name>Vec::into_parts_with_alloc</type-name> </p>
-<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity, allocator)</inline-code>. <elided chars="995"/></truncated>
+<type-name>Vec::into_parts_with_allocator</type-name> </p>
+<truncated level="single-line">Decomposes a <inline-code>Vec<T></inline-code> into its raw components: <inline-code>(NonNull pointer, length, capacity, allocator)</inline-code>. <elided chars="999"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::into_raw_parts</type-name> </p>
