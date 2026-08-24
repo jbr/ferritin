@@ -1992,6 +1992,65 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "link_resolution_tests::nested::Str::from_utf16_units",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16_units",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Decodes an iterator of UTF-16 code units into a ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "String",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", returning",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Err",
+                    "style": "InlineCode",
+                    "path": "core::result::Result::Err"
+                  },
+                  {
+                    "text": " on the first lone surrogate. ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "capacity",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " should be the number of",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "code units, which is used to preallocate the output buffer.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "link_resolution_tests::nested::Str::from_utf16_lossy",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16_lossy",

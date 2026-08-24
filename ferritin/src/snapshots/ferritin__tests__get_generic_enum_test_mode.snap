@@ -60,19 +60,19 @@ std: <type-name>From</type-name><punctuation><</punctuation><generic>Self</gener
 <keyword>impl</keyword> <type-name>BorrowMut</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <operator>?</operator><type-name>Sized</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Freeze</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Freeze</type-name><punctuation>></punctuation> <type-name>Freeze</type-name></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Freeze</type-name> + <type-name>Freeze</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Freeze</type-name><punctuation>></punctuation> <type-name>Freeze</type-name></generated-code>
 </item>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>></punctuation> <type-name>RefUnwindSafe</type-name></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>RefUnwindSafe</type-name> + <type-name>RefUnwindSafe</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>RefUnwindSafe</type-name><punctuation>></punctuation> <type-name>RefUnwindSafe</type-name></generated-code>
 </item>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Send</type-name><punctuation>></punctuation> <type-name>Send</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Sync</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Sync</type-name><punctuation>></punctuation> <type-name>Sync</type-name></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Sync</type-name> + <type-name>Sync</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Sync</type-name><punctuation>></punctuation> <type-name>Sync</type-name></generated-code>
 </item>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
@@ -85,13 +85,13 @@ std: <type-name>From</type-name><punctuation><</punctuation><generic>Self</gener
     <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <punctuation><</punctuation><generic>U</generic> <keyword>as</keyword> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation><punctuation>::</punctuation>Error</generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Unpin</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Unpin</type-name><punctuation>></punctuation> <type-name>Unpin</type-name></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Unpin</type-name> + <type-name>Unpin</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Unpin</type-name><punctuation>></punctuation> <type-name>Unpin</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>></punctuation> <type-name>UnsafeUnpin</type-name></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>UnsafeUnpin</type-name> + <type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>></punctuation> <type-name>UnsafeUnpin</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>UnwindSafe</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>UnwindSafe</type-name><punctuation>></punctuation> <type-name>UnwindSafe</type-name></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>UnwindSafe</type-name> + <type-name>UnwindSafe</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>UnwindSafe</type-name><punctuation>></punctuation> <type-name>UnwindSafe</type-name></generated-code>
 </item>
 </list>
 </section>
