@@ -945,6 +945,11 @@ Functions
     Decode a native endian UTF-16–encoded slice v into a String, replacing
     invalid data with [the replacement character (](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[U+FFFD](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER)[)](https://doc.rust-lang.org/nightly/core/char/index.html?search=core%3A%3Achar%3A%3AREPLACEMENT%5FCHARACTER). [...]
 
+  ◦ [link_resolution_tests::nested::Str::from_utf16_units](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16_units) 
+    Decodes an iterator of UTF-16 code units into a String, returning [Err](https://doc.rust-lang.org/nightly/core/result/Result/index.html?search=core%3A%3Aresult%3A%3AResult%3A%3AErr) on the
+    first lone surrogate. capacity should be the number of code units, which is
+    used to preallocate the output buffer.
+
   ◦ [link_resolution_tests::nested::Str::from_utf16be](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.from_utf16be) 
     Decode a UTF-16BE–encoded vector v into a String, returning [Err](https://doc.rust-lang.org/nightly/core/result/Result/index.html?search=core%3A%3Aresult%3A%3AResult%3A%3AErr) if v contains
     any invalid data. [...]

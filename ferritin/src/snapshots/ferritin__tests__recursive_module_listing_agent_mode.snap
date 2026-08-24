@@ -286,6 +286,7 @@ A minimal test crate for rustdoc JSON testing
 - link_resolution_tests::nested::Str::from_raw_parts — Creates a new String from a pointer, a length and a capacity. [+7 lines]
 - link_resolution_tests::nested::Str::from_utf16 — Decode a native endian UTF-16–encoded vector v into a String, returning Err if v contains any invalid data. [+2 lines]
 - link_resolution_tests::nested::Str::from_utf16_lossy — Decode a native endian UTF-16–encoded slice v into a String, replacing invalid data with the replacement character (U+FFFD). [+3 lines]
+- link_resolution_tests::nested::Str::from_utf16_units — Decodes an iterator of UTF-16 code units into a String, returning Err on the first lone surrogate. capacity should be the number of code units, which is used to preallocate the output buffer.
 - link_resolution_tests::nested::Str::from_utf16be — Decode a UTF-16BE–encoded vector v into a String, returning Err if v contains any invalid data. [+3 lines]
 - link_resolution_tests::nested::Str::from_utf16be_lossy — Decode a UTF-16BE–encoded slice v into a String, replacing invalid data with the replacement character (U+FFFD). [+4 lines]
 - link_resolution_tests::nested::Str::from_utf16le — Decode a UTF-16LE–encoded vector v into a String, returning Err if v contains any invalid data. [+3 lines]

@@ -1419,6 +1419,10 @@ This is checked: <elided chars="955"/></truncated>
 <truncated level="single-line">Decode a native endian UTF-16–encoded slice <inline-code>v</inline-code> into a <inline-code>String</inline-code>, replacing invalid data with the replacement character (<inline-code>U+FFFD</inline-code>). <elided chars="436"/></truncated>
 </item>
   <item><p>
+<type-name>link_resolution_tests::nested::Str::from_utf16_units</type-name> </p>
+<truncated level="single-line">Decodes an iterator of UTF-16 code units into a <inline-code>String</inline-code>, returning <inline-code>Err</inline-code> on the first lone surrogate. <inline-code>capacity</inline-code> should be the number of code units, which is used to preallocate the output buffer. <elided chars="111"/></truncated>
+</item>
+  <item><p>
 <type-name>link_resolution_tests::nested::Str::from_utf16be</type-name> </p>
 <truncated level="single-line">Decode a UTF-16BE–encoded vector <inline-code>v</inline-code> into a <inline-code>String</inline-code>, returning <inline-code>Err</inline-code> if <inline-code>v</inline-code> contains any invalid data. <elided chars="408"/></truncated>
 </item>

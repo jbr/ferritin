@@ -427,7 +427,7 @@ This module provides some extra types work. See the individual documentation <el
 </item>
   <item><p>
 <type-name>offload</type-name> </p>
-<truncated level="single-line">This module provides support for gpu offloading. For technical details<inline-code>offload_kernel</inline-code> and <inline-code>offload!</inline-code> macros, see their respective documentation. <elided chars="1105"/></truncated>
+<truncated level="single-line">This module provides support for gpu offloading. For technical details<inline-code>offload_kernel</inline-code> and <inline-code>offload!</inline-code> macros, see their respective documentation. <elided chars="1131"/></truncated>
 </item>
   <item><p>
 <type-name>ops</type-name> </p>

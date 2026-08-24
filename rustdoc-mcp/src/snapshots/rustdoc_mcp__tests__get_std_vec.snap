@@ -67,7 +67,7 @@ marker // Primitive traits and types representing basic properties of types. [+4
 mem // Basic functions for dealing with memory, values, and types. [+27 more lines]
 net // Networking primitives for TCP/UDP communication. [+20 more lines]
 num // Additional functionality for numerics. [+3 more lines]
-offload // This module provides support for gpu offloading. For technical details regarding the `offload_kernel` [+39 more lines]
+offload // This module provides support for gpu offloading. For technical details regarding the `offload_kernel` [+40 more lines]
 ops // Overloadable operators. [+136 more lines]
 option // Optional values. [+576 more lines]
 os // OS-specific functionality.

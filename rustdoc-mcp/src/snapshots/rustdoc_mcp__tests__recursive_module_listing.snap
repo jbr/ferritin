@@ -284,6 +284,7 @@ link_resolution_tests::nested::Str::extend_from_within // Copies elements from `
 link_resolution_tests::nested::Str::from_raw_parts // Creates a new `String` from a pointer, a length and a capacity. [+35 more lines]
 link_resolution_tests::nested::Str::from_utf16 // Decode a native endian UTF-16–encoded vector `v` into a `String`, [+16 more lines]
 link_resolution_tests::nested::Str::from_utf16_lossy // Decode a native endian UTF-16–encoded slice `v` into a `String`, [+21 more lines]
+link_resolution_tests::nested::Str::from_utf16_units // Decodes an iterator of UTF-16 code units into a `String`, returning [+2 more lines]
 link_resolution_tests::nested::Str::from_utf16be // Decode a UTF-16BE–encoded vector `v` into a `String`, [+18 more lines]
 link_resolution_tests::nested::Str::from_utf16be_lossy // Decode a UTF-16BE–encoded slice `v` into a `String`, replacing [+23 more lines]
 link_resolution_tests::nested::Str::from_utf16le // Decode a UTF-16LE–encoded vector `v` into a `String`, [+18 more lines]

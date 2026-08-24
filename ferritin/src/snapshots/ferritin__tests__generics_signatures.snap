@@ -105,16 +105,16 @@ std: From<Self>
 - impl Any where Self: 'static + ?Sized
 - impl Borrow<Self> where Self: ?Sized
 - impl BorrowMut<Self> where Self: ?Sized
-- impl<T: Freeze, const N: usize> Freeze
+- impl<T, const N: usize> Freeze where [T; N]: Freeze
 - impl<U: From<Self>> Into<U>
-- impl<T: RefUnwindSafe, const N: usize> RefUnwindSafe
-- impl<T: Send, const N: usize> Send
-- impl<T: Sync, const N: usize> Sync
+- impl<T, const N: usize> RefUnwindSafe where [T; N]: RefUnwindSafe
+- impl<T, const N: usize> Send where [T; N]: Send
+- impl<T, const N: usize> Sync where [T; N]: Sync
 - impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
 - impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
-- impl<T: Unpin, const N: usize> Unpin
-- impl<T: UnsafeUnpin, const N: usize> UnsafeUnpin
-- impl<T: UnwindSafe, const N: usize> UnwindSafe
+- impl<T, const N: usize> Unpin where [T; N]: Unpin
+- impl<T, const N: usize> UnsafeUnpin where [T; N]: UnsafeUnpin
+- impl<T, const N: usize> UnwindSafe where [T; N]: UnwindSafe
 
 Struct fixture_crate::generics::ManyPredicates — in fixture-crate (0.1.0)
 
