@@ -78,7 +78,7 @@ std: <type-name>From</type-name><punctuation><</punctuation><generic>Self</gener
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
 <generated-code>
-    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <type-name>Infallible</type-name></generated-code>
+    <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <type-name>never</type-name></generated-code>
 </item>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryInto</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>

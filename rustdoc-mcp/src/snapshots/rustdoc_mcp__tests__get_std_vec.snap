@@ -169,7 +169,7 @@ i32 // The 32-bit signed integer type.
 i64 // The 64-bit signed integer type.
 i8 // The 8-bit signed integer type.
 isize // The pointer-sized signed integer type. [+4 more lines]
-never // The `!` type, also called "never". [+245 more lines]
+never // The `!` type, also called "never". [+243 more lines]
 pointer // Raw, unsafe pointers, `*const T`, and `*mut T`. [+112 more lines]
 reference // References, `&T` and `&mut T`. [+153 more lines]
 slice // A dynamically-sized view into a contiguous sequence, `[T]`. [+106 more lines]

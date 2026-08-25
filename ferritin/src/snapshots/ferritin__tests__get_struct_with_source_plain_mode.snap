@@ -65,7 +65,7 @@ std: Clone, Debug, Freeze, From<Self>, RefUnwindSafe, Send, Sync, Unpin, UnsafeU
         type Owned = Self
 
   ◦ impl<U: Into<Self>> TryFrom<U>
-        type Error = Infallible
+        type Error = never
 
   ◦ impl<U: TryFrom<Self>> TryInto<U>
         type Error = <U as TryFrom<Self>>::Error

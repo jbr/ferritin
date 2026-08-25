@@ -110,7 +110,7 @@ std: From<Self>
 - impl<T, const N: usize> RefUnwindSafe where [T; N]: RefUnwindSafe
 - impl<T, const N: usize> Send where [T; N]: Send
 - impl<T, const N: usize> Sync where [T; N]: Sync
-- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: Into<Self>> TryFrom<U> — type Error = never
 - impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
 - impl<T, const N: usize> Unpin where [T; N]: Unpin
 - impl<T, const N: usize> UnsafeUnpin where [T; N]: UnsafeUnpin
@@ -147,7 +147,7 @@ std: From<Self>
 - impl<T: RefUnwindSafe, U: RefUnwindSafe, F: RefUnwindSafe> RefUnwindSafe
 - impl<T, U: Send, F: Send> Send
 - impl<T: Sync, U: Sync, F: Sync> Sync
-- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: Into<Self>> TryFrom<U> — type Error = never
 - impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
 - impl<T: Unpin, U: Unpin, F: Unpin> Unpin
 - impl<T: UnsafeUnpin, U: UnsafeUnpin, F: UnsafeUnpin> UnsafeUnpin
@@ -171,7 +171,7 @@ std: From<Self>
 - impl<T: RefUnwindSafe> RefUnwindSafe
 - impl<T: Send> Send
 - impl<T: Sync> Sync
-- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: Into<Self>> TryFrom<U> — type Error = never
 - impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
 - impl<T: Unpin> Unpin
 - impl<T: UnsafeUnpin> UnsafeUnpin
@@ -205,7 +205,7 @@ std: From<Self>
 - impl<T: RefUnwindSafe, U: RefUnwindSafe> RefUnwindSafe
 - impl<T, U: Send> Send
 - impl<T: Sync, U: Sync> Sync
-- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: Into<Self>> TryFrom<U> — type Error = never
 - impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
 - impl<T: Unpin, U: Unpin> Unpin
 - impl<T: UnsafeUnpin, U: UnsafeUnpin> UnsafeUnpin

@@ -34,7 +34,7 @@ std: [Freeze](https://doc.rust-lang.org/nightly/core/marker/index.html?search=co
   ◦ impl<U: [From](https://doc.rust-lang.org/nightly/core/convert/trait.From.html)<Self>> [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<U>
 
   ◦ impl<U: [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<Self>> [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<U>
-        type Error = [Infallible](https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html)
+        type Error = never
 
   ◦ impl<U: [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<Self>> [TryInto](https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html)<U>
         type Error = <U as [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<Self>>::Error
