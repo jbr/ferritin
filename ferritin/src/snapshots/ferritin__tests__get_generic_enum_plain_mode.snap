@@ -57,7 +57,7 @@ std: From<Self>
   ◦ impl<T: Sync + Sync, U: Sync> Sync
 
   ◦ impl<U: Into<Self>> TryFrom<U>
-        type Error = Infallible
+        type Error = never
 
   ◦ impl<U: TryFrom<Self>> TryInto<U>
         type Error = <U as TryFrom<Self>>::Error

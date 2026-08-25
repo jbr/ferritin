@@ -57,7 +57,7 @@ std: [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=cor
   ◦ impl<T: [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html) + [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html), U: [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html)> [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html)
 
   ◦ impl<U: [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<Self>> [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<U>
-        type Error = [Infallible](https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html)
+        type Error = never
 
   ◦ impl<U: [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<Self>> [TryInto](https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html)<U>
         type Error = <U as [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<Self>>::Error

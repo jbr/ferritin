@@ -39,7 +39,7 @@ std: From<Self>
 - impl<T: RefUnwindSafe + RefUnwindSafe, U: RefUnwindSafe> RefUnwindSafe
 - impl<T, U: Send> Send
 - impl<T: Sync + Sync, U: Sync> Sync
-- impl<U: Into<Self>> TryFrom<U> — type Error = Infallible
+- impl<U: Into<Self>> TryFrom<U> — type Error = never
 - impl<U: TryFrom<Self>> TryInto<U> — type Error = <U as TryFrom<Self>>::Error
 - impl<T: Unpin + Unpin, U: Unpin> Unpin
 - impl<T: UnsafeUnpin + UnsafeUnpin, U: UnsafeUnpin> UnsafeUnpin
