@@ -655,7 +655,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d524456ba66e72eb8b115ff89e01e497f8e6d11d78b70b1aa13c0fbd97540a81"
 dependencies = [
  "cfg-if",
- "cpufeatures 0.3.0",
+ "cpufeatures 0.3.1",
  "rand_core 0.10.1",
 ]
 
@@ -742,9 +742,9 @@ dependencies = [
 
 [[package]]
 name = "combine"
-version = "4.6.7"
+version = "4.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba5a308b75df32fe02788e748662718f03fde005016435c444eea572398219fd"
+checksum = "cfc320937d09e6de266b31b9afb480f197d7a861be86be7cb2ea7e5d1bfffc5e"
 dependencies = [
  "bytes",
  "memchr",
@@ -846,9 +846,9 @@ dependencies = [
 
 [[package]]
 name = "cpufeatures"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b2a41393f66f16b0823bb79094d54ac5fbd34ab292ddafb9a0456ac9f87d201"
+checksum = "5ca28b0ae3115b884660db4118d803791fd6756b6e88f39c0f3f7859060d7566"
 dependencies = [
  "libc",
 ]
@@ -3005,7 +3005,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3c80231409c20246a13fddb31776fb942c38553c51e871f8cbd687a4cfb5843d"
 dependencies = [
  "phf_shared 0.11.3",
- "rand 0.8.7",
+ "rand 0.8.8",
 ]
 
 [[package]]
@@ -3161,7 +3161,7 @@ version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be97d76faf1bfab666e1375477b23fde79eccf0276e9b63b92a39d676a889ba9"
 dependencies = [
- "rand 0.8.7",
+ "rand 0.8.8",
 ]
 
 [[package]]
@@ -3360,9 +3360,9 @@ dependencies = [
 
 [[package]]
 name = "rand"
-version = "0.8.7"
+version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22f6172bdec972074665ed81ed53b71da00bfc44b65a753cfde883ec4c702a1a"
+checksum = "e058c7de0b26af77780c769414d6257830bb240f3c38477dbc2c16e5f54d6d4c"
 dependencies = [
  "libc",
  "rand_chacha",
@@ -4143,7 +4143,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "446ba717509524cb3f22f17ecc096f10f4822d76ab5c0b9822c5f9c284e825f4"
 dependencies = [
  "cfg-if",
- "cpufeatures 0.3.0",
+ "cpufeatures 0.3.1",
  "digest 0.11.3",
 ]
 
@@ -4880,9 +4880,9 @@ dependencies = [
 
 [[package]]
 name = "trillium-client"
-version = "0.9.15"
+version = "0.9.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89e884096209c2c7606b5c2fc5ee74153327eed78603e24f14c6f23192e7cd2e"
+checksum = "f68c75154bae3b2695249e286a6335074978beae90d054e7b53426877f1749ac"
 dependencies = [
  "async-lock",
  "crossbeam-queue",
@@ -4911,9 +4911,9 @@ dependencies = [
 
 [[package]]
 name = "trillium-compression"
-version = "0.3.3"
+version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4959cd073943e553f68fa7001e221bd8813f65403c5a08b20ae06663c26074fb"
+checksum = "d0bd5b83b52bb546d27769e878fd509823af26a1af44b0f57945d170614bb19e"
 dependencies = [
  "async-compression",
  "futures-lite",
@@ -4934,9 +4934,9 @@ dependencies = [
 
 [[package]]
 name = "trillium-forwarding"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6650af48b790287c7f824fe7ccd8dca7c694ec4d9c37d41436a544c4c6fda83"
+checksum = "82af5605d4a93bfc05dbb77270885270807d1f6f188e741e09e13bc84edf5c0e"
 dependencies = [
  "cidr",
  "log",
@@ -4994,9 +4994,9 @@ dependencies = [
 
 [[package]]
 name = "trillium-http"
-version = "1.6.3"
+version = "1.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aedd57f88e01bcad8fb061b609a05c89f05e630a9a88a223b5e35b6d6c072914"
+checksum = "77ba360801d1a969343ee41f8ab69134be0efece690cb41b36bb82e9a1fd58e0"
 dependencies = [
  "atomic-waker",
  "encoding_rs",
