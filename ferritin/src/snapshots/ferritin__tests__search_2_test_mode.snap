@@ -17,7 +17,7 @@ A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
 </item>
   <item><p>
-fixture-crate::TestStruct  (Struct) - score: 66.4</p>
+fixture-crate::TestStruct  (Struct) - score: 66.3</p>
 <truncated level="single-line"><p>
 A simple struct for testing basic functionality.</p>
 This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>
@@ -43,20 +43,20 @@ A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
 </item>
   <item><p>
-alloc::io::copy::generic  (Module) - score: 62.4</p>
-</item>
-  <item><p>
-core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic  (Enum) - score: 62.4</p>
-<truncated level="single-line">Compile-time type information about instantiated generics of structs, enum and <elided chars="14"/></truncated>
-</item>
-  <item><p>
-std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::mystd::mem::type_info::Generic  (Enum) - score: 62.4</p>
-<truncated level="single-line">Compile-time type information about instantiated generics of structs, enum and <elided chars="14"/></truncated>
-</item>
-  <item><p>
-std::prelude::v1::Clone  (Trait) - score: 62.4</p>
+std::prelude::v1::Clone  (Trait) - score: 62.5</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>
+</item>
+  <item><p>
+alloc::io::copy::generic  (Module) - score: 62.5</p>
+</item>
+  <item><p>
+core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic  (Enum) - score: 62.5</p>
+<truncated level="single-line">Compile-time type information about instantiated generics of structs, enum and <elided chars="14"/></truncated>
+</item>
+  <item><p>
+std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::mystd::mem::type_info::Generic  (Enum) - score: 62.5</p>
+<truncated level="single-line">Compile-time type information about instantiated generics of structs, enum and <elided chars="14"/></truncated>
 </item>
 </list>

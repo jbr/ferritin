@@ -494,7 +494,7 @@ This module is mostly concerned with processes, but it also provides <inline-cod
 <type-name>ptr</type-name> </p>
 <truncated level="single-line"><p>
 Manually manage memory through raw pointers.</p>
-<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="21409"/></truncated>
+<emphasis>See also the pointer primitive types</emphasis><emphasis>.</emphasis> <elided chars="21453"/></truncated>
 </item>
   <item><p>
 <type-name>random</type-name> </p>
@@ -1001,7 +1001,7 @@ The size of this primitive is how many location in memory. For example, on a 32 
 <type-name>never</type-name> </p>
 <truncated level="single-line"><p>
 The <inline-code>!</inline-code> type, also called "never".</p>
-<inline-code>!</inline-code> represents the type of computations which the <inline-code>exit</inline-code> function <inline-code>fn exit(code: i32) -> !</inline-code> exits the process without ever returning, and so returns <inline-code>!</inline-code>. <elided chars="6636"/></truncated>
+<inline-code>!</inline-code> is the canonical uninhabited type. <inline-code>!</inline-code> represents the type of diverging computations computations which never resolve to any value. <elided chars="5656"/></truncated>
 </item>
   <item><p>
 <type-name>pointer</type-name> </p>

@@ -255,7 +255,7 @@ Non-exhaustive list of known limitations:
 - i64 — The 64-bit signed integer type.
 - i8 — The 8-bit signed integer type.
 - isize — The pointer-sized signed integer type. [+1 lines]
-- never — The ! type, also called "never". [+44 lines]
+- never — The ! type, also called "never". [+38 lines]
 - pointer — Raw, unsafe pointers, *const T, and *mut T. [+20 lines]
 - reference — References, &T and &mut T. [+26 lines]
 - slice — A dynamically-sized view into a contiguous sequence, [T]. [+21 lines]
