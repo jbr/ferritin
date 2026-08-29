@@ -23,7 +23,7 @@ A simple struct for testing basic functionality.</p>
 This struct demonstrates basic since it only has one paragraph <elided chars="214"/></truncated>
 </item>
   <item><p>
-fixture-crate::GenericEnum  (Enum) - score: 65.2</p>
+fixture-crate::GenericEnum  (Enum) - score: 65.3</p>
 <truncated level="single-line"><p>
 A generic enum for testing</p>
 <p>
