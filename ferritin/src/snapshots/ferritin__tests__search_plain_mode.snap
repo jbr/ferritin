@@ -17,20 +17,20 @@ Search results for 'trigger line-based truncation'
   ◦ proc_macro::Span::line  (Function) - score: 38.3
     The one-indexed line of the source file where the span starts. [...]
 
-  ◦ core::prelude::v1::ambiguous_macros_only::panic::location::Location::line  (Function) - score: 38.1
+  ◦ core::prelude::v1::ambiguous_macros_only::panic::location::Location::line  (Function) - score: 38.2
     Returns the line number from which the panic originated. [...]
 
-  ◦ std::prelude::v1::ambiguous_macros_only::panic::Location::line  (Function) - score: 38.1
+  ◦ std::prelude::v1::ambiguous_macros_only::panic::Location::line  (Function) - score: 38.2
     Returns the line number from which the panic originated. [...]
 
   ◦ alloc::io::buf_read::BufRead::read_line  (Function) - score: 32.7
     Reads all bytes until a newline (the 0xA byte) is reached, and append them to the provided String buffer. [...]
 
-  ◦ core::prelude::v1::ambiguous_macros_only::core_arch::arch::x86::sse::_mm_prefetch  (Function) - score: 30.4
+  ◦ core::prelude::v1::ambiguous_macros_only::core_arch::arch::x86::sse::_mm_prefetch  (Function) - score: 30.5
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ std::prelude::v1::ambiguous_macros_only::arch::x86::sse::_mm_prefetch  (Function) - score: 30.4
+  ◦ std::prelude::v1::ambiguous_macros_only::arch::x86::sse::_mm_prefetch  (Function) - score: 30.5
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ alloc::io::LineWriter  (Struct) - score: 29.9
+  ◦ alloc::io::LineWriter  (Struct) - score: 30.0
     Wraps a writer and buffers output to it, flushing whenever a newline (0x0a, '\n') is detected. [...]

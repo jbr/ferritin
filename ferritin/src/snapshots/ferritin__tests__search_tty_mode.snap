@@ -18,11 +18,11 @@ Search results for 'trigger line-based truncation'
     The one-indexed line of the source file where the span starts. [...]
 
   ◦ [core::prelude::v1::ambiguous_macros_only::panic::location::Location::line](https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line) 
-    (Function) - score: 38.1
+    (Function) - score: 38.2
     Returns the line number from which the panic originated. [...]
 
   ◦ [std::prelude::v1::ambiguous_macros_only::panic::Location::line](https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line)  (Function)
-    - score: 38.1
+    - score: 38.2
     Returns the line number from which the panic originated. [...]
 
   ◦ [alloc::io::buf_read::BufRead::read_line](https://doc.rust-lang.org/nightly/alloc/io/buf_read/BufRead/fn.read_line.html)  (Function) - score: 32.7
@@ -30,13 +30,13 @@ Search results for 'trigger line-based truncation'
     the provided [String](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html) buffer. [...]
 
   ◦ [core::prelude::v1::ambiguous_macros_only::core_arch::arch::x86::sse::](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)
-    [_mm_prefetch](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.4
+    [_mm_prefetch](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html)  (Function) - score: 30.5
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
   ◦ [std::prelude::v1::ambiguous_macros_only::arch::x86::sse::_mm_prefetch](https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html) 
-    (Function) - score: 30.4
+    (Function) - score: 30.5
     Fetch the cache line that contains address p using the given STRATEGY. [...]
 
-  ◦ [alloc::io::LineWriter](https://doc.rust-lang.org/nightly/alloc/io/buffered/linewriter/struct.LineWriter.html)  (Struct) - score: 29.9
+  ◦ [alloc::io::LineWriter](https://doc.rust-lang.org/nightly/alloc/io/buffered/linewriter/struct.LineWriter.html)  (Struct) - score: 30.0
     Wraps a writer and buffers output to it, flushing whenever a newline (0x0a, '\n'
     ) is detected. [...]

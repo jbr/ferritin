@@ -105,7 +105,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::prelude::v1::ambiguous_macros_only::panic::location::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 38.1,
+      "score": 38.2,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -129,7 +129,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::prelude::v1::ambiguous_macros_only::panic::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 38.1,
+      "score": 38.2,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -202,7 +202,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::prelude::v1::ambiguous_macros_only::core_arch::arch::x86::sse::_mm_prefetch",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.4,
+      "score": 30.5,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -242,7 +242,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::prelude::v1::ambiguous_macros_only::arch::x86::sse::_mm_prefetch",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.4,
+      "score": 30.5,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -282,7 +282,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "alloc::io::LineWriter",
       "kind": "struct",
       "url": "https://doc.rust-lang.org/nightly/alloc/io/buffered/linewriter/struct.LineWriter.html",
-      "score": 29.9,
+      "score": 30.0,
       "docs": [
         {
           "type": "truncatedBlock",
