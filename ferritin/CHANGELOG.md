@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0](https://github.com/jbr/ferritin/compare/ferritin-v0.17.0...ferritin-v0.18.0) - 2026-09-05
+
+### Added
+
+- *(mcp)* add header validation to the mcp server
+- *(serve)* temporarily instrument memory allocation
+- *(serve)* add conn-start logging and conn-id
+- update mcplease
+- *(serve)* swansong guard report
+
+### Other
+
+- *(deps)* dependency updates
+- update snaps to rustc 1.100.0-nightly (a69a63265 2026-09-03)
+- update snaps to rustc 1.100.0-nightly (5db7f4be8 2026-09-01)
+- update snaps to rustc 1.100.0-nightly (17fd5b8a3 2026-08-28)
+- update snaps to rustc 1.100.0-nightly (bff8e12ff 2026-08-26)
+- update trillium deps
+- update snaps to rustc 1.100.0-nightly (e7769602a 2026-08-24)
+- *(deps)* upgrade/update trillium deps
+- update snaps to rustc 1.100.0-nightly (fb6531d55 2026-08-23)
+- update deps
+- update snaps to rustc 1.100.0-nightly (8925ea358 2026-08-20)
+- update snaps to rustc 1.100.0-nightly (f7d782a3b 2026-08-19)
+- update snaps to rustc 1.100.0-nightly (67854e511 2026-08-15)
+- update snaps to rustc 1.99.0-nightly (d453bdd8f 2026-08-14)
+- update snaps to rustc 1.99.0-nightly (3d6c19bb9 2026-08-11)
+- update snaps to rustc 1.99.0-nightly (969b803cb 2026-08-09)
+- update snaps to rustc 1.99.0-nightly (84b36a78a 2026-08-06)
+
 ## [0.17.0](https://github.com/jbr/ferritin/compare/ferritin-v0.16.0...ferritin-v0.17.0) - 2026-08-07
 
 ### Added

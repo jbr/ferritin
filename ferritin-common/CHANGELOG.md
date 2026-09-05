@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.18.0...ferritin-common-v0.19.0) - 2026-09-05
+
+### Added
+
+- *(serve)* add conn-start logging and conn-id
+
+### Fixed
+
+- do not include the rkyv patch version in the rkyv files
+
+### Other
+
+- *(deps)* dependency updates
+- update trillium deps
+- *(deps)* upgrade/update trillium deps
+- update deps
+
 ## [0.18.0](https://github.com/jbr/ferritin/compare/ferritin-common-v0.17.0...ferritin-common-v0.18.0) - 2026-08-07
 
 ### Added
