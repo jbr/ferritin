@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.10.0...rustdoc-mcp-v0.11.0) - 2026-09-05
+
+### Added
+
+- update mcplease
+- update mcplease
+
+### Other
+
+- *(deps)* dependency updates
+- update snaps to rustc 1.100.0-nightly (bff8e12ff 2026-08-26)
+- update snaps to rustc 1.100.0-nightly (e7769602a 2026-08-24)
+- *(deps)* upgrade/update trillium deps
+- update snaps to rustc 1.100.0-nightly (fb6531d55 2026-08-23)
+- update deps
+- update snaps to rustc 1.100.0-nightly (8925ea358 2026-08-20)
+- update snaps to rustc 1.100.0-nightly (f7d782a3b 2026-08-19)
+- update snaps to rustc 1.100.0-nightly (67854e511 2026-08-15)
+- update snaps to rustc 1.99.0-nightly (d453bdd8f 2026-08-14)
+
 ## [0.10.0](https://github.com/jbr/ferritin/compare/rustdoc-mcp-v0.9.0...rustdoc-mcp-v0.10.0) - 2026-08-07
 
 ### Added
