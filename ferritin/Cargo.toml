@@ -85,12 +85,12 @@ trillium = { version = "1.4.0", optional = true }
 # to trust Let's Encrypt's directory endpoint).
 trillium-acme = { version = "0.9.0", features = ["webpki-roots"], optional = true }
 trillium-caching-headers = { version = "0.4.3", optional = true }
-trillium-client = { version = "0.9.16", optional = true }
+trillium-client = { version = "0.9.18", optional = true }
 trillium-compression = { version = "0.3.4", features = ["client"], optional = true }
 trillium-frontend = { version = "0.4.3", optional = true }
 trillium-logger = { version = "0.5.5", features = ["client"], optional = true }
 trillium-redirect = { version = "0.3.0", features = ["client"], optional = true }
-trillium-quinn = { version = "0.1.6", optional = true }
+trillium-quinn = { version = "0.1.7", optional = true }
 trillium-ratelimit = { version = "0.0.2", optional = true }
 trillium-router = { version = "0.5.3", optional = true }
 trillium-rustls = { version = "0.11.3", optional = true }
