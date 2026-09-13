@@ -110,7 +110,7 @@ Vec::extend_from_within // Given a range `src`, clones a slice of elements in th
 Vec::extend_trusted
 Vec::extend_with // Extend the vector by `n` clones of value.
 Vec::extract_if // Creates an iterator which uses a closure to determine if an element in the range should be removed. [+73 more lines]
-Vec::from_fn // Creates a `Vec<T>` where each element is produced by calling `f` with [+42 more lines]
+Vec::from_fn // Creates a `Vec<T>` where each element is produced by calling `f` with [+38 more lines]
 Vec::from_parts // Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+90 more lines]
 Vec::from_parts_in // Creates a `Vec<T, A>` directly from a `NonNull` pointer, a length, a capacity, [+96 more lines]
 Vec::from_raw_parts // Creates a `Vec<T>` directly from a pointer, a length, and a capacity. [+97 more lines]

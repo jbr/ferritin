@@ -523,7 +523,7 @@ Extend the vector by <inline-code>n</inline-code> clones of value.</p>
 </item>
   <item><p>
 <type-name>Vec::from_fn</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T></inline-code> where each element is produced by calling <inline-code>f</inline-code> with that element's index while walking forward through the <inline-code>Vec<T></inline-code>. <elided chars="987"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T></inline-code> where each element is produced by calling <inline-code>f</inline-code> with that element's index while walking forward through the <inline-code>Vec<T></inline-code>. <elided chars="935"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_parts</type-name> </p>

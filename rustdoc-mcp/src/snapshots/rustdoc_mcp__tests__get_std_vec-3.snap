@@ -41,7 +41,7 @@ Associated Types:
 • pub fn from_fn<F>(length: usize, f: F) -> Self
 where
     F: FnMut(usize) -> T
-    Creates a `Vec<T>` where each element is produced by calling `f` with [+42 more lines]
+    Creates a `Vec<T>` where each element is produced by calling `f` with [+38 more lines]
 
 • pub const fn into_raw_parts(self) -> (*mut T, usize, usize)
     Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity)`. [+34 more lines]
