@@ -375,7 +375,7 @@ New code should use the <elided chars="49"/></truncated>
 <type-name>intrinsics</type-name> </p>
 <truncated level="single-line"><p>
 Compiler intrinsics.</p>
-The functions in this module are implementation details of <inline-code>core</inline-code> and should not be used outside of the standard library. We generally intrinsics via stable wrapper functions. Use these instead. <elided chars="2235"/></truncated>
+The functions in this module are implementation details of <inline-code>core</inline-code> and should not be used outside of the standard library. We generally intrinsics via stable wrapper functions. Use these instead. <elided chars="4245"/></truncated>
 </item>
   <item><p>
 <type-name>io</type-name> </p>
