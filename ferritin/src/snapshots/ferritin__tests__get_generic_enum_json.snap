@@ -413,9 +413,8 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::GenericEnum\"),
             "name": "Error",
             "type": [
               {
-                "text": "Infallible",
-                "style": "TypeName",
-                "path": "core::convert::Infallible"
+                "text": "never",
+                "style": "TypeName"
               }
             ]
           }
