@@ -647,7 +647,7 @@ fn extract_link_target(origin: DocRef<'a, Item>, url: &str)
     -> Option<LinkTarget<'a>>
 ```
 
-**Returns:** a `LinkTarget` — either a resolved `DocRef` or an unresolved path string paired with an optional authoritative URL. `None` means "not a link we can resolve; keep it as an external URL."
+**Returns:** a `LinkTarget` — a resolved `DocRef`, an unresolved path string paired with an optional authoritative URL, or an `External` absolute URL to open outside the app. `None` means "keep the href exactly as written," which is only ever safe for a link that is already absolute or a same-page anchor.
 
 **Algorithm:**
 
@@ -655,9 +655,11 @@ fn extract_link_target(origin: DocRef<'a, Item>, url: &str)
 
 2. **Absolute URL** → try [`DocsRsLink::parse`](#docsrs_url---itemurl-in-both-directions). On success the link becomes a path *plus* the original URL, so it navigates in-app while the external pointer stays byte-exact (it is authoritative about version and anchor, and a regenerated one would not be). On failure, keep as-is.
 
-3. **Relative HTML path** (`.html` suffix or contains `/`) → resolve against the page `origin` is *itself* rendered on. `generate_docsrs_url(origin)` names that page, its directory is the link's base, and joining the two yields an absolute URL that step 2's parser reads. This is why the two directions have to live together: resolving `../attr.main.html` in `tokio::runtime`'s docs to `tokio::main` requires knowing what URL `tokio::runtime` would be generated at.
+3. **Relative path** (`.html` suffix or contains `/`) → resolve against the page `origin` is *itself* rendered on. `generate_docsrs_url(origin)` names that page, its directory is the link's base, and joining the two yields an absolute URL that step 2's parser reads. This is why the two directions have to live together: resolving `../attr.main.html` in `tokio::runtime`'s docs to `tokio::main` requires knowing what URL `tokio::runtime` would be generated at.
 
-   Relative links can only address the origin's own crate, so a link walking out of its documentation tree (`../../other_crate/…`) is broken and left as-is; and being same-crate, the resolved path carries no version qualifier. Resolving against the origin's *module* — rather than assuming the crate root — is what makes `struct.TcpStream.html` inside `tokio::net` mean `tokio::net::TcpStream`.
+   Only a link that lands inside the origin's own crate tree becomes an in-app path — `..` can walk up into a sibling crate's directory, where the path we'd derive would name the wrong crate — and being same-crate, that path carries no version qualifier. Resolving against the origin's *module* — rather than assuming the crate root — is what makes `struct.TcpStream.html` inside `tokio::net` mean `tokio::net::TcpStream`.
+
+   A link that lands anywhere else still becomes `LinkTarget::External` with the absolute URL, because a relative href is only meaningful on the page rustdoc wrote it for. `core::marker::Send` links `[the Nomicon](../../nomicon/send-and-sync.html)` — a sibling book under the channel root, not a rustdoc page — and passing that href through unchanged made the browser resolve it against *our* URL, yielding `ferritin.rs/nomicon/…` (jbr/ferritin#427). Absolutizing against the origin page gives `doc.rust-lang.org/nightly/nomicon/send-and-sync.html`, which is where it was always pointing.
 
 4. **For intra-doc links:**
    - Look up in `origin.links` map (try both with and without backticks)

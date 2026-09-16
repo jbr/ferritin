@@ -33,7 +33,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 53.4,
+      "score": 53.5,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -57,7 +57,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "std::prelude::v1::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 53.4,
+      "score": 53.5,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -153,7 +153,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "alloc::io::buf_read::BufRead::read_line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/alloc/io/buf_read/BufRead/fn.read_line.html",
-      "score": 32.7,
+      "score": 32.8,
       "docs": [
         {
           "type": "truncatedBlock",

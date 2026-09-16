@@ -142,7 +142,7 @@ Non-exhaustive list of known limitations:
 - i32 — Redundant constants module for the i32 primitive type. [+1 lines]
 - i64 — Redundant constants module for the i64 primitive type. [+1 lines]
 - i8 — Redundant constants module for the i8 primitive type. [+1 lines]
-- intrinsics — Compiler intrinsics. [+12 lines]
+- intrinsics — Compiler intrinsics. [+14 lines]
 - io — Traits, helpers, and type definitions for core I/O functionality. [+41 lines]
 - isize — Redundant constants module for the isize primitive type. [+1 lines]
 - iter — Composable external iteration. [+61 lines]

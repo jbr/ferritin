@@ -497,3 +497,27 @@ fn cross_crate_aliased_reexport_resolves() {
          got:\n{output}"
     );
 }
+
+/// Relative links that leave the crate's own documentation tree must still be
+/// absolutized. `core::marker::Send` documents itself with
+/// `[the Nomicon](../../nomicon/send-and-sync.html)` — a sibling book under the
+/// same channel root, not a rustdoc page we can resolve to an item. Passing the
+/// relative href through unchanged left it to resolve against whatever page it
+/// was rendered on, which on ferritin.rs produced `ferritin.rs/nomicon/…`
+/// (jbr/ferritin#427).
+#[test]
+fn escaping_relative_link_becomes_absolute() {
+    let output = render_for_tests_rooted(
+        Commands::get("core::marker::Send"),
+        OutputMode::Tty,
+        &get_fixture_crate_path(),
+    );
+    assert!(
+        output.contains("https://doc.rust-lang.org/nightly/nomicon/send-and-sync.html"),
+        "the Nomicon link should be absolute; got:\n{output}"
+    );
+    assert!(
+        !output.contains("../../nomicon/"),
+        "no relative href should survive into rendered output; got:\n{output}"
+    );
+}

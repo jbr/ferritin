@@ -58,7 +58,7 @@ i16 // Redundant constants module for the [`i16` primitive type][i16]. [+2 more 
 i32 // Redundant constants module for the [`i32` primitive type][i32]. [+2 more lines]
 i64 // Redundant constants module for the [`i64` primitive type][i64]. [+2 more lines]
 i8 // Redundant constants module for the [`i8` primitive type][i8]. [+2 more lines]
-intrinsics // Compiler intrinsics. [+45 more lines]
+intrinsics // Compiler intrinsics. [+70 more lines]
 io // Traits, helpers, and type definitions for core I/O functionality. [+292 more lines]
 isize // Redundant constants module for the [`isize` primitive type][isize]. [+2 more lines]
 iter // Composable external iteration. [+353 more lines]

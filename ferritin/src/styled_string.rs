@@ -136,6 +136,14 @@ pub enum LinkTarget<'a> {
         /// it cannot do for a version-qualified path like `tokio@1.40.0::net::Foo`.
         url: Option<Cow<'a, str>>,
     },
+    /// An absolute URL naming no item we can resolve, to be opened outside the app.
+    ///
+    /// This is how a link that leaves the crate's own documentation tree survives.
+    /// A relative href like `../../nomicon/send-and-sync.html` is written against
+    /// rustdoc's HTML layout; rendered anywhere else it points somewhere arbitrary,
+    /// so it is absolutized against the origin's rendered-doc URL rather than
+    /// passed through untouched.
+    External(Cow<'a, str>),
 }
 
 /// A semantic content tree for Rust documentation

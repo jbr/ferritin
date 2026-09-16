@@ -328,8 +328,9 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::submodule::Test
             "name": "Error",
             "type": [
               {
-                "text": "never",
-                "style": "TypeName"
+                "text": "Infallible",
+                "style": "TypeName",
+                "path": "core::convert::Infallible"
               }
             ]
           }

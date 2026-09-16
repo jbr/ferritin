@@ -128,6 +128,7 @@ impl MarkdownRenderer {
                                 LinkTarget::Path { path, url } => {
                                     TuiAction::NavigateToPath { path, url }
                                 }
+                                LinkTarget::External(url) => TuiAction::OpenUrl(url),
                             }
                         } else {
                             TuiAction::OpenUrl(dest_url.to_string().into())
