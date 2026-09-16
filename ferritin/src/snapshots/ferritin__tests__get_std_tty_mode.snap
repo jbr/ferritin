@@ -18,7 +18,7 @@ It offers core types, like [Vec<T>](https://doc.rust-lang.org/nightly/alloc/vec/
 [things](#what-is-in-the-standard-library-documentation).
 
 std is available to all Rust crates by default. Therefore, the standard library
-can be accessed in [use](../book/ch07-02-defining-modules-to-control-scope-and-privacy.html) statements through the path std, as in [use std::env](https://doc.rust-lang.org/nightly/std/env/index.html).
+can be accessed in [use](https://doc.rust-lang.org/nightly/book/ch07-02-defining-modules-to-control-scope-and-privacy.html) statements through the path std, as in [use std::env](https://doc.rust-lang.org/nightly/std/env/index.html).
 
 How to read this documentation
 ================================================================================
@@ -61,7 +61,7 @@ which all of Rust is forged, and they have mighty names like [std::slice](https:
 along with examples, and are a smart place to start familiarizing yourself with
 the library.
 
-Second, implicit methods on [primitive types](../book/ch03-02-data-types.html) are documented here. This can be a
+Second, implicit methods on [primitive types](https://doc.rust-lang.org/nightly/book/ch03-02-data-types.html) are documented here. This can be a
 source of confusion for two reasons:
 
   ◦ While primitives are implemented by the compiler, the standard library 
@@ -79,7 +79,7 @@ methods (rarely useful).
 
 Note the documentation for the primitives [str](https://doc.rust-lang.org/nightly/std/primitive.str.html) and [[T]](https://doc.rust-lang.org/nightly/std/primitive.slice.html) (also called 'slice').
 Many method calls on [String](https://doc.rust-lang.org/nightly/alloc/string/index.html?search=alloc%3A%3Astring%3A%3AString) and [Vec<T>](https://doc.rust-lang.org/nightly/alloc/vec/index.html?search=alloc%3A%3Avec%3A%3AVec) are actually calls to methods on [str](https://doc.rust-lang.org/nightly/std/primitive.str.html) and 
-[[T]](https://doc.rust-lang.org/nightly/std/primitive.slice.html) respectively, via [deref](../book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods)[ ](../book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods)[coercions](../book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods).
+[[T]](https://doc.rust-lang.org/nightly/std/primitive.slice.html) respectively, via [deref](https://doc.rust-lang.org/nightly/book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods)[ ](https://doc.rust-lang.org/nightly/book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods)[coercions](https://doc.rust-lang.org/nightly/book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods).
 
 Third, the standard library defines [The Rust Prelude](https://doc.rust-lang.org/nightly/std/prelude/index.html), a small collection of
 items - mostly traits - that are imported into every module of every crate. The
@@ -114,7 +114,7 @@ Containers and collections
 
 The [option](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Aoption) and [result](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Aresult) modules define optional and error-handling types, 
 [Option<T>](https://doc.rust-lang.org/nightly/core/option/index.html?search=core%3A%3Aoption%3A%3AOption) and [Result<T, E>](https://doc.rust-lang.org/nightly/core/result/index.html?search=core%3A%3Aresult%3A%3AResult). The [iter](https://doc.rust-lang.org/nightly/core/index.html?search=core%3A%3Aiter) module defines Rust's iterator trait, 
-[Iterator](https://doc.rust-lang.org/nightly/core/iter/traits/iterator/index.html?search=core%3A%3Aiter%3A%3Atraits%3A%3Aiterator%3A%3AIterator), which works with the [for](../book/ch03-05-control-flow.html#looping-through-a-collection-with-for) loop to access collections.
+[Iterator](https://doc.rust-lang.org/nightly/core/iter/traits/iterator/index.html?search=core%3A%3Aiter%3A%3Atraits%3A%3Aiterator%3A%3AIterator), which works with the [for](https://doc.rust-lang.org/nightly/book/ch03-05-control-flow.html#looping-through-a-collection-with-for) loop to access collections.
 
 The standard library exposes three common ways to deal with contiguous regions
 of memory:
