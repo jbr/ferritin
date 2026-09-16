@@ -73,11 +73,12 @@ impl<'a> Request<'a> {
         // Split off any fragment/anchor
         let (path, _fragment) = url.split_once('#').unwrap_or((url, ""));
 
-        // Check if this is a relative HTML URL (e.g., "task/index.html", "../attr.main.html")
-        // These are hand-written markdown links in the source that point to HTML docs
+        // Check if this is a relative URL (e.g., "task/index.html", "../attr.main.html",
+        // "../../nomicon/send-and-sync.html"). These are hand-written markdown links in
+        // the source that point into rustdoc's HTML output.
         if path.ends_with(".html") || path.contains("/") {
             log::trace!("extract_link_target: parsing relative URL '{}'", url);
-            return self.resolve_relative_html(origin, url);
+            return self.resolve_relative_link(origin, url);
         }
 
         log::trace!("extract_link_target: processing link '{}'", path);
@@ -149,23 +150,22 @@ impl<'a> Request<'a> {
     /// gives an absolute URL, which [`DocsRsLink::parse`] already knows how to read —
     /// sigils, `index.html`, and item-naming fragments included.
     ///
-    /// A relative link can only address the origin's own crate, so one that walks out of
-    /// its documentation tree is broken and left alone. Being same-crate, the resulting
-    /// path needs no version qualifier, exactly like the intra-doc links below.
-    fn resolve_relative_html(
+    /// A link that walks out of the origin's own crate tree names no item we can
+    /// resolve — `../../nomicon/send-and-sync.html` from `core::marker::Send` is a
+    /// chapter of a book, not a page of rustdoc output. It still becomes the absolute
+    /// URL it was written to mean, as an [external link](LinkTarget::External): passing
+    /// the relative href through instead would resolve it against whatever page *we*
+    /// are rendered on, which is how that Nomicon link came out as `ferritin.rs/nomicon/…`.
+    fn resolve_relative_link(
         &self,
         origin: DocRef<'a, Item>,
         relative: &str,
     ) -> Option<LinkTarget<'a>> {
-        let (page_part, _) = relative.split_once('#').unwrap_or((relative, ""));
-        if !page_part.ends_with(".html") {
-            return None;
-        }
-
         let absolute = resolve_relative(&generate_docsrs_url(origin), relative)?;
 
-        // Confine the link to this crate's own tree: `..` can walk up into a sibling
-        // crate's directory, where the path we'd derive would name the wrong crate.
+        // Confine the in-app path to this crate's own tree: `..` can walk up into a
+        // sibling crate's directory, where the path we'd derive would name the wrong
+        // crate.
         let docs = origin.crate_docs();
         let lib_name = docs.lib_name();
         let within_crate = absolute
@@ -177,22 +177,31 @@ impl<'a> Request<'a> {
                         .strip_prefix(lib_name)
                         .is_some_and(|r| r.starts_with('/'))
             });
-        if !within_crate {
-            log::trace!("  → relative link '{relative}' escapes {lib_name}, keeping as-is");
-            return None;
-        }
 
-        let path = {
-            let mut link = DocsRsLink::parse(&absolute)?;
-            link.version = None;
-            link.to_string()
+        let path = if within_crate {
+            DocsRsLink::parse(&absolute).map(|mut link| {
+                // Being same-crate, the path needs no version qualifier, exactly like
+                // the intra-doc links above.
+                link.version = None;
+                link.to_string()
+            })
+        } else {
+            None
         };
 
-        log::trace!("  → Resolved '{relative}' to '{path}' ({absolute})");
-        Some(LinkTarget::Path {
-            path: Cow::Owned(path),
-            url: Some(Cow::Owned(absolute)),
-        })
+        match path {
+            Some(path) => {
+                log::trace!("  → Resolved '{relative}' to '{path}' ({absolute})");
+                Some(LinkTarget::Path {
+                    path: Cow::Owned(path),
+                    url: Some(Cow::Owned(absolute)),
+                })
+            }
+            None => {
+                log::trace!("  → '{relative}' names no item in {lib_name}; external {absolute}");
+                Some(LinkTarget::External(Cow::Owned(absolute)))
+            }
+        }
     }
 
     /// Get the full path of an item (e.g., "std::vec::Vec")

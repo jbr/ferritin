@@ -165,7 +165,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "use",
               "style": "InlineCode",
-              "url": "../book/ch07-02-defining-modules-to-control-scope-and-privacy.html"
+              "url": "https://doc.rust-lang.org/nightly/book/ch07-02-defining-modules-to-control-scope-and-privacy.html"
             },
             {
               "text": " statements through the path",
@@ -539,7 +539,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "primitive types",
               "style": "Plain",
-              "url": "../book/ch03-02-data-types.html"
+              "url": "https://doc.rust-lang.org/nightly/book/ch03-02-data-types.html"
             },
             {
               "text": " are documented here. This can",
@@ -788,17 +788,17 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "deref",
               "style": "Plain",
-              "url": "../book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods"
+              "url": "https://doc.rust-lang.org/nightly/book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods"
             },
             {
               "text": " ",
               "style": "Plain",
-              "url": "../book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods"
+              "url": "https://doc.rust-lang.org/nightly/book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods"
             },
             {
               "text": "coercions",
               "style": "Plain",
-              "url": "../book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods"
+              "url": "https://doc.rust-lang.org/nightly/book/ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods"
             },
             {
               "text": ".",
@@ -1106,7 +1106,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
             {
               "text": "for",
               "style": "InlineCode",
-              "url": "../book/ch03-05-control-flow.html#looping-through-a-collection-with-for"
+              "url": "https://doc.rust-lang.org/nightly/book/ch03-05-control-flow.html#looping-through-a-collection-with-for"
             },
             {
               "text": " loop to",
