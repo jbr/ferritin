@@ -24,7 +24,7 @@ jobs:
     # Build inside AL2023 so the binary links against the glibc it will run
     # on: the instance runs AL2023 (glibc 2.34), older than the runner's
     # ubuntu-24.04 (2.39). Native arm64 runner, so no cross-compilation.
-    container: amazonlinux:2023
+    container: amazonlinux:2027
     env:
       CARGO_TERM_COLOR: always
       # Override the repo .cargo/config.toml, which sets target-cpu=native:
