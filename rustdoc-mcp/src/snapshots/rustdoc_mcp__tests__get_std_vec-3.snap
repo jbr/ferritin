@@ -184,6 +184,8 @@ where
     Removes and returns the last element from a vector if the predicate [+13 more lines]
 
 • pub fn peek_mut(&mut self) -> Option<PeekMut<'_, T, A>>
+where
+    A: AllocatorNightly
     Returns a mutable reference to the last item in the vector, or [+20 more lines]
 
 • pub fn append(&mut self, other: &mut Self)
@@ -200,6 +202,7 @@ where
 
 • pub fn drain<R>(&mut self, range: R) -> Drain<'_, T, A>
 where
+    A: AllocatorNightly,
     R: RangeBounds<usize>
     Removes the subslice indicated by the given range from the vector, [+31 more lines]
 
@@ -272,12 +275,14 @@ where
 
 • pub fn splice<R, I>(&mut self, range: R, replace_with: I) -> Splice<'_, <I as >::IntoIter, A>
 where
+    A: AllocatorNightly,
     R: RangeBounds<usize>,
     I: IntoIterator<Item = T>
     Creates a splicing iterator that replaces the specified range in the vector [+42 more lines]
 
 • pub fn extract_if<F, R>(&mut self, range: R, filter: F) -> ExtractIf<'_, T, F, A>
 where
+    A: AllocatorNightly,
     F: FnMut(&mut T) -> bool,
     R: RangeBounds<usize>
     Creates an iterator which uses a closure to determine if an element in the range should be removed. [+73 more lines]
