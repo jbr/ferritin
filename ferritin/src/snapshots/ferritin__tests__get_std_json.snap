@@ -4321,6 +4321,29 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
+        "path": "gca",
+        "kind": "macro",
+        "url": "https://doc.rust-lang.org/nightly/core/macro.gca.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Creates a new style directly represented const argument.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
         "path": "matches",
         "kind": "macro",
         "url": "https://doc.rust-lang.org/nightly/core/macro.matches.html",

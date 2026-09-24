@@ -130,6 +130,7 @@ file // Expands to the file name in which it was invoked. [+28 more lines]
 format // Creates a `String` using interpolation of runtime expressions. [+42 more lines]
 format_args // Constructs parameters for the other string-formatting macros. [+57 more lines]
 format_args_nl // Same as [`format_args`], but adds a newline in the end.
+gca // Creates a new style directly represented const argument. [+4 more lines]
 hash_map // Creates a [`HashMap`] containing the arguments. [+46 more lines]
 include // Parses a file as an expression or an item according to the context. [+59 more lines]
 include_bytes // Includes a file as a reference to a byte array. [+31 more lines]

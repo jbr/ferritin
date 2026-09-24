@@ -215,6 +215,7 @@ Non-exhaustive list of known limitations:
 - format — Creates a String using interpolation of runtime expressions. [+9 lines]
 - format_args — Constructs parameters for the other string-formatting macros. [+9 lines]
 - format_args_nl — Same as format_args, but adds a newline in the end.
+- gca — Creates a new style directly represented const argument. [+1 lines]
 - hash_map — Creates a HashMap containing the arguments. [+9 lines]
 - include — Parses a file as an expression or an item according to the context. [+13 lines]
 - include_bytes — Includes a file as a reference to a byte array. [+9 lines]
