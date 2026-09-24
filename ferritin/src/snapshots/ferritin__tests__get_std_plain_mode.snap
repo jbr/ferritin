@@ -449,6 +449,9 @@ Macros
   ◦ format_args_nl 
     Same as format_args, but adds a newline in the end.
 
+  ◦ gca 
+    Creates a new style directly represented const argument. [...]
+
   ◦ hash_map 
     Creates a HashMap containing the arguments. [...]
 
