@@ -151,7 +151,7 @@ where
     Removes and returns the element at position `index` within the vector, [+22 more lines]
 
 • pub fn try_remove(&mut self, index: usize) -> Option<T>
-    Remove and return the element at position `index` within the vector, [+18 more lines]
+    Remove and return the element at position `index` within the vector, [+17 more lines]
 
 • pub fn retain<F>(&mut self, f: F)
 where

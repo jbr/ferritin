@@ -756,7 +756,7 @@ Appends elements to <inline-code>self</inline-code> from other buffer, returning
 </item>
   <item><p>
 <type-name>Vec::try_remove</type-name> </p>
-<truncated level="single-line">Remove and return the element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the left, or <inline-code>None</inline-code> if it does not exist. <elided chars="398"/></truncated>
+<truncated level="single-line">Remove and return the element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the left, or <inline-code>None</inline-code> if it does not exist. <elided chars="370"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::try_reserve</type-name> </p>
