@@ -142,10 +142,10 @@ many methods for it. Rust [str](https://doc.rust-lang.org/nightly/std/primitive.
 For converting to strings use the [format!](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aformat) macro, and for converting from strings
 use the [FromStr](https://doc.rust-lang.org/nightly/core/str/traits/index.html?search=core%3A%3Astr%3A%3Atraits%3A%3AFromStr) trait.
 
-Data may be shared by placing it in a reference-counted box or the [Rc](https://doc.rust-lang.org/nightly/alloc/rc/index.html?search=alloc%3A%3Arc%3A%3ARc) type, and
+Data may be shared by placing it in a reference-counted box or the [Rc](https://doc.rust-lang.org/nightly/alloc/rcs/rc/index.html?search=alloc%3A%3Arcs%3A%3Arc%3A%3ARc) type, and
 if further contained in a [Cell](https://doc.rust-lang.org/nightly/core/cell/index.html?search=core%3A%3Acell%3A%3ACell) or [RefCell](https://doc.rust-lang.org/nightly/core/cell/index.html?search=core%3A%3Acell%3A%3ARefCell), may be mutated as well as shared.
 Likewise, in a concurrent setting it is common to pair an 
-atomically-reference-counted box, [Arc](https://doc.rust-lang.org/nightly/alloc/sync/index.html?search=alloc%3A%3Async%3A%3AArc), with a [Mutex](https://doc.rust-lang.org/nightly/std/sync/poison/mutex/struct.Mutex.html) to get the same effect.
+atomically-reference-counted box, [Arc](https://doc.rust-lang.org/nightly/alloc/rcs/arc/index.html?search=alloc%3A%3Arcs%3A%3Aarc%3A%3AArc), with a [Mutex](https://doc.rust-lang.org/nightly/std/sync/poison/mutex/struct.Mutex.html) to get the same effect.
 
 The [collections](https://doc.rust-lang.org/nightly/std/collections/index.html) module defines maps, sets, linked lists and other typical
 collection types, including the common [HashMap<K, V>](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html).
@@ -388,7 +388,7 @@ Modules
   ◦ [range](https://doc.rust-lang.org/nightly/core/range/index.html) 
     Replacement range types [...]
 
-  ◦ [rc](https://doc.rust-lang.org/nightly/alloc/rc/index.html) 
+  ◦ [rc](https://doc.rust-lang.org/nightly/alloc/rcs/rc/index.html) 
     Single-threaded reference-counting pointers. 'Rc' stands for 'Reference 
     Counted'. [...]
 
