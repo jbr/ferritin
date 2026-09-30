@@ -261,12 +261,12 @@ impl LocalSource {
                 ));
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
-                if self
-                    .rebuild_docs(&crate_name, None, true, &features)
-                    .is_ok()
-                {
-                    metadata.set_features(crate_name.as_ref(), features.clone());
-                    continue;
+                match self.rebuild_docs(&crate_name, None, true, &features) {
+                    Ok(()) => {
+                        metadata.set_features(crate_name.as_ref(), features.clone());
+                        continue;
+                    }
+                    Err(e) => log::error!("failed to build docs for {crate_name}: {e}"),
                 }
             }
             break None;
@@ -325,12 +325,12 @@ impl LocalSource {
             } else if !tried_rebuilding && self.can_rebuild {
                 tried_rebuilding = true;
                 feature_rebuild = false;
-                if self
-                    .rebuild_docs(&crate_name, Some(version), false, &features)
-                    .is_ok()
-                {
-                    metadata.set_features(crate_name.as_ref(), features.clone());
-                    continue;
+                match self.rebuild_docs(&crate_name, Some(version), false, &features) {
+                    Ok(()) => {
+                        metadata.set_features(crate_name.as_ref(), features.clone());
+                        continue;
+                    }
+                    Err(e) => log::error!("failed to build docs for {crate_name}: {e}"),
                 }
             }
             break None;
