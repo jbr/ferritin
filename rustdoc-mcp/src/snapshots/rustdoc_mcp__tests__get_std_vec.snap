@@ -163,7 +163,7 @@ f128 // A 128-bit floating-point type (specifically, the "binary128" type define
 f16 // A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE 754-2008). [+14 more lines]
 f32 // A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE 754-2008). [+205 more lines]
 f64 // A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE 754-2008). [+8 more lines]
-fn // Function pointers, like `fn(usize) -> bool`. [+269 more lines]
+fn // Function pointers, like `fn(usize) -> bool`. [+275 more lines]
 i128 // The 128-bit signed integer type. [+12 more lines]
 i16 // The 16-bit signed integer type.
 i32 // The 32-bit signed integer type.

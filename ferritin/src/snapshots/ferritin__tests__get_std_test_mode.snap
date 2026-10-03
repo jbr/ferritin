@@ -964,7 +964,7 @@ The <inline-code>char</inline-code> type represents a single character. More spe
 <type-name>fn</type-name> </p>
 <truncated level="single-line"><p>
 Function pointers, like <inline-code>fn(usize) -> bool</inline-code>.</p>
-<emphasis>See also the traits </emphasis><inline-code>Fn</inline-code><emphasis>, </emphasis><inline-code>FnMut</inline-code><emphasis>, and </emphasis><inline-code>FnOnce</inline-code><emphasis>.</emphasis> <elided chars="11049"/></truncated>
+<emphasis>See also the traits </emphasis><inline-code>Fn</inline-code><emphasis>, </emphasis><inline-code>FnMut</inline-code><emphasis>, and </emphasis><inline-code>FnOnce</inline-code><emphasis>.</emphasis> <elided chars="11413"/></truncated>
 </item>
   <item><p>
 <type-name>i128</type-name> </p>
