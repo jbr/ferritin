@@ -33,14 +33,14 @@ core::prelude::v1::ambiguous_macros_only::panic::location::Location::line  (Func
 <truncated level="single-line"><p>
 Returns the line number from which the panic originated.</p>
 <title>Examples</title>
- <elided chars="279"/></truncated>
+ <elided chars="255"/></truncated>
 </item>
   <item><p>
 std::prelude::v1::ambiguous_macros_only::panic::Location::line  (Function) - score: 38.1</p>
 <truncated level="single-line"><p>
 Returns the line number from which the panic originated.</p>
 <title>Examples</title>
- <elided chars="279"/></truncated>
+ <elided chars="255"/></truncated>
 </item>
   <item><p>
 alloc::io::buf_read::BufRead::read_line  (Function) - score: 32.7</p>
