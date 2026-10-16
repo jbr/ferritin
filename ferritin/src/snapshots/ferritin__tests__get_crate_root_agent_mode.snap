@@ -29,7 +29,7 @@ A minimal test crate for rustdoc JSON testing
 - TestStruct — A simple struct for testing basic functionality. [+2 lines]
 - TupleStruct — A tuple struct for testing
 - UnitStruct — A unit struct for testing
-- Vec — A contiguous growable array type, written as Vec<T>, short for 'vector'. [+40 lines]
+- Vec — A contiguous growable array type, written as Vec<T>, short for 'vector'. [+38 lines]
 
 ## Enums
 

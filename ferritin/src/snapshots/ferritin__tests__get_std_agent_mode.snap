@@ -114,7 +114,7 @@ Non-exhaustive list of known limitations:
 - backtrace — Support for capturing a stack backtrace of an OS thread [+13 lines]
 - backtrace_rs — A library for acquiring a backtrace at runtime [+11 lines]
 - borrow — A module for working with borrowed data.
-- boxed — The Box<T> type for heap allocation. [+30 lines]
+- boxed — The Box<T> type for heap allocation. [+32 lines]
 - bstr — The ByteStr and ByteString types and trait implementations.
 - cell — Shareable mutable containers. [+38 lines]
 - char — Utilities for the char primitive type. [+4 lines]
@@ -186,7 +186,7 @@ Non-exhaustive list of known limitations:
 - u8 — Redundant constants module for the u8 primitive type. [+1 lines]
 - unsafe_binder — Operators used to turn types into unsafe binders and back.
 - usize — Redundant constants module for the usize primitive type. [+1 lines]
-- vec — A contiguous growable array type with heap-allocated contents, written Vec<T>. [+16 lines]
+- vec — A contiguous growable array type with heap-allocated contents, written Vec<T>. [+19 lines]
 - view — Helper module for exporting the view_types macro.
 
 ## Macros
