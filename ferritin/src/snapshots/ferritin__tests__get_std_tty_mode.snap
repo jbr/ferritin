@@ -231,7 +231,7 @@ Modules
   ◦ [boxed](https://doc.rust-lang.org/nightly/alloc/boxed/index.html) 
     The Box<T> type for heap allocation. [...]
 
-  ◦ [bstr](https://doc.rust-lang.org/nightly/std/bstr/index.html) 
+  ◦ [byte_str](https://doc.rust-lang.org/nightly/std/byte_str/index.html) 
     The ByteStr and ByteString types and trait implementations.
 
   ◦ [cell](https://doc.rust-lang.org/nightly/core/cell/index.html) 

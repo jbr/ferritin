@@ -158,7 +158,7 @@ Modules
   ◦ boxed 
     The Box<T> type for heap allocation. [...]
 
-  ◦ bstr 
+  ◦ byte_str 
     The ByteStr and ByteString types and trait implementations.
 
   ◦ cell 

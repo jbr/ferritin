@@ -35,7 +35,7 @@ A minimal test crate for rustdoc JSON testing
 - TestStruct — A simple struct for testing basic functionality. [+2 lines]
 - TupleStruct — A tuple struct for testing
 - UnitStruct — A unit struct for testing
-- Vec — A contiguous growable array type, written as Vec<T>, short for 'vector'. [+40 lines]
+- Vec — A contiguous growable array type, written as Vec<T>, short for 'vector'. [+38 lines]
 - generics::ConstGeneric — A const generic with a default, alongside a type parameter with a default.
 - generics::ManyPredicates — A struct with a where clause that has several predicates, so the multi-line where rendering is exercised alongside the single-predicate form.
 - generics::TupleWithWhere — A tuple struct with a where clause, which Rust writes after the field list (struct T(..) where ..;) rather than before it.
@@ -105,6 +105,7 @@ A minimal test crate for rustdoc JSON testing
 - Vec::dedup — Removes consecutive repeated elements in the vector according to the PartialEq trait implementation. [+3 lines]
 - Vec::dedup_by — Removes all but the first of consecutive elements in the vector that are "equal" according to the given predicate function. [+7 lines]
 - Vec::dedup_by_key — Removes all but the first of consecutive elements in the vector that resolve to the same key. [+3 lines]
+- Vec::dedup_tail — Continues deduplication after the first duplicate is found. [+3 lines]
 - Vec::drain — Removes the subslice indicated by the given range from the vector, returning a double-ended iterator over the removed subslice. [+8 lines]
 - Vec::extend_desugared
 - Vec::extend_from_slice — Clones and appends all elements in a slice to the Vec. [+6 lines]
@@ -113,10 +114,10 @@ A minimal test crate for rustdoc JSON testing
 - Vec::extend_with — Extend the vector by n clones of value.
 - Vec::extract_if — Creates an iterator which uses a closure to determine if an element in the range should be removed. [+14 lines]
 - Vec::from_fn — Creates a Vec<T> where each element is produced by calling f with that element's index while walking forward through the Vec<T>. [+8 lines]
-- Vec::from_parts — Creates a Vec<T> directly from a NonNull pointer, a length, and a capacity. [+10 lines]
-- Vec::from_parts_in — Creates a Vec<T, A> directly from a NonNull pointer, a length, a capacity, and an allocator. [+10 lines]
-- Vec::from_raw_parts — Creates a Vec<T> directly from a pointer, a length, and a capacity. [+10 lines]
-- Vec::from_raw_parts_in — Creates a Vec<T, A> directly from a pointer, a length, a capacity, and an allocator. [+10 lines]
+- Vec::from_parts — Creates a Vec<T> directly from a NonNull pointer, a length, and a capacity. [+8 lines]
+- Vec::from_parts_in — Creates a Vec<T, A> directly from a NonNull pointer, a length, a capacity, and an allocator. [+8 lines]
+- Vec::from_raw_parts — Creates a Vec<T> directly from a pointer, a length, and a capacity. [+8 lines]
+- Vec::from_raw_parts_in — Creates a Vec<T, A> directly from a pointer, a length, a capacity, and an allocator. [+8 lines]
 - Vec::insert — Inserts an element at position index within the vector, shifting all elements after it to the right. [+6 lines]
 - Vec::insert_mut — Inserts an element at position index within the vector, shifting all elements after it to the right, and returning a reference to the new element. [+6 lines]
 - Vec::into_array — Converts the Vec into a boxed array. This conversion will discard any spare capacity, if there is any, see Vec::shrink_to_fit. If you merely wish for a reference to an array, use as_array. [+4 lines]
@@ -300,7 +301,7 @@ A minimal test crate for rustdoc JSON testing
 - link_resolution_tests::nested::Str::into_boxed_str — Converts this String into a Box<str>. [+3 lines]
 - link_resolution_tests::nested::Str::into_bytes — Converts a String into a byte vector. [+3 lines]
 - link_resolution_tests::nested::Str::into_chars — Converts a String into an iterator over the chars of the string. [+7 lines]
-- link_resolution_tests::nested::Str::into_raw_parts — Decomposes a String into its raw components: (pointer, length, capacity). [+4 lines]
+- link_resolution_tests::nested::Str::into_raw_parts — Decomposes a String into its raw components: (pointer, length, capacity). [+5 lines]
 - link_resolution_tests::nested::Str::is_empty — Returns true if this String has a length of zero, and false otherwise. [+2 lines]
 - link_resolution_tests::nested::Str::leak — Consumes and leaks the String, returning a mutable reference to the contents, &'a mut str. [+4 lines]
 - link_resolution_tests::nested::Str::len — Returns the length of this String, in bytes, not chars or graphemes. In other words, it might not be what a human considers the length of the string. [+2 lines]
