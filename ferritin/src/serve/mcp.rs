@@ -57,7 +57,12 @@ use std::{env, net::IpAddr, sync::Arc};
 use trillium::{Conn, KnownHeaderName, Status};
 use trillium_ratelimit::{Quota, RateLimiter};
 
-mcplease::tools!(cli = false, McpState, (Get, get, "get"), (Search, search, "search"));
+mcplease::tools!(
+    cli = false,
+    McpState,
+    (Get, get, "get"),
+    (Search, search, "search")
+);
 
 /// Default result count for the `search` tool — matches the JSON API's
 /// [`SEARCH_LIMIT`](super::SEARCH_LIMIT).
