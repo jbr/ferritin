@@ -60,7 +60,13 @@ jobs:
           curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable
           echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
 
+      # rust-cache keys on rustc and Cargo.lock but not the container, so a
+      # target/ built on another glibc gets restored: its proc-macro .so files
+      # then fail to dlopen and rustc reports "can't find crate". Keep this key
+      # in step with the container tag above.
       - uses: Swatinem/rust-cache@v2.9.2
+        with:
+          key: amazonlinux-2023
 
       - name: Build
         run: cargo build --locked --profile dist -p ferritin --features serve,acme,mcp
