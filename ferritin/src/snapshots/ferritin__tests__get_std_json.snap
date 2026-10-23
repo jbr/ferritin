@@ -2191,9 +2191,9 @@ expression: "render_json_for_tests_rooted(Commands::get(\"std\"), & get_fixture_
         ]
       },
       {
-        "path": "bstr",
+        "path": "byte_str",
         "kind": "module",
-        "url": "https://doc.rust-lang.org/nightly/std/bstr/index.html",
+        "url": "https://doc.rust-lang.org/nightly/std/byte_str/index.html",
         "docs": [
           {
             "type": "truncatedBlock",

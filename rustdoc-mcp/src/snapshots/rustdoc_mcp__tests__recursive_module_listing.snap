@@ -37,7 +37,7 @@ SubStruct // A struct in a submodule
 TestStruct // A simple struct for testing basic functionality. [+6 more lines]
 TupleStruct // A tuple struct for testing
 UnitStruct // A unit struct for testing
-Vec // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+257 more lines]
+Vec // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+235 more lines]
 generics::ConstGeneric // A const generic with a default, alongside a type parameter with a default.
 generics::ManyPredicates // A struct with a where clause that has several predicates, so the multi-line [+1 more lines]
 generics::TupleWithWhere // A tuple struct with a `where` clause, which Rust writes *after* the field [+1 more lines]
@@ -92,10 +92,10 @@ Vec::allocator // Returns a reference to the underlying allocator.
 Vec::append // Moves all the elements of `other` into `self`, leaving `other` empty. [+14 more lines]
 Vec::append_elements // Appends elements to `self` from other buffer.
 Vec::append_elements_unreserved // Appends elements to `self` from other buffer without reserving additional capacity.
-Vec::as_mut_ptr // Returns a raw mutable pointer to the vector's buffer, or a dangling [+72 more lines]
+Vec::as_mut_ptr // Returns a raw mutable pointer to the vector's buffer, or a dangling [+73 more lines]
 Vec::as_mut_slice // Extracts a mutable slice of the entire vector. [+10 more lines]
-Vec::as_non_null // Returns a `NonNull` pointer to the vector's buffer, or a dangling [+55 more lines]
-Vec::as_ptr // Returns a raw pointer to the vector's buffer, or a dangling raw pointer [+52 more lines]
+Vec::as_non_null // Returns a `NonNull` pointer to the vector's buffer, or a dangling [+56 more lines]
+Vec::as_ptr // Returns a raw pointer to the vector's buffer, or a dangling raw pointer [+53 more lines]
 Vec::as_slice // Extracts a slice containing the entire vector. [+10 more lines]
 Vec::capacity // Returns the total number of elements the vector can hold without [+22 more lines]
 Vec::clear // Clears the vector, removing all values. [+13 more lines]
@@ -103,6 +103,7 @@ Vec::const_make_global // Interns the `Vec<T>`, making the underlying memory rea
 Vec::dedup // Removes consecutive repeated elements in the vector according to the [+13 more lines]
 Vec::dedup_by // Removes all but the first of consecutive elements in the vector that are [+43 more lines]
 Vec::dedup_by_key // Removes all but the first of consecutive elements in the vector that resolve to the same [+13 more lines]
+Vec::dedup_tail // Continues deduplication after the first duplicate is found. [+7 more lines]
 Vec::drain // Removes the subslice indicated by the given range from the vector, [+31 more lines]
 Vec::extend_desugared
 Vec::extend_from_slice // Clones and appends all elements in a slice to the `Vec`. [+21 more lines]
@@ -111,10 +112,10 @@ Vec::extend_trusted
 Vec::extend_with // Extend the vector by `n` clones of value.
 Vec::extract_if // Creates an iterator which uses a closure to determine if an element in the range should be removed. [+73 more lines]
 Vec::from_fn // Creates a `Vec<T>` where each element is produced by calling `f` with [+38 more lines]
-Vec::from_parts // Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+90 more lines]
-Vec::from_parts_in // Creates a `Vec<T, A>` directly from a `NonNull` pointer, a length, a capacity, [+92 more lines]
-Vec::from_raw_parts // Creates a `Vec<T>` directly from a pointer, a length, and a capacity. [+97 more lines]
-Vec::from_raw_parts_in // Creates a `Vec<T, A>` directly from a pointer, a length, a capacity, [+94 more lines]
+Vec::from_parts // Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+70 more lines]
+Vec::from_parts_in // Creates a `Vec<T, A>` directly from a `NonNull` pointer, a length, a capacity, [+72 more lines]
+Vec::from_raw_parts // Creates a `Vec<T>` directly from a pointer, a length, and a capacity. [+72 more lines]
+Vec::from_raw_parts_in // Creates a `Vec<T, A>` directly from a pointer, a length, a capacity, [+74 more lines]
 Vec::insert // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
 Vec::insert_mut // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
 Vec::into_array // Converts the Vec into a boxed array. This conversion will discard any spare capacity, [+16 more lines]
@@ -161,10 +162,10 @@ Vec::try_reserve // Tries to reserve capacity for at least `additional` more ele
 Vec::try_reserve_exact // Tries to reserve the minimum capacity for at least `additional` [+37 more lines]
 Vec::try_shrink_to // Shrinks the capacity of the vector with a lower bound. [+25 more lines]
 Vec::try_shrink_to_fit // Tries to shrink the capacity of the vector as much as possible [+24 more lines]
-Vec::try_with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+9 more lines]
-Vec::try_with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+10 more lines]
-Vec::with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+49 more lines]
-Vec::with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+52 more lines]
+Vec::try_with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+11 more lines]
+Vec::try_with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+12 more lines]
+Vec::with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+50 more lines]
+Vec::with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+53 more lines]
 async_function // An async function
 generic_function // A generic function
 generics::ConstGeneric::filled // A method whose signature mentions the const parameter.
@@ -298,7 +299,7 @@ link_resolution_tests::nested::Str::insert_str // Inserts a string slice into th
 link_resolution_tests::nested::Str::into_boxed_str // Converts this `String` into a <code>[Box]<[str]></code>. [+14 more lines]
 link_resolution_tests::nested::Str::into_bytes // Converts a `String` into a byte vector. [+11 more lines]
 link_resolution_tests::nested::Str::into_chars // Converts a `String` into an iterator over the [`char`]s of the string. [+47 more lines]
-link_resolution_tests::nested::Str::into_raw_parts // Decomposes a `String` into its raw components: `(pointer, length, capacity)`. [+24 more lines]
+link_resolution_tests::nested::Str::into_raw_parts // Decomposes a `String` into its raw components: `(pointer, length, capacity)`. [+28 more lines]
 link_resolution_tests::nested::Str::is_empty // Returns `true` if this `String` has a length of zero, and `false` otherwise. [+10 more lines]
 link_resolution_tests::nested::Str::leak // Consumes and leaks the `String`, returning a mutable reference to the contents, [+23 more lines]
 link_resolution_tests::nested::Str::len // Returns the length of this `String`, in bytes, not [`char`]s or [+13 more lines]

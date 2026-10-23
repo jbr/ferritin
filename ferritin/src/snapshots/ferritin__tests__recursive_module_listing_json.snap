@@ -8652,7 +8652,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::into_raw_parts",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_raw_parts.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9010,7 +9010,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
       {
         "path": "Vec::into_raw_parts_with_allocator",
         "kind": "function",
-        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts_with_allocator",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_raw_parts_with_allocator.html",
         "docs": [
           {
             "type": "truncatedBlock",
@@ -9796,7 +9796,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "Plain"
                   },
                   {
-                    "text": "valid for zero sized reads if the vector didn't allocate.",
+                    "text": "valid for zero sized reads if the vector ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "didn't allocate",
+                    "style": "Plain",
+                    "path": "alloc::self"
+                  },
+                  {
+                    "text": ".",
                     "style": "Plain"
                   }
                 ]
@@ -9827,7 +9836,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "Plain"
                   },
                   {
-                    "text": "raw pointer valid for zero sized reads if the vector didn't allocate.",
+                    "text": "raw pointer valid for zero sized reads if the vector ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "didn't allocate",
+                    "style": "Plain",
+                    "path": "alloc::self"
+                  },
+                  {
+                    "text": ".",
                     "style": "Plain"
                   }
                 ]
@@ -9870,7 +9888,16 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "InlineCode"
                   },
                   {
-                    "text": " pointer valid for zero sized reads if the vector didn't allocate.",
+                    "text": " pointer valid for zero sized reads if the vector ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "didn't allocate",
+                    "style": "Plain",
+                    "path": "alloc::self"
+                  },
+                  {
+                    "text": ".",
                     "style": "Plain"
                   }
                 ]
@@ -10236,6 +10263,29 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   },
                   {
                     "text": "\"equal\" according to the given predicate function.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vec::dedup_tail",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_tail",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Continues deduplication after the first duplicate is found.",
                     "style": "Plain"
                   }
                 ]

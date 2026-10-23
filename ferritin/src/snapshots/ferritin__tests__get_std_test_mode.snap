@@ -204,10 +204,10 @@ A module for working with borrowed data.</p>
 <type-name>boxed</type-name> </p>
 <truncated level="single-line"><p>
 The <inline-code>Box<T></inline-code> type for heap allocation.</p>
-<inline-code>Box<T></inline-code>, casually referred to as a 'box', provides heap allocation in Rust. Boxes provide drop their contents when they go out of never allocate more than <inline-code>isize::MAX</inline-code> bytes. <elided chars="5839"/></truncated>
+<inline-code>Box<T></inline-code>, casually referred to as a 'box', provides heap allocation in Rust. Boxes provide drop their contents when they go out of never allocate more than <inline-code>isize::MAX</inline-code> bytes. <elided chars="6129"/></truncated>
 </item>
   <item><p>
-<type-name>bstr</type-name> </p>
+<type-name>byte_str</type-name> </p>
 <truncated level="single-line"><p>
 The <inline-code>ByteStr</inline-code> and <inline-code>ByteString</inline-code> types and trait implementations.</p>
 </truncated>
@@ -630,7 +630,7 @@ New code should use the <elided chars="52"/></truncated>
 <type-name>vec</type-name> </p>
 <truncated level="single-line"><p>
 A contiguous growable array type with heap-allocated contents, written <inline-code>Vec<T></inline-code>.</p>
-Ve<emphasis>O</emphasis>(1<emphasis>O</emphasis>(1 <emphasis>O</emphasis>(1 <elided chars="1654"/></truncated>
+Ve<emphasis>O</emphasis>(1<emphasis>O</emphasis>(1 <emphasis>O</emphasis>(1 <elided chars="2677"/></truncated>
 </item>
   <item><p>
 <type-name>view</type-name> </p>
@@ -964,7 +964,7 @@ The <inline-code>char</inline-code> type represents a single character. More spe
 <type-name>fn</type-name> </p>
 <truncated level="single-line"><p>
 Function pointers, like <inline-code>fn(usize) -> bool</inline-code>.</p>
-<emphasis>See also the traits </emphasis><inline-code>Fn</inline-code><emphasis>, </emphasis><inline-code>FnMut</inline-code><emphasis>, and </emphasis><inline-code>FnOnce</inline-code><emphasis>.</emphasis> <elided chars="11049"/></truncated>
+<emphasis>See also the traits </emphasis><inline-code>Fn</inline-code><emphasis>, </emphasis><inline-code>FnMut</inline-code><emphasis>, and </emphasis><inline-code>FnOnce</inline-code><emphasis>.</emphasis> <elided chars="12153"/></truncated>
 </item>
   <item><p>
 <type-name>i128</type-name> </p>
