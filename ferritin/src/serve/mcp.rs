@@ -51,13 +51,13 @@ use crate::{
 use ferritin_common::{Navigator, Store};
 use mcplease::{
     ServerConfig, handle_request, server_info,
-    types::{JsonRpcMessage, JsonRpcResponse, ToolAnnotations},
+    types::{JsonRpcMessage, JsonRpcResponse, RequestContext, ToolAnnotations},
 };
 use std::{env, net::IpAddr, sync::Arc};
 use trillium::{Conn, KnownHeaderName, Status};
 use trillium_ratelimit::{Quota, RateLimiter};
 
-mcplease::tools!(McpState, (Get, get, "get"), (Search, search, "search"));
+mcplease::tools!(cli = false, McpState, (Get, get, "get"), (Search, search, "search"));
 
 /// Default result count for the `search` tool — matches the JSON API's
 /// [`SEARCH_LIMIT`](super::SEARCH_LIMIT).
@@ -90,6 +90,7 @@ const INSTRUCTIONS: &str =
 /// crate-search service for crateless `search` calls. Each tool builds its own
 /// short-lived [`Navigator`] over the store, pinning only what the lookup
 /// touches, exactly as the JSON API handlers do.
+#[derive(Clone)]
 pub struct McpState {
     store: Arc<Store>,
     crate_search: Option<Arc<CrateSearchService>>,
@@ -191,11 +192,23 @@ fn handle_message(
     match message {
         JsonRpcMessage::Request(request) => {
             log::info!("{request:?}");
-            let mut state = McpState {
+            let state = McpState {
                 store,
                 crate_search,
             };
-            let response = handle_request::<Tools, McpState>(request, &mut state, &config());
+            let context = RequestContext::from_request(&request);
+            // The tool bodies never await, so this completes on its first
+            // poll; blocking here keeps them on this big-stack worker.
+            let response = ferritin_common::block_on(handle_request::<Tools, McpState>(
+                request,
+                state,
+                context,
+                &config(),
+            ));
+            // `None` means cancelled, and nothing here can cancel.
+            let Some(response) = response else {
+                return Outcome::Accepted;
+            };
             match sonic_rs::to_string(&response) {
                 Ok(json) => Outcome::Response(json),
                 Err(error) => {

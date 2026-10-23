@@ -1,78 +1,59 @@
 use anyhow::{Result, anyhow};
-use fieldwork::Fieldwork;
-use mcplease::session::SessionStore;
-use serde::{Deserialize, Serialize};
-use std::{fmt::Debug, fs, path::PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    sync::Arc,
+    thread,
+};
 
-/// Shared context data that can be used across multiple MCP servers
-#[derive(Debug, Clone, Serialize, Deserialize, Default, Eq, PartialEq)]
-pub(crate) struct SharedContextData {
-    /// Current working context path
-    context_path: Option<PathBuf>,
-}
+/// Documentation lookups recurse deeply enough to overflow a default 2 MiB
+/// thread stack; this matches the big-stack pool `ferritin serve` uses.
+const STACK_SIZE: usize = 16 * 1024 * 1024;
 
-/// Rustdoc tools with session support and multi-crate capabilities
-#[derive(Fieldwork, Debug)]
-#[fieldwork(get)]
+/// The rustdoc tools' shared state, cloned into every call.
+///
+/// There is no working directory to set. MCP has no sessions, so nothing a
+/// call does may change how the next one resolves: each call names its
+/// project, or falls back to the root this server was started with — `--root`,
+/// else the process's working directory.
+#[derive(Debug, Clone)]
 pub(crate) struct RustdocTools {
-    /// Shared context store for cross-server communication (working directory)
-    shared_context_store: SessionStore<SharedContextData>,
-
-    #[field(set, with)]
-    default_session_id: &'static str,
+    root: Arc<Path>,
 }
 
 impl RustdocTools {
-    /// Create a new RustdocTools instance
-    pub(crate) fn new(storage_path: Option<PathBuf>) -> Result<Self> {
-        let shared_context_store = SessionStore::new(storage_path)?;
-
-        Ok(Self {
-            shared_context_store,
-            default_session_id: "default",
-        })
+    pub(crate) fn new(root: PathBuf) -> Self {
+        Self { root: root.into() }
     }
 
-    /// Get context (working directory) for a session
-    pub(crate) fn get_context(&mut self, session_id: Option<&str>) -> Result<Option<PathBuf>> {
-        let session_id = session_id.unwrap_or_else(|| self.default_session_id());
-        let shared_data = self.shared_context_store.get_or_create(session_id)?;
-        Ok(shared_data.context_path.clone())
+    /// The project directory a call asked for, resolved against the root, or
+    /// the root itself.
+    pub(crate) fn project_dir(&self, project: Option<&str>) -> Result<PathBuf> {
+        let project = project.map(|project| PathBuf::from(&*shellexpand::tilde(project)));
+        let path = match project {
+            Some(project) => self.root.join(project),
+            None => self.root.to_path_buf(),
+        };
+        fs::canonicalize(&path).map_err(|e| anyhow!("{}: {e}", path.display()))
     }
 
-    /// Set working directory for a session (shared across MCP servers)
-    pub(crate) fn set_working_directory(
-        &mut self,
-        path: PathBuf,
-        session_id: Option<&str>,
-    ) -> Result<()> {
-        let session_id = session_id.unwrap_or_else(|| self.default_session_id());
-
-        self.shared_context_store.update(session_id, |data| {
-            data.context_path = Some(path);
-        })
-    }
-
-    pub(crate) fn resolve_path(
-        &mut self,
-        path_str: &str,
-        session_id: Option<&str>,
-    ) -> Result<PathBuf> {
-        let path = PathBuf::from(&*shellexpand::tilde(path_str));
-
-        if path.is_absolute() {
-            return fs::canonicalize(path).map_err(Into::into);
-        }
-
-        self.working_directory(session_id).map(|x| x.join(path_str))
-    }
-
-    pub(crate) fn working_directory(&mut self, session_id: Option<&str>) -> Result<PathBuf> {
-        match self.get_context(session_id)? {
-            Some(context) => fs::canonicalize(context).map_err(Into::into),
-            None => Err(anyhow!(
-                "Use set_working_directory first or provide an absolute path.",
-            )),
-        }
+    /// Run a tool body on a thread of its own. The lookups are synchronous and
+    /// block on docs.rs fetches internally, so they must stay off the executor
+    /// the other calls share, and they need a big stack.
+    pub(crate) async fn unblock<T: Send + 'static>(
+        self,
+        body: impl FnOnce(&Self) -> Result<T> + Send + 'static,
+    ) -> Result<T> {
+        let (sender, receiver) = smol::channel::bounded(1);
+        thread::Builder::new()
+            .name("rustdoc-mcp call".into())
+            .stack_size(STACK_SIZE)
+            .spawn(move || {
+                let _ = sender.send_blocking(body(&self));
+            })?;
+        receiver
+            .recv()
+            .await
+            .map_err(|_| anyhow!("the tool panicked"))?
     }
 }

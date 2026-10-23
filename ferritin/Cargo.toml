@@ -42,7 +42,7 @@ pkg-fmt = "zip"
 [dependencies]
 ferritin-common = { path = "../ferritin-common", version = "0.18.0" }
 
-clap = { version = "4.6.6", features = ["derive", "cargo", "env"] }
+clap = { version = "4.6.7", features = ["derive", "cargo", "env"] }
 crossbeam-channel = "0.5"
 crossterm = "0.29"
 fieldwork = "0.5"
@@ -58,16 +58,16 @@ syntect = { version = "5.3", default-features = false, features = ["parsing", "d
 terminal_size = "0.4"
 thiserror = "2"
 unicode-width = "0.2.2"
-webbrowser = "1.2.4"
+webbrowser = "1.2.5"
 semver = "1.0.28"
 percent-encoding = "2.3"
 mimalloc = "0.1.52"
-schemars = { version = "1.2.2", optional = true }
-serde_json = { version = "1.0.151", optional = true }
+schemars = { version = "1.2.3", optional = true }
+serde_json = { version = "1.0.154", optional = true }
 # `mcp`-only. `server` alone: the protocol types, the tool-authoring traits, and
 # the transport-agnostic `handle_request` — no clap, no stdio serve loop, no
 # session store, so this adds no dependency ferritin does not already have.
-mcplease = { version = "0.4", default-features = false, features = [
+mcplease = { version = "0.5", default-features = false, features = [
     "server",
 ], optional = true }
 
@@ -80,7 +80,7 @@ rayon = { version = "1.12.0", optional = true }
 # nothing else) because the card's fonts are embedded — no system font loading,
 # no raster image decoding.
 resvg = { version = "0.48.1", optional = true, default-features = false, features = ["text"] }
-trillium = { version = "1.4.0", optional = true }
+trillium = { version = "1.4.1", optional = true }
 # `webpki-roots` is required for `AcmeConfig::new` (the ACME client needs roots
 # to trust Let's Encrypt's directory endpoint).
 trillium-acme = { version = "0.9", features = ["webpki-roots"], optional = true }
@@ -103,7 +103,7 @@ trillium-conn-id = { version = "0.3", optional = true }
 syntect = { version = "5.3", default-features = false, features = ["parsing", "plist-load", "dump-load", "dump-create", "regex-onig"] }
 
 [dev-dependencies]
-insta = { version = "1.48.0", features = ["filters"] }
+insta = { version = "1.49.0", features = ["filters"] }
 paste = "1.0.15"
 strip-ansi-escapes = "0.2.1"
 

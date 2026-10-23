@@ -53,6 +53,12 @@ pub struct GetItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[arg(long, value_enum)]
     pub verbosity: Option<Verbosity>,
+
+    /// The Rust project to look in: a directory with a `Cargo.toml`, absolute
+    /// or relative to the server's root. Defaults to the root.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[arg(long)]
+    pub project: Option<String>,
 }
 
 impl GetItem {
@@ -162,8 +168,14 @@ impl ToolMeta for GetItem {
 impl Tool<RustdocTools> for GetItem {
     type Output = String;
 
-    fn execute(self, tools: &mut RustdocTools, _context: &RequestContext) -> Result<Self::Output> {
-        let manifest_path = tools.resolve_path("Cargo.toml", None)?;
+    async fn execute(self, state: RustdocTools, _context: RequestContext) -> Result<Self::Output> {
+        state.unblock(move |state| self.run(state)).await
+    }
+}
+
+impl GetItem {
+    pub(crate) fn run(self, tools: &RustdocTools) -> Result<String> {
+        let manifest_path = tools.project_dir(self.project.as_deref())?.join("Cargo.toml");
         let navigator = crate::request::build_navigator(manifest_path);
         let mut request = Request::new(&navigator);
 

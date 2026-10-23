@@ -42,7 +42,7 @@ impl Tool<McpState> for Get {
     // duplicate the whole document as JSON to say the same thing.
     type Output = String;
 
-    fn execute(self, state: &mut McpState, _context: &RequestContext) -> Result<Self::Output> {
+    async fn execute(self, state: McpState, _context: RequestContext) -> Result<Self::Output> {
         Ok(state.render(Commands::get(self.path)))
     }
 }
