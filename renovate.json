@@ -17,6 +17,13 @@
       "description": "rhoto-router is ours: no cooldown, mirroring client/pnpm-workspace.yaml",
       "matchPackageNames": ["rhoto-router"],
       "minimumReleaseAge": null
+    },
+    {
+      "description": "The server-binary build container must match the deployed instance's OS (AL2023 in ferritin-ops): a newer major links a newer glibc and the binary fails at exec. Bump it by hand, together with the AMI.",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["amazonlinux"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
