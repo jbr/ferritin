@@ -22,6 +22,12 @@ pub struct Search {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[arg(short, long)]
     pub limit: Option<usize>,
+
+    /// The Rust project to look in: a directory with a `Cargo.toml`, absolute
+    /// or relative to the server's root. Defaults to the root.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[arg(long)]
+    pub project: Option<String>,
 }
 
 impl ToolMeta for Search {
@@ -33,6 +39,7 @@ impl ToolMeta for Search {
                     crate_name: "std".into(),
                     query: "Error".into(),
                     limit: Some(5),
+                    project: None,
                 },
             },
             Example {
@@ -41,6 +48,7 @@ impl ToolMeta for Search {
                     crate_name: "crate".into(),
                     query: "iterator items".into(),
                     limit: None,
+                    project: None,
                 },
             },
         ]
@@ -54,8 +62,14 @@ impl ToolMeta for Search {
 impl Tool<RustdocTools> for Search {
     type Output = String;
 
-    fn execute(self, state: &mut RustdocTools, _context: &RequestContext) -> Result<Self::Output> {
-        let manifest_path = state.resolve_path("Cargo.toml", None)?;
+    async fn execute(self, state: RustdocTools, _context: RequestContext) -> Result<Self::Output> {
+        state.unblock(move |state| self.run(state)).await
+    }
+}
+
+impl Search {
+    pub(crate) fn run(self, state: &RustdocTools) -> Result<String> {
+        let manifest_path = state.project_dir(self.project.as_deref())?.join("Cargo.toml");
 
         let navigator = crate::request::build_navigator(manifest_path);
         let mut request = Request::new(&navigator);

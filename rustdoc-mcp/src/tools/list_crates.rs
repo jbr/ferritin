@@ -16,6 +16,12 @@ pub struct ListCrates {
     pub workspace_member: Option<String>,
     #[serde(skip)]
     pub for_schemars: (),
+
+    /// The Rust project to look in: a directory with a `Cargo.toml`, absolute
+    /// or relative to the server's root. Defaults to the root.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[arg(long)]
+    pub project: Option<String>,
 }
 
 impl ToolMeta for ListCrates {
@@ -34,8 +40,14 @@ impl ToolMeta for ListCrates {
 impl Tool<RustdocTools> for ListCrates {
     type Output = String;
 
-    fn execute(self, state: &mut RustdocTools, _context: &RequestContext) -> Result<Self::Output> {
-        let manifest_path = state.working_directory(None)?;
+    async fn execute(self, state: RustdocTools, _context: RequestContext) -> Result<Self::Output> {
+        state.unblock(move |state| self.run(state)).await
+    }
+}
+
+impl ListCrates {
+    pub(crate) fn run(self, state: &RustdocTools) -> Result<String> {
+        let manifest_path = state.project_dir(self.project.as_deref())?;
         let navigator = crate::request::build_navigator(manifest_path);
         let request = Request::new(&navigator);
 

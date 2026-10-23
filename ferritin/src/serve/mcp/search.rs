@@ -63,7 +63,7 @@ impl Tool<McpState> for Search {
     /// Markdown, for the reason given on [`Get::execute`](super::Get).
     type Output = String;
 
-    fn execute(self, state: &mut McpState, _context: &RequestContext) -> Result<Self::Output> {
+    async fn execute(self, state: McpState, _context: RequestContext) -> Result<Self::Output> {
         match self.crate_ {
             Some(crate_) => {
                 let command = Commands::search(self.query)

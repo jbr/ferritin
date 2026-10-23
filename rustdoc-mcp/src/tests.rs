@@ -1,10 +1,9 @@
 use crate::{
     filter::Filter,
     state::RustdocTools,
-    tools::{GetItem, ListCrates, Search, SetWorkingDirectory},
+    tools::{GetItem, ListCrates, Search},
     verbosity::Verbosity,
 };
-use mcplease::{traits::Tool, types::RequestContext};
 use std::path::PathBuf;
 
 /// Get the path to our test crate (fast to build, minimal dependencies)
@@ -14,22 +13,12 @@ fn get_fixture_crate_path() -> PathBuf {
 
 /// Create a test state with isolated session
 fn create_test_state() -> RustdocTools {
-    let mut state = RustdocTools::new(None)
-        .expect("Failed to create state")
-        .with_default_session_id("test");
-
-    SetWorkingDirectory {
-        path: get_fixture_crate_path().to_string_lossy().to_string(),
-    }
-    .execute(&mut state, &RequestContext::default())
-    .unwrap();
-
-    state
+    RustdocTools::new(get_fixture_crate_path())
 }
 
 #[test]
 fn test_get_crate_root() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get the crate root
     let tool = GetItem {
@@ -37,16 +26,14 @@ fn test_get_crate_root() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_show_docs_vs_hide_docs_comparison() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // First, get TestStruct with docs shown (default)
     let tool_with_docs = GetItem {
@@ -54,9 +41,7 @@ fn test_show_docs_vs_hide_docs_comparison() {
         ..Default::default()
     };
 
-    let result_with_docs = tool_with_docs
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result_with_docs = tool_with_docs.run(&state).expect("Tool execution failed");
 
     // Then get TestStruct with docs hidden
     let tool_no_docs = GetItem {
@@ -65,9 +50,7 @@ fn test_show_docs_vs_hide_docs_comparison() {
         ..Default::default()
     };
 
-    let result_no_docs = tool_no_docs
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result_no_docs = tool_no_docs.run(&state).expect("Tool execution failed");
 
     // Verify the difference
     assert!(result_with_docs.len() > result_no_docs.len());
@@ -84,7 +67,7 @@ fn test_show_docs_vs_hide_docs_comparison() {
 
 #[test]
 fn test_verbosity_minimal() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get the crate root with documentation hidden
     let tool = GetItem {
@@ -93,9 +76,7 @@ fn test_verbosity_minimal() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     // The result should not contain documentation text
     assert!(!result.contains("Documentation:"));
@@ -111,7 +92,7 @@ fn test_verbosity_minimal() {
 
 #[test]
 fn test_fuzzy_matching_tool_execute() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Try to access a trait method with a typo - should find TestTrait methods
     let tool = GetItem {
@@ -119,15 +100,13 @@ fn test_fuzzy_matching_tool_execute() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 #[test]
 fn test_fuzzy_matching_trait_methods() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Try to access a trait method that should be available via impl
     // This tests whether we collect trait implementation methods
@@ -136,9 +115,7 @@ fn test_fuzzy_matching_trait_methods() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     // Should contain suggestions from trait implementations
     assert!(result.contains("Did you mean"));
@@ -150,7 +127,7 @@ fn test_fuzzy_matching_trait_methods() {
 
 #[test]
 fn test_get_struct_details() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get TestStruct details
     let tool = GetItem {
@@ -158,16 +135,14 @@ fn test_get_struct_details() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_struct_with_source() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get TestStruct details with source
     let tool = GetItem {
@@ -176,10 +151,8 @@ fn test_get_struct_with_source() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
-    let fixture_crate_dir = state.get_context(None).unwrap().unwrap();
+    let result = tool.run(&state).expect("Tool execution failed");
+    let fixture_crate_dir = state.project_dir(None).unwrap();
 
     // Normalize project path in source output
     let normalized_result = result.replace(
@@ -191,7 +164,7 @@ fn test_get_struct_with_source() {
 
 #[test]
 fn test_get_function_details() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get test_function details with source
     let tool = GetItem {
@@ -200,10 +173,8 @@ fn test_get_function_details() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
-    let fixture_crate_dir = state.get_context(None).unwrap().unwrap();
+    let result = tool.run(&state).expect("Tool execution failed");
+    let fixture_crate_dir = state.project_dir(None).unwrap();
 
     // Normalize project path in source output
     let normalized_result = result.replace(
@@ -215,7 +186,7 @@ fn test_get_function_details() {
 
 #[test]
 fn test_get_submodule() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get submodule listing
     let tool = GetItem {
@@ -224,16 +195,14 @@ fn test_get_submodule() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_enum_details() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get TestEnum from submodule
     let tool = GetItem {
@@ -241,16 +210,14 @@ fn test_get_enum_details() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_generic_struct() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get GenericStruct details
     let tool = GetItem {
@@ -258,16 +225,14 @@ fn test_get_generic_struct() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_generic_function() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get generic_function details
     let tool = GetItem {
@@ -275,16 +240,14 @@ fn test_get_generic_function() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_constants() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get constant
     let tool = GetItem {
@@ -292,16 +255,14 @@ fn test_get_constants() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_struct_with_private_fields() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get GenericStruct to see hidden field indicator
     let tool = GetItem {
@@ -309,16 +270,14 @@ fn test_get_struct_with_private_fields() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_fuzzy_matching_suggestions() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Try to get a non-existent item that should trigger fuzzy suggestions
     let tool = GetItem {
@@ -326,9 +285,7 @@ fn test_fuzzy_matching_suggestions() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     // Should contain suggestions
     assert!(result.contains("Did you mean"));
@@ -338,7 +295,7 @@ fn test_fuzzy_matching_suggestions() {
 }
 #[test]
 fn test_nonexistent_item() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Try to get a nonexistent item
     let tool = GetItem {
@@ -347,16 +304,14 @@ fn test_nonexistent_item() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_unit_struct() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get unit struct details
     let tool = GetItem {
@@ -364,16 +319,14 @@ fn test_get_unit_struct() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_tuple_struct() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get tuple struct details
     let tool = GetItem {
@@ -381,16 +334,14 @@ fn test_get_tuple_struct() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_generic_enum() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get generic enum details
     let tool = GetItem {
@@ -398,16 +349,14 @@ fn test_get_generic_enum() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_trait_details() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get TestTrait details
     let tool = GetItem {
@@ -415,16 +364,14 @@ fn test_get_trait_details() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_recursive_module_listing() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get recursive listing of the crate root
     let tool = GetItem {
@@ -433,16 +380,14 @@ fn test_recursive_module_listing() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_recursive_submodule_listing() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get recursive listing of a submodule
     let tool = GetItem {
@@ -451,16 +396,14 @@ fn test_recursive_submodule_listing() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_recursive_filtering() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get recursive listing with struct filter only
     let tool = GetItem {
@@ -470,16 +413,14 @@ fn test_recursive_filtering() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_non_recursive_filtering() {
-    let mut state = create_test_state();
+    let state = create_test_state();
     // Get non-recursive listing with struct filter
     let tool = GetItem {
         name: "crate".to_string(),
@@ -487,16 +428,14 @@ fn test_non_recursive_filtering() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_recursive_multiple_filters() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get recursive listing with function and trait filters
     let tool = GetItem {
@@ -506,16 +445,14 @@ fn test_recursive_multiple_filters() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn test_get_std_vec() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get the root of the std crate
     let tool_std_root = GetItem {
@@ -523,7 +460,7 @@ fn test_get_std_vec() {
         ..Default::default()
     };
     let result_std_root = tool_std_root
-        .execute(&mut state, &RequestContext::default())
+        .run(&state)
         .expect("Tool execution failed for std root");
     insta::assert_snapshot!(result_std_root);
 
@@ -533,7 +470,7 @@ fn test_get_std_vec() {
         ..Default::default()
     };
     let result_std_collections_hashmap = tool_std_collections_hashmap
-        .execute(&mut state, &RequestContext::default())
+        .run(&state)
         .expect("Tool execution failed for std::collections::HashMap");
     insta::assert_snapshot!(result_std_collections_hashmap);
 
@@ -543,13 +480,13 @@ fn test_get_std_vec() {
         ..Default::default()
     };
     let result_std_vec_vec = tool_std_vec_vec
-        .execute(&mut state, &RequestContext::default())
+        .run(&state)
         .expect("Tool execution failed for std::vec::Vec");
     insta::assert_snapshot!(result_std_vec_vec);
 }
 #[test]
 fn test_get_item_with_normalized_crate_name() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get an item from the fixture-crate using a hyphen in the name
     let tool = GetItem {
@@ -557,15 +494,13 @@ fn test_get_item_with_normalized_crate_name() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
 #[test]
 fn test_get_complex_trait_details() {
-    let mut state = create_test_state();
+    let state = create_test_state();
 
     // Get ComplexTrait details
     let tool = GetItem {
@@ -573,9 +508,7 @@ fn test_get_complex_trait_details() {
         ..Default::default()
     };
 
-    let result = tool
-        .execute(&mut state, &RequestContext::default())
-        .expect("Tool execution failed");
+    let result = tool.run(&state).expect("Tool execution failed");
 
     insta::assert_snapshot!(result);
 }
@@ -589,35 +522,35 @@ fn tools_doesnt_panic() {
 
 #[test]
 fn list_crates() {
-    let mut state = create_test_state();
-    let result = ListCrates::default()
-        .execute(&mut state, &RequestContext::default())
-        .unwrap();
+    let state = create_test_state();
+    let result = ListCrates::default().run(&state).unwrap();
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn search() {
-    let mut state = create_test_state();
+    let state = create_test_state();
     let result = Search {
         crate_name: "crate".into(),
         query: "trigger line-based truncation".into(),
         limit: None,
+        project: None,
     }
-    .execute(&mut state, &RequestContext::default())
+    .run(&state)
     .unwrap();
     insta::assert_snapshot!(result);
 }
 
 #[test]
 fn search_2() {
-    let mut state = create_test_state();
+    let state = create_test_state();
     let result = Search {
         crate_name: "crate".into(),
         query: "generic struct".into(),
         limit: None,
+        project: None,
     }
-    .execute(&mut state, &RequestContext::default())
+    .run(&state)
     .unwrap();
     insta::assert_snapshot!(result);
 }
@@ -630,7 +563,7 @@ fn search_2() {
 /// pinned here separately.
 #[test]
 fn generics_signatures() {
-    let mut state = create_test_state();
+    let state = create_test_state();
     let rendered = [
         "crate::generics::set_data",
         "crate::generics::mixed_params",
@@ -665,7 +598,7 @@ fn generics_signatures() {
             verbosity: Some(Verbosity::Minimal),
             ..Default::default()
         }
-        .execute(&mut state, &RequestContext::default())
+        .run(&state)
         .expect("Tool execution failed")
     })
     .collect::<Vec<_>>()
