@@ -112,7 +112,7 @@ A unit struct for testing</p>
 <truncated level="single-line"><p>
 A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.</p>
 <title>Examples</title>
- <elided chars="8583"/></truncated>
+ <elided chars="7077"/></truncated>
 </item>
 </list>
 </section><section><section-title>Enums</section-title><list>

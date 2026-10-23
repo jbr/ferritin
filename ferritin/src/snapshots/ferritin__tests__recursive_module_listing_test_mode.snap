@@ -152,7 +152,7 @@ A unit struct for testing</p>
 <truncated level="single-line"><p>
 A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.</p>
 <title>Examples</title>
- <elided chars="8583"/></truncated>
+ <elided chars="7077"/></truncated>
 </item>
   <item><p>
 <type-name>generics::ConstGeneric</type-name> </p>
@@ -492,6 +492,12 @@ Note that this method has no effect on of the vector. <elided chars="105"/></tru
 <truncated level="single-line">Removes all but the first of consecutive elements in the vector that resolve to key. <elided chars="181"/></truncated>
 </item>
   <item><p>
+<type-name>Vec::dedup_tail</type-name> </p>
+<truncated level="single-line"><p>
+Continues deduplication after the first duplicate is found.</p>
+The function treats <inline-code>self[first_duplicate]</inline-code> as the first element and drops it. <elided chars="105"/></truncated>
+</item>
+  <item><p>
 <type-name>Vec::drain</type-name> </p>
 <truncated level="single-line">Removes the subslice indicated by the given range from the vector, returning a double-ended iterator over the removed subslice. <elided chars="774"/></truncated>
 </item>
@@ -529,22 +535,22 @@ Extend the vector by <inline-code>n</inline-code> clones of value.</p>
 <type-name>Vec::from_parts</type-name> </p>
 <truncated level="single-line"><p>
 Creates a <inline-code>Vec<T></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, and a capacity.</p>
- <elided chars="2849"/></truncated>
+ <elided chars="1855"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_parts_in</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="2806"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a <inline-code>NonNull</inline-code> pointer, a length, a capacity, and an allocator. <elided chars="1815"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_raw_parts</type-name> </p>
 <truncated level="single-line"><p>
 Creates a <inline-code>Vec<T></inline-code> directly from a pointer, a length, and a capacity.</p>
 <title>Safety</title>
-This checked <elided chars="3093"/></truncated>
+Thememory with<inline-code>Global</inline-code>. <elided chars="1849"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::from_raw_parts_in</type-name> </p>
-<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator. <elided chars="2840"/></truncated>
+<truncated level="single-line">Creates a <inline-code>Vec<T, A></inline-code> directly from a pointer, a length, a capacity, and an allocator. <elided chars="1849"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::insert</type-name> </p>
@@ -782,7 +788,7 @@ The behavior of in-place or is the case for <inline-code>with_capacity</inline-c
 <type-name>Vec::try_with_capacity</type-name> </p>
 <truncated level="single-line"><p>
 Constructs a new, empty <inline-code>Vec<T></inline-code> with at least the specified capacity.</p>
-The vector<inline-code>capacity</inline-code> elements reallocating <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, <elided chars="299"/></truncated>
+The vector<inline-code>capacity</inline-code> elements reallocating <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero,will not. <elided chars="299"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::try_with_capacity_in</type-name> </p>
@@ -792,11 +798,11 @@ The vector<inline-code>capacity</inline-code> elements reallocating <inline-code
 <type-name>Vec::with_capacity</type-name> </p>
 <truncated level="single-line"><p>
 Constructs a new, empty <inline-code>Vec<T></inline-code> with at least the specified capacity.</p>
-The vector<inline-code>capacity</inline-code> elements reallocating <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero, <elided chars="1321"/></truncated>
+The vector<inline-code>capacity</inline-code> elements reallocating <inline-code>capacity</inline-code>. If <inline-code>capacity</inline-code> is zero,will not. <elided chars="1323"/></truncated>
 </item>
   <item><p>
 <type-name>Vec::with_capacity_in</type-name> </p>
-<truncated level="single-line">Constructs a new, empty <inline-code>Vec<T, A></inline-code> with at least the specified capacity with the provided allocator. <elided chars="1410"/></truncated>
+<truncated level="single-line">Constructs a new, empty <inline-code>Vec<T, A></inline-code> with at least the specified capacity with the provided allocator. <elided chars="1412"/></truncated>
 </item>
   <item><p>
 <type-name>async_function</type-name> </p>
@@ -1492,7 +1498,7 @@ As a string by <inline-code>char</inline-code>. This method <elided chars="1079"
 <type-name>link_resolution_tests::nested::Str::into_raw_parts</type-name> </p>
 <truncated level="single-line"><p>
 Decomposes a <inline-code>String</inline-code> into its raw components: <inline-code>(pointer, length, capacity)</inline-code>.</p>
-Returns the (in the<inline-code>from_ra</inline-code>. <elided chars="667"/></truncated>
+Returns the (in the<inline-code>from_ra</inline-code>. <elided chars="829"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::is_empty</type-name> </p>

@@ -251,18 +251,18 @@ Functions
 
   ◦ [Vec::as_mut_ptr](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_mut_ptr.html) 
     Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer
-    valid for zero sized reads if the vector didn't allocate. [...]
+    valid for zero sized reads if the vector [didn't allocate](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aself). [...]
 
   ◦ [Vec::as_mut_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_slice) 
     Extracts a mutable slice of the entire vector. [...]
 
   ◦ [Vec::as_non_null](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_non_null.html) 
     Returns a NonNull pointer to the vector's buffer, or a dangling NonNull pointer
-    valid for zero sized reads if the vector didn't allocate. [...]
+    valid for zero sized reads if the vector [didn't allocate](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aself). [...]
 
   ◦ [Vec::as_ptr](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_ptr.html) 
     Returns a raw pointer to the vector's buffer, or a dangling raw pointer valid
-    for zero sized reads if the vector didn't allocate. [...]
+    for zero sized reads if the vector [didn't allocate](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aself). [...]
 
   ◦ [Vec::as_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_slice) 
     Extracts a slice containing the entire vector. [...]
@@ -288,6 +288,9 @@ Functions
   ◦ [Vec::dedup_by_key](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by_key) 
     Removes all but the first of consecutive elements in the vector that resolve to
     the same key. [...]
+
+  ◦ [Vec::dedup_tail](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_tail) 
+    Continues deduplication after the first duplicate is found. [...]
 
   ◦ [Vec::drain](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.drain.html) 
     Removes the subslice indicated by the given range from the vector, returning a
@@ -360,10 +363,10 @@ Functions
     Decomposes a Vec<T> into its raw components: (NonNull pointer, length,
     capacity, allocator). [...]
 
-  ◦ [Vec::into_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts) 
+  ◦ [Vec::into_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_raw_parts.html) 
     Decomposes a Vec<T> into its raw components: (pointer, length, capacity). [...]
 
-  ◦ [Vec::into_raw_parts_with_allocator](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_raw_parts_with_allocator) 
+  ◦ [Vec::into_raw_parts_with_allocator](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_raw_parts_with_allocator.html) 
     Decomposes a Vec<T> into its raw components: (pointer, length, capacity,
     allocator). [...]
 

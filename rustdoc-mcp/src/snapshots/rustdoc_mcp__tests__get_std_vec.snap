@@ -30,8 +30,8 @@ autodiff // This module provides support for automatic differentiation. For prec
 backtrace // Support for capturing a stack backtrace of an OS thread [+58 more lines]
 backtrace_rs // A library for acquiring a backtrace at runtime [+84 more lines]
 borrow // A module for working with borrowed data.
-boxed // The `Box<T>` type for heap allocation. [+181 more lines]
-bstr // The `ByteStr` and `ByteString` types and trait implementations.
+boxed // The `Box<T>` type for heap allocation. [+188 more lines]
+byte_str // The `ByteStr` and `ByteString` types and trait implementations.
 cell // Shareable mutable containers. [+247 more lines]
 char // Utilities for the `char` primitive type. [+17 more lines]
 clone // The `Clone` trait for types that cannot be 'implicitly copied'. [+34 more lines]
@@ -102,7 +102,7 @@ u64 // Redundant constants module for the [`u64` primitive type][u64]. [+2 more 
 u8 // Redundant constants module for the [`u8` primitive type][u8]. [+2 more lines]
 unsafe_binder // Operators used to turn types into unsafe binders and back.
 usize // Redundant constants module for the [`usize` primitive type][usize]. [+2 more lines]
-vec // A contiguous growable array type with heap-allocated contents, written [+71 more lines]
+vec // A contiguous growable array type with heap-allocated contents, written [+96 more lines]
 view // Helper module for exporting the `view_types` macro.
 
 Macros:
@@ -163,7 +163,7 @@ f128 // A 128-bit floating-point type (specifically, the "binary128" type define
 f16 // A 16-bit floating-point type (specifically, the "binary16" type defined in IEEE 754-2008). [+14 more lines]
 f32 // A 32-bit floating-point type (specifically, the "binary32" type defined in IEEE 754-2008). [+205 more lines]
 f64 // A 64-bit floating-point type (specifically, the "binary64" type defined in IEEE 754-2008). [+8 more lines]
-fn // Function pointers, like `fn(usize) -> bool`. [+269 more lines]
+fn // Function pointers, like `fn(usize) -> bool`. [+287 more lines]
 i128 // The 128-bit signed integer type. [+12 more lines]
 i16 // The 16-bit signed integer type.
 i32 // The 32-bit signed integer type.

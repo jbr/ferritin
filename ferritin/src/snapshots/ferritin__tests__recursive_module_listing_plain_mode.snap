@@ -267,6 +267,9 @@ Functions
   ◦ Vec::dedup_by_key 
     Removes all but the first of consecutive elements in the vector that resolve to the same key. [...]
 
+  ◦ Vec::dedup_tail 
+    Continues deduplication after the first duplicate is found. [...]
+
   ◦ Vec::drain 
     Removes the subslice indicated by the given range from the vector, returning a double-ended iterator over the removed subslice. [...]
 
