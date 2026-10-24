@@ -64,7 +64,7 @@ jobs:
       # target/ built on another glibc gets restored: its proc-macro .so files
       # then fail to dlopen and rustc reports "can't find crate". Keep this key
       # in step with the container tag above.
-      - uses: Swatinem/rust-cache@v2.9.2
+      - uses: Swatinem/rust-cache@v2.9.3
         with:
           key: amazonlinux-2023
 
