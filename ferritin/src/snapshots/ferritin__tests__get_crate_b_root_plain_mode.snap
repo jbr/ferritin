@@ -10,14 +10,23 @@ In crate: crate-b (0.1.0)
 
 Modules
 
+  ◦ aliased_a 
+
   ◦ prefix_inner 
 
 Structs
 
   ◦ AliasedCrateAStruct 
 
+  ◦ CrateAStruct 
+
   ◦ CrateBProcessor 
 
   ◦ PrefixCrateAAlias 
 
-  ◦ SelfPrefixAlias
+  ◦ SelfPrefixAlias 
+
+Type Aliases
+
+  ◦ Result 
+    Result<T, Error> [...]

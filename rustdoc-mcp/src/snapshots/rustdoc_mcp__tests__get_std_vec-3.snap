@@ -228,7 +228,7 @@ where
 • pub fn resize_with<F>(&mut self, new_len: usize, f: F)
 where
     F: FnMut() -> T
-    Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+29 more lines]
+    Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+30 more lines]
 
 • pub fn leak<'a>(self) -> &'a mut [T]
 where
@@ -253,7 +253,7 @@ where
     This clears out this `Vec` and recycles the allocation into a new `Vec`. [+48 more lines]
 
 • pub fn resize(&mut self, new_len: usize, value: T)
-    Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+26 more lines]
+    Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+27 more lines]
 
 • pub fn extend_from_slice(&mut self, other: &[T])
     Clones and appends all elements in a slice to the `Vec`. [+21 more lines]

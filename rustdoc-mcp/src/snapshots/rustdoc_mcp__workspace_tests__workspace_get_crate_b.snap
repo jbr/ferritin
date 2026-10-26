@@ -8,10 +8,15 @@ Visibility: Public
 Defined at: crate_b
 
 Modules:
+aliased_a
 prefix_inner
 
 Structs:
 AliasedCrateAStruct
+CrateAStruct
 CrateBProcessor
 PrefixCrateAAlias
 SelfPrefixAlias
+
+Type Aliases:
+Result // `Result<T, Error>` [+48 more lines]

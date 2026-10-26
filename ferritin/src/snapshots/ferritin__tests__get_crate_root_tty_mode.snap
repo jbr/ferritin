@@ -48,6 +48,9 @@ Structs
   ◦ [GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.GenericStruct.html) 
     A generic struct for testing multi-paragraph documentation. [...]
 
+  ◦ [HashMap](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html) 
+    A [hash map](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3Acollections) implemented with quadratic probing and SIMD lookup. [...]
+
   ◦ [MarkerOne](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerOne.html) 
     First implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html).
 
@@ -76,10 +79,16 @@ Structs
   ◦ [Vec](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html) 
     A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
 
+  ◦ [Vector](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vector.html) 
+    A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
+
 Enums
 
   ◦ [GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html) 
     A generic enum for testing [...]
+
+  ◦ [StdResult](https://doc.rust-lang.org/nightly/core/result/enum.StdResult.html) 
+    Result is a type that represents either success ([Ok](https://doc.rust-lang.org/nightly/core/)) or failure ([Err](https://doc.rust-lang.org/nightly/core/)). [...]
 
   ◦ [TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html) 
     An enum for testing [...]

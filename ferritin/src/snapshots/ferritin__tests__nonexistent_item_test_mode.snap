@@ -17,9 +17,9 @@ crate::TestEnum</p>
 crate::prefix_tests</p>
 </item>
   <item><p>
-crate::ComplexTrait</p>
+crate::StdResult</p>
 </item>
   <item><p>
-crate::markdown_test</p>
+crate::ComplexTrait</p>
 </item>
 </list>

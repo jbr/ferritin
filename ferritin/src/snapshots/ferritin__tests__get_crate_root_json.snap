@@ -280,6 +280,114 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\"), & get_fixtur
         ]
       },
       {
+        "path": "HashMap",
+        "kind": "struct",
+        "url": "https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "hash map",
+                    "style": "Plain",
+                    "path": "std::collections"
+                  },
+                  {
+                    "text": " implemented with quadratic probing and SIMD lookup.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "StdResult",
+        "kind": "enum",
+        "url": "https://doc.rust-lang.org/nightly/core/result/enum.StdResult.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Result",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " is a type that represents either success (",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Ok",
+                    "style": "InlineCode",
+                    "path": "core::result::Result::Ok"
+                  },
+                  {
+                    "text": ") or failure (",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Err",
+                    "style": "InlineCode",
+                    "path": "core::result::Result::Err"
+                  },
+                  {
+                    "text": ").",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vector",
+        "kind": "struct",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vector.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "A contiguous growable array type, written as ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec<T>",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": ", short for 'vector'.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
         "path": "TestStruct",
         "kind": "struct",
         "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",

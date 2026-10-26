@@ -10,5 +10,11 @@ Defined at: crate_a
 Structs:
 CrateAStruct
 
+Traits:
+Deserialize // A **data structure** that can be deserialized from any data format supported [+30 more lines]
+Deserialize // A **data structure** that can be deserialized from any data format supported [+30 more lines]
+Serialize // A **data structure** that can be serialized into any data format supported [+24 more lines]
+Serialize // A **data structure** that can be serialized into any data format supported [+24 more lines]
+
 Functions:
 process_data
