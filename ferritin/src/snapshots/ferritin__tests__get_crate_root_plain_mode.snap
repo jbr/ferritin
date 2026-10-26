@@ -43,6 +43,9 @@ Structs
   ◦ GenericStruct 
     A generic struct for testing multi-paragraph documentation. [...]
 
+  ◦ HashMap 
+    A hash map implemented with quadratic probing and SIMD lookup. [...]
+
   ◦ MarkerOne 
     First implementor of Marker.
 
@@ -70,10 +73,16 @@ Structs
   ◦ Vec 
     A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
 
+  ◦ Vector 
+    A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
+
 Enums
 
   ◦ GenericEnum 
     A generic enum for testing [...]
+
+  ◦ StdResult 
+    Result is a type that represents either success (Ok) or failure (Err). [...]
 
   ◦ TestEnum 
     An enum for testing [...]

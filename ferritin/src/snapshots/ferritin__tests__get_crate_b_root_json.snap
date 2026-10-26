@@ -21,6 +21,34 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate_b\"), &\nget_tes
         "url": "https://docs.rs/crate-b/0.1.0/crate_b/prefix_inner/index.html"
       },
       {
+        "path": "Result",
+        "kind": "typealias",
+        "url": "https://docs.rs/anyhow/1.0.99/anyhow/type.Result.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Result<T, Error>",
+                    "style": "InlineCode"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "CrateAStruct",
+        "kind": "struct",
+        "url": "https://docs.rs/crate-a/0.1.0/crate_a/struct.CrateAStruct.html"
+      },
+      {
         "path": "PrefixCrateAAlias",
         "kind": "struct",
         "url": "https://docs.rs/crate-a/0.1.0/crate_a/struct.PrefixCrateAAlias.html"
@@ -29,6 +57,11 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate_b\"), &\nget_tes
         "path": "SelfPrefixAlias",
         "kind": "struct",
         "url": "https://docs.rs/crate-a/0.1.0/crate_a/struct.SelfPrefixAlias.html"
+      },
+      {
+        "path": "aliased_a",
+        "kind": "module",
+        "url": "https://docs.rs/crate-a/0.1.0/crate_a/index.html"
       },
       {
         "path": "AliasedCrateAStruct",

@@ -11,12 +11,18 @@ expression: "render_for_tests_rooted(Commands::get(\"crate_b\"), OutputMode :: T
 </metadata>
 <section><section-title>Modules</section-title><list>
   <item><p>
+<type-name>aliased_a</type-name> </p>
+</item>
+  <item><p>
 <type-name>prefix_inner</type-name> </p>
 </item>
 </list>
 </section><section><section-title>Structs</section-title><list>
   <item><p>
 <type-name>AliasedCrateAStruct</type-name> </p>
+</item>
+  <item><p>
+<type-name>CrateAStruct</type-name> </p>
 </item>
   <item><p>
 <type-name>CrateBProcessor</type-name> </p>
@@ -26,6 +32,14 @@ expression: "render_for_tests_rooted(Commands::get(\"crate_b\"), OutputMode :: T
 </item>
   <item><p>
 <type-name>SelfPrefixAlias</type-name> </p>
+</item>
+</list>
+</section><section><section-title>Type Aliases</section-title><list>
+  <item><p>
+<type-name>Result</type-name> </p>
+<truncated level="single-line"><p>
+<inline-code>Result<T, Error></inline-code></p>
+This is a reasonable return type to use throughout your for <inline-code>fn main</inline-code>; if you do, failures will be printed along with any context and a backtrace if one was captured. <elided chars="631"/></truncated>
 </item>
 </list>
 </section>

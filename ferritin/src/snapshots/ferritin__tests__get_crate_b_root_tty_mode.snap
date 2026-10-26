@@ -10,14 +10,23 @@ In crate: crate-b (0.1.0)
 
 Modules
 
+  ◦ [aliased_a](https://docs.rs/crate-a/0.1.0/crate_a/index.html) 
+
   ◦ [prefix_inner](https://docs.rs/crate-b/0.1.0/crate_b/prefix_inner/index.html) 
 
 Structs
 
   ◦ [AliasedCrateAStruct](https://docs.rs/crate-a/0.1.0/crate_a/struct.AliasedCrateAStruct.html) 
 
+  ◦ [CrateAStruct](https://docs.rs/crate-a/0.1.0/crate_a/struct.CrateAStruct.html) 
+
   ◦ [CrateBProcessor](https://docs.rs/crate-b/0.1.0/crate_b/struct.CrateBProcessor.html) 
 
   ◦ [PrefixCrateAAlias](https://docs.rs/crate-a/0.1.0/crate_a/struct.PrefixCrateAAlias.html) 
 
-  ◦ [SelfPrefixAlias](https://docs.rs/crate-a/0.1.0/crate_a/struct.SelfPrefixAlias.html)
+  ◦ [SelfPrefixAlias](https://docs.rs/crate-a/0.1.0/crate_a/struct.SelfPrefixAlias.html) 
+
+Type Aliases
+
+  ◦ [Result](https://docs.rs/anyhow/1.0.99/anyhow/type.Result.html) 
+    Result<T, Error> [...]

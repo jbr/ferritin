@@ -68,6 +68,12 @@ A generic struct for testing multi-paragraph documentation.</p>
 This struct and provides a <elided chars="401"/></truncated>
 </item>
   <item><p>
+<type-name>HashMap</type-name> </p>
+<truncated level="single-line"><p>
+A hash map implemented with quadratic probing and SIMD lookup.</p>
+By default, <inline-code>HashMap</inline-code> uses a hashing resistance reasonable secure source of program. Because quality of the In particular, low such as <elided chars="7171"/></truncated>
+</item>
+  <item><p>
 <type-name>MarkerOne</type-name> </p>
 <truncated level="single-line"><p>
 First implementor of <inline-code>Marker</inline-code>.</p>
@@ -120,6 +126,13 @@ A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, 
 <title>Examples</title>
  <elided chars="7077"/></truncated>
 </item>
+  <item><p>
+<type-name>Vector</type-name> </p>
+<truncated level="single-line"><p>
+A contiguous growable array type, written as <inline-code>Vec<T></inline-code>, short for 'vector'.</p>
+<title>Examples</title>
+ <elided chars="7077"/></truncated>
+</item>
 </list>
 </section><section><section-title>Enums</section-title><list>
   <item><p>
@@ -129,6 +142,12 @@ A generic enum for testing</p>
 <p>
 See also <inline-code>crate::TestEnum</inline-code></p>
 </truncated>
+</item>
+  <item><p>
+<type-name>StdResult</type-name> </p>
+<truncated level="single-line"><p>
+<inline-code>Result</inline-code> is a type that represents either success (<inline-code>Ok</inline-code>) or failure (<inline-code>Err</inline-code>).</p>
+See the module for <elided chars="31"/></truncated>
 </item>
   <item><p>
 <type-name>TestEnum</type-name> </p>

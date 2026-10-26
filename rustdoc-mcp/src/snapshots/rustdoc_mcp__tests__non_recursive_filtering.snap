@@ -12,6 +12,7 @@ A minimal test crate for rustdoc JSON testing
 
 Structs:
 GenericStruct // A generic struct for testing multi-paragraph documentation. [+14 more lines]
+HashMap // A [hash map] implemented with quadratic probing and SIMD lookup. [+226 more lines]
 MarkerOne // First implementor of [`Marker`].
 MarkerTwo // Second implementor of [`Marker`].
 NotThreadSafe // A type that is not thread-safe, to exercise negative auto-trait impls [+1 more lines]
@@ -21,3 +22,4 @@ TestStruct // A simple struct for testing basic functionality. [+6 more lines]
 TupleStruct // A tuple struct for testing
 UnitStruct // A unit struct for testing
 Vec // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+235 more lines]
+Vector // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+235 more lines]

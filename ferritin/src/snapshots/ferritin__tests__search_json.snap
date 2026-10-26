@@ -33,7 +33,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 53.5,
+      "score": 52.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -54,10 +54,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "std::prelude::v1::line",
+      "path": "proc_macro::bridge::client::panic::panicking::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::line",
       "kind": "macro",
       "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
-      "score": 53.5,
+      "score": 52.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -78,10 +78,58 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "proc_macro::Span::line",
+      "path": "std::prelude::rust_2021::ambiguous_macros_only::line",
+      "kind": "macro",
+      "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
+      "score": 52.4,
+      "docs": [
+        {
+          "type": "truncatedBlock",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "Expands to the line number on which it was invoked.",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ],
+          "level": "SingleLine",
+          "truncated": true
+        }
+      ]
+    },
+    {
+      "path": "test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::line",
+      "kind": "macro",
+      "url": "https://doc.rust-lang.org/nightly/core/macro.line.html",
+      "score": 52.4,
+      "docs": [
+        {
+          "type": "truncatedBlock",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "Expands to the line number on which it was invoked.",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ],
+          "level": "SingleLine",
+          "truncated": true
+        }
+      ]
+    },
+    {
+      "path": "proc_macro::diagnostic::Span::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line",
-      "score": 38.3,
+      "score": 37.5,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -105,7 +153,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "core::prelude::v1::ambiguous_macros_only::panic::location::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 38.1,
+      "score": 37.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -126,10 +174,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "std::prelude::v1::ambiguous_macros_only::panic::Location::line",
+      "path": "proc_macro::bridge::client::panic::panicking::Location::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
-      "score": 38.1,
+      "score": 37.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -150,10 +198,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "alloc::io::buf_read::BufRead::read_line",
+      "path": "std::prelude::v1::ambiguous_macros_only::rt::thread::current::id::thread::unix::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::panic::panicking::Location::line",
       "kind": "function",
-      "url": "https://doc.rust-lang.org/nightly/alloc/io/buf_read/BufRead/fn.read_line.html",
-      "score": 32.3,
+      "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
+      "score": 37.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -162,32 +210,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
               "type": "paragraph",
               "spans": [
                 {
-                  "text": "Reads all bytes until a newline (the ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "0xA",
-                  "style": "InlineCode"
-                },
-                {
-                  "text": " byte) is reached, and append",
-                  "style": "Plain"
-                },
-                {
-                  "text": " ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "them to the provided ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "String",
-                  "style": "InlineCode",
-                  "path": "alloc::string::String"
-                },
-                {
-                  "text": " buffer.",
+                  "text": "Returns the line number from which the panic originated.",
                   "style": "Plain"
                 }
               ]
@@ -199,10 +222,10 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       ]
     },
     {
-      "path": "core::prelude::v1::ambiguous_macros_only::core_arch::arch::x86::sse::_mm_prefetch",
+      "path": "test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::ambiguous_macros_only::rt::thread::functions::panicking::Location::line",
       "kind": "function",
-      "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.5,
+      "url": "https://doc.rust-lang.org/nightly/core/panic/location/struct.Location.html#method.line",
+      "score": 37.4,
       "docs": [
         {
           "type": "truncatedBlock",
@@ -211,111 +234,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
               "type": "paragraph",
               "spans": [
                 {
-                  "text": "Fetch the cache line that contains address ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "p",
-                  "style": "InlineCode"
-                },
-                {
-                  "text": " using the given ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "STRATEGY",
-                  "style": "InlineCode"
-                },
-                {
-                  "text": ".",
-                  "style": "Plain"
-                }
-              ]
-            }
-          ],
-          "level": "SingleLine",
-          "truncated": true
-        }
-      ]
-    },
-    {
-      "path": "std::prelude::v1::ambiguous_macros_only::arch::x86::sse::_mm_prefetch",
-      "kind": "function",
-      "url": "https://doc.rust-lang.org/nightly/core/core_arch/x86/sse/fn._mm_prefetch.html",
-      "score": 30.5,
-      "docs": [
-        {
-          "type": "truncatedBlock",
-          "nodes": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "Fetch the cache line that contains address ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "p",
-                  "style": "InlineCode"
-                },
-                {
-                  "text": " using the given ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "STRATEGY",
-                  "style": "InlineCode"
-                },
-                {
-                  "text": ".",
-                  "style": "Plain"
-                }
-              ]
-            }
-          ],
-          "level": "SingleLine",
-          "truncated": true
-        }
-      ]
-    },
-    {
-      "path": "alloc::io::LineWriter",
-      "kind": "struct",
-      "url": "https://doc.rust-lang.org/nightly/alloc/io/buffered/linewriter/struct.LineWriter.html",
-      "score": 29.9,
-      "docs": [
-        {
-          "type": "truncatedBlock",
-          "nodes": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "Wraps a writer and buffers output to it, flushing whenever a newline",
-                  "style": "Plain"
-                },
-                {
-                  "text": " ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "(",
-                  "style": "Plain"
-                },
-                {
-                  "text": "0x0a",
-                  "style": "InlineCode"
-                },
-                {
-                  "text": ", ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "'\\n'",
-                  "style": "InlineCode"
-                },
-                {
-                  "text": ") is detected.",
+                  "text": "Returns the line number from which the panic originated.",
                   "style": "Plain"
                 }
               ]

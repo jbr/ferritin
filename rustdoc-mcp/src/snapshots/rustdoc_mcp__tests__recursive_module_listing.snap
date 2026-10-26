@@ -29,6 +29,7 @@ submodule // A module with items
 
 Structs:
 GenericStruct // A generic struct for testing multi-paragraph documentation. [+14 more lines]
+HashMap // A [hash map] implemented with quadratic probing and SIMD lookup. [+226 more lines]
 MarkerOne // First implementor of [`Marker`].
 MarkerTwo // Second implementor of [`Marker`].
 NotThreadSafe // A type that is not thread-safe, to exercise negative auto-trait impls [+1 more lines]
@@ -38,6 +39,7 @@ TestStruct // A simple struct for testing basic functionality. [+6 more lines]
 TupleStruct // A tuple struct for testing
 UnitStruct // A unit struct for testing
 Vec // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+235 more lines]
+Vector // A contiguous growable array type, written as `Vec<T>`, short for 'vector'. [+235 more lines]
 generics::ConstGeneric // A const generic with a default, alongside a type parameter with a default.
 generics::ManyPredicates // A struct with a where clause that has several predicates, so the multi-line [+1 more lines]
 generics::TupleWithWhere // A tuple struct with a `where` clause, which Rust writes *after* the field [+1 more lines]
@@ -51,6 +53,7 @@ link_resolution_tests::Tree // An ordered map based on a [B-Tree]. [+144 more li
 link_resolution_tests::nested::NestedStruct // Struct in nested module
 link_resolution_tests::nested::Str // A UTF-8–encoded, growable string. [+279 more lines]
 link_resolution_tests::nested::deeply_nested::DeepStruct // Struct in deeply nested module
+link_resolution_tests::nested::deeply_nested::LinkTestStruct // Struct in link test module
 namespace_collisions::both::Inside // An item inside the colliding module.
 prefix_tests::DocOuter // Intra-doc links from the outer module: [+4 more lines]
 prefix_tests::PrefixMarker // A sibling target for `self::` / `super::PrefixMarker` references.
@@ -69,7 +72,9 @@ submodule::SubStruct // A struct in a submodule
 
 Enums:
 GenericEnum // A generic enum for testing [+2 more lines]
+StdResult // `Result` is a type that represents either success ([`Ok`]) or failure ([`Err`]). [+2 more lines]
 TestEnum // An enum for testing [+2 more lines]
+generics::Cow // A clone-on-write smart pointer. [+80 more lines]
 generics::EnumManyPredicates // An enum with a multi-predicate `where` clause, the enum counterpart to [+1 more lines]
 reexport_mod::TestEnum // An enum for testing [+2 more lines]
 submodule::TestEnum // An enum for testing [+2 more lines]
@@ -78,6 +83,8 @@ Traits:
 ComplexTrait // A more complex trait demonstrating various features
 Marker // A marker trait (no associated items) to exercise the compact implementors [+1 more lines]
 TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
+generics::Debug // `?` formatting. [+114 more lines]
+generics::Display // Format trait for an empty format, `{}`. [+68 more lines]
 generics::ImplTraitMethods // A trait with a generic method taking `impl Trait`, so the synthetic [+1 more lines]
 implementors::Reactor // The trait whose implementors exercise bound display.
 link_resolution_tests::nested::TestTrait // A trait for testing extremely long documentation that exceeds line limits. [+22 more lines]
@@ -86,89 +93,171 @@ Unions:
 TestUnion // A union for testing union formatting. [+3 more lines]
 
 Functions:
+HashMap::capacity // Returns the number of elements the map can hold without reallocating. [+11 more lines]
+HashMap::clear // Clears the map, removing all key-value pairs. Keeps the allocated memory [+12 more lines]
+HashMap::contains_key // Returns `true` if the map contains a value for the specified key. [+15 more lines]
+HashMap::drain // Clears the map, returning all key-value pairs as an iterator. Keeps the [+22 more lines]
+HashMap::entry // Gets the given key's corresponding entry in the map for in-place manipulation. [+17 more lines]
+HashMap::extract_if // Creates an iterator which uses a closure to determine if an element (key-value pair) should be removed. [+32 more lines]
+HashMap::get // Returns a reference to the value corresponding to the key. [+15 more lines]
+HashMap::get_disjoint_mut // Attempts to get mutable references to `N` values in the map at once. [+67 more lines]
+HashMap::get_disjoint_unchecked_mut // Attempts to get mutable references to `N` values in the map at once, without validating that [+52 more lines]
+HashMap::get_key_value // Returns the key-value pair corresponding to the supplied key. This is [+47 more lines]
+HashMap::get_mut // Returns a mutable reference to the value corresponding to the key. [+17 more lines]
+HashMap::hasher // Returns a reference to the map's [`BuildHasher`]. [+11 more lines]
+HashMap::insert // Inserts a key-value pair into the map. [+23 more lines]
+HashMap::into_keys // Creates a consuming iterator visiting all the keys in arbitrary order. [+25 more lines]
+HashMap::into_values // Creates a consuming iterator visiting all the values in arbitrary order. [+25 more lines]
+HashMap::is_empty // Returns `true` if the map contains no elements. [+11 more lines]
+HashMap::iter // An iterator visiting all key-value pairs in arbitrary order. [+26 more lines]
+HashMap::iter_mut // An iterator visiting all key-value pairs in arbitrary order, [+28 more lines]
+HashMap::keys // An iterator visiting all keys in arbitrary order. [+23 more lines]
+HashMap::len // Returns the number of elements in the map. [+11 more lines]
+HashMap::new // Creates an empty `HashMap`. [+10 more lines]
+HashMap::new_in // Creates an empty `HashMap` using the given allocator. [+13 more lines]
+HashMap::remove // Removes a key from the map, returning the value at the key if the key [+16 more lines]
+HashMap::remove_entry // Removes a key from the map, returning the stored key and value if the [+18 more lines]
+HashMap::reserve // Reserves capacity for at least `additional` more elements to be inserted [+16 more lines]
+HashMap::retain // Retains only the elements specified by the predicate. [+18 more lines]
+HashMap::shrink_to // Shrinks the capacity of the map with a lower limit. It will drop [+19 more lines]
+HashMap::shrink_to_fit // Shrinks the capacity of the map as much as possible. It will drop [+15 more lines]
+HashMap::try_insert // Tries to insert a key-value pair into the map, and returns [+23 more lines]
+HashMap::try_reserve // Tries to reserve capacity for at least `additional` more elements to be inserted [+19 more lines]
+HashMap::values // An iterator visiting all values in arbitrary order. [+23 more lines]
+HashMap::values_mut // An iterator visiting all values mutably in arbitrary order. [+26 more lines]
+HashMap::with_capacity // Creates an empty `HashMap` with at least the specified capacity. [+11 more lines]
+HashMap::with_capacity_and_hasher // Creates an empty `HashMap` with at least the specified capacity, using [+24 more lines]
+HashMap::with_capacity_and_hasher_in // Creates an empty `HashMap` with at least the specified capacity, using [+25 more lines]
+HashMap::with_capacity_in // Creates an empty `HashMap` with at least the specified capacity using [+15 more lines]
+HashMap::with_hasher // Creates an empty `HashMap` which will use the given hash builder to hash [+22 more lines]
+HashMap::with_hasher_in // Creates an empty `HashMap` which will use the given hash builder and [+23 more lines]
 NotThreadSafe::new // Wrap a raw pointer.
+StdResult::and // Returns `res` if the result is [`Ok`], otherwise returns the [`Err`] value of `self`. [+26 more lines]
+StdResult::and_then // Calls `op` if the result is [`Ok`], otherwise returns the [`Err`] value of `self`. [+29 more lines]
+StdResult::as_deref // Converts from `Result<T, E>` (or `&Result<T, E>`) to `Result<&<T as Deref>::Target, &E>`. [+15 more lines]
+StdResult::as_deref_mut // Converts from `Result<T, E>` (or `&mut Result<T, E>`) to `Result<&mut <T as DerefMut>::Target, &mut E>`. [+17 more lines]
+StdResult::as_mut // Converts from `&mut Result<T, E>` to `Result<&mut T, &mut E>`. [+19 more lines]
+StdResult::as_ref // Converts from `&Result<T, E>` to `Result<&T, &E>`. [+13 more lines]
+StdResult::cloned // Maps a `Result<&T, E>` to a `Result<T, E>` by cloning the contents of the [+11 more lines]
+StdResult::cloned // Maps a `Result<&mut T, E>` to a `Result<T, E>` by cloning the contents of the [+11 more lines]
+StdResult::copied // Maps a `Result<&T, E>` to a `Result<T, E>` by copying the contents of the [+11 more lines]
+StdResult::copied // Maps a `Result<&mut T, E>` to a `Result<T, E>` by copying the contents of the [+11 more lines]
+StdResult::err // Converts from `Result<T, E>` to [`Option<E>`]. [+13 more lines]
+StdResult::expect // Returns the contained [`Ok`] value, consuming the `self` value. [+42 more lines]
+StdResult::expect_err // Returns the contained [`Err`] value, consuming the `self` value. [+13 more lines]
+StdResult::flatten // Converts from `Result<Result<T, E>, E>` to `Result<T, E>` [+21 more lines]
+StdResult::inspect // Calls a function with a reference to the contained value if [`Ok`]. [+12 more lines]
+StdResult::inspect_err // Calls a function with a reference to the contained value if [`Err`]. [+13 more lines]
+StdResult::into_err // Returns the contained [`Err`] value, but never panics. [+19 more lines]
+StdResult::into_ok // Returns the contained [`Ok`] value, but never panics. [+19 more lines]
+StdResult::is_err // Returns `true` if the result is [`Err`]. [+10 more lines]
+StdResult::is_err_and // Returns `true` if the result is [`Err`] and the value inside of it matches a predicate. [+19 more lines]
+StdResult::is_ok // Returns `true` if the result is [`Ok`]. [+10 more lines]
+StdResult::is_ok_and // Returns `true` if the result is [`Ok`] and the value inside of it matches a predicate. [+17 more lines]
+StdResult::iter // Returns an iterator over the possibly contained value. [+12 more lines]
+StdResult::iter_mut // Returns a mutable iterator over the possibly contained value. [+16 more lines]
+StdResult::map // Maps a `Result<T, E>` to `Result<U, E>` by applying a function to a [+18 more lines]
+StdResult::map_err // Maps a `Result<T, E>` to `Result<T, F>` by applying a function to a [+17 more lines]
+StdResult::map_or // Returns the provided default (if [`Err`]), or [+17 more lines]
+StdResult::map_or_default // Maps a `Result<T, E>` to a `U` by applying function `f` to the contained [+14 more lines]
+StdResult::map_or_else // Maps a `Result<T, E>` to `U` by applying fallback function `default` to [+17 more lines]
+StdResult::ok // Converts from `Result<T, E>` to [`Option<T>`]. [+13 more lines]
+StdResult::or // Returns `res` if the result is [`Err`], otherwise returns the [`Ok`] value of `self`. [+26 more lines]
+StdResult::or_else // Calls `op` if the result is [`Err`], otherwise returns the [`Ok`] value of `self`. [+15 more lines]
+StdResult::transpose // Transposes a `Result` of an `Option` into an `Option` of a `Result`. [+14 more lines]
+StdResult::unwrap // Returns the contained [`Ok`] value, consuming the `self` value. [+34 more lines]
+StdResult::unwrap_err // Returns the contained [`Err`] value, consuming the `self` value. [+17 more lines]
+StdResult::unwrap_err_unchecked // Returns the contained [`Err`] value, consuming the `self` value, [+19 more lines]
+StdResult::unwrap_or // Returns the contained [`Ok`] value or a provided default. [+17 more lines]
+StdResult::unwrap_or_default // Returns the contained [`Ok`] value or a default [+24 more lines]
+StdResult::unwrap_or_else // Returns the contained [`Ok`] value or computes it from a closure. [+10 more lines]
+StdResult::unwrap_unchecked // Returns the contained [`Ok`] value, consuming the `self` value, [+19 more lines]
 TestUnion::from_int // Construct a `TestUnion` from its integer view.
-Vec::allocator // Returns a reference to the underlying allocator.
-Vec::append // Moves all the elements of `other` into `self`, leaving `other` empty. [+14 more lines]
-Vec::append_elements // Appends elements to `self` from other buffer.
-Vec::append_elements_unreserved // Appends elements to `self` from other buffer without reserving additional capacity.
-Vec::as_mut_ptr // Returns a raw mutable pointer to the vector's buffer, or a dangling [+73 more lines]
-Vec::as_mut_slice // Extracts a mutable slice of the entire vector. [+10 more lines]
-Vec::as_non_null // Returns a `NonNull` pointer to the vector's buffer, or a dangling [+56 more lines]
-Vec::as_ptr // Returns a raw pointer to the vector's buffer, or a dangling raw pointer [+53 more lines]
-Vec::as_slice // Extracts a slice containing the entire vector. [+10 more lines]
-Vec::capacity // Returns the total number of elements the vector can hold without [+22 more lines]
-Vec::clear // Clears the vector, removing all values. [+13 more lines]
-Vec::const_make_global // Interns the `Vec<T>`, making the underlying memory read-only. This method should be [+4 more lines]
-Vec::dedup // Removes consecutive repeated elements in the vector according to the [+13 more lines]
-Vec::dedup_by // Removes all but the first of consecutive elements in the vector that are [+43 more lines]
-Vec::dedup_by_key // Removes all but the first of consecutive elements in the vector that resolve to the same [+13 more lines]
-Vec::dedup_tail // Continues deduplication after the first duplicate is found. [+7 more lines]
-Vec::drain // Removes the subslice indicated by the given range from the vector, [+31 more lines]
-Vec::extend_desugared
-Vec::extend_from_slice // Clones and appends all elements in a slice to the `Vec`. [+21 more lines]
-Vec::extend_from_within // Given a range `src`, clones a slice of elements in that range and appends it to the end. [+24 more lines]
-Vec::extend_trusted
-Vec::extend_with // Extend the vector by `n` clones of value.
-Vec::extract_if // Creates an iterator which uses a closure to determine if an element in the range should be removed. [+73 more lines]
-Vec::from_fn // Creates a `Vec<T>` where each element is produced by calling `f` with [+38 more lines]
-Vec::from_parts // Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+70 more lines]
-Vec::from_parts_in // Creates a `Vec<T, A>` directly from a `NonNull` pointer, a length, a capacity, [+72 more lines]
-Vec::from_raw_parts // Creates a `Vec<T>` directly from a pointer, a length, and a capacity. [+72 more lines]
-Vec::from_raw_parts_in // Creates a `Vec<T, A>` directly from a pointer, a length, a capacity, [+74 more lines]
-Vec::insert // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
-Vec::insert_mut // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
-Vec::into_array // Converts the Vec into a boxed array. This conversion will discard any spare capacity, [+16 more lines]
-Vec::into_boxed_slice // Converts the vector into [`Box<[T]>`][owned slice]. [+24 more lines]
-Vec::into_chunks // Groups every `N` elements in the `Vec<T>` into chunks to produce a `Vec<[T; N]>`, dropping [+23 more lines]
-Vec::into_flattened // Takes a `Vec<[T; N]>` and flattens it into a `Vec<T>`. [+18 more lines]
-Vec::into_parts // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity)`. [+30 more lines]
-Vec::into_parts_with_allocator // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity, allocator)`. [+34 more lines]
-Vec::into_raw_parts // Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity)`. [+34 more lines]
-Vec::into_raw_parts_with_allocator // Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity, allocator)`. [+34 more lines]
-Vec::is_empty // Returns `true` if the vector contains no elements. [+10 more lines]
-Vec::leak // Consumes and leaks the `Vec`, returning a mutable reference to the contents, [+27 more lines]
-Vec::len // Returns the number of elements in the vector, also referred to [+8 more lines]
-Vec::new // Constructs a new, empty `Vec<T>`. [+9 more lines]
-Vec::new_in // Constructs a new, empty `Vec<T, A>`. [+10 more lines]
-Vec::peek_mut // Returns a mutable reference to the last item in the vector, or [+20 more lines]
-Vec::pop // Removes the last element from a vector and returns it, or [`None`] if it [+18 more lines]
-Vec::pop_if // Removes and returns the last element from a vector if the predicate [+13 more lines]
-Vec::push // Appends an element to the back of a collection. [+19 more lines]
-Vec::push_mut // Appends an element to the back of a collection, returning a reference to it. [+24 more lines]
-Vec::push_within_capacity // Appends an element and returns a reference to it if there is sufficient spare capacity, [+34 more lines]
-Vec::recycle // This clears out this `Vec` and recycles the allocation into a new `Vec`. [+48 more lines]
-Vec::remove // Removes and returns the element at position `index` within the vector, [+22 more lines]
-Vec::reserve // Reserves capacity for at least `additional` more elements to be inserted [+16 more lines]
-Vec::reserve_exact // Reserves the minimum capacity for at least `additional` more elements to [+23 more lines]
-Vec::resize // Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+26 more lines]
-Vec::resize_with // Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+29 more lines]
-Vec::retain // Retains only the elements specified by the predicate. [+23 more lines]
-Vec::retain_mut // Retains only the elements specified by the predicate, passing a mutable reference to it. [+17 more lines]
-Vec::set_len // Forces the length of the vector to `new_len`. [+85 more lines]
-Vec::shrink_to // Shrinks the capacity of the vector with a lower bound. [+17 more lines]
-Vec::shrink_to_fit // Shrinks the capacity of the vector as much as possible. [+16 more lines]
-Vec::spare_capacity_mut // Returns the remaining spare capacity of the vector as a slice of [+27 more lines]
-Vec::splice // Creates a splicing iterator that replaces the specified range in the vector [+42 more lines]
-Vec::split_at_spare_mut // Returns vector content as a slice of `T`, along with the remaining spare [+50 more lines]
-Vec::split_at_spare_mut_with_len // Safety: changing returned .2 (&mut usize) is considered the same as calling `.set_len(_)`. [+2 more lines]
-Vec::split_off // Splits the collection into two at the given index. [+23 more lines]
-Vec::swap_remove // Removes an element from the vector and returns it. [+23 more lines]
-Vec::truncate // Shortens the vector, keeping the first `len` elements and dropping [+41 more lines]
-Vec::try_append_elements // Appends elements to `self` from other buffer, returning [`TryReserveError`] on OOM.
-Vec::try_extend_from_slice_of_bytes
-Vec::try_remove // Remove and return the element at position `index` within the vector, [+17 more lines]
-Vec::try_reserve // Tries to reserve capacity for at least `additional` more elements to be inserted [+31 more lines]
-Vec::try_reserve_exact // Tries to reserve the minimum capacity for at least `additional` [+37 more lines]
-Vec::try_shrink_to // Shrinks the capacity of the vector with a lower bound. [+25 more lines]
-Vec::try_shrink_to_fit // Tries to shrink the capacity of the vector as much as possible [+24 more lines]
-Vec::try_with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+11 more lines]
-Vec::try_with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+12 more lines]
-Vec::with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+50 more lines]
-Vec::with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+53 more lines]
+Vector::allocator // Returns a reference to the underlying allocator.
+Vector::append // Moves all the elements of `other` into `self`, leaving `other` empty. [+14 more lines]
+Vector::append_elements // Appends elements to `self` from other buffer.
+Vector::append_elements_unreserved // Appends elements to `self` from other buffer without reserving additional capacity.
+Vector::as_mut_ptr // Returns a raw mutable pointer to the vector's buffer, or a dangling [+73 more lines]
+Vector::as_mut_slice // Extracts a mutable slice of the entire vector. [+10 more lines]
+Vector::as_non_null // Returns a `NonNull` pointer to the vector's buffer, or a dangling [+56 more lines]
+Vector::as_ptr // Returns a raw pointer to the vector's buffer, or a dangling raw pointer [+53 more lines]
+Vector::as_slice // Extracts a slice containing the entire vector. [+10 more lines]
+Vector::capacity // Returns the total number of elements the vector can hold without [+22 more lines]
+Vector::clear // Clears the vector, removing all values. [+13 more lines]
+Vector::const_make_global // Interns the `Vec<T>`, making the underlying memory read-only. This method should be [+4 more lines]
+Vector::dedup // Removes consecutive repeated elements in the vector according to the [+13 more lines]
+Vector::dedup_by // Removes all but the first of consecutive elements in the vector that are [+43 more lines]
+Vector::dedup_by_key // Removes all but the first of consecutive elements in the vector that resolve to the same [+13 more lines]
+Vector::dedup_tail // Continues deduplication after the first duplicate is found. [+7 more lines]
+Vector::drain // Removes the subslice indicated by the given range from the vector, [+31 more lines]
+Vector::extend_desugared
+Vector::extend_from_slice // Clones and appends all elements in a slice to the `Vec`. [+21 more lines]
+Vector::extend_from_within // Given a range `src`, clones a slice of elements in that range and appends it to the end. [+24 more lines]
+Vector::extend_trusted
+Vector::extend_with // Extend the vector by `n` clones of value.
+Vector::extract_if // Creates an iterator which uses a closure to determine if an element in the range should be removed. [+73 more lines]
+Vector::from_fn // Creates a `Vec<T>` where each element is produced by calling `f` with [+38 more lines]
+Vector::from_parts // Creates a `Vec<T>` directly from a `NonNull` pointer, a length, and a capacity. [+70 more lines]
+Vector::from_parts_in // Creates a `Vec<T, A>` directly from a `NonNull` pointer, a length, a capacity, [+72 more lines]
+Vector::from_raw_parts // Creates a `Vec<T>` directly from a pointer, a length, and a capacity. [+72 more lines]
+Vector::from_raw_parts_in // Creates a `Vec<T, A>` directly from a pointer, a length, a capacity, [+74 more lines]
+Vector::insert // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
+Vector::insert_mut // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
+Vector::into_array // Converts the Vec into a boxed array. This conversion will discard any spare capacity, [+16 more lines]
+Vector::into_boxed_slice // Converts the vector into [`Box<[T]>`][owned slice]. [+24 more lines]
+Vector::into_chunks // Groups every `N` elements in the `Vec<T>` into chunks to produce a `Vec<[T; N]>`, dropping [+23 more lines]
+Vector::into_flattened // Takes a `Vec<[T; N]>` and flattens it into a `Vec<T>`. [+18 more lines]
+Vector::into_parts // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity)`. [+30 more lines]
+Vector::into_parts_with_allocator // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity, allocator)`. [+34 more lines]
+Vector::into_raw_parts // Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity)`. [+34 more lines]
+Vector::into_raw_parts_with_allocator // Decomposes a `Vec<T>` into its raw components: `(pointer, length, capacity, allocator)`. [+34 more lines]
+Vector::is_empty // Returns `true` if the vector contains no elements. [+10 more lines]
+Vector::leak // Consumes and leaks the `Vec`, returning a mutable reference to the contents, [+27 more lines]
+Vector::len // Returns the number of elements in the vector, also referred to [+8 more lines]
+Vector::new // Constructs a new, empty `Vec<T>`. [+9 more lines]
+Vector::new_in // Constructs a new, empty `Vec<T, A>`. [+10 more lines]
+Vector::peek_mut // Returns a mutable reference to the last item in the vector, or [+20 more lines]
+Vector::pop // Removes the last element from a vector and returns it, or [`None`] if it [+18 more lines]
+Vector::pop_if // Removes and returns the last element from a vector if the predicate [+13 more lines]
+Vector::push // Appends an element to the back of a collection. [+19 more lines]
+Vector::push_mut // Appends an element to the back of a collection, returning a reference to it. [+24 more lines]
+Vector::push_within_capacity // Appends an element and returns a reference to it if there is sufficient spare capacity, [+34 more lines]
+Vector::recycle // This clears out this `Vec` and recycles the allocation into a new `Vec`. [+48 more lines]
+Vector::remove // Removes and returns the element at position `index` within the vector, [+22 more lines]
+Vector::reserve // Reserves capacity for at least `additional` more elements to be inserted [+16 more lines]
+Vector::reserve_exact // Reserves the minimum capacity for at least `additional` more elements to [+23 more lines]
+Vector::resize // Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+27 more lines]
+Vector::resize_with // Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+30 more lines]
+Vector::retain // Retains only the elements specified by the predicate. [+23 more lines]
+Vector::retain_mut // Retains only the elements specified by the predicate, passing a mutable reference to it. [+17 more lines]
+Vector::set_len // Forces the length of the vector to `new_len`. [+85 more lines]
+Vector::shrink_to // Shrinks the capacity of the vector with a lower bound. [+17 more lines]
+Vector::shrink_to_fit // Shrinks the capacity of the vector as much as possible. [+16 more lines]
+Vector::spare_capacity_mut // Returns the remaining spare capacity of the vector as a slice of [+27 more lines]
+Vector::splice // Creates a splicing iterator that replaces the specified range in the vector [+42 more lines]
+Vector::split_at_spare_mut // Returns vector content as a slice of `T`, along with the remaining spare [+50 more lines]
+Vector::split_at_spare_mut_with_len // Safety: changing returned .2 (&mut usize) is considered the same as calling `.set_len(_)`. [+2 more lines]
+Vector::split_off // Splits the collection into two at the given index. [+23 more lines]
+Vector::swap_remove // Removes an element from the vector and returns it. [+23 more lines]
+Vector::truncate // Shortens the vector, keeping the first `len` elements and dropping [+41 more lines]
+Vector::try_append_elements // Appends elements to `self` from other buffer, returning [`TryReserveError`] on OOM.
+Vector::try_extend_from_slice_of_bytes
+Vector::try_remove // Remove and return the element at position `index` within the vector, [+17 more lines]
+Vector::try_reserve // Tries to reserve capacity for at least `additional` more elements to be inserted [+31 more lines]
+Vector::try_reserve_exact // Tries to reserve the minimum capacity for at least `additional` [+37 more lines]
+Vector::try_shrink_to // Shrinks the capacity of the vector with a lower bound. [+25 more lines]
+Vector::try_shrink_to_fit // Tries to shrink the capacity of the vector as much as possible [+24 more lines]
+Vector::try_with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+11 more lines]
+Vector::try_with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+12 more lines]
+Vector::with_capacity // Constructs a new, empty `Vec<T>` with at least the specified capacity. [+50 more lines]
+Vector::with_capacity_in // Constructs a new, empty `Vec<T, A>` with at least the specified capacity [+53 more lines]
 async_function // An async function
 generic_function // A generic function
 generics::ConstGeneric::filled // A method whose signature mentions the const parameter.
+generics::Cow::into_owned // Extracts the owned data. [+33 more lines]
+generics::Cow::is_borrowed // Returns true if the data is borrowed, i.e. if `to_mut` would require additional work. [+17 more lines]
+generics::Cow::is_owned // Returns true if the data is owned, i.e. if `to_mut` would be a no-op. [+17 more lines]
+generics::Cow::to_mut // Acquires a mutable reference to the owned form of the data. [+16 more lines]
 generics::assoc_bound // An associated-item *bound* constraint (`Item: Clone`) inside generic [+1 more lines]
 generics::assoc_equality // An associated-item *equality* constraint inside generic arguments.
 generics::dyn_needs_parens // A multi-trait `dyn` object behind a reference: valid Rust only with the [+1 more lines]
@@ -226,8 +315,6 @@ link_resolution_tests::HashSet::with_capacity_and_hasher_in // Creates an empty 
 link_resolution_tests::HashSet::with_capacity_in // Creates an empty `HashSet` with at least the specified capacity. [+14 more lines]
 link_resolution_tests::HashSet::with_hasher // Creates a new empty hash set which will use the given hasher to hash [+22 more lines]
 link_resolution_tests::HashSet::with_hasher_in // Creates a new empty hash set which will use the given hasher to hash [+23 more lines]
-link_resolution_tests::LinkTestStruct::get_data // Another method
-link_resolution_tests::LinkTestStruct::new // Method for testing Self resolution
 link_resolution_tests::RenamedTestStruct::get_field // Get the field value
 link_resolution_tests::RenamedTestStruct::increment_count // Update the count
 link_resolution_tests::RenamedTestStruct::new // Create a new TestStruct
@@ -281,6 +368,7 @@ link_resolution_tests::nested::Str::as_str // Extracts a string slice containing
 link_resolution_tests::nested::Str::capacity // Returns this `String`'s capacity, in bytes. [+8 more lines]
 link_resolution_tests::nested::Str::clear // Truncates this `String`, removing all contents. [+15 more lines]
 link_resolution_tests::nested::Str::drain // Removes the specified range from the string in bulk, returning all [+32 more lines]
+link_resolution_tests::nested::Str::extend_from_escape_default
 link_resolution_tests::nested::Str::extend_from_within // Copies elements from `src` range to the end of the string. [+21 more lines]
 link_resolution_tests::nested::Str::from_raw_parts // Creates a new `String` from a pointer, a length and a capacity. [+35 more lines]
 link_resolution_tests::nested::Str::from_utf16 // Decode a native endian UTF-16–encoded vector `v` into a `String`, [+16 more lines]
@@ -325,6 +413,8 @@ link_resolution_tests::nested::Str::try_reserve // Tries to reserve capacity for
 link_resolution_tests::nested::Str::try_reserve_exact // Tries to reserve the minimum capacity for at least `additional` bytes [+35 more lines]
 link_resolution_tests::nested::Str::try_with_capacity // Creates a new empty `String` with at least the specified capacity. [+5 more lines]
 link_resolution_tests::nested::Str::with_capacity // Creates a new empty `String` with at least the specified capacity. [+38 more lines]
+link_resolution_tests::nested::deeply_nested::LinkTestStruct::get_data // Another method
+link_resolution_tests::nested::deeply_nested::LinkTestStruct::new // Method for testing Self resolution
 namespace_collisions::both // A function sharing its name with the [`both`] module above.
 private_detail::ReachableViaPrivateModule::private_module_method // A method on a struct whose module is private. [+5 more lines]
 private_function // A private function
@@ -342,13 +432,20 @@ TEST_CONSTANT // A const for testing
 Statics:
 TEST_STATIC // A static for testing
 
+Macros:
+generics::Debug // Derive macro generating an impl of the trait `Debug`.
+
 Variants:
 GenericEnum::Mixed // Variant with mixed generics
 GenericEnum::Simple // Simple variant
 GenericEnum::WithData // Variant with generic data
+StdResult::Err // Contains the error value
+StdResult::Ok // Contains the success value
 VariantA // Variant A (see also [`crate::GenericEnum`])
 VariantB // Variant B with data
 VariantC // Variant C with struct data (`name` and `value`)
+generics::Cow::Borrowed // Borrowed data.
+generics::Cow::Owned // Owned data.
 generics::EnumManyPredicates::First // Holds a `T`.
 generics::EnumManyPredicates::Second // Holds a `U`.
 reexport_mod::VariantA // Variant A (see also [`crate::GenericEnum`])

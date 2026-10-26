@@ -7,5 +7,5 @@ expression: result
 • `crate::TestUnion` (Union)
 • `crate::TestEnum` (Enum)
 • `crate::prefix_tests` (Module)
+• `crate::StdResult` (Enum)
 • `crate::ComplexTrait` (Trait)
-• `crate::markdown_test` (Module)

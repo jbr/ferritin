@@ -9,5 +9,5 @@ Did you mean:
 - crate::TestUnion
 - crate::TestEnum
 - crate::prefix_tests
+- crate::StdResult
 - crate::ComplexTrait
-- crate::markdown_test

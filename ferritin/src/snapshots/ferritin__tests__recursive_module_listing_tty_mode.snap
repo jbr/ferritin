@@ -67,6 +67,9 @@ Structs
   ◦ [GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.GenericStruct.html) 
     A generic struct for testing multi-paragraph documentation. [...]
 
+  ◦ [HashMap](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html) 
+    A [hash map](https://doc.rust-lang.org/nightly/std/index.html?search=std%3A%3Acollections) implemented with quadratic probing and SIMD lookup. [...]
+
   ◦ [MarkerOne](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.MarkerOne.html) 
     First implementor of [Marker](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.Marker.html).
 
@@ -93,6 +96,9 @@ Structs
     A unit struct for testing
 
   ◦ [Vec](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html) 
+    A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
+
+  ◦ [Vector](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vector.html) 
     A contiguous growable array type, written as Vec<T>, short for 'vector'. [...]
 
   ◦ [generics::ConstGeneric](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/struct.ConstGeneric.html) 
@@ -137,6 +143,9 @@ Structs
 
   ◦ [link_resolution_tests::nested::deeply_nested::DeepStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/nested/deeply_nested/struct.DeepStruct.html) 
     Struct in deeply nested module
+
+  ◦ [link_resolution_tests::nested::deeply_nested::LinkTestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/struct.LinkTestStruct.html) 
+    Struct in link test module
 
   ◦ [namespace_collisions::both::Inside](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/both/struct.Inside.html) 
     An item inside the colliding module.
@@ -188,8 +197,14 @@ Enums
   ◦ [GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html) 
     A generic enum for testing [...]
 
+  ◦ [StdResult](https://doc.rust-lang.org/nightly/core/result/enum.StdResult.html) 
+    Result is a type that represents either success ([Ok](https://doc.rust-lang.org/nightly/core/)) or failure ([Err](https://doc.rust-lang.org/nightly/core/)). [...]
+
   ◦ [TestEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/submodule/enum.TestEnum.html) 
     An enum for testing [...]
+
+  ◦ [generics::Cow](https://doc.rust-lang.org/nightly/alloc/borrow/enum.Cow.html) 
+    A clone-on-write smart pointer. [...]
 
   ◦ [generics::EnumManyPredicates](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/enum.EnumManyPredicates.html) 
     An enum with a multi-predicate where clause, the enum counterpart to [Many](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/struct.ManyPredicates.html)
@@ -213,6 +228,12 @@ Traits
   ◦ [TestTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.TestTrait.html) 
     A trait for testing extremely long documentation that exceeds line limits. [...]
 
+  ◦ [generics::Debug](https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html) 
+    ? formatting. [...]
+
+  ◦ [generics::Display](https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html) 
+    Format trait for an empty format, {}. [...]
+
   ◦ [generics::ImplTraitMethods](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/trait.ImplTraitMethods.html) 
     A trait with a generic method taking impl Trait, so the synthetic parameter
     also appears on an associated item rather than a free function.
@@ -230,264 +251,539 @@ Unions
 
 Functions
 
+  ◦ [HashMap::capacity](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.capacity) 
+    Returns the number of elements the map can hold without reallocating. [...]
+
+  ◦ [HashMap::clear](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.clear) 
+    Clears the map, removing all key-value pairs. Keeps the allocated memory for
+    reuse. [...]
+
+  ◦ [HashMap::contains_key](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.contains_key) 
+    Returns true if the map contains a value for the specified key. [...]
+
+  ◦ [HashMap::drain](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.drain.html) 
+    Clears the map, returning all key-value pairs as an iterator. Keeps the 
+    allocated memory for reuse. [...]
+
+  ◦ [HashMap::entry](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.entry.html) 
+    Gets the given key's corresponding entry in the map for in-place manipulation. [...]
+
+  ◦ [HashMap::extract_if](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.extract_if.html) 
+    Creates an iterator which uses a closure to determine if an element (key-value
+    pair) should be removed. [...]
+
+  ◦ [HashMap::get](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.get) 
+    Returns a reference to the value corresponding to the key. [...]
+
+  ◦ [HashMap::get_disjoint_mut](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.get_disjoint_mut.html) 
+    Attempts to get mutable references to N values in the map at once. [...]
+
+  ◦ [HashMap::get_disjoint_unchecked_mut](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.get_disjoint_unchecked_mut) 
+    Attempts to get mutable references to N values in the map at once, without
+    validating that the values are unique. [...]
+
+  ◦ [HashMap::get_key_value](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.get_key_value) 
+    Returns the key-value pair corresponding to the supplied key. This is 
+    potentially useful: [...]
+
+  ◦ [HashMap::get_mut](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.get_mut) 
+    Returns a mutable reference to the value corresponding to the key. [...]
+
+  ◦ [HashMap::hasher](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.hasher) 
+    Returns a reference to the map's [BuildHasher](https://doc.rust-lang.org/nightly/core/hash/index.html?search=core%3A%3Ahash%3A%3ABuildHasher). [...]
+
+  ◦ [HashMap::insert](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.insert.html) 
+    Inserts a key-value pair into the map. [...]
+
+  ◦ [HashMap::into_keys](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.into_keys.html) 
+    Creates a consuming iterator visiting all the keys in arbitrary order. The map
+    cannot be used after calling this. The iterator element type is K. [...]
+
+  ◦ [HashMap::into_values](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.into_values.html) 
+    Creates a consuming iterator visiting all the values in arbitrary order. The
+    map cannot be used after calling this. The iterator element type is V. [...]
+
+  ◦ [HashMap::is_empty](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.is_empty) 
+    Returns true if the map contains no elements. [...]
+
+  ◦ [HashMap::iter](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.iter.html) 
+    An iterator visiting all key-value pairs in arbitrary order. The iterator
+    element type is (&'a K, &'a V). [...]
+
+  ◦ [HashMap::iter_mut](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.iter_mut.html) 
+    An iterator visiting all key-value pairs in arbitrary order, with mutable
+    references to the values. The iterator element type is (&'a K, &'a mut V). [...]
+
+  ◦ [HashMap::keys](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.keys.html) 
+    An iterator visiting all keys in arbitrary order. The iterator element type is 
+    &'a K. [...]
+
+  ◦ [HashMap::len](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.len) 
+    Returns the number of elements in the map. [...]
+
+  ◦ [HashMap::new](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.new) 
+    Creates an empty HashMap. [...]
+
+  ◦ [HashMap::new_in](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.new_in) 
+    Creates an empty HashMap using the given allocator. [...]
+
+  ◦ [HashMap::remove](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.remove) 
+    Removes a key from the map, returning the value at the key if the key was
+    previously in the map. [...]
+
+  ◦ [HashMap::remove_entry](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.remove_entry) 
+    Removes a key from the map, returning the stored key and value if the key was
+    previously in the map. [...]
+
+  ◦ [HashMap::reserve](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.reserve) 
+    Reserves capacity for at least additional more elements to be inserted in the 
+    HashMap. The collection may reserve more space to speculatively avoid frequent
+    reallocations. After calling reserve, capacity will be greater than or equal to 
+    self.len() + additional. Does nothing if capacity is already sufficient. [...]
+
+  ◦ [HashMap::retain](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.retain.html) 
+    Retains only the elements specified by the predicate. [...]
+
+  ◦ [HashMap::shrink_to](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.shrink_to) 
+    Shrinks the capacity of the map with a lower limit. It will drop down no lower
+    than the supplied limit while maintaining the internal rules and possibly
+    leaving some space in accordance with the resize policy. [...]
+
+  ◦ [HashMap::shrink_to_fit](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.shrink_to_fit) 
+    Shrinks the capacity of the map as much as possible. It will drop down as much
+    as possible while maintaining the internal rules and possibly leaving some
+    space in accordance with the resize policy. [...]
+
+  ◦ [HashMap::try_insert](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.try_insert.html) 
+    Tries to insert a key-value pair into the map, and returns a mutable reference
+    to the value in the entry. [...]
+
+  ◦ [HashMap::try_reserve](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.try_reserve) 
+    Tries to reserve capacity for at least additional more elements to be inserted 
+    in the HashMap. The collection may reserve more space to speculatively avoid
+    frequent reallocations. After calling try_reserve, capacity will be greater
+    than or equal to self.len() + additional if it returns Ok(()). Does nothing if
+    capacity is already sufficient. [...]
+
+  ◦ [HashMap::values](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.values.html) 
+    An iterator visiting all values in arbitrary order. The iterator element type
+    is &'a V. [...]
+
+  ◦ [HashMap::values_mut](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.values_mut.html) 
+    An iterator visiting all values mutably in arbitrary order. The iterator
+    element type is &'a mut V. [...]
+
+  ◦ [HashMap::with_capacity](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.with_capacity.html) 
+    Creates an empty HashMap with at least the specified capacity. [...]
+
+  ◦ [HashMap::with_capacity_and_hasher](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.with_capacity_and_hasher.html) 
+    Creates an empty HashMap with at least the specified capacity, using hasher to
+    hash the keys. [...]
+
+  ◦ [HashMap::with_capacity_and_hasher_in](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.with_capacity_and_hasher_in) 
+    Creates an empty HashMap with at least the specified capacity, using hasher to
+    hash the keys and alloc to allocate memory. [...]
+
+  ◦ [HashMap::with_capacity_in](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.with_capacity_in) 
+    Creates an empty HashMap with at least the specified capacity using the given
+    allocator. [...]
+
+  ◦ [HashMap::with_hasher](https://doc.rust-lang.org/nightly/std/collections/hash/map/HashMap/fn.with_hasher.html) 
+    Creates an empty HashMap which will use the given hash builder to hash keys. [...]
+
+  ◦ [HashMap::with_hasher_in](https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html#method.with_hasher_in) 
+    Creates an empty HashMap which will use the given hash builder and allocator. [...]
+
   ◦ [NotThreadSafe::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.NotThreadSafe.html#method.new) 
     Wrap a raw pointer.
+
+  ◦ [StdResult::and](https://doc.rust-lang.org/nightly/core/result/Result/fn.and.html) 
+    Returns res if the result is [Ok](https://doc.rust-lang.org/nightly/core/), otherwise returns the [Err](https://doc.rust-lang.org/nightly/core/) value of self. [...]
+
+  ◦ [StdResult::and_then](https://doc.rust-lang.org/nightly/core/result/Result/fn.and_then.html) 
+    Calls op if the result is [Ok](https://doc.rust-lang.org/nightly/core/), otherwise returns the [Err](https://doc.rust-lang.org/nightly/core/) value of self. [...]
+
+  ◦ [StdResult::as_deref](https://doc.rust-lang.org/nightly/core/result/Result/fn.as_deref.html) 
+    Converts from Result<T, E> (or &Result<T, E>) to Result<&<T as Deref>::Target,
+    &E>. [...]
+
+  ◦ [StdResult::as_deref_mut](https://doc.rust-lang.org/nightly/core/result/Result/fn.as_deref_mut.html) 
+    Converts from Result<T, E> (or &mut Result<T, E>) to Result<&mut <T as
+    DerefMut>::Target, &mut E>. [...]
+
+  ◦ [StdResult::as_mut](https://doc.rust-lang.org/nightly/core/result/Result/fn.as_mut.html) 
+    Converts from &mut Result<T, E> to Result<&mut T, &mut E>. [...]
+
+  ◦ [StdResult::as_ref](https://doc.rust-lang.org/nightly/core/result/Result/fn.as_ref.html) 
+    Converts from &Result<T, E> to Result<&T, &E>. [...]
+
+  ◦ [StdResult::cloned](https://doc.rust-lang.org/nightly/core/result/enum.Result.html#method.cloned) 
+    Maps a Result<&T, E> to a Result<T, E> by cloning the contents of the Ok part. [...]
+
+  ◦ [StdResult::cloned](https://doc.rust-lang.org/nightly/core/result/enum.Result.html#method.cloned) 
+    Maps a Result<&mut T, E> to a Result<T, E> by cloning the contents of the Ok
+    part. [...]
+
+  ◦ [StdResult::copied](https://doc.rust-lang.org/nightly/core/result/enum.Result.html#method.copied) 
+    Maps a Result<&T, E> to a Result<T, E> by copying the contents of the Ok part. [...]
+
+  ◦ [StdResult::copied](https://doc.rust-lang.org/nightly/core/result/enum.Result.html#method.copied) 
+    Maps a Result<&mut T, E> to a Result<T, E> by copying the contents of the Ok
+    part. [...]
+
+  ◦ [StdResult::err](https://doc.rust-lang.org/nightly/core/result/Result/fn.err.html) 
+    Converts from Result<T, E> to [Option<E>](https://doc.rust-lang.org/nightly/core/option/enum.Option.html). [...]
+
+  ◦ [StdResult::expect](https://doc.rust-lang.org/nightly/core/result/Result/fn.expect.html) 
+    Returns the contained [Ok](https://doc.rust-lang.org/nightly/core/) value, consuming the self value. [...]
+
+  ◦ [StdResult::expect_err](https://doc.rust-lang.org/nightly/core/result/Result/fn.expect_err.html) 
+    Returns the contained [Err](https://doc.rust-lang.org/nightly/core/) value, consuming the self value. [...]
+
+  ◦ [StdResult::flatten](https://doc.rust-lang.org/nightly/core/result/enum.Result.html#method.flatten) 
+    Converts from Result<Result<T, E>, E> to Result<T, E> [...]
+
+  ◦ [StdResult::inspect](https://doc.rust-lang.org/nightly/core/result/Result/fn.inspect.html) 
+    Calls a function with a reference to the contained value if [Ok](https://doc.rust-lang.org/nightly/core/). [...]
+
+  ◦ [StdResult::inspect_err](https://doc.rust-lang.org/nightly/core/result/Result/fn.inspect_err.html) 
+    Calls a function with a reference to the contained value if [Err](https://doc.rust-lang.org/nightly/core/). [...]
+
+  ◦ [StdResult::into_err](https://doc.rust-lang.org/nightly/core/result/enum.Result.html#method.into_err) 
+    Returns the contained [Err](https://doc.rust-lang.org/nightly/core/) value, but never panics. [...]
+
+  ◦ [StdResult::into_ok](https://doc.rust-lang.org/nightly/core/result/enum.Result.html#method.into_ok) 
+    Returns the contained [Ok](https://doc.rust-lang.org/nightly/core/) value, but never panics. [...]
+
+  ◦ [StdResult::is_err](https://doc.rust-lang.org/nightly/core/result/Result/fn.is_err.html) 
+    Returns true if the result is [Err](https://doc.rust-lang.org/nightly/core/). [...]
+
+  ◦ [StdResult::is_err_and](https://doc.rust-lang.org/nightly/core/result/Result/fn.is_err_and.html) 
+    Returns true if the result is [Err](https://doc.rust-lang.org/nightly/core/) and the value inside of it matches a
+    predicate. [...]
+
+  ◦ [StdResult::is_ok](https://doc.rust-lang.org/nightly/core/result/Result/fn.is_ok.html) 
+    Returns true if the result is [Ok](https://doc.rust-lang.org/nightly/core/). [...]
+
+  ◦ [StdResult::is_ok_and](https://doc.rust-lang.org/nightly/core/result/Result/fn.is_ok_and.html) 
+    Returns true if the result is [Ok](https://doc.rust-lang.org/nightly/core/) and the value inside of it matches a predicate. [...]
+
+  ◦ [StdResult::iter](https://doc.rust-lang.org/nightly/core/result/Result/fn.iter.html) 
+    Returns an iterator over the possibly contained value. [...]
+
+  ◦ [StdResult::iter_mut](https://doc.rust-lang.org/nightly/core/result/Result/fn.iter_mut.html) 
+    Returns a mutable iterator over the possibly contained value. [...]
+
+  ◦ [StdResult::map](https://doc.rust-lang.org/nightly/core/result/Result/fn.map.html) 
+    Maps a Result<T, E> to Result<U, E> by applying a function to a contained [Ok](https://doc.rust-lang.org/nightly/core/)
+    value, leaving an [Err](https://doc.rust-lang.org/nightly/core/) value untouched. [...]
+
+  ◦ [StdResult::map_err](https://doc.rust-lang.org/nightly/core/result/Result/fn.map_err.html) 
+    Maps a Result<T, E> to Result<T, F> by applying a function to a contained [Err](https://doc.rust-lang.org/nightly/core/)
+    value, leaving an [Ok](https://doc.rust-lang.org/nightly/core/) value untouched. [...]
+
+  ◦ [StdResult::map_or](https://doc.rust-lang.org/nightly/core/result/Result/fn.map_or.html) 
+    Returns the provided default (if [Err](https://doc.rust-lang.org/nightly/core/)), or applies a function to the contained
+    value (if [Ok](https://doc.rust-lang.org/nightly/core/)). [...]
+
+  ◦ [StdResult::map_or_default](https://doc.rust-lang.org/nightly/core/result/enum.Result.html#method.map_or_default) 
+    Maps a Result<T, E> to a U by applying function f to the contained value if the
+    result is [Ok](https://doc.rust-lang.org/nightly/core/), otherwise if [Err](https://doc.rust-lang.org/nightly/core/), returns the [default value](https://doc.rust-lang.org/nightly/core/default/Default/fn.default.html) for the type U. [...]
+
+  ◦ [StdResult::map_or_else](https://doc.rust-lang.org/nightly/core/result/Result/fn.map_or_else.html) 
+    Maps a Result<T, E> to U by applying fallback function default to a contained 
+    [Err](https://doc.rust-lang.org/nightly/core/) value, or function f to a contained [Ok](https://doc.rust-lang.org/nightly/core/) value. [...]
+
+  ◦ [StdResult::ok](https://doc.rust-lang.org/nightly/core/result/Result/fn.ok.html) 
+    Converts from Result<T, E> to [Option<T>](https://doc.rust-lang.org/nightly/core/option/enum.Option.html). [...]
+
+  ◦ [StdResult::or](https://doc.rust-lang.org/nightly/core/result/Result/fn.or.html) 
+    Returns res if the result is [Err](https://doc.rust-lang.org/nightly/core/), otherwise returns the [Ok](https://doc.rust-lang.org/nightly/core/) value of self. [...]
+
+  ◦ [StdResult::or_else](https://doc.rust-lang.org/nightly/core/result/Result/fn.or_else.html) 
+    Calls op if the result is [Err](https://doc.rust-lang.org/nightly/core/), otherwise returns the [Ok](https://doc.rust-lang.org/nightly/core/) value of self. [...]
+
+  ◦ [StdResult::transpose](https://doc.rust-lang.org/nightly/core/result/Result/fn.transpose.html) 
+    Transposes a Result of an Option into an Option of a Result. [...]
+
+  ◦ [StdResult::unwrap](https://doc.rust-lang.org/nightly/core/result/Result/fn.unwrap.html) 
+    Returns the contained [Ok](https://doc.rust-lang.org/nightly/core/) value, consuming the self value. [...]
+
+  ◦ [StdResult::unwrap_err](https://doc.rust-lang.org/nightly/core/result/Result/fn.unwrap_err.html) 
+    Returns the contained [Err](https://doc.rust-lang.org/nightly/core/) value, consuming the self value. [...]
+
+  ◦ [StdResult::unwrap_err_unchecked](https://doc.rust-lang.org/nightly/core/result/Result/fn.unwrap_err_unchecked.html) 
+    Returns the contained [Err](https://doc.rust-lang.org/nightly/core/) value, consuming the self value, without checking
+    that the value is not an [Ok](https://doc.rust-lang.org/nightly/core/). [...]
+
+  ◦ [StdResult::unwrap_or](https://doc.rust-lang.org/nightly/core/result/Result/fn.unwrap_or.html) 
+    Returns the contained [Ok](https://doc.rust-lang.org/nightly/core/) value or a provided default. [...]
+
+  ◦ [StdResult::unwrap_or_default](https://doc.rust-lang.org/nightly/core/result/Result/fn.unwrap_or_default.html) 
+    Returns the contained [Ok](https://doc.rust-lang.org/nightly/core/) value or a default [...]
+
+  ◦ [StdResult::unwrap_or_else](https://doc.rust-lang.org/nightly/core/result/Result/fn.unwrap_or_else.html) 
+    Returns the contained [Ok](https://doc.rust-lang.org/nightly/core/) value or computes it from a closure. [...]
+
+  ◦ [StdResult::unwrap_unchecked](https://doc.rust-lang.org/nightly/core/result/Result/fn.unwrap_unchecked.html) 
+    Returns the contained [Ok](https://doc.rust-lang.org/nightly/core/) value, consuming the self value, without checking that
+    the value is not an [Err](https://doc.rust-lang.org/nightly/core/). [...]
 
   ◦ [TestUnion::from_int](https://docs.rs/fixture-crate/0.1.0/fixture_crate/union.TestUnion.html#method.from_int) 
     Construct a TestUnion from its integer view.
 
-  ◦ [Vec::allocator](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.allocator) 
+  ◦ [Vector::allocator](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.allocator) 
     Returns a reference to the underlying allocator.
 
-  ◦ [Vec::append](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.append.html) 
+  ◦ [Vector::append](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.append.html) 
     Moves all the elements of other into self, leaving other empty. [...]
 
-  ◦ [Vec::append_elements](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append_elements) 
+  ◦ [Vector::append_elements](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append_elements) 
     Appends elements to self from other buffer.
 
-  ◦ [Vec::append_elements_unreserved](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append_elements_unreserved) 
+  ◦ [Vector::append_elements_unreserved](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.append_elements_unreserved) 
     Appends elements to self from other buffer without reserving additional
     capacity.
 
-  ◦ [Vec::as_mut_ptr](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_mut_ptr.html) 
+  ◦ [Vector::as_mut_ptr](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_mut_ptr.html) 
     Returns a raw mutable pointer to the vector's buffer, or a dangling raw pointer
     valid for zero sized reads if the vector [didn't allocate](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aself). [...]
 
-  ◦ [Vec::as_mut_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_slice) 
+  ◦ [Vector::as_mut_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_mut_slice) 
     Extracts a mutable slice of the entire vector. [...]
 
-  ◦ [Vec::as_non_null](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_non_null.html) 
+  ◦ [Vector::as_non_null](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_non_null.html) 
     Returns a NonNull pointer to the vector's buffer, or a dangling NonNull pointer
     valid for zero sized reads if the vector [didn't allocate](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aself). [...]
 
-  ◦ [Vec::as_ptr](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_ptr.html) 
+  ◦ [Vector::as_ptr](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.as_ptr.html) 
     Returns a raw pointer to the vector's buffer, or a dangling raw pointer valid
     for zero sized reads if the vector [didn't allocate](https://doc.rust-lang.org/nightly/alloc/index.html?search=alloc%3A%3Aself). [...]
 
-  ◦ [Vec::as_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_slice) 
+  ◦ [Vector::as_slice](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.as_slice) 
     Extracts a slice containing the entire vector. [...]
 
-  ◦ [Vec::capacity](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.capacity.html) 
+  ◦ [Vector::capacity](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.capacity.html) 
     Returns the total number of elements the vector can hold without reallocating. [...]
 
-  ◦ [Vec::clear](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.clear.html) 
+  ◦ [Vector::clear](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.clear.html) 
     Clears the vector, removing all values. [...]
 
-  ◦ [Vec::const_make_global](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.const_make_global) 
+  ◦ [Vector::const_make_global](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.const_make_global) 
     Interns the Vec<T>, making the underlying memory read-only. This method should
     be called during compile time. (This is a no-op if called during runtime) [...]
 
-  ◦ [Vec::dedup](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup) 
+  ◦ [Vector::dedup](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup) 
     Removes consecutive repeated elements in the vector according to the [PartialEq](https://doc.rust-lang.org/nightly/core/cmp/index.html?search=core%3A%3Acmp%3A%3APartialEq)
     trait implementation. [...]
 
-  ◦ [Vec::dedup_by](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by) 
+  ◦ [Vector::dedup_by](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by) 
     Removes all but the first of consecutive elements in the vector that are "equal"
     according to the given predicate function. [...]
 
-  ◦ [Vec::dedup_by_key](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by_key) 
+  ◦ [Vector::dedup_by_key](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_by_key) 
     Removes all but the first of consecutive elements in the vector that resolve to
     the same key. [...]
 
-  ◦ [Vec::dedup_tail](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_tail) 
+  ◦ [Vector::dedup_tail](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.dedup_tail) 
     Continues deduplication after the first duplicate is found. [...]
 
-  ◦ [Vec::drain](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.drain.html) 
+  ◦ [Vector::drain](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.drain.html) 
     Removes the subslice indicated by the given range from the vector, returning a
     double-ended iterator over the removed subslice. [...]
 
-  ◦ [Vec::extend_desugared](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_desugared) 
+  ◦ [Vector::extend_desugared](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_desugared) 
 
-  ◦ [Vec::extend_from_slice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extend_from_slice.html) 
+  ◦ [Vector::extend_from_slice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extend_from_slice.html) 
     Clones and appends all elements in a slice to the Vec. [...]
 
-  ◦ [Vec::extend_from_within](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extend_from_within.html) 
+  ◦ [Vector::extend_from_within](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extend_from_within.html) 
     Given a range src, clones a slice of elements in that range and appends it to
     the end. [...]
 
-  ◦ [Vec::extend_trusted](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_trusted) 
+  ◦ [Vector::extend_trusted](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_trusted) 
 
-  ◦ [Vec::extend_with](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_with) 
+  ◦ [Vector::extend_with](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.extend_with) 
     Extend the vector by n clones of value.
 
-  ◦ [Vec::extract_if](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extract_if.html) 
+  ◦ [Vector::extract_if](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.extract_if.html) 
     Creates an iterator which uses a closure to determine if an element in the
     range should be removed. [...]
 
-  ◦ [Vec::from_fn](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_fn) 
+  ◦ [Vector::from_fn](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.from_fn) 
     Creates a Vec<T> where each element is produced by calling f with that
     element's index while walking forward through the Vec<T>. [...]
 
-  ◦ [Vec::from_parts](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_parts.html) 
+  ◦ [Vector::from_parts](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_parts.html) 
     Creates a Vec<T> directly from a NonNull pointer, a length, and a capacity. [...]
 
-  ◦ [Vec::from_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_parts_in.html) 
+  ◦ [Vector::from_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_parts_in.html) 
     Creates a Vec<T, A> directly from a NonNull pointer, a length, a capacity, and
     an allocator. [...]
 
-  ◦ [Vec::from_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_raw_parts.html) 
+  ◦ [Vector::from_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_raw_parts.html) 
     Creates a Vec<T> directly from a pointer, a length, and a capacity. [...]
 
-  ◦ [Vec::from_raw_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_raw_parts_in.html) 
+  ◦ [Vector::from_raw_parts_in](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.from_raw_parts_in.html) 
     Creates a Vec<T, A> directly from a pointer, a length, a capacity, and an
     allocator. [...]
 
-  ◦ [Vec::insert](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.insert.html) 
+  ◦ [Vector::insert](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.insert.html) 
     Inserts an element at position index within the vector, shifting all elements
     after it to the right. [...]
 
-  ◦ [Vec::insert_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.insert_mut) 
+  ◦ [Vector::insert_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.insert_mut) 
     Inserts an element at position index within the vector, shifting all elements
     after it to the right, and returning a reference to the new element. [...]
 
-  ◦ [Vec::into_array](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_array) 
+  ◦ [Vector::into_array](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_array) 
     Converts the Vec into a boxed array. This conversion will discard any spare
     capacity, if there is any, see [Vec::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to_fit.html). If you merely wish for a
     reference to an array, use [as_array](https://doc.rust-lang.org/stable/std/primitive.slice.html#method.as_array). [...]
 
-  ◦ [Vec::into_boxed_slice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_boxed_slice.html) 
+  ◦ [Vector::into_boxed_slice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_boxed_slice.html) 
     Converts the vector into [Box<[T]>](https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html). [...]
 
-  ◦ [Vec::into_chunks](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_chunks) 
+  ◦ [Vector::into_chunks](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_chunks) 
     Groups every N elements in the Vec<T> into chunks to produce a Vec<[T; N]>,
     dropping elements in the remainder. N must be greater than zero. [...]
 
-  ◦ [Vec::into_flattened](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_flattened.html) 
+  ◦ [Vector::into_flattened](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_flattened.html) 
     Takes a Vec<[T; N]> and flattens it into a Vec<T>. [...]
 
-  ◦ [Vec::into_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts) 
+  ◦ [Vector::into_parts](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts) 
     Decomposes a Vec<T> into its raw components: (NonNull pointer, length, capacity)
     . [...]
 
-  ◦ [Vec::into_parts_with_allocator](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts_with_allocator) 
+  ◦ [Vector::into_parts_with_allocator](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_parts_with_allocator) 
     Decomposes a Vec<T> into its raw components: (NonNull pointer, length,
     capacity, allocator). [...]
 
-  ◦ [Vec::into_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_raw_parts.html) 
+  ◦ [Vector::into_raw_parts](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_raw_parts.html) 
     Decomposes a Vec<T> into its raw components: (pointer, length, capacity). [...]
 
-  ◦ [Vec::into_raw_parts_with_allocator](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_raw_parts_with_allocator.html) 
+  ◦ [Vector::into_raw_parts_with_allocator](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_raw_parts_with_allocator.html) 
     Decomposes a Vec<T> into its raw components: (pointer, length, capacity,
     allocator). [...]
 
-  ◦ [Vec::is_empty](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.is_empty) 
+  ◦ [Vector::is_empty](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.is_empty) 
     Returns true if the vector contains no elements. [...]
 
-  ◦ [Vec::leak](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.leak) 
+  ◦ [Vector::leak](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.leak) 
     Consumes and leaks the Vec, returning a mutable reference to the contents, &'a
     mut [T]. [...]
 
-  ◦ [Vec::len](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.len.html) 
+  ◦ [Vector::len](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.len.html) 
     Returns the number of elements in the vector, also referred to as its 'length'. [...]
 
-  ◦ [Vec::new](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.new.html) 
+  ◦ [Vector::new](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.new.html) 
     Constructs a new, empty Vec<T>. [...]
 
-  ◦ [Vec::new_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new_in) 
+  ◦ [Vector::new_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.new_in) 
     Constructs a new, empty Vec<T, A>. [...]
 
-  ◦ [Vec::peek_mut](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.peek_mut.html) 
+  ◦ [Vector::peek_mut](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.peek_mut.html) 
     Returns a mutable reference to the last item in the vector, or None if it is
     empty. [...]
 
-  ◦ [Vec::pop](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop) 
+  ◦ [Vector::pop](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop) 
     Removes the last element from a vector and returns it, or [None](https://doc.rust-lang.org/nightly/core/option/Option/index.html?search=core%3A%3Aoption%3A%3AOption%3A%3ANone) if it is empty. [...]
 
-  ◦ [Vec::pop_if](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop_if) 
+  ◦ [Vector::pop_if](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.pop_if) 
     Removes and returns the last element from a vector if the predicate returns true
     , or [None](https://doc.rust-lang.org/nightly/core/option/Option/index.html?search=core%3A%3Aoption%3A%3AOption%3A%3ANone) if the predicate returns false or the vector is empty (the predicate
     will not be called in that case). [...]
 
-  ◦ [Vec::push](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.push.html) 
+  ◦ [Vector::push](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.push.html) 
     Appends an element to the back of a collection. [...]
 
-  ◦ [Vec::push_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_mut) 
+  ◦ [Vector::push_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_mut) 
     Appends an element to the back of a collection, returning a reference to it. [...]
 
-  ◦ [Vec::push_within_capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_within_capacity) 
+  ◦ [Vector::push_within_capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.push_within_capacity) 
     Appends an element and returns a reference to it if there is sufficient spare
     capacity, otherwise an error is returned with the element. [...]
 
-  ◦ [Vec::recycle](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.recycle) 
+  ◦ [Vector::recycle](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.recycle) 
     This clears out this Vec and recycles the allocation into a new Vec. The item
     type of the resulting Vec needs to have the same size and alignment as the item
     type of the original Vec. [...]
 
-  ◦ [Vec::remove](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.remove.html) 
+  ◦ [Vector::remove](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.remove.html) 
     Removes and returns the element at position index within the vector, shifting
     all elements after it to the left. [...]
 
-  ◦ [Vec::reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.reserve.html) 
+  ◦ [Vector::reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.reserve.html) 
     Reserves capacity for at least additional more elements to be inserted in the
     given Vec<T>. The collection may reserve more space to speculatively avoid
     frequent reallocations. After calling reserve, capacity will be greater than or
     equal to self.len() + additional. Does nothing if capacity is already
     sufficient. [...]
 
-  ◦ [Vec::reserve_exact](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve_exact) 
+  ◦ [Vector::reserve_exact](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.reserve_exact) 
     Reserves the minimum capacity for at least additional more elements to be
     inserted in the given Vec<T>. Unlike [reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.reserve.html), this will not deliberately
     over-allocate to speculatively avoid frequent allocations. After calling 
     reserve_exact, capacity will be greater than or equal to self.len() + additional
     . Does nothing if the capacity is already sufficient. [...]
 
-  ◦ [Vec::resize](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.resize.html) 
+  ◦ [Vector::resize](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.resize.html) 
     Resizes the Vec in-place so that len is equal to new_len. [...]
 
-  ◦ [Vec::resize_with](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.resize_with.html) 
+  ◦ [Vector::resize_with](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.resize_with.html) 
     Resizes the Vec in-place so that len is equal to new_len. [...]
 
-  ◦ [Vec::retain](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain) 
+  ◦ [Vector::retain](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain) 
     Retains only the elements specified by the predicate. [...]
 
-  ◦ [Vec::retain_mut](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.retain_mut.html) 
+  ◦ [Vector::retain_mut](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.retain_mut.html) 
     Retains only the elements specified by the predicate, passing a mutable
     reference to it. [...]
 
-  ◦ [Vec::set_len](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.set_len.html) 
+  ◦ [Vector::set_len](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.set_len.html) 
     Forces the length of the vector to new_len. [...]
 
-  ◦ [Vec::shrink_to](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to.html) 
+  ◦ [Vector::shrink_to](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to.html) 
     Shrinks the capacity of the vector with a lower bound. [...]
 
-  ◦ [Vec::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to_fit.html) 
+  ◦ [Vector::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to_fit.html) 
     Shrinks the capacity of the vector as much as possible. [...]
 
-  ◦ [Vec::spare_capacity_mut](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.spare_capacity_mut.html) 
+  ◦ [Vector::spare_capacity_mut](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.spare_capacity_mut.html) 
     Returns the remaining spare capacity of the vector as a slice of MaybeUninit<T>. [...]
 
-  ◦ [Vec::splice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.splice.html) 
+  ◦ [Vector::splice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.splice.html) 
     Creates a splicing iterator that replaces the specified range in the vector with
     the given replace_with iterator and yields the removed items. replace_with does
     not need to be the same length as range. [...]
 
-  ◦ [Vec::split_at_spare_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_at_spare_mut) 
+  ◦ [Vector::split_at_spare_mut](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_at_spare_mut) 
     Returns vector content as a slice of T, along with the remaining spare capacity
     of the vector as a slice of MaybeUninit<T>. [...]
 
-  ◦ [Vec::split_at_spare_mut_with_len](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_at_spare_mut_with_len) 
+  ◦ [Vector::split_at_spare_mut_with_len](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_at_spare_mut_with_len) 
     Safety: changing returned .2 (&mut usize) is considered the same as calling .
     set_len(_). [...]
 
-  ◦ [Vec::split_off](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_off) 
+  ◦ [Vector::split_off](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.split_off) 
     Splits the collection into two at the given index. [...]
 
-  ◦ [Vec::swap_remove](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.swap_remove.html) 
+  ◦ [Vector::swap_remove](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.swap_remove.html) 
     Removes an element from the vector and returns it. [...]
 
-  ◦ [Vec::truncate](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.truncate.html) 
+  ◦ [Vector::truncate](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.truncate.html) 
     Shortens the vector, keeping the first len elements and dropping the rest. [...]
 
-  ◦ [Vec::try_append_elements](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_append_elements) 
+  ◦ [Vector::try_append_elements](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_append_elements) 
     Appends elements to self from other buffer, returning [TryReserveError](https://doc.rust-lang.org/nightly/alloc/collections/struct.TryReserveError.html) on OOM.
 
-  ◦ [Vec::try_extend_from_slice_of_bytes](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_extend_from_slice_of_bytes) 
+  ◦ [Vector::try_extend_from_slice_of_bytes](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_extend_from_slice_of_bytes) 
 
-  ◦ [Vec::try_remove](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_remove) 
+  ◦ [Vector::try_remove](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_remove) 
     Remove and return the element at position index within the vector, shifting all
     elements after it to the left, or [None](https://doc.rust-lang.org/nightly/core/option/Option/index.html?search=core%3A%3Aoption%3A%3AOption%3A%3ANone) if it does not exist. [...]
 
-  ◦ [Vec::try_reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.try_reserve.html) 
+  ◦ [Vector::try_reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.try_reserve.html) 
     Tries to reserve capacity for at least additional more elements to be inserted 
     in the given Vec<T>. The collection may reserve more space to speculatively
     avoid frequent reallocations. After calling try_reserve, capacity will be 
@@ -495,7 +791,7 @@ Functions
     nothing if capacity is already sufficient. This method preserves the contents
     even if an error occurs. [...]
 
-  ◦ [Vec::try_reserve_exact](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve_exact) 
+  ◦ [Vector::try_reserve_exact](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_reserve_exact) 
     Tries to reserve the minimum capacity for at least additional elements to be
     inserted in the given Vec<T>. Unlike [try_reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.try_reserve.html), this will not deliberately
     over-allocate to speculatively avoid frequent allocations. After calling 
@@ -503,23 +799,23 @@ Functions
     additional if it returns Ok(()). Does nothing if the capacity is already
     sufficient. [...]
 
-  ◦ [Vec::try_shrink_to](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_shrink_to) 
+  ◦ [Vector::try_shrink_to](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_shrink_to) 
     Shrinks the capacity of the vector with a lower bound. [...]
 
-  ◦ [Vec::try_shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_shrink_to_fit) 
+  ◦ [Vector::try_shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_shrink_to_fit) 
     Tries to shrink the capacity of the vector as much as possible [...]
 
-  ◦ [Vec::try_with_capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_with_capacity) 
+  ◦ [Vector::try_with_capacity](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_with_capacity) 
     Constructs a new, empty Vec<T> with at least the specified capacity. [...]
 
-  ◦ [Vec::try_with_capacity_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_with_capacity_in) 
+  ◦ [Vector::try_with_capacity_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.try_with_capacity_in) 
     Constructs a new, empty Vec<T, A> with at least the specified capacity with the
     provided allocator. [...]
 
-  ◦ [Vec::with_capacity](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.with_capacity.html) 
+  ◦ [Vector::with_capacity](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.with_capacity.html) 
     Constructs a new, empty Vec<T> with at least the specified capacity. [...]
 
-  ◦ [Vec::with_capacity_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity_in) 
+  ◦ [Vector::with_capacity_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.with_capacity_in) 
     Constructs a new, empty Vec<T, A> with at least the specified capacity with the
     provided allocator. [...]
 
@@ -531,6 +827,19 @@ Functions
 
   ◦ [generics::ConstGeneric::filled](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/struct.ConstGeneric.html#method.filled) 
     A method whose signature mentions the const parameter.
+
+  ◦ [generics::Cow::into_owned](https://doc.rust-lang.org/nightly/alloc/borrow/enum.Cow.html#method.into_owned) 
+    Extracts the owned data. [...]
+
+  ◦ [generics::Cow::is_borrowed](https://doc.rust-lang.org/nightly/alloc/borrow/enum.Cow.html#method.is_borrowed) 
+    Returns true if the data is borrowed, i.e. if to_mut would require additional
+    work. [...]
+
+  ◦ [generics::Cow::is_owned](https://doc.rust-lang.org/nightly/alloc/borrow/enum.Cow.html#method.is_owned) 
+    Returns true if the data is owned, i.e. if to_mut would be a no-op. [...]
+
+  ◦ [generics::Cow::to_mut](https://doc.rust-lang.org/nightly/alloc/borrow/enum.Cow.html#method.to_mut) 
+    Acquires a mutable reference to the owned form of the data. [...]
 
   ◦ [generics::assoc_bound](https://docs.rs/fixture-crate/0.1.0/fixture_crate/generics/fn.assoc_bound.html) 
     An associated-item bound constraint (Item: Clone) inside generic arguments —
@@ -743,12 +1052,6 @@ Functions
     Creates a new empty hash set which will use the given hasher to hash keys and
     will allocate memory using the provided allocator. [...]
 
-  ◦ [link_resolution_tests::LinkTestStruct::get_data](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/struct.LinkTestStruct.html#method.get_data) 
-    Another method
-
-  ◦ [link_resolution_tests::LinkTestStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/struct.LinkTestStruct.html#method.new) 
-    Method for testing Self resolution
-
   ◦ [link_resolution_tests::RenamedTestStruct::get_field](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html#method.get_field) 
     Get the field value
 
@@ -934,6 +1237,8 @@ Functions
     Removes the specified range from the string in bulk, returning all removed
     characters as an iterator. [...]
 
+  ◦ [link_resolution_tests::nested::Str::extend_from_escape_default](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.extend_from_escape_default) 
+
   ◦ [link_resolution_tests::nested::Str::extend_from_within](https://doc.rust-lang.org/nightly/alloc/string/struct.String.html#method.extend_from_within) 
     Copies elements from src range to the end of the string. [...]
 
@@ -1095,6 +1400,12 @@ Functions
   ◦ [link_resolution_tests::nested::Str::with_capacity](https://doc.rust-lang.org/nightly/alloc/string/String/fn.with_capacity.html) 
     Creates a new empty String with at least the specified capacity. [...]
 
+  ◦ [link_resolution_tests::nested::deeply_nested::LinkTestStruct::get_data](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/struct.LinkTestStruct.html#method.get_data) 
+    Another method
+
+  ◦ [link_resolution_tests::nested::deeply_nested::LinkTestStruct::new](https://docs.rs/fixture-crate/0.1.0/fixture_crate/link_resolution_tests/struct.LinkTestStruct.html#method.new) 
+    Method for testing Self resolution
+
   ◦ [namespace_collisions::both](https://docs.rs/fixture-crate/0.1.0/fixture_crate/namespace_collisions/fn.both.html) 
     A function sharing its name with the [both](https://docs.rs/fixture-crate/latest/fixture-crate/index.html?search=fixture%2Dcrate%3A%3Aboth) module above.
 
@@ -1135,6 +1446,11 @@ Statics
   ◦ [TEST_STATIC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/static.TEST_STATIC.html) 
     A static for testing
 
+Macros
+
+  ◦ [generics::Debug](https://doc.rust-lang.org/nightly/core/fmt/macros/derive.Debug.html) 
+    Derive macro generating an impl of the trait Debug.
+
 Variants
 
   ◦ [GenericEnum::Mixed](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
@@ -1146,6 +1462,12 @@ Variants
   ◦ [GenericEnum::WithData](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant with generic data
 
+  ◦ [StdResult::Err](https://doc.rust-lang.org/nightly/core/) 
+    Contains the error value
+
+  ◦ [StdResult::Ok](https://doc.rust-lang.org/nightly/core/) 
+    Contains the success value
+
   ◦ [VariantA](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant A (see also [crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html))
 
@@ -1154,6 +1476,12 @@ Variants
 
   ◦ [VariantC](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Variant C with struct data (name and value)
+
+  ◦ [generics::Cow::Borrowed](https://doc.rust-lang.org/nightly/alloc/) 
+    Borrowed data.
+
+  ◦ [generics::Cow::Owned](https://doc.rust-lang.org/nightly/alloc/) 
+    Owned data.
 
   ◦ [generics::EnumManyPredicates::First](https://docs.rs/fixture-crate/0.1.0/fixture_crate/) 
     Holds a T.

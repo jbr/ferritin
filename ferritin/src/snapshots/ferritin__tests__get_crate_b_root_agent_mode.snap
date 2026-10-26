@@ -1,16 +1,22 @@
 ---
 source: ferritin/src/tests.rs
-expression: "render_for_tests_rooted(Commands::get(\"crate_b\"), OutputMode :: Ai, &\nget_test_workspace_path ())"
+expression: "render_for_tests_rooted(Commands::get(\"crate_b\"), OutputMode :: Agent, &\nget_test_workspace_path ())"
 ---
 Module crate_b — in crate-b (0.1.0)
 
 ## Modules
 
+- aliased_a
 - prefix_inner
 
 ## Structs
 
 - AliasedCrateAStruct
+- CrateAStruct
 - CrateBProcessor
 - PrefixCrateAAlias
 - SelfPrefixAlias
+
+## Type Aliases
+
+- Result — Result<T, Error> [+5 lines]

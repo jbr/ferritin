@@ -22,14 +22,14 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::DoesNotExist\")
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/index.html"
     },
     {
+      "path": "crate::StdResult",
+      "kind": "enum",
+      "url": "https://doc.rust-lang.org/nightly/core/result/enum.StdResult.html"
+    },
+    {
       "path": "crate::ComplexTrait",
       "kind": "trait",
       "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html"
-    },
-    {
-      "path": "crate::markdown_test",
-      "kind": "module",
-      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/markdown_test/index.html"
     }
   ]
 }

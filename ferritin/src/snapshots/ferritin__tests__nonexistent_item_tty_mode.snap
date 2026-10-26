@@ -12,6 +12,6 @@ Did you mean:
 
   ◦ [crate::prefix_tests](https://docs.rs/fixture-crate/0.1.0/fixture_crate/prefix_tests/index.html)
 
-  ◦ [crate::ComplexTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html)
+  ◦ [crate::StdResult](https://doc.rust-lang.org/nightly/core/result/enum.StdResult.html)
 
-  ◦ [crate::markdown_test](https://docs.rs/fixture-crate/0.1.0/fixture_crate/markdown_test/index.html)
+  ◦ [crate::ComplexTrait](https://docs.rs/fixture-crate/0.1.0/fixture_crate/trait.ComplexTrait.html)
