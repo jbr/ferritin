@@ -1961,7 +1961,7 @@ This consumes the <inline-code>String</inline-code>, so we do not need to copy i
 <type-name>link_resolution_tests::nested::Str::into_chars</type-name> </p>
 <truncated level="single-line"><p>
 Converts a <inline-code>String</inline-code> into an iterator over the <inline-code>char</inline-code>s of the string.</p>
-As a string by <inline-code>char</inline-code>. This method <elided chars="1079"/></truncated>
+As a string by <inline-code>char</inline-code>. This method <elided chars="1015"/></truncated>
 </item>
   <item><p>
 <type-name>link_resolution_tests::nested::Str::into_raw_parts</type-name> </p>
