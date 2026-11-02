@@ -9,7 +9,7 @@ expression: "render_for_tests_rooted(Commands::search(\"trigger line-based trunc
 - proc_macro::bridge::client::panic::panicking::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::line  (Macro) - score: 52.4 — Expands to the line number on which it was invoked. [+4 lines]
 - std::prelude::rust_2021::ambiguous_macros_only::line  (Macro) - score: 52.4 — Expands to the line number on which it was invoked. [+4 lines]
 - test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::line  (Macro) - score: 52.4 — Expands to the line number on which it was invoked. [+4 lines]
-- proc_macro::diagnostic::Span::line  (Function) - score: 37.5 — The one-indexed line of the source file where the span starts. [+1 lines]
+- proc_macro::diagnostic::Span::line  (Function) - score: 37.6 — The one-indexed line of the source file where the span starts. [+1 lines]
 - core::prelude::v1::ambiguous_macros_only::panic::location::Location::line  (Function) - score: 37.4 — Returns the line number from which the panic originated. [+2 lines]
 - proc_macro::bridge::client::panic::panicking::Location::line  (Function) - score: 37.4 — Returns the line number from which the panic originated. [+2 lines]
 - std::prelude::v1::ambiguous_macros_only::rt::thread::current::id::thread::unix::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::panic::panicking::Location::line  (Function) - score: 37.4 — Returns the line number from which the panic originated. [+2 lines]

@@ -20,7 +20,7 @@ Search results for 'trigger line-based truncation'
   ◦ test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::line  (Macro) - score: 52.4
     Expands to the line number on which it was invoked. [...]
 
-  ◦ proc_macro::diagnostic::Span::line  (Function) - score: 37.5
+  ◦ proc_macro::diagnostic::Span::line  (Function) - score: 37.6
     The one-indexed line of the source file where the span starts. [...]
 
   ◦ core::prelude::v1::ambiguous_macros_only::panic::location::Location::line  (Function) - score: 37.4
