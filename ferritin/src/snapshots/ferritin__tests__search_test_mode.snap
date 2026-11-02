@@ -35,7 +35,7 @@ Expands to the line number on which it was invoked.</p>
 With <inline-code>column!</inline-code> and <inline-code>file!</inline-code>, these macros provide developers about the <elided chars="535"/></truncated>
 </item>
   <item><p>
-proc_macro::diagnostic::Span::line  (Function) - score: 37.5</p>
+proc_macro::diagnostic::Span::line  (Function) - score: 37.6</p>
 <truncated level="single-line"><p>
 The one-indexed line of the source file where the span starts.</p>
 To obtain the<inline-code>span.end().line()</inline-code>. <elided chars="42"/></truncated>

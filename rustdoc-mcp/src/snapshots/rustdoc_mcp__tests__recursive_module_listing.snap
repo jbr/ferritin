@@ -386,7 +386,7 @@ link_resolution_tests::nested::Str::insert // Inserts a character into this `Str
 link_resolution_tests::nested::Str::insert_str // Inserts a string slice into this `String` at byte position `idx`. [+21 more lines]
 link_resolution_tests::nested::Str::into_boxed_str // Converts this `String` into a <code>[Box]<[str]></code>. [+14 more lines]
 link_resolution_tests::nested::Str::into_bytes // Converts a `String` into a byte vector. [+11 more lines]
-link_resolution_tests::nested::Str::into_chars // Converts a `String` into an iterator over the [`char`]s of the string. [+47 more lines]
+link_resolution_tests::nested::Str::into_chars // Converts a `String` into an iterator over the [`char`]s of the string. [+43 more lines]
 link_resolution_tests::nested::Str::into_raw_parts // Decomposes a `String` into its raw components: `(pointer, length, capacity)`. [+28 more lines]
 link_resolution_tests::nested::Str::is_empty // Returns `true` if this `String` has a length of zero, and `false` otherwise. [+10 more lines]
 link_resolution_tests::nested::Str::leak // Consumes and leaks the `String`, returning a mutable reference to the contents, [+23 more lines]

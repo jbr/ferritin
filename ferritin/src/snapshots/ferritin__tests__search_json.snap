@@ -129,7 +129,7 @@ expression: "render_json_for_tests_rooted(Commands::search(\"trigger line-based 
       "path": "proc_macro::diagnostic::Span::line",
       "kind": "function",
       "url": "https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.line",
-      "score": 37.5,
+      "score": 37.6,
       "docs": [
         {
           "type": "truncatedBlock",
