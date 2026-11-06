@@ -38,7 +38,7 @@ Variants:
 
 Trait Implementations
 
-std: [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom)<Self>
+std: [Forget](https://doc.rust-lang.org/nightly/core/marker/index.html?search=core%3A%3Amarker%3A%3AForget), [From](https://doc.rust-lang.org/nightly/core/convert/index.html?search=core%3A%3Aconvert%3A%3AFrom)<Self>
 
   ◦ impl [Any](https://doc.rust-lang.org/nightly/core/any/trait.Any.html) where Self: 'static + ?[Sized](https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html)
 

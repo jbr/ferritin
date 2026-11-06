@@ -147,7 +147,7 @@ Associated Types:
 
 Trait Implementations:
 ImplTraitMethods
-std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Forget, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync [+5 more]
 
 Item: ManyPredicates
 Kind: Struct
@@ -168,7 +168,7 @@ where
 ```
 
 
-std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Forget, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync [+5 more]
 
 Item: TupleWithWhere
 Kind: Struct
@@ -183,7 +183,7 @@ where
     T: Display;
 ```
 
-std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Forget, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync [+5 more]
 
 Item: EnumManyPredicates
 Kind: Enum
@@ -203,7 +203,7 @@ where
 }
 ```
 
-std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Forget, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync [+5 more]
 
 Item: ImplTraitMethods
 Kind: Trait

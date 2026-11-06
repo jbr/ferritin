@@ -38,7 +38,7 @@ expression: "render_interactive_for_tests_rooted(Commands::get(\"crate::GenericE
 "                                                                                "
 "   Trait Implementations                                                        "
 "                                                                                "
-"   std: From<Self>                                                              "
+"   std: Forget, From<Self>                                                      "
 "                                                                                "
 "     ◦ impl Any where Self: 'static + ?Sized                                    "
 "                                                                                "

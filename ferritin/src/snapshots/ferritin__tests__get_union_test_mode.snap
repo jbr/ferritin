@@ -49,7 +49,7 @@ Construct a <inline-code>TestUnion</inline-code> from its integer view.</p>
 </item>
 </list>
 </section><section><section-title>Trait Implementations</section-title><p>
-std: <type-name>From</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation></p>
+std: <type-name>Forget</type-name><punctuation>,</punctuation> <type-name>From</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation></p>
 <list>
   <item><generated-code>
 <keyword>impl</keyword> <type-name>Any</type-name> <keyword>where</keyword> <generic>Self</generic><punctuation>:</punctuation> <lifetime>'static</lifetime> + <operator>?</operator><type-name>Sized</type-name></generated-code>

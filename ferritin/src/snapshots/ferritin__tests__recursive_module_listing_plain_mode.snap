@@ -569,7 +569,7 @@ Functions
     Converts the Vec into a boxed array. This conversion will discard any spare capacity, if there is any, see Vec::shrink_to_fit. If you merely wish for a reference to an array, use as_array. [...]
 
   ◦ Vector::into_boxed_slice 
-    Converts the vector into Box<[T]>. [...]
+    Converts the vector into a boxed slice. [...]
 
   ◦ Vector::into_chunks 
     Groups every N elements in the Vec<T> into chunks to produce a Vec<[T; N]>, dropping elements in the remainder. N must be greater than zero. [...]
@@ -644,6 +644,9 @@ Functions
     Retains only the elements specified by the predicate. [...]
 
   ◦ Vector::retain_mut 
+    Retains only the elements specified by the predicate, passing a mutable reference to it. [...]
+
+  ◦ Vector::retain_unstable 
     Retains only the elements specified by the predicate, passing a mutable reference to it. [...]
 
   ◦ Vector::set_len 
@@ -908,6 +911,9 @@ Functions
 
   ◦ link_resolution_tests::RenamedTestStruct::new 
     Create a new TestStruct
+
+  ◦ link_resolution_tests::Tree::allocator 
+    Returns a reference to the underlying allocator.
 
   ◦ link_resolution_tests::Tree::append 
     Moves all elements from other into self, leaving other empty. [...]

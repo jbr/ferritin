@@ -97,7 +97,7 @@ where
     Tries to reserve the minimum capacity for at least `additional` [+37 more lines]
 
 • pub fn shrink_to_fit(&mut self)
-    Shrinks the capacity of the vector as much as possible. [+16 more lines]
+    Shrinks the capacity of the vector as much as possible. [+17 more lines]
 
 • pub fn shrink_to(&mut self, min_capacity: usize)
     Shrinks the capacity of the vector with a lower bound. [+17 more lines]
@@ -109,7 +109,7 @@ where
     Shrinks the capacity of the vector with a lower bound. [+25 more lines]
 
 • pub fn into_boxed_slice(self) -> Box<[T], A>
-    Converts the vector into [`Box<[T]>`][owned slice]. [+24 more lines]
+    Converts the vector into a boxed slice. [+22 more lines]
 
 • pub fn into_array<const N: usize>(self) -> Result<Box<[T; N], A>, Self>
     Converts the Vec into a boxed array. This conversion will discard any spare capacity, [+16 more lines]
@@ -162,6 +162,11 @@ where
 where
     F: FnMut(&mut T) -> bool
     Retains only the elements specified by the predicate, passing a mutable reference to it. [+17 more lines]
+
+• pub fn retain_unstable<F>(&mut self, f: F)
+where
+    F: FnMut(&mut T) -> bool
+    Retains only the elements specified by the predicate, passing a mutable reference to it. [+26 more lines]
 
 • pub fn dedup_by_key<F, K>(&mut self, key: F)
 where
@@ -293,4 +298,4 @@ where
     Creates an iterator which uses a closure to determine if an element in the range should be removed. [+73 more lines]
 
 
-std traits: Any, AsMut<Vec<T, A>>, AsMut<[T]>, AsRef<Vec<T, A>>, AsRef<[T]>, Borrow<T>, Borrow<[T]>, BorrowMut<T>, BorrowMut<[T]>, BufGuard<T> [+72 more]
+std traits: Any, AsMut<Vec<T, A>>, AsMut<[T]>, AsRef<Vec<T, A>>, AsRef<[T]>, Borrow<T>, Borrow<[T]>, BorrowMut<T>, BorrowMut<[T]>, BufGuard<T> [+73 more]
