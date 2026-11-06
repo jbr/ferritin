@@ -340,6 +340,12 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate::TestUnion\"), &
         ]
       },
       {
+        "traitName": "Forget",
+        "traitUrl": "https://doc.rust-lang.org/nightly/core/marker/trait.Forget.html",
+        "isSynthetic": true,
+        "isStd": true
+      },
+      {
         "traitName": "Freeze",
         "traitUrl": "https://doc.rust-lang.org/nightly/core/marker/trait.Freeze.html",
         "isSynthetic": true,

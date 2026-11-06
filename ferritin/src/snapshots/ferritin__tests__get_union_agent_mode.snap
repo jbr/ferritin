@@ -26,7 +26,7 @@ union TestUnion<T: Copy> {
 
 ## Trait Implementations
 
-std: From<Self>
+std: Forget, From<Self>
 
 - impl Any where Self: 'static + ?Sized
 - impl Borrow<Self> where Self: ?Sized

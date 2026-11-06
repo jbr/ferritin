@@ -42,4 +42,4 @@ Fields:
     Another private field
 
 
-std traits: Any, Borrow<T>, BorrowMut<T>, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync, TryFrom<U> [+4 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Forget, Freeze, From<T>, Into<U>, RefUnwindSafe, Send, Sync [+5 more]

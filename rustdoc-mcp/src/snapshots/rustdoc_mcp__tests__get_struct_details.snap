@@ -51,4 +51,4 @@ Associated Types:
 
 Trait Implementations:
 TestTrait
-std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Freeze, From<T>, Into<U>, RefUnwindSafe [+8 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Forget, Freeze, From<T>, Into<U> [+9 more]
