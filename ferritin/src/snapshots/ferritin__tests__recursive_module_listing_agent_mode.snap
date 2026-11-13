@@ -206,7 +206,7 @@ A minimal test crate for rustdoc JSON testing
 - Vector::insert — Inserts an element at position index within the vector, shifting all elements after it to the right. [+6 lines]
 - Vector::insert_mut — Inserts an element at position index within the vector, shifting all elements after it to the right, and returning a reference to the new element. [+6 lines]
 - Vector::into_array — Converts the Vec into a boxed array. This conversion will discard any spare capacity, if there is any, see Vec::shrink_to_fit. If you merely wish for a reference to an array, use as_array. [+4 lines]
-- Vector::into_boxed_slice — Converts the vector into Box<[T]>. [+5 lines]
+- Vector::into_boxed_slice — Converts the vector into a boxed slice. [+5 lines]
 - Vector::into_chunks — Groups every N elements in the Vec<T> into chunks to produce a Vec<[T; N]>, dropping elements in the remainder. N must be greater than zero. [+4 lines]
 - Vector::into_flattened — Takes a Vec<[T; N]> and flattens it into a Vec<T>. [+5 lines]
 - Vector::into_parts — Decomposes a Vec<T> into its raw components: (NonNull pointer, length, capacity). [+4 lines]
@@ -232,6 +232,7 @@ A minimal test crate for rustdoc JSON testing
 - Vector::resize_with — Resizes the Vec in-place so that len is equal to new_len. [+7 lines]
 - Vector::retain — Retains only the elements specified by the predicate. [+5 lines]
 - Vector::retain_mut — Retains only the elements specified by the predicate, passing a mutable reference to it. [+3 lines]
+- Vector::retain_unstable — Retains only the elements specified by the predicate, passing a mutable reference to it. [+5 lines]
 - Vector::set_len — Forces the length of the vector to new_len. [+10 lines]
 - Vector::shrink_to — Shrinks the capacity of the vector with a lower bound. [+4 lines]
 - Vector::shrink_to_fit — Shrinks the capacity of the vector as much as possible. [+3 lines]
@@ -320,6 +321,7 @@ A minimal test crate for rustdoc JSON testing
 - link_resolution_tests::RenamedTestStruct::get_field — Get the field value
 - link_resolution_tests::RenamedTestStruct::increment_count — Update the count
 - link_resolution_tests::RenamedTestStruct::new — Create a new TestStruct
+- link_resolution_tests::Tree::allocator — Returns a reference to the underlying allocator.
 - link_resolution_tests::Tree::append — Moves all elements from other into self, leaving other empty. [+3 lines]
 - link_resolution_tests::Tree::bulk_build_from_sorted_iter — Makes a BTreeMap from a sorted iterator.
 - link_resolution_tests::Tree::clear — Clears the map, removing all elements. [+2 lines]

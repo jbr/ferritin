@@ -47,7 +47,7 @@ f32 // Constants for the `f32` single-precision floating point type. [+9 more li
 f64 // Constants for the `f64` double-precision floating point type. [+9 more lines]
 ffi // Utilities related to FFI bindings. [+159 more lines]
 field // Field Reflection
-fmt // Utilities for formatting and printing `String`s. [+589 more lines]
+fmt // Utilities for formatting and printing `String`s. [+590 more lines]
 from // Unstable module containing the unstable `From` derive macro.
 fs // Filesystem manipulation operations. [+26 more lines]
 future // Asynchronous basic functionality. [+7 more lines]

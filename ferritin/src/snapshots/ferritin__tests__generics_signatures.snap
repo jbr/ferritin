@@ -100,7 +100,7 @@ struct ConstGeneric<T = u8, const N: usize = 3> {
 
 ImplTraitMethods
 
-std: From<Self>
+std: Forget, From<Self>, Move
 
 - impl Any where Self: 'static + ?Sized
 - impl Borrow<Self> where Self: ?Sized
@@ -137,7 +137,7 @@ where
 
 ## Trait Implementations
 
-std: From<Self>
+std: Forget, From<Self>, Move
 
 - impl Any where Self: 'static + ?Sized
 - impl Borrow<Self> where Self: ?Sized
@@ -161,7 +161,7 @@ struct TupleWithWhere<T>(
 
 ## Trait Implementations
 
-std: From<Self>
+std: Forget, From<Self>, Move
 
 - impl Any where Self: 'static + ?Sized
 - impl Borrow<Self> where Self: ?Sized
@@ -195,7 +195,7 @@ where
 
 ## Trait Implementations
 
-std: From<Self>
+std: Forget, From<Self>, Move
 
 - impl Any where Self: 'static + ?Sized
 - impl Borrow<Self> where Self: ?Sized

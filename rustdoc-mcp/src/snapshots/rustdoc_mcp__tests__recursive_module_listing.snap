@@ -204,7 +204,7 @@ Vector::from_raw_parts_in // Creates a `Vec<T, A>` directly from a pointer, a le
 Vector::insert // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
 Vector::insert_mut // Inserts an element at position `index` within the vector, shifting all [+21 more lines]
 Vector::into_array // Converts the Vec into a boxed array. This conversion will discard any spare capacity, [+16 more lines]
-Vector::into_boxed_slice // Converts the vector into [`Box<[T]>`][owned slice]. [+24 more lines]
+Vector::into_boxed_slice // Converts the vector into a boxed slice. [+22 more lines]
 Vector::into_chunks // Groups every `N` elements in the `Vec<T>` into chunks to produce a `Vec<[T; N]>`, dropping [+23 more lines]
 Vector::into_flattened // Takes a `Vec<[T; N]>` and flattens it into a `Vec<T>`. [+18 more lines]
 Vector::into_parts // Decomposes a `Vec<T>` into its raw components: `(NonNull pointer, length, capacity)`. [+30 more lines]
@@ -230,9 +230,10 @@ Vector::resize // Resizes the `Vec` in-place so that `len` is equal to `new_len`
 Vector::resize_with // Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+30 more lines]
 Vector::retain // Retains only the elements specified by the predicate. [+23 more lines]
 Vector::retain_mut // Retains only the elements specified by the predicate, passing a mutable reference to it. [+17 more lines]
+Vector::retain_unstable // Retains only the elements specified by the predicate, passing a mutable reference to it. [+28 more lines]
 Vector::set_len // Forces the length of the vector to `new_len`. [+85 more lines]
 Vector::shrink_to // Shrinks the capacity of the vector with a lower bound. [+17 more lines]
-Vector::shrink_to_fit // Shrinks the capacity of the vector as much as possible. [+16 more lines]
+Vector::shrink_to_fit // Shrinks the capacity of the vector as much as possible. [+17 more lines]
 Vector::spare_capacity_mut // Returns the remaining spare capacity of the vector as a slice of [+27 more lines]
 Vector::splice // Creates a splicing iterator that replaces the specified range in the vector [+42 more lines]
 Vector::split_at_spare_mut // Returns vector content as a slice of `T`, along with the remaining spare [+50 more lines]
@@ -318,6 +319,7 @@ link_resolution_tests::HashSet::with_hasher_in // Creates a new empty hash set w
 link_resolution_tests::RenamedTestStruct::get_field // Get the field value
 link_resolution_tests::RenamedTestStruct::increment_count // Update the count
 link_resolution_tests::RenamedTestStruct::new // Create a new TestStruct
+link_resolution_tests::Tree::allocator // Returns a reference to the underlying allocator.
 link_resolution_tests::Tree::append // Moves all elements from `other` into `self`, leaving `other` empty. [+34 more lines]
 link_resolution_tests::Tree::bulk_build_from_sorted_iter // Makes a `BTreeMap` from a sorted iterator.
 link_resolution_tests::Tree::clear // Clears the map, removing all elements. [+11 more lines]

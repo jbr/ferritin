@@ -4531,6 +4531,28 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         ]
       },
       {
+        "path": "link_resolution_tests::Tree::allocator",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.allocator",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Returns a reference to the underlying allocator.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine"
+          }
+        ]
+      },
+      {
         "path": "link_resolution_tests::Tree::get",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/collections/btree/map/struct.BTreeMap.html#method.get",
@@ -12691,16 +12713,7 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                 "type": "paragraph",
                 "spans": [
                   {
-                    "text": "Converts the vector into ",
-                    "style": "Plain"
-                  },
-                  {
-                    "text": "Box<[T]>",
-                    "style": "InlineCode",
-                    "path": "alloc::boxed::Box"
-                  },
-                  {
-                    "text": ".",
+                    "text": "Converts the vector into a boxed slice.",
                     "style": "Plain"
                   }
                 ]
@@ -13269,6 +13282,29 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
         "path": "Vector::retain_mut",
         "kind": "function",
         "url": "https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.retain_mut.html",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Retains only the elements specified by the predicate, passing a mutable reference to it.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vector::retain_unstable",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.retain_unstable",
         "docs": [
           {
             "type": "truncatedBlock",
