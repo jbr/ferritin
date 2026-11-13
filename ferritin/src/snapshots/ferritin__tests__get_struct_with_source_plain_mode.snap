@@ -49,7 +49,7 @@ Trait Implementations
 
 TestTrait<T = String>
 
-std: Clone, Debug, Freeze, From<Self>, RefUnwindSafe, Send, Sync, Unpin, UnsafeUnpin, UnwindSafe
+std: Clone, Debug, Forget, Freeze, From<Self>, Move, RefUnwindSafe, Send, Sync, Unpin, UnsafeUnpin, UnwindSafe
 
   ◦ impl Any where Self: 'static + ?Sized
 

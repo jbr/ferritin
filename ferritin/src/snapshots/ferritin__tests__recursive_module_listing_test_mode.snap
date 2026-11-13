@@ -1020,8 +1020,8 @@ Thememory with<inline-code>Global</inline-code>. <elided chars="1849"/></truncat
   <item><p>
 <type-name>Vector::into_boxed_slice</type-name> </p>
 <truncated level="single-line"><p>
-Converts the vector into <inline-code>Box<[T]></inline-code>.</p>
-Before doing the conversion, this method<inline-code>shrink_to_fit</inline-code>. <elided chars="307"/></truncated>
+Converts the vector into a boxed slice.</p>
+This conversion is in-place if <inline-code>vec.len() == vec.capacity()</inline-code>. Otherwise excess capacity is discarded by reallocating before <elided chars="370"/></truncated>
 </item>
   <item><p>
 <type-name>Vector::into_chunks</type-name> </p>
@@ -1151,6 +1151,10 @@ In other words, remove all<inline-code>e</inline-code> for which <inline-code>f(
 <truncated level="single-line">Retains only the elements specified by the predicate, passing a mutable <elided chars="363"/></truncated>
 </item>
   <item><p>
+<type-name>Vector::retain_unstable</type-name> </p>
+<truncated level="single-line">Retains only the elements specified by the predicate, passing a mutable <elided chars="661"/></truncated>
+</item>
+  <item><p>
 <type-name>Vector::set_len</type-name> </p>
 <truncated level="single-line"><p>
 Forces the length of the vector to <inline-code>new_len</inline-code>.</p>
@@ -1166,7 +1170,7 @@ The capacity will remain and the supplied value. <elided chars="324"/></truncate
 <type-name>Vector::shrink_to_fit</type-name> </p>
 <truncated level="single-line"><p>
 Shrinks the capacity of the vector as much as possible.</p>
-The behavior of this in-place or reallocate. is the case for <inline-code>with_capacity</inline-code>. See <inline-code>Allocator::shrink</inline-code> for more details. <elided chars="376"/></truncated>
+When <inline-code>vec.len() ==</inline-code> the allocation is this method depends on reallocate. The is the case for <inline-code>with_capacity</inline-code>. See <inline-code>Allocator::shrink</inline-code> for more details. <elided chars="449"/></truncated>
 </item>
   <item><p>
 <type-name>Vector::spare_capacity_mut</type-name> </p>
@@ -1601,6 +1605,12 @@ Update the count</p>
 <type-name>link_resolution_tests::RenamedTestStruct::new</type-name> </p>
 <truncated level="single-line"><p>
 Create a new TestStruct</p>
+</truncated>
+</item>
+  <item><p>
+<type-name>link_resolution_tests::Tree::allocator</type-name> </p>
+<truncated level="single-line"><p>
+Returns a reference to the underlying allocator.</p>
 </truncated>
 </item>
   <item><p>

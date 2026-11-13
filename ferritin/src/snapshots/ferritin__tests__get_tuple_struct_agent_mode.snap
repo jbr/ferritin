@@ -17,7 +17,7 @@ struct TupleStruct(
 
 ## Trait Implementations
 
-std: Freeze, From<Self>, RefUnwindSafe, Send, Sync, Unpin, UnsafeUnpin, UnwindSafe
+std: Forget, Freeze, From<Self>, Move, RefUnwindSafe, Send, Sync, Unpin, UnsafeUnpin, UnwindSafe
 
 - impl Any where Self: 'static + ?Sized
 - impl Borrow<Self> where Self: ?Sized

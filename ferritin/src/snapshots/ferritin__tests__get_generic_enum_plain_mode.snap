@@ -38,7 +38,7 @@ Variants:
 
 Trait Implementations
 
-std: From<Self>
+std: Forget, From<Self>, Move
 
   ◦ impl Any where Self: 'static + ?Sized
 

@@ -51,7 +51,7 @@ Associated Types:
 
 Trait Implementations:
 TestTrait
-std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Freeze, From<T>, Into<U>, RefUnwindSafe [+8 more]
+std traits: Any, Borrow<T>, BorrowMut<T>, Clone, CloneToUninit, Debug, Forget, Freeze, From<T>, Into<U> [+10 more]
 
 Source: /TEST_CRATE_ROOT/src/lib.rs
 ```rust

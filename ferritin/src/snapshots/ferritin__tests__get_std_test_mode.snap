@@ -309,7 +309,7 @@ Field Reflection</p>
 <type-name>fmt</type-name> </p>
 <truncated level="single-line"><p>
 Utilities for formatting and printing <inline-code>String</inline-code>s.</p>
-This module contains the runtime<inline-code>format!</inline-code> syntax extension. This macro is implemented in the order to format arguments at <elided chars="20000"/></truncated>
+This module contains the runtime<inline-code>format!</inline-code> syntax extension. This macro is implemented in the order to format arguments at <elided chars="20063"/></truncated>
 </item>
   <item><p>
 <type-name>from</type-name> </p>
