@@ -12748,9 +12748,9 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                     "style": "Plain"
                   },
                   {
-                    "text": "Vec::shrink_to_fit",
+                    "text": "Vec::into_boxed_slice",
                     "style": "InlineCode",
-                    "path": "alloc::vec::Vec::shrink_to_fit"
+                    "path": "alloc::vec::Vec::into_boxed_slice"
                   },
                   {
                     "text": ".",
@@ -14183,6 +14183,100 @@ expression: "render_json_for_tests_rooted(Commands::get(\"crate\").recursive(), 
                   },
                   {
                     "text": ".",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vector::repeat",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.repeat",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Create a new ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " that contains ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "elem",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "n",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " times.",
+                    "style": "Plain"
+                  }
+                ]
+              }
+            ],
+            "level": "SingleLine",
+            "truncated": true
+          }
+        ]
+      },
+      {
+        "path": "Vector::repeat_in",
+        "kind": "function",
+        "url": "https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.repeat_in",
+        "docs": [
+          {
+            "type": "truncatedBlock",
+            "nodes": [
+              {
+                "type": "paragraph",
+                "spans": [
+                  {
+                    "text": "Create a new ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "Vec",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " with the provided allocator that contains ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "elem",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " ",
+                    "style": "Plain"
+                  },
+                  {
+                    "text": "n",
+                    "style": "InlineCode"
+                  },
+                  {
+                    "text": " times.",
                     "style": "Plain"
                   }
                 ]

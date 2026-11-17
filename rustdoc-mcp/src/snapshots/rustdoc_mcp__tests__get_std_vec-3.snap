@@ -109,7 +109,7 @@ where
     Shrinks the capacity of the vector with a lower bound. [+25 more lines]
 
 • pub fn into_boxed_slice(self) -> Box<[T], A>
-    Converts the vector into a boxed slice. [+22 more lines]
+    Converts the vector into a boxed slice. [+28 more lines]
 
 • pub fn into_array<const N: usize>(self) -> Result<Box<[T; N], A>, Self>
     Converts the Vec into a boxed array. This conversion will discard any spare capacity, [+16 more lines]
@@ -256,6 +256,12 @@ where
 where
     U: Recyclable<T>
     This clears out this `Vec` and recycles the allocation into a new `Vec`. [+48 more lines]
+
+• pub fn repeat(elem: T, n: usize) -> Self
+    Create a new `Vec` that contains `elem` `n` times. [+17 more lines]
+
+• pub fn repeat_in(elem: T, n: usize, alloc: A) -> Self
+    Create a new `Vec` with the provided allocator that contains `elem` `n` times. [+19 more lines]
 
 • pub fn resize(&mut self, new_len: usize, value: T)
     Resizes the `Vec` in-place so that `len` is equal to `new_len`. [+27 more lines]
