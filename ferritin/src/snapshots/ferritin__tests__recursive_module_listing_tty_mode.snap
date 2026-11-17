@@ -638,7 +638,7 @@ Functions
 
   ◦ [Vector::into_array](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.into_array) 
     Converts the Vec into a boxed array. This conversion will discard any spare
-    capacity, if there is any, see [Vec::shrink_to_fit](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.shrink_to_fit.html). If you merely wish for a
+    capacity, if there is any, see [Vec::into_boxed_slice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_boxed_slice.html). If you merely wish for a
     reference to an array, use [as_array](https://doc.rust-lang.org/stable/std/primitive.slice.html#method.as_array). [...]
 
   ◦ [Vector::into_boxed_slice](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.into_boxed_slice.html) 
@@ -712,6 +712,12 @@ Functions
   ◦ [Vector::remove](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.remove.html) 
     Removes and returns the element at position index within the vector, shifting
     all elements after it to the left. [...]
+
+  ◦ [Vector::repeat](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.repeat) 
+    Create a new Vec that contains elem n times. [...]
+
+  ◦ [Vector::repeat_in](https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html#method.repeat_in) 
+    Create a new Vec with the provided allocator that contains elem n times. [...]
 
   ◦ [Vector::reserve](https://doc.rust-lang.org/nightly/alloc/vec/Vec/fn.reserve.html) 
     Reserves capacity for at least additional more elements to be inserted in the

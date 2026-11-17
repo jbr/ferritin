@@ -11,7 +11,7 @@ A generic struct for testing multi-paragraph documentation.</p>
 This struct and provides a <elided chars="401"/></truncated>
 </item>
   <item><p>
-alloc::raw_vec::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 65.0</p>
+alloc::raw_vec::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 65.5</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>
@@ -47,19 +47,19 @@ A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
 </item>
   <item><p>
-proc_macro::bridge::arena::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 62.5</p>
+proc_macro::bridge::arena::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 62.6</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>
 </item>
   <item><p>
-std::prelude::rust_2021::ambiguous_macros_only::prelude::v1::Clone  (Trait) - score: 62.5</p>
+std::prelude::rust_2021::ambiguous_macros_only::prelude::v1::Clone  (Trait) - score: 62.6</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>
 </item>
   <item><p>
-test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::Clone  (Trait) - score: 62.5</p>
+test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::Clone  (Trait) - score: 62.6</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>

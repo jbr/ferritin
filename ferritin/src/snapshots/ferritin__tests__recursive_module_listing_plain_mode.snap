@@ -566,7 +566,7 @@ Functions
     Inserts an element at position index within the vector, shifting all elements after it to the right, and returning a reference to the new element. [...]
 
   ◦ Vector::into_array 
-    Converts the Vec into a boxed array. This conversion will discard any spare capacity, if there is any, see Vec::shrink_to_fit. If you merely wish for a reference to an array, use as_array. [...]
+    Converts the Vec into a boxed array. This conversion will discard any spare capacity, if there is any, see Vec::into_boxed_slice. If you merely wish for a reference to an array, use as_array. [...]
 
   ◦ Vector::into_boxed_slice 
     Converts the vector into a boxed slice. [...]
@@ -627,6 +627,12 @@ Functions
 
   ◦ Vector::remove 
     Removes and returns the element at position index within the vector, shifting all elements after it to the left. [...]
+
+  ◦ Vector::repeat 
+    Create a new Vec that contains elem n times. [...]
+
+  ◦ Vector::repeat_in 
+    Create a new Vec with the provided allocator that contains elem n times. [...]
 
   ◦ Vector::reserve 
     Reserves capacity for at least additional more elements to be inserted in the given Vec<T>. The collection may reserve more space to speculatively avoid frequent reallocations. After calling reserve, capacity will be greater than or equal to self.len() + additional. Does nothing if capacity is already sufficient. [...]

@@ -8,7 +8,7 @@ Search results for 'generic struct'
   ◦ fixture-crate::GenericStruct  (Struct) - score: 100.0
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ alloc::raw_vec::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 65.0
+  ◦ alloc::raw_vec::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 65.5
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ alloc::borrow::Borrow  (Trait) - score: 64.2
@@ -26,11 +26,11 @@ Search results for 'generic struct'
   ◦ core::prelude::v1::ambiguous_macros_only::borrow::Borrow  (Trait) - score: 64.0
     A trait for borrowing data. [...]
 
-  ◦ proc_macro::bridge::arena::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 62.5
+  ◦ proc_macro::bridge::arena::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 62.6
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ std::prelude::rust_2021::ambiguous_macros_only::prelude::v1::Clone  (Trait) - score: 62.5
+  ◦ std::prelude::rust_2021::ambiguous_macros_only::prelude::v1::Clone  (Trait) - score: 62.6
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::Clone  (Trait) - score: 62.5
+  ◦ test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::Clone  (Trait) - score: 62.6
     A common trait that allows explicit creation of a duplicate value. [...]

@@ -9,7 +9,7 @@ Search results for 'generic struct'
     A generic struct for testing multi-paragraph documentation. [...]
 
   ◦ [alloc::raw_vec::ptr::metadata::fmt::num::imp::str::converts::mem::clone::](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)
-    [Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 65.0
+    [Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 65.5
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ [alloc::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.2
@@ -30,13 +30,13 @@ Search results for 'generic struct'
     A trait for borrowing data. [...]
 
   ◦ [proc_macro::bridge::arena::ptr::metadata::fmt::num::imp::str::converts::](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)
-    [mem::clone::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.5
+    [mem::clone::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.6
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ [std::prelude::rust_2021::ambiguous_macros_only::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait)
-    - score: 62.5
+    - score: 62.6
     A common trait that allows explicit creation of a duplicate value. [...]
 
   ◦ [test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize:](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)
-    [:gimli::mystd::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.5
+    [:gimli::mystd::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.6
     A common trait that allows explicit creation of a duplicate value. [...]

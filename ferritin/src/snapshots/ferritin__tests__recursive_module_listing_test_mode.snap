@@ -1015,13 +1015,13 @@ Thememory with<inline-code>Global</inline-code>. <elided chars="1849"/></truncat
 </item>
   <item><p>
 <type-name>Vector::into_array</type-name> </p>
-<truncated level="single-line">Converts the Vec into a boxed array. This conversion will discard any spare if there is any, see <inline-code>Vec::shrink_to_fit</inline-code>. If you merely wish for a reference to an array, use <inline-code>as_array</inline-code>. <elided chars="469"/></truncated>
+<truncated level="single-line">Converts the Vec into a boxed array. This conversion will discard any spare if there is any, see <inline-code>Vec::into_boxed_slice</inline-code>. If you merely wish for a reference to an array, use <inline-code>as_array</inline-code>. <elided chars="472"/></truncated>
 </item>
   <item><p>
 <type-name>Vector::into_boxed_slice</type-name> </p>
 <truncated level="single-line"><p>
 Converts the vector into a boxed slice.</p>
-This conversion is in-place if <inline-code>vec.len() == vec.capacity()</inline-code>. Otherwise excess capacity is discarded by reallocating before <elided chars="370"/></truncated>
+This conversion is in-place if <inline-code>vec.len() == vec.capacity()</inline-code>. <elided chars="579"/></truncated>
 </item>
   <item><p>
 <type-name>Vector::into_chunks</type-name> </p>
@@ -1119,6 +1119,18 @@ Appends an element to the back of a collection, returning a reference to it.</p>
   <item><p>
 <type-name>Vector::remove</type-name> </p>
 <truncated level="single-line">Removes and returns the element at position <inline-code>index</inline-code> within the vector, shifting all elements after it to the left. <elided chars="453"/></truncated>
+</item>
+  <item><p>
+<type-name>Vector::repeat</type-name> </p>
+<truncated level="single-line"><p>
+Create a new <inline-code>Vec</inline-code> that contains <inline-code>elem</inline-code> <inline-code>n</inline-code> times.</p>
+This method requires <inline-code>T</inline-code> to implement <inline-code>Clone</inline-code>, in order to be able to clone the <elided chars="241"/></truncated>
+</item>
+  <item><p>
+<type-name>Vector::repeat_in</type-name> </p>
+<truncated level="single-line"><p>
+Create a new <inline-code>Vec</inline-code> with the provided allocator that contains <inline-code>elem</inline-code> <inline-code>n</inline-code> times.</p>
+This<inline-code>T</inline-code> to<inline-code>Clone</inline-code>, in <elided chars="305"/></truncated>
 </item>
   <item><p>
 <type-name>Vector::reserve</type-name> </p>
