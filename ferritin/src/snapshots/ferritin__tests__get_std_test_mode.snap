@@ -488,7 +488,7 @@ Rust comes with a variety of things in its standard library. you had to manually
 <type-name>process</type-name> </p>
 <truncated level="single-line"><p>
 A module for working with processes.</p>
-This module is mostly concerned with processes, but it also provides <inline-code>abort</inline-code> and <inline-code>exit</inline-code> for terminating the current process. <elided chars="4556"/></truncated>
+This module is mostly concerned with processes, but it also provides <inline-code>abort</inline-code> and <inline-code>exit</inline-code> for terminating the current process. <elided chars="5168"/></truncated>
 </item>
   <item><p>
 <type-name>ptr</type-name> </p>

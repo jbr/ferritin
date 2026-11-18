@@ -162,7 +162,7 @@ Non-exhaustive list of known limitations:
 - pin — Types that pin data to a location in memory. [+137 lines]
 - prelude — The Rust Prelude [+12 lines]
 - primitive — This module reexports the primitive types to allow usage that is not possibly shadowed by other declared types. [+7 lines]
-- process — A module for working with processes. [+20 lines]
+- process — A module for working with processes. [+24 lines]
 - ptr — Manually manage memory through raw pointers. [+72 lines]
 - random — Random value generation. [+7 lines]
 - range — Replacement range types [+2 lines]
