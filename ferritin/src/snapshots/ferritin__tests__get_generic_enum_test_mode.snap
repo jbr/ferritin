@@ -72,7 +72,7 @@ std: <type-name>Forget</type-name><punctuation>,</punctuation> <type-name>From</
 <keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Send</type-name><punctuation>></punctuation> <type-name>Send</type-name></generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Sync</type-name> + <type-name>Sync</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Sync</type-name><punctuation>></punctuation> <type-name>Sync</type-name></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Sync</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Sync</type-name><punctuation>></punctuation> <type-name>Sync</type-name></generated-code>
 </item>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>U</generic><punctuation>:</punctuation> <type-name>Into</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>U</generic><punctuation>></punctuation></generated-code>
@@ -85,7 +85,7 @@ std: <type-name>Forget</type-name><punctuation>,</punctuation> <type-name>From</
     <keyword>type</keyword> <type-name>Error</type-name> <operator>=</operator> <punctuation><</punctuation><generic>U</generic> <keyword>as</keyword> <type-name>TryFrom</type-name><punctuation><</punctuation><generic>Self</generic><punctuation>></punctuation><punctuation>></punctuation><punctuation>::</punctuation>Error</generated-code>
 </item>
   <item><generated-code>
-<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Unpin</type-name> + <type-name>Unpin</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Unpin</type-name><punctuation>></punctuation> <type-name>Unpin</type-name></generated-code>
+<keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>Unpin</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>Unpin</type-name><punctuation>></punctuation> <type-name>Unpin</type-name></generated-code>
 </item>
   <item><generated-code>
 <keyword>impl</keyword><punctuation><</punctuation><generic>T</generic><punctuation>:</punctuation> <type-name>UnsafeUnpin</type-name> + <type-name>UnsafeUnpin</type-name><punctuation>,</punctuation> <generic>U</generic><punctuation>:</punctuation> <type-name>UnsafeUnpin</type-name><punctuation>></punctuation> <type-name>UnsafeUnpin</type-name></generated-code>

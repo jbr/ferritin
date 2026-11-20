@@ -54,7 +54,7 @@ std: [Forget](https://doc.rust-lang.org/nightly/core/marker/index.html?search=co
 
   ◦ impl<T, U: [Send](https://doc.rust-lang.org/nightly/core/marker/trait.Send.html)> [Send](https://doc.rust-lang.org/nightly/core/marker/trait.Send.html)
 
-  ◦ impl<T: [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html) + [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html), U: [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html)> [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html)
+  ◦ impl<T: [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html), U: [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html)> [Sync](https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html)
 
   ◦ impl<U: [Into](https://doc.rust-lang.org/nightly/core/convert/trait.Into.html)<Self>> [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<U>
         type Error = never
@@ -62,7 +62,7 @@ std: [Forget](https://doc.rust-lang.org/nightly/core/marker/index.html?search=co
   ◦ impl<U: [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<Self>> [TryInto](https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html)<U>
         type Error = <U as [TryFrom](https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html)<Self>>::Error
 
-  ◦ impl<T: [Unpin](https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html) + [Unpin](https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html), U: [Unpin](https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html)> [Unpin](https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html)
+  ◦ impl<T: [Unpin](https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html), U: [Unpin](https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html)> [Unpin](https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html)
 
   ◦ impl<T: [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html) + [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html), U: [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html)> [UnsafeUnpin](https://doc.rust-lang.org/nightly/core/marker/trait.UnsafeUnpin.html)
 
