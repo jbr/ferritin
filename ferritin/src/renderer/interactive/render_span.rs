@@ -29,14 +29,11 @@ impl<'a> InteractiveState<'a> {
         // Determine if this span should be highlighted (by mouse or keyboard)
         let should_highlight = if span.action.is_some() {
             // Check mouse hover
-            let mouse_hover = self.viewport.cursor_pos.map_or_else(
-                || false,
-                |cursor| {
-                    cursor.y == self.layout.pos.y
-                        && cursor.x >= self.layout.pos.x
-                        && cursor.x < self.layout.pos.x + display_width(&span.text) as u16
-                },
-            );
+            let mouse_hover = self.viewport.cursor_pos.is_some_and(|cursor| {
+                cursor.y == self.layout.pos.y
+                    && cursor.x >= self.layout.pos.x
+                    && cursor.x < self.layout.pos.x + display_width(&span.text) as u16
+            });
 
             // Check keyboard focus - this action is about to be pushed, so its index will be
             // actions.len()

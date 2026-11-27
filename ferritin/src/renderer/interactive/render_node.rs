@@ -422,14 +422,11 @@ impl<'a> InteractiveState<'a> {
                     let ellipsis_row = self.layout.pos.y;
 
                     // Check if hovered
-                    let is_hovered = self.viewport.cursor_pos.map_or_else(
-                        || false,
-                        |cursor_pos| {
-                            cursor_pos.y == ellipsis_row
-                                && cursor_pos.x >= border_col
-                                && cursor_pos.x < border_col + ellipsis_text.len() as u16
-                        },
-                    );
+                    let is_hovered = self.viewport.cursor_pos.is_some_and(|cursor_pos| {
+                        cursor_pos.y == ellipsis_row
+                            && cursor_pos.x >= border_col
+                            && cursor_pos.x < border_col + ellipsis_text.len() as u16
+                    });
 
                     let final_style = if is_hovered {
                         border_style.add_modifier(Modifier::REVERSED)
