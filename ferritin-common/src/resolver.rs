@@ -36,7 +36,7 @@
 use crate::{
     DocRef, Navigator, RustdocData,
     doc_ref::ParentRef,
-    iterators::{LazyChild, LazyChildren},
+    iterators::{LazyChild, LazyChildren, is_reexport},
     rustdoc_data::kind_discriminator,
     string_utils::case_aware_jaro_winkler,
 };
@@ -735,6 +735,9 @@ impl<'a> Resolver<'a> {
         for id in ids {
             let Some(item) = parent.get(id) else { continue };
             if let ItemEnum::Use(use_item) = item.inner() {
+                if !is_reexport(item.item()) {
+                    continue;
+                }
                 if include_uses {
                     out.push(item);
                     continue;

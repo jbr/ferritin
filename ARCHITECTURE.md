@@ -452,6 +452,8 @@ Returns appropriate items based on item type:
 
 **Why this matters:** Module children appear to "just work" even when they're re-exports from other crates. The iterator transparently loads external crates and follows import chains, making `std::vec::Vec` (re-exported from `alloc`) appear as a natural child of the `std::vec` module.
 
+**Only a `pub use` is a child.** rustdoc JSON keeps private imports too: std's carries thousands of `use crate::intrinsics;`-style items, `restricted` to the module declaring them. They are how that module's code names things, not part of its interface. Treated as children, they made every module reachable *through* each module importing it (`core::hint::intrinsics::…`), and private globs such as core_arch's `use super::*` multiplied that into a path space with no practical end, which a crawler following our links walked for weeks. `iterators::is_reexport` gates both child enumeration and path resolution, so the two cannot disagree. Private *items*, such as a `pub(super)` module, are unaffected: they have one path each.
+
 ### Resolving a `Use` target
 
 A `Use` carries an optional target `id` and a `source` *string* (the path as
