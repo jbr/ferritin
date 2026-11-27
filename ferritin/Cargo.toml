@@ -74,6 +74,7 @@ mcplease = { version = "0.5", default-features = false, features = [
 # `serve`-only. The HTTP server and its crate-name typeahead; see [features].
 anyhow = { workspace = true, optional = true }
 async-channel = { version = "2.5.0", optional = true }
+async-lock = { version = "3.4.2", optional = true }
 querystrong = { version = "0.4.0", optional = true }
 rayon = { version = "1.12.0", optional = true }
 # og:image rendering: parses the card SVG and rasterizes it to PNG. `text` (and
@@ -120,6 +121,7 @@ path = "src/main.rs"
 serve = [
     "dep:anyhow",
     "dep:async-channel",
+    "dep:async-lock",
     "dep:querystrong",
     "dep:rayon",
     "dep:resvg",

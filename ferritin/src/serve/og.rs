@@ -31,12 +31,12 @@
 use super::{
     app_page::{self, PageContent, SITE_DESCRIPTION, SITE_NAME, escape},
     caching,
+    workers::{Lane, Workers},
 };
 use crate::crate_search::CrateSearchService;
 use anyhow::Context;
 use ferritin_common::CratePath;
 use percent_encoding::percent_decode_str;
-use rayon::ThreadPool;
 use resvg::{
     tiny_skia::{Pixmap, Transform},
     usvg::{Options, Tree, fontdb},
@@ -390,11 +390,11 @@ fn ellipsize(lines: &mut [String], columns: usize) {
 /// The conditional-request short-circuit is checked before anything is drawn:
 /// the etag is a hash of the card's text and the build, so a crawler (or the
 /// browser cache) revalidating costs a lookup and a hash, not a render.
-pub(super) async fn handler(conn: Conn) -> Conn {
+pub(super) async fn handler(mut conn: Conn) -> Conn {
     let Some(service) = conn.state::<Arc<CrateSearchService>>().cloned() else {
         return conn.with_status(Status::InternalServerError).halt();
     };
-    let Some(pool) = conn.shared_state::<Arc<ThreadPool>>().cloned() else {
+    let Some(workers) = conn.shared_state::<Arc<Workers>>().cloned() else {
         return conn.with_status(Status::InternalServerError).halt();
     };
 
@@ -410,22 +410,24 @@ pub(super) async fn handler(conn: Conn) -> Conn {
     }
 
     let status = card.status;
-    let png = super::run_blocking(&pool, move || card.render()).await;
+    let png = workers
+        .run(&mut conn, Lane::Og, move || card.render())
+        .await;
 
     match png {
-        Some(Ok(png)) => validators
+        Ok(Ok(png)) => validators
             .apply(conn)
             .with_status(status)
             .with_response_header(KnownHeaderName::ContentType, "image/png")
             .with_body(png)
             .halt(),
 
-        Some(Err(error)) => {
+        Ok(Err(error)) => {
             log::error!("og card render failed: {error:?}");
             conn.with_status(Status::InternalServerError).halt()
         }
 
-        None => conn.with_status(Status::InternalServerError).halt(),
+        Err(refusal) => refusal.respond(conn),
     }
 }
 

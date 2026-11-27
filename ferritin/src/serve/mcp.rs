@@ -32,14 +32,14 @@
 //! and the tool docs say so emphatically, because an agent that already knows
 //! the crate should always scope to it.
 //!
-//! The message is decoded and executed *inside* the big-stack [`run_blocking`]
-//! worker, for the same reason [`get_crate`](super::get_crate) and
+//! The message is decoded and executed *inside* a big-stack
+//! [`Workers`](super::workers::Workers) job, for the same reason [`get_crate`](super::get_crate) and
 //! [`search_crate`](super::search_crate) run there: the documentation lookups
 //! recurse deeply enough to overflow an async worker's 2 MB stack. Nothing
 //! borrowed from the per-request `Navigator` crosses the `.await` — the response
 //! is serialized to an owned `String` in the worker.
 
-use super::{context, run_blocking};
+use super::{context, workers::Lane};
 use crate::{
     commands::Commands,
     crate_search::{CrateSearchResults, CrateSearchService},
@@ -233,7 +233,7 @@ fn handle_message(
 /// `POST /mcp`: the MCP endpoint. Reads the JSON-RPC body, executes it on the
 /// big-stack pool, and returns the response.
 pub(super) async fn post(mut conn: Conn) -> Conn {
-    let Some((store, pool)) = context(&conn) else {
+    let Some((store, workers)) = context(&conn) else {
         return conn.with_status(Status::InternalServerError).halt();
     };
     let crate_search = conn.state::<Arc<CrateSearchService>>().cloned();
@@ -270,20 +270,24 @@ pub(super) async fn post(mut conn: Conn) -> Conn {
             .halt();
     }
 
-    let outcome = run_blocking(&pool, move || handle_message(store, crate_search, message)).await;
+    // The body is already read, as disconnect detection requires.
+    let outcome = workers
+        .run(&mut conn, Lane::Mcp, move || {
+            handle_message(store, crate_search, message)
+        })
+        .await;
 
     // `halt()` so the trailing frontend handler doesn't overwrite the body with
     // the SPA index.
     match outcome {
-        Some(Outcome::Response(body)) => conn
+        Ok(Outcome::Response(body)) => conn
             .with_status(Status::Ok)
             .with_response_header(KnownHeaderName::ContentType, "application/json")
             .with_body(body)
             .halt(),
-        Some(Outcome::Accepted) => conn.with_status(Status::Accepted).halt(),
-        Some(Outcome::BadRequest) => conn.with_status(Status::BadRequest).halt(),
-        // The worker panicked.
-        None => conn.with_status(Status::InternalServerError).halt(),
+        Ok(Outcome::Accepted) => conn.with_status(Status::Accepted).halt(),
+        Ok(Outcome::BadRequest) => conn.with_status(Status::BadRequest).halt(),
+        Err(refusal) => refusal.respond(conn),
     }
 }
 
