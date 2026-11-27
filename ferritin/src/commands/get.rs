@@ -35,6 +35,10 @@ pub(crate) struct NotFoundDoc<'a> {
     /// from a typo — the crate is real, we just can't serve it — so it is
     /// shown with its own message and no "did you mean" list.
     pub(crate) unavailable_crate: Option<String>,
+    /// Whether the crate loaded and only the item path failed. Only then is
+    /// the result a function of the crate's data alone — a crate-level miss can
+    /// be a transient load failure, which must not be cached or validated.
+    pub(crate) crate_loaded: bool,
 }
 
 /// A single "did you mean" candidate: its path and the resolved item (for kind
@@ -54,7 +58,12 @@ const MAX_SUGGESTIONS: usize = 5;
 const CRATE_SUGGESTION_THRESHOLD: f64 = 0.7;
 
 impl<'a> NotFoundDoc<'a> {
-    fn new(query: &str, suggestions: &[Suggestion<'a>], unavailable_crate: Option<String>) -> Self {
+    fn new(
+        query: &str,
+        suggestions: &[Suggestion<'a>],
+        unavailable_crate: Option<String>,
+        crate_loaded: bool,
+    ) -> Self {
         // An "exists but unavailable" crate is not a typo, so it carries no
         // "did you mean" list — the exact-match candidate would be misleading.
         let suggestions = if unavailable_crate.is_some() {
@@ -83,6 +92,7 @@ impl<'a> NotFoundDoc<'a> {
             query: query.to_string(),
             suggestions,
             unavailable_crate,
+            crate_loaded,
         }
     }
 }
@@ -108,14 +118,14 @@ fn build_not_found<'a>(
     // Item-level miss: the crate loaded, so the failure is a path within it. The
     // resolver already produced item suggestions; the index has nothing to add.
     if request.navigator().load_crate(name, &version_req).is_some() {
-        return NotFoundDoc::new(path, &suggestions, None);
+        return NotFoundDoc::new(path, &suggestions, None, true);
     }
 
     // Crate-level miss: ask the namespace index, once, whether the crate is real
     // (docs unavailable) or a typo (worth suggestions).
     let missing = block_on(request.navigator().classify_missing_crate(name));
     if let Some(exists_as) = missing.exists_as {
-        return NotFoundDoc::new(path, &suggestions, Some(exists_as));
+        return NotFoundDoc::new(path, &suggestions, Some(exists_as), false);
     }
     suggestions.extend(
         missing
@@ -123,7 +133,7 @@ fn build_not_found<'a>(
             .into_iter()
             .map(|(name, score)| Suggestion::for_crate(name, score)),
     );
-    NotFoundDoc::new(path, &suggestions, None)
+    NotFoundDoc::new(path, &suggestions, None, false)
 }
 
 /// Resolve a path to its semantic [`ItemDoc`] model for the `--format json`
