@@ -20,7 +20,6 @@ submodule
 
 Structs:
 GenericStruct
-HashMap
 MarkerOne
 MarkerTwo
 NotThreadSafe
@@ -30,11 +29,9 @@ TestStruct
 TupleStruct
 UnitStruct
 Vec
-Vector
 
 Enums:
 GenericEnum
-StdResult
 TestEnum
 
 Traits:
