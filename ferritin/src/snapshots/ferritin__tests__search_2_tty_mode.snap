@@ -8,35 +8,35 @@ Search results for 'generic struct'
   ◦ [fixture-crate::GenericStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.GenericStruct.html)  (Struct) - score: 100.0
     A generic struct for testing multi-paragraph documentation. [...]
 
-  ◦ [alloc::raw_vec::ptr::metadata::fmt::num::imp::str::converts::mem::clone::](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)
-    [Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 65.5
-    A common trait that allows explicit creation of a duplicate value. [...]
-
-  ◦ [alloc::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.2
+  ◦ [alloc::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 66.8
     A trait for borrowing data. [...]
 
-  ◦ [proc_macro::bridge::arena::slice::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.1
-    A trait for borrowing data. [...]
-
-  ◦ [std::prelude::rust_2021::ambiguous_macros_only::byte_str::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) -
+  ◦ [std::prelude::rust_2021::ambiguous_macros_only::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) -
     score: 64.1
-    A trait for borrowing data. [...]
-
-  ◦ [test::cli::env::paths::unix::path::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 64.1
     A trait for borrowing data. [...]
 
   ◦ [core::prelude::v1::ambiguous_macros_only::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score:
     64.0
     A trait for borrowing data. [...]
 
-  ◦ [proc_macro::bridge::arena::ptr::metadata::fmt::num::imp::str::converts::](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)
-    [mem::clone::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.6
+  ◦ [std::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.6
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [std::prelude::rust_2021::ambiguous_macros_only::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait)
-    - score: 62.6
+  ◦ [alloc::io::copy::generic](https://doc.rust-lang.org/nightly/alloc/io/copy/generic/index.html)  (Module) - score: 62.5
+
+  ◦ [core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) -
+    score: 62.5
+    Compile-time type information about instantiated generics of structs, enum and
+    union variants.
+
+  ◦ [std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)
+    [mystd::mem::type_info::Generic](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 62.5
+    Compile-time type information about instantiated generics of structs, enum and
+    union variants.
+
+  ◦ [core::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.0
     A common trait that allows explicit creation of a duplicate value. [...]
 
-  ◦ [test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize:](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)
-    [:gimli::mystd::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.6
-    A common trait that allows explicit creation of a duplicate value. [...]
+  ◦ [std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::](https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)
+    [mystd::ops::deref::Deref](https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 60.9
+    Used for immutable dereferencing operations, like *v. [...]

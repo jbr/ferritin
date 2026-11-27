@@ -11,31 +11,13 @@ A generic struct for testing multi-paragraph documentation.</p>
 This struct and provides a <elided chars="401"/></truncated>
 </item>
   <item><p>
-alloc::raw_vec::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 65.5</p>
-<truncated level="single-line"><p>
-A common trait that allows explicit creation of a duplicate value.</p>
-Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>
-</item>
-  <item><p>
-alloc::borrow::Borrow  (Trait) - score: 64.2</p>
+alloc::borrow::Borrow  (Trait) - score: 66.8</p>
 <truncated level="single-line"><p>
 A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
 </item>
   <item><p>
-proc_macro::bridge::arena::slice::Borrow  (Trait) - score: 64.1</p>
-<truncated level="single-line"><p>
-A trait for borrowing data.</p>
-In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
-</item>
-  <item><p>
-std::prelude::rust_2021::ambiguous_macros_only::byte_str::Borrow  (Trait) - score: 64.1</p>
-<truncated level="single-line"><p>
-A trait for borrowing data.</p>
-In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
-</item>
-  <item><p>
-test::cli::env::paths::unix::path::Borrow  (Trait) - score: 64.1</p>
+std::prelude::rust_2021::ambiguous_macros_only::borrow::Borrow  (Trait) - score: 64.1</p>
 <truncated level="single-line"><p>
 A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
@@ -47,21 +29,32 @@ A trait for borrowing data.</p>
 In Rust, it is common to provide different different use cases. For instance, storage location value can be specifically chosen as appropriate for pointer types such as <inline-code>Box<T></inline-code> or <inline-code>Rc<T></inline-code>. Beyond these generic wrappers that can be used with any type, some types facets providing potentially costly functionality. type is <inline-code>String</inline-code> which adds the ability to extend a string to the <inline-code>str</inline-code>. This requires keeping additional information simple, immutable string. <elided chars="5060"/></truncated>
 </item>
   <item><p>
-proc_macro::bridge::arena::ptr::metadata::fmt::num::imp::str::converts::mem::clone::Clone  (Trait) - score: 62.6</p>
+std::prelude::v1::Clone  (Trait) - score: 62.6</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>
 </item>
   <item><p>
-std::prelude::rust_2021::ambiguous_macros_only::prelude::v1::Clone  (Trait) - score: 62.6</p>
+alloc::io::copy::generic  (Module) - score: 62.5</p>
+</item>
+  <item><p>
+core::prelude::v1::ambiguous_macros_only::mem::type_info::Generic  (Enum) - score: 62.5</p>
+<truncated level="single-line">Compile-time type information about instantiated generics of structs, enum and <elided chars="14"/></truncated>
+</item>
+  <item><p>
+std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::mystd::mem::type_info::Generic  (Enum) - score: 62.5</p>
+<truncated level="single-line">Compile-time type information about instantiated generics of structs, enum and <elided chars="14"/></truncated>
+</item>
+  <item><p>
+core::prelude::v1::Clone  (Trait) - score: 62.0</p>
 <truncated level="single-line"><p>
 A common trait that allows explicit creation of a duplicate value.</p>
 Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>
 </item>
   <item><p>
-test::cli::env::paths::unix::path::sys::backtrace::backtrace_rs::symbolize::gimli::mystd::prelude::v1::Clone  (Trait) - score: 62.6</p>
+std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::mystd::ops::deref::Deref  (Trait) - score: 60.9</p>
 <truncated level="single-line"><p>
-A common trait that allows explicit creation of a duplicate value.</p>
-Calling <inline-code>clone</inline-code> always However, for the new value See <inline-code>Clone::clone</inline-code> for more <elided chars="4424"/></truncated>
+Used for immutable dereferencing operations, like <inline-code>*v</inline-code>.</p>
+In addition to being used (unary) <inline-code>*</inline-code> operator in immutable<inline-code>Deref</inline-code> is also used implicitly by the compiler in many "<inline-code>Deref</inline-code> coercion". In mutable contexts, <inline-code>DerefMut</inline-code> is used and mutable deref coercion <elided chars="4481"/></truncated>
 </item>
 </list>
