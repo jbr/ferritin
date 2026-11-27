@@ -27,17 +27,19 @@ mod header_census;
 #[cfg(feature = "mcp")]
 mod mcp;
 mod og;
+mod responses;
 mod spa_route;
 mod workers;
 
 use crate::{
-    commands::{self, get::JsonOutcome},
+    commands::{self, get::JsonOutcome, search::SearchDoc},
     crate_search::{CrateSearchEntry, CrateSearchService},
     format_context::FormatContext,
     json,
     request::Request,
     serve::{
         caching::{CachingPolicy, Validators},
+        responses::{Fresh, ResponseCache},
         workers::{Lane, Refusal, Workers},
     },
 };
@@ -146,12 +148,14 @@ fn std_crate_entries(std_source: Option<&StdSource>) -> Vec<CrateSearchEntry> {
 
 pub fn serve() {
     let cache_bytes = cache_bytes();
+    let response_bytes = cache_bytes / RESPONSE_CACHE_DIVISOR;
+    let responses = Arc::new(ResponseCache::new(response_bytes));
     let std_source = StdSource::from_rustup();
     let std_crates = std_crate_entries(std_source.as_ref());
     let mut store = Store::default()
         .with_std_source(std_source)
         .with_docsrs_source(DocsRsSource::from_default_cache())
-        .with_weight_cap(cache_bytes)
+        .with_weight_cap(cache_bytes - response_bytes)
         // Search indexes are far smaller than crate JSON; give them a
         // proportional slice.
         .with_search_weight_cap(cache_bytes / 8);
@@ -193,12 +197,13 @@ pub fn serve() {
 
     #[cfg(feature = "acme")]
     if let Some(env) = acme::AcmeEnv::from_env() {
-        return acme::serve_tls(store, workers, env, crate_search);
+        return acme::serve_tls(store, workers, responses, env, crate_search);
     }
 
     let server_handle = trillium_smol::config()
         .with_shared_state(store)
         .with_shared_state(workers)
+        .with_shared_state(responses)
         .spawn(handler(crate_search));
 
     let swansong = server_handle.swansong();
@@ -235,7 +240,7 @@ pub fn serve() {
 /// cleartext exactly as it does without this feature.
 #[cfg(feature = "acme")]
 mod acme {
-    use super::Workers;
+    use super::{ResponseCache, Workers};
     use crate::crate_search::CrateSearchService;
     use ferritin_common::Store;
     use std::{env, path::PathBuf, sync::Arc};
@@ -298,6 +303,7 @@ mod acme {
     pub(super) fn serve_tls(
         store: Arc<Store>,
         workers: Arc<Workers>,
+        responses: Arc<ResponseCache>,
         env: AcmeEnv,
         crate_search: Arc<CrateSearchService>,
     ) {
@@ -323,6 +329,7 @@ mod acme {
         let handle = trillium_smol::config()
             .with_shared_state(store)
             .with_shared_state(workers)
+            .with_shared_state(responses)
             .with_nodelay()
             .listeners()
             .bind_tcp((&*host, 80))
@@ -552,6 +559,12 @@ fn decoded_param(conn: &Conn, name: &str) -> Option<String> {
         .map(|raw| percent_decode_str(raw).decode_utf8_lossy().into_owned())
 }
 
+/// The share of the cache budget given to rendered responses
+/// ([`ResponseCache`]), carved out of the crate cache's cap rather than added to
+/// it so the server's total cache budget is unchanged. A crate-root body is a
+/// few KB, so even a small share holds thousands.
+const RESPONSE_CACHE_DIVISOR: u64 = 64;
+
 /// The two shared-state handles every documentation handler needs.
 fn context(conn: &Conn) -> Option<(Arc<Store>, Arc<Workers>)> {
     let store = conn.shared_state::<Arc<Store>>().cloned()?;
@@ -569,12 +582,14 @@ enum Rendered {
     /// A JSON body, and the validators a later conditional request will be
     /// checked against.
     ///
-    /// `validators` is `None` for a body we decline to name cheaply. That is what
-    /// keeps [`Rendered::NotModified`] sound: one of *our* etags is only ever
-    /// emitted alongside a body we would serve again, so a client presenting one
-    /// is presenting the identity of a real prior response. Such a response is
-    /// not left unvalidated, though — `CachingHeaders` still falls back to
-    /// hashing the body, which is correct by construction but saves no work.
+    /// `validators` is `None` for a body that is not a pure function of the
+    /// inputs an identity names — no crate resolved, or one resolved but failed
+    /// to load. That is what keeps [`Rendered::NotModified`] (and the
+    /// [`ResponseCache`]) sound: one of *our* etags is only ever emitted
+    /// alongside a body we would serve again, so a client presenting one is
+    /// presenting the identity of a real prior response. Such a response is not
+    /// left unvalidated, though — `CachingHeaders` still falls back to hashing
+    /// the body, which is correct by construction but saves no work.
     Json {
         status: Status,
         body: String,
@@ -621,6 +636,9 @@ async fn get_crate(mut conn: Conn) -> Conn {
     let Some((store, workers)) = context(&conn) else {
         return conn.with_status(Status::InternalServerError).halt();
     };
+    let Some(responses) = conn.shared_state::<Arc<ResponseCache>>().cloned() else {
+        return conn.with_status(Status::InternalServerError).halt();
+    };
 
     let Some(path) = decoded_param(&conn, "crate_name") else {
         return conn.with_status(Status::InternalServerError).halt();
@@ -643,29 +661,31 @@ async fn get_crate(mut conn: Conn) -> Conn {
                 return Ok(Rendered::NotModified(validators.clone()));
             }
 
-            let mut request = Request::new(&navigator, FormatContext::new());
-            match commands::get::model(&mut request, &path, false, false) {
-                JsonOutcome::Found {
-                    model,
-                    canonical_url,
-                } => json::to_string(&model, Some(canonical_url)).map(|body| Rendered::Json {
-                    status: Status::Ok,
-                    body,
-                    validators,
-                }),
-
-                // The crate resolved but the item path didn't — or no crate resolved
-                // at all, in which case there was never a cheap identity to derive.
-                // Either way the suggestion list is not worth a fast path, and
-                // `CachingHeaders` still body-hashes it as a backstop.
-                JsonOutcome::NotFound(not_found) => {
-                    json::not_found_to_string(&not_found).map(|body| Rendered::Json {
-                        status: Status::NotFound,
+            responses.respond(validators, || {
+                let mut request = Request::new(&navigator, FormatContext::new());
+                match commands::get::model(&mut request, &path, false, false) {
+                    JsonOutcome::Found {
+                        model,
+                        canonical_url,
+                    } => json::to_string(&model, Some(canonical_url)).map(|body| Fresh {
+                        status: Status::Ok,
                         body,
-                        validators: None,
-                    })
+                        cacheable: true,
+                    }),
+
+                    // A miss within a crate that loaded is as much a function of
+                    // the crate's data as a hit, and as worth caching: crawlers
+                    // re-fetch dead paths as readily as live ones. A crate-level
+                    // miss may be a transient load failure, so it is neither.
+                    JsonOutcome::NotFound(not_found) => {
+                        json::not_found_to_string(&not_found).map(|body| Fresh {
+                            status: Status::NotFound,
+                            body,
+                            cacheable: not_found.crate_loaded,
+                        })
+                    }
                 }
-            }
+            })
         })
         .await;
 
@@ -721,6 +741,9 @@ async fn search_crate(mut conn: Conn) -> Conn {
     let Some((store, workers)) = context(&conn) else {
         return conn.with_status(Status::InternalServerError).halt();
     };
+    let Some(responses) = conn.shared_state::<Arc<ResponseCache>>().cloned() else {
+        return conn.with_status(Status::InternalServerError).halt();
+    };
 
     let Some(crate_name) = decoded_param(&conn, "crate_name") else {
         return conn.with_status(Status::InternalServerError).halt();
@@ -747,18 +770,22 @@ async fn search_crate(mut conn: Conn) -> Conn {
                 return Ok(Rendered::NotModified(validators.clone()));
             }
 
-            let mut request = Request::new(&navigator, FormatContext::new());
-            let model = commands::search::model(
-                &mut request,
-                &q,
-                SEARCH_LIMIT,
-                Some(&crate_name),
-                QueryCompletion::AsYouType,
-            );
-            json::search_to_string(&model).map(|body| Rendered::Json {
-                status: Status::Ok,
-                body,
-                validators,
+            responses.respond(validators, || {
+                let mut request = Request::new(&navigator, FormatContext::new());
+                let model = commands::search::model(
+                    &mut request,
+                    &q,
+                    SEARCH_LIMIT,
+                    Some(&crate_name),
+                    QueryCompletion::AsYouType,
+                );
+                // `NoCrates` means the crate failed to load, perhaps transiently.
+                let cacheable = !matches!(model, SearchDoc::NoCrates { .. });
+                json::search_to_string(&model).map(|body| Fresh {
+                    status: Status::Ok,
+                    body,
+                    cacheable,
+                })
             })
         })
         .await;

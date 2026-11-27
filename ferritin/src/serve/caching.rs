@@ -105,6 +105,8 @@ static BUILD: LazyLock<Build> = LazyLock::new(|| {
 /// against, and what we send so the next one can be.
 #[derive(Debug, Clone)]
 pub(crate) struct Validators {
+    /// The hash the etag is rendered from; see [`Self::identity`].
+    identity: u64,
     etag: EntityTag,
     last_modified: Option<SystemTime>,
 }
@@ -117,6 +119,13 @@ impl Validators {
     /// Weak comparison, because our etags are weak: see [`Self::apply`].
     pub(crate) fn matches(&self, if_none_match: Option<&EntityTag>) -> bool {
         if_none_match.is_some_and(|if_none_match| self.etag.weak_eq(if_none_match))
+    }
+
+    /// The identity this response is named by: equal for any two requests
+    /// whose bodies are identical. What the server-side
+    /// [`ResponseCache`](super::responses::ResponseCache) keys on.
+    pub(crate) fn identity(&self) -> u64 {
+        self.identity
     }
 
     /// Attach these validators to a response.
@@ -200,8 +209,10 @@ pub(crate) fn documentation(
         .and_then(|path| fs::metadata(path).ok())
         .and_then(|meta| meta.modified().ok());
 
+    let identity = hasher.finish();
     Some(Validators {
-        etag: etag(hasher.finish()),
+        identity,
+        etag: etag(identity),
         last_modified: [BUILD.mtime, json_mtime].into_iter().flatten().max(),
     })
 }
@@ -246,8 +257,10 @@ pub(crate) fn og_image(identity: impl Hash) -> Validators {
     "og".hash(&mut hasher);
     identity.hash(&mut hasher);
 
+    let identity = hasher.finish();
     Validators {
-        etag: etag(hasher.finish()),
+        identity,
+        etag: etag(identity),
         last_modified: None,
     }
 }
@@ -283,8 +296,10 @@ pub(crate) fn crate_search(
     query.hash(&mut hasher);
     limit.hash(&mut hasher);
 
+    let identity = hasher.finish();
     Some(Validators {
-        etag: etag(hasher.finish()),
+        identity,
+        etag: etag(identity),
         last_modified: None,
     })
 }
