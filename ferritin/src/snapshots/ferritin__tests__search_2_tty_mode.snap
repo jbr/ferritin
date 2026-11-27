@@ -11,6 +11,12 @@ Search results for 'generic struct'
   ◦ [alloc::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) - score: 66.8
     A trait for borrowing data. [...]
 
+  ◦ [fixture-crate::TestStruct](https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html)  (Struct) - score: 66.3
+    A simple struct for testing basic functionality. [...]
+
+  ◦ [fixture-crate::GenericEnum](https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html)  (Enum) - score: 65.3
+    A generic enum for testing [...]
+
   ◦ [std::prelude::rust_2021::ambiguous_macros_only::borrow::Borrow](https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html)  (Trait) -
     score: 64.1
     A trait for borrowing data. [...]
@@ -33,10 +39,3 @@ Search results for 'generic struct'
     [mystd::mem::type_info::Generic](https://doc.rust-lang.org/nightly/core/mem/type_info/enum.Generic.html)  (Enum) - score: 62.5
     Compile-time type information about instantiated generics of structs, enum and
     union variants.
-
-  ◦ [core::prelude::v1::Clone](https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html)  (Trait) - score: 62.0
-    A common trait that allows explicit creation of a duplicate value. [...]
-
-  ◦ [std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::](https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)
-    [mystd::ops::deref::Deref](https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html)  (Trait) - score: 60.9
-    Used for immutable dereferencing operations, like *v. [...]
