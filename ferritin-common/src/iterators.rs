@@ -6,14 +6,31 @@
 //!
 //! What lives here:
 //! - [`LazyChildren`] / [`LazyChild`]: classify a module/enum's direct children into real items,
-//!   non-glob `Use`s, and glob `Use`s. Resolution of `Use` source paths happens in
-//!   `Resolver::resolve_lazy_child`.
+//!   non-glob `Use`s, and glob `Use`s, skipping private imports (see [`is_reexport`]). Resolution
+//!   of `Use` source paths happens in `Resolver::resolve_lazy_child`.
 //! - [`MethodIter`], [`TraitIter`], [`ImplementorIter`]: walk the impl blocks targeting a given
 //!   item, via the precomputed reverse indexes ([`crate::indexes`]) rather than a whole-index scan.
 //!   No `Use` involvement.
 
 use crate::doc_ref::DocRef;
-use rustdoc_types::{Id, Item, ItemEnum, Use};
+use rustdoc_types::{Id, Item, ItemEnum, Use, Visibility};
+
+/// Whether a `use` item contributes names to its module, i.e. whether it is a
+/// re-export rather than a private import.
+///
+/// rustdoc JSON keeps private imports: std's carries thousands of
+/// `use crate::intrinsics;`-style items, `restricted` to the module that
+/// declares them. They are how that module's code names things, not part of
+/// its interface. Treated as children, they make every module reachable
+/// *through* each module that imports it — `core::hint::intrinsics::…`,
+/// `core::slice::ptr::intrinsics::…` — and private globs (core_arch's
+/// `use super::*`) multiply that combinatorially into a path space with no
+/// practical end, which a crawler following our links walks indefinitely.
+/// Only a `pub use` re-exports, so only a `pub use` is a child, in listings
+/// and in path resolution alike.
+pub(crate) fn is_reexport(use_item: &Item) -> bool {
+    matches!(use_item.visibility, Visibility::Public)
+}
 
 /// Walk a precomputed list of impl-block `Id`s, yielding each block as a
 /// `DocRef` in `anchor`'s crate. Shared machinery for the three impl iterators.
@@ -148,6 +165,7 @@ impl<'a> Iterator for LazyChildren<'a> {
                 continue;
             };
             return Some(match item.inner() {
+                ItemEnum::Use(_) if !is_reexport(item.item()) => continue,
                 ItemEnum::Use(use_item) => {
                     let use_ref = item.build_ref(use_item);
                     if use_item.is_glob {
