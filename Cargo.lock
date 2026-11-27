@@ -1440,6 +1440,7 @@ version = "0.17.0"
 dependencies = [
  "anyhow",
  "async-channel",
+ "async-lock",
  "clap",
  "crossbeam-channel",
  "crossterm",

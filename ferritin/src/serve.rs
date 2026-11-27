@@ -16,6 +16,9 @@
 //! pinning whatever crates it touches for exactly the request's duration. That
 //! per-query pinning is what lets the Store evict under memory pressure without
 //! invalidating any in-flight request.
+//!
+//! Admission onto that pool — bounded queue wait, per-lane isolation, and
+//! abandoning work whose client has gone — lives in [`workers`].
 
 mod app_page;
 mod caching;
@@ -25,6 +28,7 @@ mod header_census;
 mod mcp;
 mod og;
 mod spa_route;
+mod workers;
 
 use crate::{
     commands::{self, get::JsonOutcome},
@@ -32,7 +36,10 @@ use crate::{
     format_context::FormatContext,
     json,
     request::Request,
-    serve::caching::{CachingPolicy, Validators},
+    serve::{
+        caching::{CachingPolicy, Validators},
+        workers::{Lane, Refusal, Workers},
+    },
 };
 use ferritin_common::{
     Navigator, Store,
@@ -41,13 +48,8 @@ use ferritin_common::{
 };
 use percent_encoding::percent_decode_str;
 use querystrong::QueryStrong;
-use rayon::{ThreadPool, ThreadPoolBuilder};
-use std::{
-    env,
-    net::IpAddr,
-    panic::{self, AssertUnwindSafe},
-    sync::Arc,
-};
+use rayon::ThreadPoolBuilder;
+use std::{env, net::IpAddr, sync::Arc};
 use trillium::{Conn, Handler, KnownHeaderName, Method, Status};
 use trillium_caching_headers::{CachingHeaders, CachingHeadersExt};
 use trillium_compression::Compression;
@@ -181,22 +183,22 @@ pub fn serve() {
 
     let crate_search = Arc::new(CrateSearchService::new(crate_index, std_crates));
 
-    let pool = Arc::new(
+    let workers = Arc::new(Workers::new(
         ThreadPoolBuilder::new()
             .thread_name(|i| format!("ferritin-docs-{i}"))
             .stack_size(WORKER_STACK_SIZE)
             .build()
             .expect("failed to build documentation thread pool"),
-    );
+    ));
 
     #[cfg(feature = "acme")]
     if let Some(env) = acme::AcmeEnv::from_env() {
-        return acme::serve_tls(store, pool, env, crate_search);
+        return acme::serve_tls(store, workers, env, crate_search);
     }
 
     let server_handle = trillium_smol::config()
         .with_shared_state(store)
-        .with_shared_state(pool)
+        .with_shared_state(workers)
         .spawn(handler(crate_search));
 
     let swansong = server_handle.swansong();
@@ -233,9 +235,9 @@ pub fn serve() {
 /// cleartext exactly as it does without this feature.
 #[cfg(feature = "acme")]
 mod acme {
+    use super::Workers;
     use crate::crate_search::CrateSearchService;
     use ferritin_common::Store;
-    use rayon::ThreadPool;
     use std::{env, path::PathBuf, sync::Arc};
     use trillium::{Conn, Handler, KnownHeaderName, Status};
     use trillium_acme::{AcmeConfig, rustls_acme::caches::DirCache};
@@ -295,7 +297,7 @@ mod acme {
     /// ACME-managed certificate resolver), and an https redirect on tcp/80.
     pub(super) fn serve_tls(
         store: Arc<Store>,
-        pool: Arc<ThreadPool>,
+        workers: Arc<Workers>,
         env: AcmeEnv,
         crate_search: Arc<CrateSearchService>,
     ) {
@@ -320,7 +322,7 @@ mod acme {
 
         let handle = trillium_smol::config()
             .with_shared_state(store)
-            .with_shared_state(pool)
+            .with_shared_state(workers)
             .with_nodelay()
             .listeners()
             .bind_tcp((&*host, 80))
@@ -427,6 +429,7 @@ pub(crate) fn handler(crate_search: Arc<CrateSearchService>) -> impl Handler {
                 "[{conn_id}] <- {ip} {version} {method} {host}{url} {response_time} {status} \
                  {body_len_human} {content_encoding} {user_agent} {referer}",
                 conn_id = trillium_conn_id::log_formatter::conn_id,
+                status = workers::logged_status,
                 content_encoding = formatters::response_header(KnownHeaderName::ContentEncoding),
             ))
             .with_start_formatter(log_format!(
@@ -542,22 +545,6 @@ fn frontend() -> impl Handler {
         .with_index_predicate(|conn| spa_route::is_app_route(conn.path()))
 }
 
-/// Run a synchronous, stack-hungry job on a big-stack pool worker and await the
-/// owned result. Returns `None` if the worker panicked (surfaced as a 500 by the
-/// caller) rather than aborting the process.
-async fn run_blocking<F, T>(pool: &ThreadPool, job: F) -> Option<T>
-where
-    F: FnOnce() -> T + Send + 'static,
-    T: Send + 'static,
-{
-    let (tx, rx) = async_channel::bounded(1);
-    pool.spawn(move || {
-        let outcome = panic::catch_unwind(AssertUnwindSafe(job)).ok();
-        let _ = tx.send_blocking(outcome);
-    });
-    rx.recv().await.ok().flatten()
-}
-
 /// Percent-decode a route param. trillium-router hands params back raw, but the
 /// client percent-encodes `::` in item paths (`serde%3A%3ADeserialize`).
 fn decoded_param(conn: &Conn, name: &str) -> Option<String> {
@@ -566,10 +553,10 @@ fn decoded_param(conn: &Conn, name: &str) -> Option<String> {
 }
 
 /// The two shared-state handles every documentation handler needs.
-fn context(conn: &Conn) -> Option<(Arc<Store>, Arc<ThreadPool>)> {
+fn context(conn: &Conn) -> Option<(Arc<Store>, Arc<Workers>)> {
     let store = conn.shared_state::<Arc<Store>>().cloned()?;
-    let pool = conn.shared_state::<Arc<ThreadPool>>().cloned()?;
-    Some((store, pool))
+    let workers = conn.shared_state::<Arc<Workers>>().cloned()?;
+    Some((store, workers))
 }
 
 /// What a documentation worker hands back to its handler.
@@ -595,20 +582,20 @@ enum Rendered {
     },
 }
 
-/// Apply a worker outcome to the response, a 500 when the worker panicked or
-/// serialization failed.
-fn respond_json(conn: Conn, outcome: Option<sonic_rs::Result<Rendered>>) -> Conn {
+/// Apply a worker outcome to the response: the job's refusal when it produced
+/// nothing, a 500 when serialization failed.
+fn respond_json(conn: Conn, outcome: Result<sonic_rs::Result<Rendered>, Refusal>) -> Conn {
     // `halt()` so the trailing frontend handler doesn't overwrite the JSON body
     // with the SPA index.
     // `Cache-Control` is not set here: `CachingPolicy` applies it to every
     // response the server sends, so there is one place that decides it.
     match outcome {
-        Some(Ok(Rendered::NotModified(validators))) => validators
+        Ok(Ok(Rendered::NotModified(validators))) => validators
             .apply(conn)
             .with_status(Status::NotModified)
             .halt(),
 
-        Some(Ok(Rendered::Json {
+        Ok(Ok(Rendered::Json {
             status,
             body,
             validators,
@@ -624,12 +611,14 @@ fn respond_json(conn: Conn, outcome: Option<sonic_rs::Result<Rendered>>) -> Conn
                 .halt()
         }
 
-        _ => conn.with_status(Status::InternalServerError).halt(),
+        Ok(Err(_)) => conn.with_status(Status::InternalServerError).halt(),
+
+        Err(refusal) => refusal.respond(conn),
     }
 }
 
-async fn get_crate(conn: Conn) -> Conn {
-    let Some((store, pool)) = context(&conn) else {
+async fn get_crate(mut conn: Conn) -> Conn {
+    let Some((store, workers)) = context(&conn) else {
         return conn.with_status(Status::InternalServerError).halt();
     };
 
@@ -640,44 +629,45 @@ async fn get_crate(conn: Conn) -> Conn {
     // Read before the worker: request headers do not cross into it.
     let if_none_match = conn.if_none_match();
 
-    let outcome = run_blocking(&pool, move || {
-        let navigator = Navigator::new(store);
+    let outcome = workers
+        .run(&mut conn, Lane::Api, move || {
+            let navigator = Navigator::new(store);
 
-        // Name the response before producing it. On a conditional request that
-        // still matches, this — one phase-1 resolution and a hash — is the
-        // entire cost of the 304.
-        let validators = caching::documentation(&navigator, "get", &path, &[]);
-        if let Some(validators) = &validators
-            && validators.matches(if_none_match.as_ref())
-        {
-            return Ok(Rendered::NotModified(validators.clone()));
-        }
-
-        let mut request = Request::new(&navigator, FormatContext::new());
-        match commands::get::model(&mut request, &path, false, false) {
-            JsonOutcome::Found {
-                model,
-                canonical_url,
-            } => json::to_string(&model, Some(canonical_url)).map(|body| Rendered::Json {
-                status: Status::Ok,
-                body,
-                validators,
-            }),
-
-            // The crate resolved but the item path didn't — or no crate resolved
-            // at all, in which case there was never a cheap identity to derive.
-            // Either way the suggestion list is not worth a fast path, and
-            // `CachingHeaders` still body-hashes it as a backstop.
-            JsonOutcome::NotFound(not_found) => {
-                json::not_found_to_string(&not_found).map(|body| Rendered::Json {
-                    status: Status::NotFound,
-                    body,
-                    validators: None,
-                })
+            // Name the response before producing it. On a conditional request that
+            // still matches, this — one phase-1 resolution and a hash — is the
+            // entire cost of the 304.
+            let validators = caching::documentation(&navigator, "get", &path, &[]);
+            if let Some(validators) = &validators
+                && validators.matches(if_none_match.as_ref())
+            {
+                return Ok(Rendered::NotModified(validators.clone()));
             }
-        }
-    })
-    .await;
+
+            let mut request = Request::new(&navigator, FormatContext::new());
+            match commands::get::model(&mut request, &path, false, false) {
+                JsonOutcome::Found {
+                    model,
+                    canonical_url,
+                } => json::to_string(&model, Some(canonical_url)).map(|body| Rendered::Json {
+                    status: Status::Ok,
+                    body,
+                    validators,
+                }),
+
+                // The crate resolved but the item path didn't — or no crate resolved
+                // at all, in which case there was never a cheap identity to derive.
+                // Either way the suggestion list is not worth a fast path, and
+                // `CachingHeaders` still body-hashes it as a backstop.
+                JsonOutcome::NotFound(not_found) => {
+                    json::not_found_to_string(&not_found).map(|body| Rendered::Json {
+                        status: Status::NotFound,
+                        body,
+                        validators: None,
+                    })
+                }
+            }
+        })
+        .await;
 
     respond_json(conn, outcome)
 }
@@ -717,7 +707,7 @@ async fn search_crates(conn: Conn) -> Conn {
 
     respond_json(
         conn,
-        Some(
+        Ok(
             json::crate_search_to_string(&q, results).map(|body| Rendered::Json {
                 status: Status::Ok,
                 body,
@@ -727,8 +717,8 @@ async fn search_crates(conn: Conn) -> Conn {
     )
 }
 
-async fn search_crate(conn: Conn) -> Conn {
-    let Some((store, pool)) = context(&conn) else {
+async fn search_crate(mut conn: Conn) -> Conn {
+    let Some((store, workers)) = context(&conn) else {
         return conn.with_status(Status::InternalServerError).halt();
     };
 
@@ -744,33 +734,34 @@ async fn search_crate(conn: Conn) -> Conn {
     // Read before the worker: request headers do not cross into it.
     let if_none_match = conn.if_none_match();
 
-    let outcome = run_blocking(&pool, move || {
-        let navigator = Navigator::new(store);
+    let outcome = workers
+        .run(&mut conn, Lane::Api, move || {
+            let navigator = Navigator::new(store);
 
-        // Same short-circuit as `get_crate`, and a bigger win: a search that
-        // misses the cache builds the crate's whole TF-IDF index.
-        let validators = caching::documentation(&navigator, "search", &crate_name, &[&q]);
-        if let Some(validators) = &validators
-            && validators.matches(if_none_match.as_ref())
-        {
-            return Ok(Rendered::NotModified(validators.clone()));
-        }
+            // Same short-circuit as `get_crate`, and a bigger win: a search that
+            // misses the cache builds the crate's whole TF-IDF index.
+            let validators = caching::documentation(&navigator, "search", &crate_name, &[&q]);
+            if let Some(validators) = &validators
+                && validators.matches(if_none_match.as_ref())
+            {
+                return Ok(Rendered::NotModified(validators.clone()));
+            }
 
-        let mut request = Request::new(&navigator, FormatContext::new());
-        let model = commands::search::model(
-            &mut request,
-            &q,
-            SEARCH_LIMIT,
-            Some(&crate_name),
-            QueryCompletion::AsYouType,
-        );
-        json::search_to_string(&model).map(|body| Rendered::Json {
-            status: Status::Ok,
-            body,
-            validators,
+            let mut request = Request::new(&navigator, FormatContext::new());
+            let model = commands::search::model(
+                &mut request,
+                &q,
+                SEARCH_LIMIT,
+                Some(&crate_name),
+                QueryCompletion::AsYouType,
+            );
+            json::search_to_string(&model).map(|body| Rendered::Json {
+                status: Status::Ok,
+                body,
+                validators,
+            })
         })
-    })
-    .await;
+        .await;
 
     respond_json(conn, outcome)
 }
