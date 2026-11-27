@@ -54,6 +54,54 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
       ]
     },
     {
+      "path": "fixture-crate::TestStruct",
+      "kind": "struct",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/struct.TestStruct.html",
+      "score": 66.3,
+      "docs": [
+        {
+          "type": "truncatedBlock",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "A simple struct for testing basic functionality.",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ],
+          "level": "SingleLine",
+          "truncated": true
+        }
+      ]
+    },
+    {
+      "path": "fixture-crate::GenericEnum",
+      "kind": "enum",
+      "url": "https://docs.rs/fixture-crate/0.1.0/fixture_crate/enum.GenericEnum.html",
+      "score": 65.3,
+      "docs": [
+        {
+          "type": "truncatedBlock",
+          "nodes": [
+            {
+              "type": "paragraph",
+              "spans": [
+                {
+                  "text": "A generic enum for testing",
+                  "style": "Plain"
+                }
+              ]
+            }
+          ],
+          "level": "SingleLine",
+          "truncated": true
+        }
+      ]
+    },
+    {
       "path": "std::prelude::rust_2021::ambiguous_macros_only::borrow::Borrow",
       "kind": "trait",
       "url": "https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html",
@@ -174,62 +222,6 @@ expression: "render_json_for_tests_rooted(Commands::search(\"generic struct\"), 
             }
           ],
           "level": "SingleLine"
-        }
-      ]
-    },
-    {
-      "path": "core::prelude::v1::Clone",
-      "kind": "trait",
-      "url": "https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html",
-      "score": 62.0,
-      "docs": [
-        {
-          "type": "truncatedBlock",
-          "nodes": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "A common trait that allows explicit creation of a duplicate value.",
-                  "style": "Plain"
-                }
-              ]
-            }
-          ],
-          "level": "SingleLine",
-          "truncated": true
-        }
-      ]
-    },
-    {
-      "path": "std::prelude::v1::ambiguous_macros_only::backtrace_rs::symbolize::gimli::mystd::ops::deref::Deref",
-      "kind": "trait",
-      "url": "https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html",
-      "score": 60.9,
-      "docs": [
-        {
-          "type": "truncatedBlock",
-          "nodes": [
-            {
-              "type": "paragraph",
-              "spans": [
-                {
-                  "text": "Used for immutable dereferencing operations, like ",
-                  "style": "Plain"
-                },
-                {
-                  "text": "*v",
-                  "style": "InlineCode"
-                },
-                {
-                  "text": ".",
-                  "style": "Plain"
-                }
-              ]
-            }
-          ],
-          "level": "SingleLine",
-          "truncated": true
         }
       ]
     }
